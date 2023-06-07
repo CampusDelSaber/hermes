@@ -8,6 +8,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.LocationComponentOptions;
@@ -195,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
             locationEngine.requestLocationUpdates(locationEngineRequest, new LocationListeningCallback(this), getMainLooper());
         } else {
-            // Handle location permission not granted
             Toast.makeText(this, "Location permission denied.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 Location location = result.getLastLocation();
                 if (location != null) {
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    activity.mapDisplay.getMapboxMap().animateCamera(com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newLatLngZoom(latLng, 16.0));
+                    // activity.mapDisplay.getMapboxMap().animateCamera(com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newLatLngZoom(latLng, 16.0));
                 }
             }
         }
@@ -251,9 +252,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         @Override
         public void onFailure(@NonNull Exception exception) {
             MainActivity activity = activityWeakReference.get();
-            if (activity != null) {
-                Toast.makeText(activity, "Failed to get current location.", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 }
