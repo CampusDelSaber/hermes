@@ -1,7 +1,6 @@
 package com.isc.hermes.view;
 
 import android.os.Bundle;
-
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;

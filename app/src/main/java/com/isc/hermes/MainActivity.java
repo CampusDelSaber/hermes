@@ -8,9 +8,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.isc.hermes.utils.MapConfigure;
@@ -23,7 +22,6 @@ import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.LocationComponentOptions;
@@ -42,7 +40,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements PermissionsListener {
     private MapView mapView;
     private MapDisplay mapDisplay;
-    private Button locationButton;
+    private ImageButton locationButton;
 
     private PermissionsManager permissionsManager;
     private LocationEngine locationEngine;
@@ -63,6 +61,18 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         initLocationButton();
         mapDisplay.onCreate(savedInstanceState);
         locationEngine = LocationEngineProvider.getBestLocationEngine(this);
+
+        new Thread(() -> {
+            while (mapDisplay.getMapboxMap() == null) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            runOnUiThread(this::enableLocationComponent);
+        }).start();
     }
 
     /**
@@ -171,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
     @Override
     public void onExplanationNeeded(List<String> list) {
-
+        Toast.makeText(this, "Need permissions for access to location", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -244,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 Location location = result.getLastLocation();
                 if (location != null) {
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    // activity.mapDisplay.getMapboxMap().animateCamera(com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newLatLngZoom(latLng, 16.0));
                 }
             }
         }
