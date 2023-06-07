@@ -5,12 +5,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.MapConfigure;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -19,6 +26,9 @@ public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
     private final Context context;
+    private MapboxMap mapboxMap;
+    private Marker longPressMarker;
+
     /**
      * Constructor to create a MapDisplay object.
      *
@@ -44,6 +54,7 @@ public class MapDisplay {
         });
     }
 
+
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
      *
@@ -51,8 +62,28 @@ public class MapDisplay {
      */
     public void onCreate(Bundle savedInstanceState) {
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(mapConfigure::configure);
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                MapDisplay.this.mapboxMap = mapboxMap;
+                mapConfigure.configure(mapboxMap);
+
+                mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                    @Override
+                    public boolean onMapClick(@NonNull LatLng point) {
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(point);
+                        mapboxMap.addMarker(markerOptions);
+
+                        return true;
+                    }
+                });
+
+            }
+        });
     }
+
+
 
     /**
      * Method for starting the MapView object instance.
