@@ -2,49 +2,22 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
+import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
-import com.mapbox.android.core.location.LocationEngine;
-import com.mapbox.android.core.location.LocationEngineCallback;
-import com.mapbox.android.core.location.LocationEngineProvider;
-import com.mapbox.android.core.location.LocationEngineRequest;
-import com.mapbox.android.core.location.LocationEngineResult;
-import com.mapbox.android.core.permissions.PermissionsListener;
-import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-import com.mapbox.mapboxsdk.location.LocationComponentOptions;
-import com.mapbox.mapboxsdk.location.modes.CameraMode;
-import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements PermissionsListener {
+public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
-    private ImageButton locationButton;
-
-    private PermissionsManager permissionsManager;
-    private LocationEngine locationEngine;
-    private LocationEngineRequest locationEngineRequest;
+    private CurrentLocationController currentLocationController;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -58,21 +31,16 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         setContentView(R.layout.activity_main);
         initMapView();
         initMapDisplay();
-        initLocationButton();
         mapDisplay.onCreate(savedInstanceState);
-        locationEngine = LocationEngineProvider.getBestLocationEngine(this);
+        initCurrentLocationController();
+    }
 
-        new Thread(() -> {
-            while (mapDisplay.getMapboxMap() == null) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            runOnUiThread(this::enableLocationComponent);
-        }).start();
+    /**
+     * This method will init the current location controller to get the real time user location
+     */
+    private void initCurrentLocationController(){
+        currentLocationController = new CurrentLocationController(this, mapDisplay);
+        currentLocationController.initLocation();
     }
 
     /**
@@ -94,24 +62,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
      */
     private void initMapDisplay() {
         mapDisplay = new MapDisplay(mapView, new MapConfigure());
-    }
-
-    /**
-     * Method for initializing the location button and setting its click listener.
-     */
-    @SuppressLint("WrongViewCast")
-    private void initLocationButton() {
-        locationButton = findViewById(R.id.locationButton);
-        locationButton.setOnClickListener(v -> checkLocationPermissionsAndEnableComponent());
-    }
-
-    private void checkLocationPermissionsAndEnableComponent() {
-        if (PermissionsManager.areLocationPermissionsGranted(MainActivity.this)) {
-            enableLocationComponent();
-        } else {
-            permissionsManager = new PermissionsManager(MainActivity.this);
-            permissionsManager.requestLocationPermissions(MainActivity.this);
-        }
     }
 
     /**
@@ -177,90 +127,5 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapDisplay.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onExplanationNeeded(List<String> list) {
-        Toast.makeText(this, "Need permissions for access to location", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Method called when permissions are granted.
-     */
-    @Override
-    public void onPermissionResult(boolean granted) {
-        if (granted) {
-            enableLocationComponent();
-        } else {
-            Toast.makeText(this, "Location permission denied.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Method called when the location engine is successfully connected.
-     */
-    private void onLocationEngineConnected() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationEngineRequest = new LocationEngineRequest.Builder(1000)
-                    .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
-                    .build();
-
-            locationEngine.requestLocationUpdates(locationEngineRequest, new LocationListeningCallback(this), getMainLooper());
-        } else {
-            Toast.makeText(this, "Location permission denied.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Method for enabling the location component on the map.
-     */
-    @SuppressWarnings("MissingPermission")
-    private void enableLocationComponent() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationComponentOptions locationComponentOptions = LocationComponentOptions.builder(this)
-                    .pulseEnabled(true)
-                    .build();
-
-            LocationComponentActivationOptions locationComponentActivationOptions = LocationComponentActivationOptions.builder(this, Objects.requireNonNull(mapDisplay.getMapboxMap().getStyle()))
-                    .locationComponentOptions(locationComponentOptions)
-                    .build();
-
-            mapDisplay.getMapboxMap().getLocationComponent().activateLocationComponent(locationComponentActivationOptions);
-            mapDisplay.getMapboxMap().getLocationComponent().setLocationComponentEnabled(true);
-            mapDisplay.getMapboxMap().getLocationComponent().setCameraMode(CameraMode.TRACKING);
-            mapDisplay.getMapboxMap().getLocationComponent().setRenderMode(RenderMode.COMPASS);
-
-            onLocationEngineConnected();
-        } else {
-            permissionsManager = new PermissionsManager(this);
-            permissionsManager.requestLocationPermissions(this);
-        }
-    }
-
-    /**
-     * Callback class for receiving location updates.
-     */
-    private static class LocationListeningCallback implements LocationEngineCallback<LocationEngineResult> {
-        private final WeakReference<MainActivity> activityWeakReference;
-
-        LocationListeningCallback(MainActivity activity) {
-            this.activityWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void onSuccess(LocationEngineResult result) {
-            MainActivity activity = activityWeakReference.get();
-            if (activity != null) {
-                Location location = result.getLastLocation();
-                if (location != null) {
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                }
-            }
-        }
-
-        @Override
-        public void onFailure(@NonNull Exception exception) {
-            MainActivity activity = activityWeakReference.get();
-        }
     }
 }
