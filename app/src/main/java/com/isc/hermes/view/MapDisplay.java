@@ -26,8 +26,6 @@ public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
     private final Context context;
-    private MapboxMap mapboxMap;
-    private Marker longPressMarker;
 
     /**
      * Constructor to create a MapDisplay object.
@@ -54,25 +52,7 @@ public class MapDisplay {
      */
     public void onCreate(Bundle savedInstanceState) {
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                MapDisplay.this.mapboxMap = mapboxMap;
-                mapConfigure.configure(mapboxMap);
-
-                mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                    @Override
-                    public boolean onMapClick(@NonNull LatLng point) {
-                        MarkerOptions markerOptions = new MarkerOptions()
-                                .position(point);
-                        mapboxMap.addMarker(markerOptions);
-
-                        return true;
-                    }
-                });
-
-            }
-        });
+        mapView.getMapAsync(mapConfigure::configure);
     }
 
 
