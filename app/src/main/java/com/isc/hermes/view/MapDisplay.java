@@ -33,15 +33,7 @@ public class MapDisplay {
 
     public void initFabButton() {
         FloatingActionButton fabButton = ((AppCompatActivity) context).findViewById(R.id.fab_button);
-        fabButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Toast.makeText(context, "Hacer un crick, para mostrar los incidentes," +
-                        "y hacer un crick mas desplazarce a otro punto para ver el trafico", Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        fabButton.setOnClickListener(v -> Toast.makeText(context, "To report incident: Do click on map\n To report traffic: click to mark start point and long click to mark end point", Toast.LENGTH_SHORT).show());
     }
 
     /**
