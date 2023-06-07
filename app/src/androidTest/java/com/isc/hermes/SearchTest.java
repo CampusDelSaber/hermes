@@ -1,17 +1,33 @@
 package com.isc.hermes;
 
 import static org.junit.Assert.assertEquals;
-
 import com.isc.hermes.model.Searcher;
-
+import com.isc.hermes.model.WayPoint;
 import org.junit.Test;
+import java.util.List;
 
+/**
+ * Class to test the searcher functionality calling the methods to receive the suggestions
+ */
 public class SearchTest {
+    /**
+     * This metho
+     */
     @Test
-    public void getSearchResultsByQuerySent() {
+    public void getSearchResultsByQuerySentExample1() {
         Searcher searcher = new Searcher();
-        int actual = searcher.performSearch("Aniceto Arce");
-        int expected = 10;
-        assertEquals(expected, actual);
+        List<WayPoint> actualSuggestions = searcher.getSearcherSuggestionsPlacesInfo("Cochabamba");
+
+        assertEquals(actualSuggestions.get(0).getPlaceName(), "Cochabamba, Cochabamba, Bolivia");
+        assertEquals(actualSuggestions.get(1).getPlaceName(), "Cochabamba, Bolivia");
+        assertEquals(actualSuggestions.get(2).getPlaceName(), "Cochabamba, Av las encinas 1390 local 1, Concón, Valparaíso 2510000, Chile");
+        assertEquals(actualSuggestions.get(3).getPlaceName(), "Hotel Toloma, Cochabamba, Cochabamba, Bolivia");
+        assertEquals(actualSuggestions.get(4).getPlaceName(), "Camara de Industria, Av. Ballivian, Cochabamba, Cochabamba, Bolivia");
     }
+
+    @Test
+    public void getSearchSuggestionsFeaturesSizeByQuery() {
+
+    }
+
 }
