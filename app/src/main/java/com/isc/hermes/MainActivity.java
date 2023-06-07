@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
@@ -16,6 +18,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
+    private String currentMapStyle = "default";
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -28,8 +31,22 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        initMapDisplay();
+        initMapDisplay(currentMapStyle);
         mapDisplay.onCreate(savedInstanceState);
+        Button styleButton = findViewById(R.id.btn_change_style);
+        styleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View styleMap) {
+                if (currentMapStyle.equals("default")) {
+                    currentMapStyle = "satellite";
+                } else if (currentMapStyle.equals("satellite")) {
+                    currentMapStyle = "dark";
+                } else {
+                    currentMapStyle = "default";
+                }
+                mapDisplay.setMapStyle(currentMapStyle);
+            }
+        });
     }
 
     /**
@@ -49,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Method for initializing the MapDisplay object instance.
      */
-    private void initMapDisplay() {
-        mapDisplay = new MapDisplay(mapView, new MapConfigure());
+    private void initMapDisplay(String mapStyle) {
+        mapDisplay = new MapDisplay(mapView, new MapConfigure(),mapStyle);
     }
 
     /**
