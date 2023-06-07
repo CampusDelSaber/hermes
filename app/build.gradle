@@ -55,5 +55,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0"
     implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.5.0'
-    
+    implementation group: 'io.github.cdimascio', name: 'java-dotenv', version: '5.2.2'
+
 }
