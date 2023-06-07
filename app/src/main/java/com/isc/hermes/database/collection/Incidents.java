@@ -13,7 +13,7 @@ public class Incidents implements Collectible {
     private Hermesdb hermesdb;
     private MongoCollection<Document> incidents;
     private static Collectible collection;
-    private final String COLLECTION_NAME = "incidents";;
+    private final String COLLECTION_NAME = "incidents";
 
     /**
      * It is a singleton method to have a single instance of the incident collection.

@@ -10,7 +10,7 @@ public class Hermesdb {
     private Connection connection;
     private MongoDatabase database;
     private static Hermesdb hermesdb;
-    private final String DATABASE_NAME = "hermesmapdb";;
+    private final String DATABASE_NAME = "hermesmapdb";
 
     /**
      * It is a singleton method to have a single instance of the hermes database connection.
