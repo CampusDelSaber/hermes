@@ -20,11 +20,11 @@ public class GoogleRegister {
     /**
      * Constructor class which initialize variables
      */
-    public GoogleRegister(){
+    public GoogleRegister(Activity activity){
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-        googleSignInClient = GoogleSignIn.getClient(new Activity(), googleSignInOptions);
+        googleSignInClient = GoogleSignIn.getClient(activity, googleSignInOptions);
     }
 
     /**
