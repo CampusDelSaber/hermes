@@ -17,4 +17,10 @@
         mapbox:mapbox_cameraTargetLng="-66.1568"
         mapbox:mapbox_cameraZoom="12"/>
 
+    <Button
+        android:id="@+id/locationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Location" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
