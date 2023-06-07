@@ -17,4 +17,15 @@
         mapbox:mapbox_cameraTargetLng="-66.1568"
         mapbox:mapbox_cameraZoom="12"/>
 
+    <!-- Otros elementos del diseño -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/mapboxRedDark"
+        app:fabSize="normal" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

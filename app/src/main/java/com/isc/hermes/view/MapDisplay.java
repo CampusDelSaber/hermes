@@ -1,7 +1,14 @@
 package com.isc.hermes.view;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.isc.hermes.R;
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
 
@@ -11,16 +18,30 @@ import com.mapbox.mapboxsdk.maps.MapView;
 public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
-
+    private final Context context;
     /**
      * Constructor to create a MapDisplay object.
      *
      * @param mapView the MapView object to display the map
      * @param mapConfigure the MapConfigure object to configure the map
      */
-    public MapDisplay(MapView mapView, MapConfigure mapConfigure) {
+    public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
+        this.context = context;
+    }
+
+    public void initFabButton() {
+        FloatingActionButton fabButton = ((AppCompatActivity) context).findViewById(R.id.fab_button);
+        fabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(context, "Hacer un crick, para mostrar los incidentes," +
+                        "y hacer un crick mas desplazarce a otro punto para ver el trafico", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     /**

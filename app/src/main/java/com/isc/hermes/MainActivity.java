@@ -9,7 +9,6 @@ import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
-
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  */
@@ -28,9 +27,12 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        initMapDisplay();
+        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
+
         mapDisplay.onCreate(savedInstanceState);
+        mapDisplay.initFabButton();
     }
+
 
     /**
      * Method for initializing the Mapbox object instance.
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
      * Method for initializing the MapDisplay object instance.
      */
     private void initMapDisplay() {
-        mapDisplay = new MapDisplay(mapView, new MapConfigure());
+        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
     }
 
     /**
