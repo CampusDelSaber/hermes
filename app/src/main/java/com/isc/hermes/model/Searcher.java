@@ -4,34 +4,46 @@ package com.isc.hermes.model;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
+import com.mapbox.geojson.Point;
+import java.io.IOException;
 import retrofit2.Response;
 
+
 public class Searcher {
-    public void performSearch(String query) {
+    private int resultsNum = 0;
+    public int performSearch(String query) {
+        System.out.println("----HOLA---");
         MapboxGeocoding client = MapboxGeocoding.builder()
                 .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
                 .query(query)
                 .build();
 
-        client.enqueueCall(new Callback<GeocodingResponse>() {
-            @Override
-            public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<CarmenFeature> results = response.body().features();
-                    System.out.println(results.get(0));
-                    // Process the search results
-                } else {
-                    // Handle the error
-                }
-            }
+        System.out.println("**++++++++entro a cliente**********+");
 
-            @Override
-            public void onFailure(Call<GeocodingResponse> call, Throwable t) {
-                // Handle the failure
-            }
-        });
+        Response<GeocodingResponse> geocodingResponseResponse;
+
+        try {
+            geocodingResponseResponse = client.executeCall();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(geocodingResponseResponse.body().query().size());
+        System.out.println(geocodingResponseResponse.raw());
+        System.out.println(geocodingResponseResponse.body().features().get(0).placeName()+ " SIUUUU");
+        System.out.println(geocodingResponseResponse.body().query().toString());
+
+        for (CarmenFeature feature: geocodingResponseResponse.body().features()) {
+            Point point = feature.center();
+            System.out.println("------");
+            System.out.println(feature.placeName());
+            System.out.println(feature.properties());
+            System.out.println(point.latitude());
+            System.out.println(point.longitude());
+            System.out.println("-----------");
+        }
+
+        System.out.println("end of line"+ resultsNum + "UWUWWWWWWWWWWWWWWWWWWWWWWWWW");
+        return geocodingResponseResponse.body().features().size();
     }
 }
