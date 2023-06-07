@@ -1,19 +1,11 @@
-package com.isc.hermes.validators;
+package com.isc.hermes.requests;
 
-import android.telecom.Call;
-import android.util.Log;
-
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.geojson.Point;
 
 import java.util.List;
-
-import javax.security.auth.callback.Callback;
-
-import okhttp3.Response;
 
 public class Geocoder {
 
