@@ -45,32 +45,4 @@ public class Geocoder {
                 .build();*/
     }
 
-    public void reverseGeocoding() {
-        getGeocoder().enqueueCall(new retrofit2.Callback<GeocodingResponse>() {
-            @Override
-            public void onResponse(retrofit2.Call<GeocodingResponse> call, retrofit2.Response<GeocodingResponse> response) {
-                List<CarmenFeature> results = response.body().features();
-
-                if (results.size() > 0) {
-
-                    // Log the first results Point.
-                    Point firstResultPoint = results.get(0).center();
-                    System.out.println("onResponse: " + firstResultPoint.toString());
-
-                } else {
-
-                    // No result for your request were found.
-                    System.out.println("onResponse: No result found");
-
-                }
-            }
-
-            @Override
-            public void onFailure(retrofit2.Call<GeocodingResponse> call, Throwable t) {
-                System.out.println("geocoder failed");
-
-            }
-        });
-    }
-
 }

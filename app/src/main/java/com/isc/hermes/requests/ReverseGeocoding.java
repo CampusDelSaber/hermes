@@ -11,6 +11,11 @@ import retrofit2.Response;
 
 public class ReverseGeocoding {
 
+    private static final double MIN_LONGITUDE = -180.0;
+    private static final double MAX_LONGITUDE = 180.0;
+    private static final double MIN_LATITUDE = -90.0;
+    private static final double MAX_LATITUDE = 90.0;
+
     public boolean isStreet(double[] coordinates) {
         double longitude = coordinates[0];
         double latitude = coordinates[1];
@@ -22,6 +27,9 @@ public class ReverseGeocoding {
                 .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
                 .build();
 */
+        if (!isWithinContinentalBounds(longitude, latitude)) {
+            return false;
+        }
 
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
@@ -59,4 +67,8 @@ public class ReverseGeocoding {
         return false;
     }
 
+    private static boolean isWithinContinentalBounds(double longitude, double latitude) {
+        return longitude >= MIN_LONGITUDE && longitude <= MAX_LONGITUDE
+                && latitude >= MIN_LATITUDE && latitude <= MAX_LATITUDE;
+    }
 }
