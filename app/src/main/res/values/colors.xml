@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-
+    <color name="red">#C11515</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blueOxford_app_theme">#002147</color>
+    <color name="blueClayola_Button">#4D74E6</color>
+    <color name="jet">#2c2c2c</color>
+    <color name="silver">#CCCCCC</color>
+    <color name="blueLogo">#489ce4</color>
 </resources>
