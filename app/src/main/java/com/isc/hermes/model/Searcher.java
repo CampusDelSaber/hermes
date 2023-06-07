@@ -20,8 +20,9 @@ import retrofit2.Response;
  * @see CarmenFeature
  */
 public class Searcher {
+
     /**
-     * Method to get the the suggestions features carmen List to have acces of all the properties to render the locations
+     * Method to get the the suggestions features carmen List to have access of all the properties to render the locations
      * @param query the consult of the searcher field text
      * @return the features list with the suggestions features
      */
@@ -51,14 +52,23 @@ public class Searcher {
         List<WayPoint> featuresInfoList = new ArrayList<>();
         List<CarmenFeature> suggestions = getSuggestionsFeatures(query);
         for (CarmenFeature feature: suggestions) {
-            Point point = feature.center();
-            WayPoint wayPoint = new WayPoint(
-                    feature.placeName(),
-                    feature.properties(),
-                    point.latitude(),
-                    point.longitude());
-            featuresInfoList.add(wayPoint);
+            featuresInfoList.add(instanceWaypointFeature(feature));
         }
         return featuresInfoList;
+    }
+
+    /**
+     * Method to instance a wapoint feature passing the latitud and longitud of a geo point of the feature
+     * @param feature to pass the attributes of a waypoint
+     * @return the instanced waypoint
+     */
+    private WayPoint instanceWaypointFeature(CarmenFeature feature) {
+        Point point = feature.center();
+        WayPoint wayPoint = new WayPoint(
+                feature.placeName(),
+                feature.properties(),
+                point.latitude(),
+                point.longitude());
+        return wayPoint;
     }
 }
