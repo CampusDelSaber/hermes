@@ -30,13 +30,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initMapbox();
         setContentView(R.layout.activity_main);
-        Button btn=findViewById(R.id.bttnInit);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,SignUpActivityView.class));
-            }
-        });
         initMapView();
         initMapDisplay();
         mapDisplay.onCreate(savedInstanceState);
