@@ -18,7 +18,8 @@ public enum IncidentSchema {
 
     /**
      * This is the constructor method to initialize the schema field you want to use.
-     * @param field
+     *
+     * @param field to create the schema field that you want to use.
      */
     IncidentSchema(String field) {
         this.field = field;

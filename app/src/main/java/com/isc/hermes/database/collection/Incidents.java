@@ -11,9 +11,9 @@ import org.bson.Document;
 public class Incidents implements Collectible {
 
     private Hermesdb hermesdb;
-    private final String COLLECTION_NAME;
     private MongoCollection<Document> incidents;
     private static Collectible collection;
+    private final String COLLECTION_NAME = "incidents";;
 
     /**
      * It is a singleton method to have a single instance of the incident collection.
@@ -31,7 +31,6 @@ public class Incidents implements Collectible {
      * This is a constructor method to initialize their variables.
      */
     private Incidents() {
-        this.COLLECTION_NAME = "incidents";
         this.hermesdb = Hermesdb.getInstance();
     }
 
