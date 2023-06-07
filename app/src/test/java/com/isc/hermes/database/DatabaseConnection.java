@@ -1,8 +1,9 @@
 package com.isc.hermes.database;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
 
 public class DatabaseConnection {
 
