@@ -17,4 +17,11 @@
     <color name="mapboxRed">#f74e4e</color>
     <color name="mapboxRedLight">#f6b7b7</color>
     <color name="mapboxRedFaint">#fbe5e5</color>
+
+    <!--COLOR PALETTE-->
+    <color name="oxfordBlue">#002147</color>
+    <color name="tuftsBlue">#2d93e2</color>
+    <color name="jet">#333333</color>
+    <color name="silver">#cccccc</color>
+    <color name="white">#FFFFFFFF</color>
 </resources>
