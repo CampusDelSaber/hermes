@@ -1,4 +1,4 @@
-package com.isc.hermes.generators;
+package com.isc.hermes.geocoders;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
