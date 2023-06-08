@@ -35,12 +35,12 @@ public class LocationListeningCallback implements LocationEngineCallback<Locatio
     @Override
     public void onSuccess(LocationEngineResult result) {
         AppCompatActivity activity = activityWeakReference.get();
-        if (activity != null) {
-            Location location = result.getLastLocation();
-            if (location != null) {
-                currentLocationModel.setLatitude(location.getLatitude());
-                currentLocationModel.setLongitude(location.getLongitude());
-            }
+        if (activity == null) return;
+
+        Location location = result.getLastLocation();
+        if (location != null) {
+            currentLocationModel.setLatitude(location.getLatitude());
+            currentLocationModel.setLongitude(location.getLongitude());
         }
     }
 

@@ -5,7 +5,7 @@ package com.isc.hermes.model;
  * It stores the granted status of location permissions.
  */
 public class LocationPermissionsModel {
-    boolean granted;
+    boolean isGranted;
 
     /**
      * Sets the granted status of location permissions.
@@ -13,7 +13,7 @@ public class LocationPermissionsModel {
      * @param granted true if location permissions are granted, false otherwise.
      */
     public void setGranted(boolean granted) {
-        this.granted = granted;
+        this.isGranted = granted;
     }
 
     /**
@@ -22,6 +22,6 @@ public class LocationPermissionsModel {
      * @return true if location permissions are granted, false otherwise.
      */
     public boolean isGranted() {
-        return granted;
+        return isGranted;
     }
 }

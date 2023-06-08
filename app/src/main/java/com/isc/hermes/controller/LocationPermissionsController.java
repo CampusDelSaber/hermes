@@ -76,8 +76,8 @@ public class LocationPermissionsController implements PermissionsListener {
      * Method called when permissions are granted.
      */
     @Override
-    public void onPermissionResult(boolean granted) {
-        if (!granted) {
+    public void onPermissionResult(boolean isGranted) {
+        if (!isGranted) {
             Toast.makeText(activity, "Location permission denied.", Toast.LENGTH_SHORT).show();
         }
     }
