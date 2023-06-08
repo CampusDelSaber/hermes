@@ -3,6 +3,8 @@ package com.isc.hermes.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +29,9 @@ public class MapDisplay {
     private final MapConfigure mapConfigure;
     private final Context context;
 
+    FloatingActionButton reportButton;
+    RelativeLayout incidentForm;
+
     /**
      * Constructor to create a MapDisplay object.
      *
@@ -37,11 +42,15 @@ public class MapDisplay {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
         this.context = context;
+        reportButton = ((AppCompatActivity) context).findViewById(R.id.report_fab_button);
+        incidentForm = ((AppCompatActivity) context).findViewById(R.id.incident_form);
+
     }
 
+
+
     public void initFabButton() {
-        FloatingActionButton fabButton = ((AppCompatActivity) context).findViewById(R.id.fab_button);
-        fabButton.setOnClickListener(v -> Toast.makeText(context, "To report incident: Do click on map\n To report traffic: click to mark start point and long click to mark end point", Toast.LENGTH_SHORT).show());
+        reportButton.setOnClickListener(v -> Toast.makeText(context, "To report incident: Do click on map\n To report traffic: click to mark start point and long click to mark end point", Toast.LENGTH_SHORT).show());
     }
 
 
@@ -53,6 +62,13 @@ public class MapDisplay {
     public void onCreate(Bundle savedInstanceState) {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapConfigure::configure);
+        reportButton.setOnClickListener(v -> {
+            if(incidentForm.getVisibility() != View.VISIBLE) {
+                incidentForm.setVisibility(View.VISIBLE);
+            } else {
+                incidentForm.setVisibility(View.GONE);
+            }
+        });
     }
 
 

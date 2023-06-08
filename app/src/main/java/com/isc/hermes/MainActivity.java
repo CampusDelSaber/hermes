@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
 
         mapDisplay.onCreate(savedInstanceState);
-        mapDisplay.initFabButton();
+
     }
 
 
