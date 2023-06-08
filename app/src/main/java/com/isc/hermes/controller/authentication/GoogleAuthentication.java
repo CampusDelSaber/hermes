@@ -54,9 +54,16 @@ public class GoogleAuthentication implements IAuthentication {
      * @param data The completed sign-in task.
      */
     public void handleSignInResult(Intent data) throws ApiException {
+        googleSignInClient.signOut();
         Task<GoogleSignInAccount> completedTask = GoogleSignIn.getSignedInAccountFromIntent(data);
         GoogleSignInAccount account;
             account = completedTask.getResult(ApiException.class);
+            System.out.println(account.getAccount());
+            System.out.println(account.getId());
+            System.out.println(account.getDisplayName());
+            System.out.println(account.getFamilyName());
+            System.out.println(account.getGivenName());
+            System.out.println(account.getPhotoUrl());
             // The verification IdToken will be do it by another task
             System.out.println(account.getEmail());
     }
