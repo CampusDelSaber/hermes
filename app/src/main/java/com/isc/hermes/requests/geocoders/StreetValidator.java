@@ -11,23 +11,55 @@ import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 
 import java.util.Objects;
 
+/**
+ * This class has the responsibility to validate a coordinates to know if are belong a
+ * street using the reverse geocoding of mapbox.
+ */
 public class StreetValidator {
 
     private ReverseGeocoding reverseGeocoding;
 
+    /**
+     * This is the constructor method to initialize the reverse geocoding.
+     */
     public StreetValidator() {
         this.reverseGeocoding = new ReverseGeocoding();
     }
 
+    /**
+     * This method validate if a point coordinate is a street.
+     *
+     * @param longitude is the longitude point.
+     * @param latitude  is the latitude point.
+     * @return boolean to know if the point coordinate is a street.
+     */
     public boolean isPointStreet(double longitude, double latitude) {
         return itIsContinentalLimits(longitude, latitude) &&
                 hasStreetContext(reverseGeocoding.getPointInfo(
-                longitude, latitude, GeocodingCriteria.TYPE_ADDRESS));
+                        longitude, latitude, GeocodingCriteria.TYPE_ADDRESS));
     }
 
-    private boolean hasStreetContext(CarmenFeature feature) {
-        if (feature != null) {
-            for (CarmenContext context : Objects.requireNonNull(feature.context())) {
+    /**
+     * This method validate is the coordinates of a point are in the continental limits.
+     *
+     * @param longitude is the longitude point.
+     * @param latitude  is the latitude point.
+     * @return boolean to know is the coordinates are in the limit.
+     */
+    private boolean itIsContinentalLimits(double longitude, double latitude) {
+        return longitude >= MIN_LONGITUDE && longitude <= MAX_LONGITUDE
+                && latitude >= MIN_LATITUDE && latitude <= MAX_LATITUDE;
+    }
+
+    /**
+     * This method validate if a place information has a street context.
+     *
+     * @param placeInformation is the response of reverse geocoding.
+     * @return boolean to know if the place has a street context.
+     */
+    private boolean hasStreetContext(CarmenFeature placeInformation) {
+        if (placeInformation != null) {
+            for (CarmenContext context : Objects.requireNonNull(placeInformation.context())) {
                 if (Objects.requireNonNull(context.id()).startsWith("place.")
                         || context.id().startsWith("postcode.")
                         || context.id().startsWith("neighborhood.")
@@ -42,10 +74,4 @@ public class StreetValidator {
         }
         return false;
     }
-
-    private boolean itIsContinentalLimits(double longitude, double latitude) {
-        return longitude >= MIN_LONGITUDE && longitude <= MAX_LONGITUDE
-                && latitude >= MIN_LATITUDE && latitude <= MAX_LATITUDE;
-    }
-
 }
