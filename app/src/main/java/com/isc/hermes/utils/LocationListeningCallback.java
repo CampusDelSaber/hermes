@@ -1,13 +1,10 @@
 package com.isc.hermes.utils;
-
 import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.isc.hermes.model.CurrentLocationModel;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineResult;
-
 import java.lang.ref.WeakReference;
 /**
  * The LocationListeningCallback class is used as a callback for receiving location updates

@@ -1,16 +1,12 @@
 package com.isc.hermes.controller;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import com.isc.hermes.model.LocationPermissionsModel;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-
 import java.util.List;
 
 /**
