@@ -47,6 +47,12 @@ public class CoordinateGen {
         return pointCoordinates;
     }
 
+    /**
+     * This method generate a valid point surrounded by another as a reference.
+     *
+     * @param previousPoint point reference.
+     * @return point surrounded generated.
+     */
     private double[] genNextPoint(double[] previousPoint) {
         double[] pointCoordinates = new double[2];
         int maxAttempts = 10000;
@@ -65,6 +71,12 @@ public class CoordinateGen {
         return null;
     }
 
+    /**
+     * This method generate a valid lineString coordinates.
+     *
+     * @param amountPoints that has the lineString.
+     * @return lineString coordinates generated.
+     */
     public List<double[]> genLineString(int amountPoints) {
         List<double[]> pointCoordinates = new ArrayList<>();
         double[] startPoint = genPoint();
