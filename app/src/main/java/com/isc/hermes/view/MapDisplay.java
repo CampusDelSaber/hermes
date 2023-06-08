@@ -2,12 +2,8 @@ package com.isc.hermes.view;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 /**
@@ -16,7 +12,6 @@ import com.mapbox.mapboxsdk.maps.Style;
 public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
-    private String mapStyle;
 
     /**
      * Constructor to create a MapDisplay object.
@@ -24,10 +19,9 @@ public class MapDisplay {
      * @param mapView the MapView object to display the map
      * @param mapConfigure the MapConfigure object to configure the map
      */
-    public MapDisplay(MapView mapView, MapConfigure mapConfigure, String mapStyle) {
+    public MapDisplay(MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
-        this.mapStyle = mapStyle;
     }
 
     /**
@@ -98,18 +92,14 @@ public class MapDisplay {
      * @param mapStyle is the style for the map.
      */
     public void setMapStyle(String mapStyle) {
-        this.mapStyle = mapStyle;
         if (mapView != null && mapStyle != null) {
-            mapView.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                    if (mapStyle.equals("satellite")) {
-                        mapboxMap.setStyle(Style.SATELLITE_STREETS);
-                    } else if (mapStyle.equals("dark")){
-                        mapboxMap.setStyle(Style.DARK);
-                    } else{
-                        mapboxMap.setStyle(Style.MAPBOX_STREETS);
-                    }
+            mapView.getMapAsync(mapboxMap -> {
+                if (mapStyle.equals("satellite")) {
+                    mapboxMap.setStyle(Style.SATELLITE_STREETS);
+                } else if (mapStyle.equals("dark")){
+                    mapboxMap.setStyle(Style.DARK);
+                } else{
+                    mapboxMap.setStyle(Style.MAPBOX_STREETS);
                 }
             });
         }

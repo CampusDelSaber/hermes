@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import com.isc.hermes.utils.MapConfigure;
@@ -18,7 +17,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
-    private String currentMapStyle = "default";
+    private String mapStyle = "default";
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -31,22 +30,9 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        initMapDisplay(currentMapStyle);
+        initMapDisplay();
         mapDisplay.onCreate(savedInstanceState);
-        Button styleButton = findViewById(R.id.btn_change_style);
-        styleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View styleMap) {
-                if (currentMapStyle.equals("default")) {
-                    currentMapStyle = "satellite";
-                } else if (currentMapStyle.equals("satellite")) {
-                    currentMapStyle = "dark";
-                } else {
-                    currentMapStyle = "default";
-                }
-                mapDisplay.setMapStyle(currentMapStyle);
-            }
-        });
+        mapStyleListener();
     }
 
     /**
@@ -66,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Method for initializing the MapDisplay object instance.
      */
-    private void initMapDisplay(String mapStyle) {
-        mapDisplay = new MapDisplay(mapView, new MapConfigure(),mapStyle);
+    private void initMapDisplay() {
+        mapDisplay = new MapDisplay(mapView, new MapConfigure());
     }
 
     /**
@@ -133,5 +119,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapDisplay.onSaveInstanceState(outState);
+    }
+
+    /**
+     * Method for adding maps styles listener
+     */
+    private void mapStyleListener(){
+        Button styleButton = findViewById(R.id.btn_change_style);
+        styleButton.setOnClickListener(styleMap -> {
+            if (mapStyle.equals("default")) {
+                mapStyle = "satellite";
+            } else if (mapStyle.equals("satellite")) {
+                mapStyle = "dark";
+            } else {
+                mapStyle = "default";
+            }
+            mapDisplay.setMapStyle(mapStyle);
+        });
     }
 }
