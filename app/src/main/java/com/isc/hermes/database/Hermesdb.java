@@ -42,4 +42,12 @@ public class Hermesdb {
 
         return database;
     }
+
+    /**
+     * This method gets the database name
+     * @return the database name
+     */
+    public String getDATABASE_NAME() {
+        return DATABASE_NAME;
+    }
 }
