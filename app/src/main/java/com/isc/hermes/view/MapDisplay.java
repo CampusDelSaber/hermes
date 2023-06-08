@@ -10,7 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.isc.hermes.R;
+import com.isc.hermes.utils.MapClickEventListener;
+import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.utils.MapLongClickEventListener;
+import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -26,7 +30,9 @@ public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
     private final Context context;
-
+    MapClickEventListener mapClickEventListener;
+    MapboxMap mapboxMap;
+    MapLongClickEventListener mapLongClickEventListener;
     /**
      * Constructor to create a MapDisplay object.
      *
@@ -34,9 +40,12 @@ public class MapDisplay {
      * @param mapConfigure the MapConfigure object to configure the map
      */
     public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
+
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
         this.context = context;
+        mapConfigure.setContext(context);
+        initFabButton();
     }
 
     public void initFabButton() {
