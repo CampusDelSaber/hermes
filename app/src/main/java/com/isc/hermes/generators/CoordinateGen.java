@@ -33,7 +33,7 @@ public class CoordinateGen {
      *
      * @return point coordinate.
      */
-    public double[] genPoint() {
+    public double[] generatePoint() {
         double[] pointCoordinates = new double[2];
         maxAttempts = 10000;
 
@@ -53,7 +53,7 @@ public class CoordinateGen {
      * @param previousPoint point reference.
      * @return point surrounded generated.
      */
-    private double[] genNextPoint(double[] previousPoint) {
+    private double[] generateNextPoint(double[] previousPoint) {
         double[] pointCoordinates = new double[2];
         int maxAttempts = 10000;
         double randomAngle, distance;
@@ -62,8 +62,10 @@ public class CoordinateGen {
         for (int i = 0; i < maxAttempts; i++) {
             randomAngle = Math.random() * 2 * Math.PI;
             distance = Math.random() * distanceThreshold;
-            pointCoordinates[0] = previousPoint[0] + distance * Math.cos(randomAngle);;
-            pointCoordinates[1] = previousPoint[1] + distance * Math.sin(randomAngle);;
+            pointCoordinates[0] = previousPoint[0] + distance * Math.cos(randomAngle);
+            ;
+            pointCoordinates[1] = previousPoint[1] + distance * Math.sin(randomAngle);
+            ;
             if (streetValidator.isPointStreet(pointCoordinates[0], pointCoordinates[1])) {
                 return pointCoordinates;
             }
@@ -77,9 +79,9 @@ public class CoordinateGen {
      * @param amountPoints that has the lineString.
      * @return lineString coordinates generated.
      */
-    public List<double[]> genLineString(int amountPoints) {
+    public List<double[]> generateLineString(int amountPoints) {
         List<double[]> pointCoordinates = new ArrayList<>();
-        double[] startPoint = genPoint();
+        double[] startPoint = generatePoint();
         double[] previousPoint, newPoint;
 
         if (startPoint != null) {
@@ -87,7 +89,7 @@ public class CoordinateGen {
 
             for (int i = 1; i < amountPoints; i++) {
                 previousPoint = pointCoordinates.get(i - 1);
-                newPoint = genNextPoint(previousPoint);
+                newPoint = generateNextPoint(previousPoint);
                 if (newPoint == null) return pointCoordinates;
                 pointCoordinates.add(newPoint);
             }
@@ -95,7 +97,6 @@ public class CoordinateGen {
 
         return pointCoordinates;
     }
-
 
     /**
      * This method generate a random longitude within the geospatial limits of the world.
