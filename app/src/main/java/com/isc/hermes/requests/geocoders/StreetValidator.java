@@ -19,10 +19,7 @@ public class StreetValidator {
         this.reverseGeocoding = new ReverseGeocoding();
     }
 
-    public boolean isPointStreet(double[] coordinates) {
-        double longitude = coordinates[0];
-        double latitude = coordinates[1];
-
+    public boolean isPointStreet(double longitude, double latitude) {
         return itIsContinentalLimits(longitude, latitude) &&
                 hasStreetContext(reverseGeocoding.getPointInfo(
                 longitude, latitude, GeocodingCriteria.TYPE_ADDRESS));
