@@ -54,4 +54,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0"
+
+    //Google Authentication Dependency
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+
+
 }
