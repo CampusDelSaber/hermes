@@ -3,6 +3,8 @@ package com.isc.hermes.controller.authentication;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.android.gms.common.api.ApiException;
+
 /**
  * This is an Interface for authentication functionality.
  * <p>
@@ -38,5 +40,5 @@ public interface IAuthentication {
      *
      * @param data The Intent data containing the sign-in result.
      */
-    void handleSignInResult(Intent data);
+    void handleSignInResult(Intent data) throws ApiException;
 }
