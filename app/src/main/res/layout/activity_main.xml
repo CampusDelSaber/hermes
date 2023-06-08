@@ -34,13 +34,16 @@
                 android:layout_gravity="center_vertical"
                 mapbox:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
-            <EditText
+            <SearchView
+                android:id="@+id/searchView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:background="@drawable/edittext_style"
+                android:hint="Search"
+                android:padding="8dp"
                 android:drawableEnd="@drawable/ic_search"
-                android:hint="@string/search_hint"
-                android:padding="8dp" />
+                android:maxLines="1"
+                android:inputType="text" />
 
         </LinearLayout>
 

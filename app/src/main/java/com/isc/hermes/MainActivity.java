@@ -10,6 +10,7 @@ import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 
+
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  */
