@@ -1,25 +1,18 @@
 package com.isc.hermes;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
-
 import java.util.HashMap;
-
 import java.util.Map;
 import java.util.Objects;
-
 import timber.log.Timber;
 
 
@@ -51,12 +44,8 @@ public class SignUpActivityView extends AppCompatActivity {
      */
     private void creationActionAboutUs(){
         TextView btn=findViewById(R.id.bttn_about_us);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SignUpActivityView.this,AboutUs.class));
-            }
-        });
+        btn.setOnClickListener(v -> startActivity(
+                new Intent(SignUpActivityView.this,AboutUs.class)));
     }
 
     /**
