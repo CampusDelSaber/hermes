@@ -21,8 +21,13 @@
         android:id="@+id/locationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
         android:text="@string/get_location_text"
         android:src="@drawable/current_location_icon"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
