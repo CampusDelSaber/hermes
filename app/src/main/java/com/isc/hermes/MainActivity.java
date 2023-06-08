@@ -2,9 +2,9 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
+import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -12,10 +12,12 @@ import com.mapbox.mapboxsdk.maps.MapView;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
+ * Handles current user location functionality.
  */
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
+    private CurrentLocationController currentLocationController;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -30,6 +32,15 @@ public class MainActivity extends AppCompatActivity {
         initMapView();
         initMapDisplay();
         mapDisplay.onCreate(savedInstanceState);
+        initCurrentLocationController();
+    }
+
+    /**
+     * This method will init the current location controller to get the real time user location
+     */
+    private void initCurrentLocationController(){
+        currentLocationController = new CurrentLocationController(this, mapDisplay);
+        currentLocationController.initLocation();
     }
 
     /**

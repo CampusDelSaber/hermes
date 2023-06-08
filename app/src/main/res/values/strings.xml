@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Hermes</string>
     <string name="access_token">sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA</string>
+    <string name="get_location_text">Get Location</string>
 </resources>
