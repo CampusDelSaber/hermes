@@ -1,11 +1,32 @@
+
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="48dp"
     android:height="48dp"
-    android:viewportWidth="48"
-    android:viewportHeight="48">
+    android:viewportWidth="24"
+    android:viewportHeight="24">
 
     <path
         android:fillColor="#FF0000"
+        android:strokeWidth="5"
         android:pathData="M12,2C7.03,2 3,6.03 3,11C3,16.14 7.42,20.53 12,22C16.58,20.53 21,16.14 21,11C21,6.03 16.97,2 12,2zm0,18c-4.41,0 -8,-3.59 -8,-8c0,-4.41 3.59,-8 8,-8c4.41,0 8,3.59 8,8c0,4.41 -3.59,8 -8,8zm-2,-15.5h4v9h-4z" />
 
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        style="color: red; --darkreader-inline-stroke: currentColor; --darkreader-inline-color: #a53232;"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="feather feather-map-pin"
+        data-darkreader-inline-stroke=""
+        data-darkreader-inline-color="">
+
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="red"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+    </svg>
 </vector>
