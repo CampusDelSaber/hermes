@@ -8,18 +8,19 @@
 
     <TextView
         android:id="@+id/child_scroll"
-        android:layout_width="423dp"
-        android:layout_height="61dp"
+        android:layout_width="421dp"
+        android:layout_height="65dp"
         android:background="@color/blueOxford_app_theme"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/imageButtonBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:contentDescription="Back Button"
+        android:contentDescription="@string/DescriptionBack"
         app:layout_constraintBottom_toBottomOf="@+id/child_scroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.07"
@@ -41,26 +42,15 @@
         app:layout_constraintBottom_toBottomOf="@+id/child_scroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.41"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        app:layout_constraintStart_toEndOf="@+id/imageButtonBack"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/child_scroll2"
-        android:layout_width="424dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="4dp"
-        android:background="@color/blueOxford_app_theme"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/body13_text" />
 
     <TextView
         android:id="@+id/headline"
         android:layout_width="367dp"
         android:layout_height="59dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="18dp"
         android:background="@color/white"
         android:text="@string/PresentationApp"
         android:textSize="12sp"
@@ -122,9 +112,11 @@
         android:background="@color/white"
         android:text="@string/ObjectiveContextApp"
         android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/indicator_1"
         app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/indicator_1"
         app:layout_constraintTop_toBottomOf="@+id/indicator_1" />
 
     <TextView
@@ -249,6 +241,7 @@
         android:layout_height="51dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
+        android:contentDescription="@string/DescriptionMap"
         app:layout_constraintEnd_toStartOf="@+id/body3_text"
         app:layout_constraintHorizontal_bias="0.407"
         app:layout_constraintStart_toStartOf="@+id/body4_text"
@@ -261,6 +254,7 @@
         android:layout_width="85dp"
         android:layout_height="52dp"
         android:layout_marginStart="16dp"
+        android:contentDescription="@string/DescriptionWarning"
         app:layout_constraintEnd_toStartOf="@+id/body5_text"
         app:layout_constraintStart_toStartOf="@+id/body6_text"
         app:layout_constraintTop_toBottomOf="@+id/body6_text"
@@ -272,6 +266,7 @@
         android:layout_width="88dp"
         android:layout_height="46dp"
         android:layout_marginStart="16dp"
+        android:contentDescription="@string/DescriptionExplore"
         app:layout_constraintEnd_toStartOf="@+id/body9_text"
         app:layout_constraintStart_toStartOf="@+id/body7_text"
         app:layout_constraintTop_toBottomOf="@+id/body7_text"

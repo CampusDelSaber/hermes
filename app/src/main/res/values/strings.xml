@@ -15,6 +15,10 @@
     <string name="RealTimeGPS">Real-time GPS maps.</string>
     <string name="Explore">Explore places.</string>
     <string name="LocationTitle">Location and tracking.</string>
+    <string name="DescriptionBack">Back</string>
+    <string name="DescriptionMap">Map</string>
+    <string name="DescriptionExplore">Explore</string>
+    <string name="DescriptionWarning">Warning</string>
     <string name="AccidentAlerts">Real-time accident alerts.</string>
     <string name="MessengGoodbye">Go beyond your limits!
 PLUS ULTRA!</string>

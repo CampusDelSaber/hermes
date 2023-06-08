@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -40,6 +41,22 @@ public class SignUpActivityView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_view);
         initiateAuthenticationServices();
+        creationActionAboutUs();
+    }
+
+    /**
+     *  It is the action of returning to about us, to get out of the sing In.
+     *
+     *  You will find the button of "About Us", and by clicking it you can go back.
+     */
+    private void creationActionAboutUs(){
+        TextView btn=findViewById(R.id.bttn_about_us);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignUpActivityView.this,AboutUs.class));
+            }
+        });
     }
 
     /**
