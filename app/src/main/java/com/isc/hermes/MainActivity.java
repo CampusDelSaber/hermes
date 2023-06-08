@@ -4,7 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
+import com.isc.hermes.controller.SearcherController;
+import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -30,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initMapView();
         initMapDisplay();
+        Searcher searcher = new Searcher();
+        SearcherController searcherController = new SearcherController(searcher,
+                findViewById(R.id.searchResults),
+                findViewById(R.id.searchResultsLayout));
+
+        searcherController.manageResultsContainerBehaviour();
         mapDisplay.onCreate(savedInstanceState);
     }
 
