@@ -9,18 +9,28 @@ import com.isc.hermes.requests.geocoders.StreetValidator;
 
 import java.util.Random;
 
+/**
+ * This class has the responsibility to generate random coordinates.
+ */
 public class CoordinateGen {
 
     private int maxAttempts;
     private Random random;
     private StreetValidator streetValidator;
 
-
+    /**
+     * This is the constructor method to initialize necessary variables.
+     */
     public CoordinateGen() {
         this.random = new Random();
         this.streetValidator = new StreetValidator();
     }
 
+    /**
+     * This method generate a point coordinate within a habitable zone.
+     *
+     * @return point coordinate.
+     */
     public double[] genPoint() {
         double[] pointCoordinates = new double[2];
         maxAttempts = 10000;
@@ -35,10 +45,20 @@ public class CoordinateGen {
         return pointCoordinates;
     }
 
+    /**
+     * This method generate a random longitude within the geospatial limits of the world.
+     *
+     * @return longitude coordinate.
+     */
     private double generateRandomLongitude() {
         return random.nextDouble() * (MAX_LONGITUDE - MIN_LONGITUDE) + MIN_LONGITUDE;
     }
 
+    /**
+     * This method generate a random latitude within the geospatial limits of the world.
+     *
+     * @return latitude coordinate.
+     */
     private double generateRandomLatitude() {
         return random.nextDouble() * (MAX_LATITUDE - MIN_LATITUDE) + MIN_LATITUDE;
     }
