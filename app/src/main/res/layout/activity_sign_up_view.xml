@@ -30,22 +30,29 @@
             android:layout_height="306dp">
 
             <Button
-                android:id="@+id/googleButton"
+                android:id="@+id/bttn_log_in"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="30dp"
+                android:layout_height="57dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"
-                android:backgroundTint="@color/blueOxford_app_theme"
-                android:drawableLeft="@drawable/ic_google"
+                android:layout_marginEnd="46dp"
+                android:backgroundTint="@color/white"
+                android:drawableLeft="@drawable/img_icon_google"
+                android:paddingLeft="3dp"
                 android:text="@string/logInGoogle"
-                android:onClick="SignUp"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorGoogleText"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:cornerRadius="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.154" />
+                app:layout_constraintVertical_bias="0.154"
+                app:strokeColor="@color/colorGoogleStroke"
+                app:strokeWidth="1dp" />
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -55,7 +62,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/googleButton"
+                app:layout_constraintTop_toBottomOf="@+id/bttn_log_in"
                 app:layout_constraintVertical_bias="0.18">
 
                 <TextView
@@ -128,6 +135,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.87"
         app:shapeAppearanceOverlay="@style/roudedImageViewRounded"
-        app:srcCompat="@drawable/logo_app" />
+        app:srcCompat="@drawable/img_logo_app" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

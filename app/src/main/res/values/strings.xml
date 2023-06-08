@@ -2,7 +2,7 @@
     <string name="app_name">Hermes</string>
     <string name="welcomeApp">Welcome to Hermes App</string>
     <string name="userType">User Type</string>
-    <string name="logInGoogle">Log In with Google</string>
+    <string name="logInGoogle">Sign in with Google</string>
     <string name="exploreApp">Explore the world at your fingertips</string>
     <string name="suggest">Do you require more information? </string>
     <string name="linkAboutUs">About Us</string>

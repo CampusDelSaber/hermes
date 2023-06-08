@@ -23,4 +23,7 @@
     <color name="mapboxRed">#f74e4e</color>
     <color name="mapboxRedLight">#f6b7b7</color>
     <color name="mapboxRedFaint">#fbe5e5</color>
+
+    <color name="colorGoogleText">#9F656565</color>
+    <color name="colorGoogleStroke">#668A8989</color>
 </resources>
