@@ -9,4 +9,20 @@
     <string name="version"> Current Version: 0.0.0</string>
     <string name="access_token">sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA</string>
     <string name="web_client_id">628551362001-osi4l1rcdiqt00got5n0hvn1akoc2una.apps.googleusercontent.com</string>
+    <string name="AboutUsApp">About Us</string>
+    <string name="ObjectiveApp">Hermes Objective:</string>
+    <string name="FeaturesApp">Main features :</string>
+    <string name="RealTimeGPS">Real-time GPS maps.</string>
+    <string name="Explore">Explore places.</string>
+    <string name="LocationTitle">Location and tracking.</string>
+    <string name="AccidentAlerts">Real-time accident alerts.</string>
+    <string name="MessengGoodbye">Go beyond your limits!
+PLUS ULTRA!</string>
+    <string name="FindPlaces">Find the places you need to go near you.</string>
+    <string name="FarewellApp">We believe that the combination of these technologies will provide an even more immersive and enriching browsing experience.
+Feel free to ask us additional questions or request more details about Hermes. We are here to help you.</string>
+    <string name="ProtectUser">Help us protect you, reaching your destination safely and on schedule.</string>
+    <string name="InformationGPS">We provide you with information in real time, so that we can help you protect yourself by providing you with information.</string>
+    <string name="ObjectiveContextApp">Hermes helps you to have an enjoyable map navigation experience that has been designed to offer an exceptional user experience and a wide range of customization options. Our project is focused on the research and development of advanced map navigation technologies, with the goal of bringing the next generation of map navigation to Augmented Reality devices in the near future.</string>
+    <string name="PresentationApp">Welcome to Hermes, your reliable companion to explore the world and reach your destination easily and efficiently. At Hermes, we are passionate about providing you with a superior sailing experience and helping you discover new adventures.</string>
 </resources>
