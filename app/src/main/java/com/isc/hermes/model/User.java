@@ -3,6 +3,8 @@ package com.isc.hermes.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.isc.hermes.model.Utils.Utils;
+
 /**
  * The `User` class represents a user in the application. It stores information about the user, such as their full name,
  * email, username, profile image path, user type, and ID.
@@ -40,20 +42,6 @@ public class User implements Parcelable {
         pathImageUser = in.readString();
         typeUser = in.readString();
         id = in.readString();
-    }
-
-    /**
-     * Returns the first word in a string of words.
-     *
-     * @param words The string of words.
-     * @return The first word in the string.
-     */
-    private String getFirstWord(String words) {
-        String[] wordsArray = words.split(" ");
-        String expectedWord = "";
-
-        if (wordsArray.length > 0) expectedWord = wordsArray[0];
-        return expectedWord;
     }
 
     /**
@@ -167,7 +155,7 @@ public class User implements Parcelable {
      * @param userName The username of the user.
      */
     public void setUserName(String userName) {
-        this.userName = getFirstWord(userName);
+        this.userName = Utils.getFirstWord(userName);
     }
 
     /**
@@ -178,25 +166,8 @@ public class User implements Parcelable {
      */
     public void setFullName(String name, String lastName){
         StringBuilder str = new StringBuilder();
-        str.append(getFirstWord(name));
-        if (lastName != null) str.append(" ").append(getFirstWord(lastName));
+        str.append(Utils.getFirstWord(name));
+        if (lastName != null) str.append(" ").append(Utils.getFirstWord(lastName));
         this.fullName = str.toString();
-    }
-
-    /**
-     * Returns a string representation of the `User` object.
-     *
-     * @return A string representation of the `User` object.
-     */
-    @Override
-    public String toString() {
-        return "User{" +
-                "fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
-                ", userName='" + userName + '\'' +
-                ", pathImageUser='" + pathImageUser + '\'' +
-                ", typeUser='" + typeUser + '\'' +
-                ", id='" + id + '\'' +
-                '}';
     }
 }

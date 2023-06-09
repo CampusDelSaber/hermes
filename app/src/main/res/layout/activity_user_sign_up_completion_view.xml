@@ -32,7 +32,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.96"
-        app:srcCompat="@drawable/baseline_circle_24" />
+        app:srcCompat="@drawable/baseline_circle_24"
+        android:importantForAccessibility="no" />
 
     <ImageView
         android:id="@+id/imageView4"
@@ -44,7 +45,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/baseline_circle_24" />
+        app:srcCompat="@drawable/baseline_circle_24"
+        android:importantForAccessibility="no" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView3"
@@ -117,9 +119,11 @@
                 android:layout_height="20dp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/comboBoxTextField"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:helperTextTextColor="@color/red"
                 app:startIconDrawable="@drawable/baseline_type_user_24">
 
                 <AutoCompleteTextView
@@ -132,7 +136,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/bttnRegister"
+                android:id="@+id/buttonRegister"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
@@ -163,9 +167,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:text="Fernando Herrera"
         android:textColor="@color/white"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/cardView3"
         app:layout_constraintEnd_toEndOf="parent"

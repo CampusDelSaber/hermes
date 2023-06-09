@@ -12,6 +12,8 @@ import com.google.android.gms.tasks.Task;
 import com.isc.hermes.R;
 import com.isc.hermes.model.User;
 
+import java.util.Objects;
+
 /**
  * This class is in charge of authentication by the google service
  */
@@ -56,7 +58,7 @@ public class GoogleAuthentication implements IAuthentication {
      * @return The User object created from the GoogleSignInAccount.
      */
     private User getUserByAccount(GoogleSignInAccount account) {
-        User user = new User(account.getEmail(), account.getPhotoUrl().toString(),
+        User user = new User(account.getEmail(), Objects.requireNonNull(account.getPhotoUrl()).toString(),
                 account.getIdToken());
         user.setUserName(account.getGivenName());
         user.setFullName(account.getGivenName(), account.getFamilyName());
