@@ -9,6 +9,9 @@ import android.text.style.UnderlineSpan;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+/**
+ * This class is in charge of controlling the activity of about us.
+ */
 public class AboutUs extends AppCompatActivity {
 
     @Override
@@ -26,9 +29,9 @@ public class AboutUs extends AppCompatActivity {
      * and finding the label.
      */
     private void creationLabelLine(){
-        creationLineSpan(R.id.textView2, "About US");
-        creationLineSpan(R.id.indicator_1, "Hermes Objective:");
-        creationLineSpan(R.id.body_text, "Main features:");
+        creationLineSpan(R.id.textView, "About US");
+        creationLineSpan(R.id.body_text, "Hermes Objective:");
+        creationLineSpan(R.id.body_text2, "Main features:");
     }
 
     /**
