@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -8,39 +9,40 @@
         android:id="@+id/incident_form"
         android:layout_width="wrap_content"
         android:layout_height="250dp"
+        android:animateLayoutChanges="true"
         android:gravity="bottom"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
-        android:animateLayoutChanges="true">
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/top_border"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/top_rounded_background">
-        </TextView>
+            android:background="@color/mapboxBlueDark"
+            />
+
         <TextView
             android:id="@+id/incident_tablelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/top_border"
+            android:background="@color/white"
             android:gravity="center"
             android:text="Incident Report"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:background="@color/white"
-            android:layout_below="@id/top_border">
-        </TextView>
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:id="@+id/incident_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/incident_tablelayout"
             android:layout_gravity="bottom"
-            android:foregroundGravity="bottom"
             android:background="@color/white"
-            android:layout_below="@id/incident_tablelayout">
+            android:foregroundGravity="bottom">
 
             <TextView
                 android:id="@+id/incident_text"
@@ -53,13 +55,14 @@
                 android:textStyle="bold">
 
             </TextView>
+
             <Spinner
                 android:id="@+id/incident_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/incident_text"
                 android:layout_marginStart="10dp"
-                android:textSize="14sp"
-                android:layout_below="@id/incident_text">
+                android:textSize="14sp">
 
             </Spinner>
 
@@ -67,40 +70,31 @@
                 android:id="@+id/incident_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/incident_spinner"
                 android:layout_marginStart="10dp"
                 android:text="Estimated Time"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_below="@id/incident_spinner">
-            </TextView>
+                android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/incident_time_text_input"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_below="@id/incident_time">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:inputType="number"
-                    android:textSize="14sp">
-                </com.google.android.material.textfield.TextInputEditText>
-            </com.google.android.material.textfield.TextInputLayout>
+            <NumberPicker
+                android:id="@+id/numberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="65dp"
+                android:layout_below="@id/incident_time"
+                android:layout_marginStart="10dp"/>
 
             <Spinner
                 android:id="@+id/incident_time_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/incident_time"
                 android:layout_marginStart="100dp"
-                android:layout_marginTop="24dp"
-                android:layout_below="@id/incident_time">
-            </Spinner>
+                android:layout_marginTop="24dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/incident_time_text_input"
+                android:layout_below="@id/numberPicker"
                 android:layout_marginTop="0dp">
 
                 <Button
@@ -111,8 +105,7 @@
                     android:layout_marginStart="100dp"
                     android:backgroundTint="@color/mapboxBlueDark"
                     android:text="Accept"
-                    android:textColor="@color/white">
-                </Button>
+                    android:textColor="@color/white" />
 
                 <Button
                     android:id="@+id/cancel_button"
@@ -122,8 +115,7 @@
                     android:layout_marginEnd="100dp"
                     android:backgroundTint="@color/mapboxBlueDark"
                     android:text="Cancel"
-                    android:textColor="@color/white">
-                </Button>
+                    android:textColor="@color/white" />
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

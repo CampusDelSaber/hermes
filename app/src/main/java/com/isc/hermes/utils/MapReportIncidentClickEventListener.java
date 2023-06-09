@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -95,6 +96,11 @@ public class MapReportIncidentClickEventListener implements MapboxMap.OnMapClick
         ArrayAdapter<CharSequence> adapterTime=ArrayAdapter.createFromResource(context, R.array.incidents_estimated_time, R.layout.incident_spinner_items);
         adapterTime.setDropDownViewResource(android.R.layout.simple_spinner_item);
         incidentEstimatedTime.setAdapter(adapterTime);
+
+        NumberPicker numberPicker = ((AppCompatActivity) context).findViewById(R.id.numberPicker);
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(10);
+
 
         Button cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(v -> {
