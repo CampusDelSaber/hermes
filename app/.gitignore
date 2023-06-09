@@ -1,3 +1,7 @@
 /build
 
+<<<<<<< HEAD
+=======
+# Environment Variables
+>>>>>>> 2447e5a8ec50a7e5600a7b1e18e1d06dcbe1e3c1
 *.env

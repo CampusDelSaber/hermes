@@ -5,12 +5,16 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+<<<<<<< HEAD
 
 import android.graphics.Color;
+=======
+>>>>>>> 2447e5a8ec50a7e5600a7b1e18e1d06dcbe1e3c1
 import android.os.Bundle;
 import android.util.Log;
 
 import com.isc.hermes.model.IncidentsGenerator;
+import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.geojson.Polygon;
@@ -30,10 +34,12 @@ import timber.log.Timber;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
+ * Handles current user location functionality.
  */
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private MapView mapView;
     private MapDisplay mapDisplay;
+    private CurrentLocationController currentLocationController;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -48,6 +54,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initMapView();
         initMapDisplay();
         mapDisplay.onCreate(savedInstanceState);
+        initCurrentLocationController();
+    }
+
+    /**
+     * This method will init the current location controller to get the real time user location
+     */
+    private void initCurrentLocationController(){
+        currentLocationController = new CurrentLocationController(this, mapDisplay);
+        currentLocationController.initLocation();
     }
 
     /**
@@ -135,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onSaveInstanceState(outState);
         mapDisplay.onSaveInstanceState(outState);
     }
+<<<<<<< HEAD
 
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
@@ -156,3 +172,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 }
+=======
+}
+>>>>>>> 2447e5a8ec50a7e5600a7b1e18e1d06dcbe1e3c1

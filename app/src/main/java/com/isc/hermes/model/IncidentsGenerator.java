@@ -19,8 +19,9 @@ public class IncidentsGenerator {
                                                          int quantity) {
         Polygon[] polygons = new Polygon[quantity];
         for (int i = 0; i < quantity; i++) {
-            Polygon polygon = getRandomPolygon(currentLat, currentLng, 3);
+            Polygon polygon = getRandomPolygon(currentLat, currentLng, 5);
             polygons[i] = polygon;
+            System.out.println("NEW POLYGON: " + polygon);
         }
         return polygons;
     }
