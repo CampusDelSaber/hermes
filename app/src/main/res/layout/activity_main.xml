@@ -32,24 +32,6 @@
         android:layout_margin="16dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/incident2_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            app:backgroundTint="@color/mapboxBlue"
-            app:fabSize="normal"
-            app:popupTheme="@style/Widget.AppCompat.PopupMenu" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/incident3_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            app:backgroundTint="@color/mapboxBlue"
-            app:fabSize="normal"
-            app:popupTheme="@style/Widget.AppCompat.PopupMenu" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,4 +51,5 @@
         mapbox:layout_anchorGravity="end|bottom"
         mapbox:srcCompat="@drawable/speaker" />
 
+    <include layout="@layout/waypoint_info_fragment" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

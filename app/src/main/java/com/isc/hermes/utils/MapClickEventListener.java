@@ -3,6 +3,7 @@ package com.isc.hermes.utils;
 import android.content.Context;
 import android.graphics.PointF;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,21 +26,15 @@ public class MapClickEventListener implements MapboxMap.OnMapClickListener {
     private LatLng latLngPoint;
     private final MapboxMap mapboxMap;
     private final Context context;
+    RelativeLayout relativeLayout;
 
-    FloatingActionButton incident2Button;
-    FloatingActionButton incident3Button;
 
     public MapClickEventListener(MapboxMap mapboxMap,Context context ) {
         this.mapboxMap = mapboxMap;
         this.context = context;
 
-        incident2Button = ((AppCompatActivity) context).findViewById(R.id.incident2_button);
-        incident3Button = ((AppCompatActivity) context).findViewById(R.id.incident3_button);
-
-        // Ocultar los botones de incidentes al principio
-
-        incident2Button.setVisibility(View.GONE);
-        incident3Button.setVisibility(View.GONE);
+         relativeLayout = ((AppCompatActivity)context).findViewById(R.id.incident_form);
+         relativeLayout.setVisibility(View.GONE);
 
         mapboxMap.addOnMapClickListener(this);
     }
@@ -52,13 +47,14 @@ public class MapClickEventListener implements MapboxMap.OnMapClickListener {
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
         latLngPoint = point;
+
         PointF screenPoint = mapboxMap.getProjection().toScreenLocation(latLngPoint);
         List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
-        if (!features.isEmpty() && features.get(0).geometry().type().equals("MultiLineString")) {
+        if (!features.isEmpty() && (features.get(0).geometry().type().equals("MultiLineString") || features.get(0).geometry().type().equals("LineString") )) {
             MarkerOptions markerOptions = new MarkerOptions().position(latLngPoint);
             mapboxMap.addMarker(markerOptions);
-            incident2Button.setVisibility(View.VISIBLE);
-            incident3Button.setVisibility(View.VISIBLE);
+            relativeLayout.setVisibility(View.VISIBLE);
+
         } else {
             Toast.makeText(context, "Haz clic en una calle o avenida", Toast.LENGTH_SHORT).show();
         }

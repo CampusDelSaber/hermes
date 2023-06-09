@@ -3,6 +3,8 @@ package com.isc.hermes.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,9 +32,11 @@ public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
     private final Context context;
+    FloatingActionButton reportButton;
     MapClickEventListener mapClickEventListener;
     MapboxMap mapboxMap;
     MapLongClickEventListener mapLongClickEventListener;
+
     /**
      * Constructor to create a MapDisplay object.
      *
@@ -40,13 +44,13 @@ public class MapDisplay {
      * @param mapConfigure the MapConfigure object to configure the map
      */
     public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
-
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
         this.context = context;
         mapConfigure.setContext(context);
         initFabButton();
     }
+
 
     public void initFabButton() {
         FloatingActionButton fabButton = ((AppCompatActivity) context).findViewById(R.id.fab_button);
