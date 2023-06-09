@@ -1,11 +1,9 @@
 package com.isc.hermes.database;
 
 
-import static org.junit.Assert.assertNotNull;
-
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import com.isc.hermes.database.collection.Incidents;
-
-import org.junit.Test;
 
 public class CollectionConnection {
 
