@@ -12,7 +12,7 @@
                     <corners android:radius="600dp"></corners>
                 </shape>
             </item>
-            <item android:drawable="@drawable/more" android:gravity="center" android:width="30dp" android:height="30dp"/>
+            <item android:drawable="@drawable/burger_menu_button" android:gravity="center" android:width="30dp" android:height="30dp"/>
         </layer-list>
     </item>
 </selector>

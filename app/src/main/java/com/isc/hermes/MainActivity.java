@@ -28,8 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
-
-    private boolean visibilityMenu = false, isMapClickable = true;
+    private boolean visibilityMenu = false;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onMapReady(@NonNull MapboxMap mapboxMap) {
                     mapboxMap.getUiSettings().setScrollGesturesEnabled(false);
-                    isMapClickable = false;
                 }
             });
         } else {
@@ -72,12 +70,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onMapReady(@NonNull MapboxMap mapboxMap) {
                     mapboxMap.getUiSettings().setScrollGesturesEnabled(true);
-                    isMapClickable = true;
                 }
             });
         }
     }
-
 
     /**
      * This method will init the current location controller to get the real time user location
