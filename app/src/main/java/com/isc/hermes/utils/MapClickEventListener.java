@@ -52,11 +52,9 @@ public class MapClickEventListener implements MapboxMap.OnMapClickListener {
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
         latLngPoint = point;
-
         PointF screenPoint = mapboxMap.getProjection().toScreenLocation(latLngPoint);
-        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint, null);
-
-        if (!features.isEmpty()) {
+        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
+        if (!features.isEmpty() && features.get(0).geometry().type().equals("MultiLineString")) {
             MarkerOptions markerOptions = new MarkerOptions().position(latLngPoint);
             mapboxMap.addMarker(markerOptions);
             incident2Button.setVisibility(View.VISIBLE);
@@ -64,7 +62,6 @@ public class MapClickEventListener implements MapboxMap.OnMapClickListener {
         } else {
             Toast.makeText(context, "Haz clic en una calle o avenida", Toast.LENGTH_SHORT).show();
         }
-
         return true;
     }
 

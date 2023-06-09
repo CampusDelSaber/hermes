@@ -67,6 +67,6 @@
         app:popupTheme="@style/Widget.AppCompat.PopupMenu"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="end|bottom"
-        mapbox:srcCompat="@drawable/bocina" />
+        mapbox:srcCompat="@drawable/speaker" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
