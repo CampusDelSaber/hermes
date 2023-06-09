@@ -55,7 +55,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 tools:context=".MainActivity">
 
                 <TextView
@@ -63,14 +62,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginRight="16dp"
                     android:background="@color/white"
                     android:text="@string/PresentationApp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="MissingConstraints,NotSibling" />
+                    app:layout_constraintTop_toBottomOf="@+id/child_scroll"
+                    tools:ignore="NotSibling" />
 
                 <TextView
                     android:id="@+id/body_text"
@@ -139,15 +139,15 @@
 
                 <TextView
                     android:id="@+id/indicator_2"
-                    android:layout_width="190dp"
+                    android:layout_width="202dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="28dp"
                     android:layout_marginTop="12dp"
                     android:background="@color/white"
                     android:text="@string/InformationGPS"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/indicator_1"
                     app:layout_constraintTop_toBottomOf="@+id/body4_text2"
-                    tools:ignore="MissingConstraints" />
+                    tools:ignore="MissingConstraints,NotSibling" />
 
                 <TextView
                     android:id="@+id/body6_text2"
