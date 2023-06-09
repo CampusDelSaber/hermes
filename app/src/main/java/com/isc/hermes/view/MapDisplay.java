@@ -30,7 +30,6 @@ public class MapDisplay {
     private final Context context;
 
     FloatingActionButton reportButton;
-    RelativeLayout incidentForm;
 
     /**
      * Constructor to create a MapDisplay object.
@@ -42,9 +41,7 @@ public class MapDisplay {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
         this.context = context;
-        reportButton = ((AppCompatActivity) context).findViewById(R.id.report_fab_button);
-        incidentForm = ((AppCompatActivity) context).findViewById(R.id.incident_form);
-
+        //reportButton = ((AppCompatActivity) context).findViewById(R.id.report_fab_button);
     }
 
 
@@ -62,13 +59,13 @@ public class MapDisplay {
     public void onCreate(Bundle savedInstanceState) {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapConfigure::configure);
-        reportButton.setOnClickListener(v -> {
+        /*reportButton.setOnClickListener(v -> {
             if(incidentForm.getVisibility() != View.VISIBLE) {
                 incidentForm.setVisibility(View.VISIBLE);
             } else {
                 incidentForm.setVisibility(View.GONE);
             }
-        });
+        });*/
     }
 
 

@@ -16,5 +16,5 @@
         mapbox:mapbox_cameraTargetLng="-66.1568"
         mapbox:mapbox_cameraZoom="12" />
 
-    <include layout="@layout/report_incident" />
+    <include layout="@layout/waypoint_info_fragment" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

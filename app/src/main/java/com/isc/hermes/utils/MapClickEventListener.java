@@ -29,6 +29,7 @@ public class MapClickEventListener implements MapboxMap.OnMapClickListener {
         latLngPoint = point;
         MarkerOptions markerOptions = new MarkerOptions().position(latLngPoint);
         mapboxMap.addMarker(markerOptions);
+
         return true;
     }
 
