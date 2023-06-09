@@ -3,6 +3,7 @@ package com.isc.hermes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
@@ -17,6 +18,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
+    private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
 
     /**
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         initMapView();
         initMapDisplay();
         mapDisplay.onCreate(savedInstanceState);
+        mapStyleListener();
         initCurrentLocationController();
     }
 
@@ -127,5 +130,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapDisplay.onSaveInstanceState(outState);
+    }
+
+    /**
+     * Method for adding maps styles listener
+     */
+    private void mapStyleListener(){
+        Button styleButton = findViewById(R.id.btn_change_style);
+        styleButton.setOnClickListener(styleMap -> {
+            if (mapStyle.equals("default")) {
+                mapStyle = "satellite";
+            } else if (mapStyle.equals("satellite")) {
+                mapStyle = "dark";
+            } else {
+                mapStyle = "default";
+            }
+            mapDisplay.setMapStyle(mapStyle);
+        });
     }
 }
