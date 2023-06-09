@@ -29,6 +29,16 @@ public interface IAuthentication {
     Intent signIn();
 
     /**
+     * This method logs out the user session
+     */
+    void signOut(Context context);
+
+    /**
+     * This method deletes the user information within the app
+     */
+    void revokeAccess();
+
+    /**
      * This method checks the user's sign-in status.
      *
      * @param context The activity context.
