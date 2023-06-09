@@ -60,18 +60,18 @@
 
             <Button
                 android:id="@+id/btn_change_style"
-                android:layout_width="40dp"
-                android:layout_height="48dp"
-                android:backgroundTint="@color/material_dynamic_neutral90"
-                android:padding="11dp"
-                mapbox:icon="@drawable/layer_icon"
-                mapbox:iconTint="@color/black"
+                style="@style/RoundButton"
+                android:layout_width="62dp"
+                android:layout_height="83dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:drawableEnd="@drawable/layer_icon"
                 mapbox:layout_constraintBottom_toBottomOf="parent"
                 mapbox:layout_constraintEnd_toEndOf="parent"
-                mapbox:layout_constraintHorizontal_bias="0.981"
+                mapbox:layout_constraintHorizontal_bias="0.985"
                 mapbox:layout_constraintStart_toStartOf="parent"
                 mapbox:layout_constraintTop_toTopOf="parent"
-                mapbox:layout_constraintVertical_bias="0.077" />
+                mapbox:layout_constraintVertical_bias="0.084" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.mapbox.mapboxsdk.maps.MapView>
 

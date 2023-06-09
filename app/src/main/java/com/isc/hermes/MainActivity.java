@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method for adding maps styles listener
+     * Method for adding maps styles.xml listener
      */
     private void mapStyleListener(){
         Button styleButton = findViewById(R.id.btn_change_style);
