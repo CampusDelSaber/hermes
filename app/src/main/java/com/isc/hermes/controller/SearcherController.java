@@ -8,15 +8,18 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
+
 import com.isc.hermes.R;
 import com.isc.hermes.model.searcher.Searcher;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
+/**
+ * The SearcherController class is responsible for managing the search functionality
+ * and updating the search results UI.
+ */
 public class SearcherController {
     private static final long SEARCH_DELAY_MS = 100; // Throttling delay in milliseconds
 
@@ -27,6 +30,13 @@ public class SearcherController {
     private Handler searchHandler;
     private Runnable searchRunnable;
 
+    /**
+     * Constructs a new SearcherController.
+     *
+     * @param searcherModel    The Searcher model used for performing the search.
+     * @param resultsContainer The ScrollView that contains the search results UI.
+     * @param searchView       The SearchView widget for inputting search queries.
+     */
     public SearcherController(Searcher searcherModel, ScrollView resultsContainer, SearchView searchView) {
         this.searcher = searcherModel;
         resultsContainer.setVisibility(View.INVISIBLE);
@@ -37,35 +47,38 @@ public class SearcherController {
         this.searchRunnable = null;
     }
 
+    /**
+     * Runs the searcher and sets up the search functionality.
+     */
     public void runSearcher() {
         manageTextFieldSearcherBehaviour();
     }
 
+    /**
+     * Manages the behavior of the search field.
+     */
     private void manageTextFieldSearcherBehaviour() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Handle search submission if needed
+                // Add a point on the map to start the navigation
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // Cancel any pending search requests
                 if (searchRunnable != null) {
                     searchHandler.removeCallbacks(searchRunnable);
                 }
 
-                // Schedule a new search request with throttling
                 searchRunnable = new Runnable() {
                     @Override
                     public void run() {
-                        if(!newText.isEmpty()){
+                        if (!newText.isEmpty()) {
                             resultsContainer.setVisibility(View.VISIBLE);
                             searchResultsLayout.removeAllViews();
                             performSearch(newText);
-                        }
-                        else {
+                        } else {
                             searchResultsLayout.removeAllViews();
                             resultsContainer.setVisibility(View.INVISIBLE);
                         }
@@ -78,11 +91,14 @@ public class SearcherController {
         });
     }
 
+    /**
+     * Performs the search using the provided query.
+     *
+     * @param query The search query.
+     */
     private void performSearch(String query) {
-        // Clear previous search results
         searchResultsLayout.removeAllViews();
-//        addSearchResults(searcher.getSuggestionsFeatures(query));
-        // Make the API call asynchronously
+
         new AsyncTask<Void, Void, List<CarmenFeature>>() {
             @Override
             protected List<CarmenFeature> doInBackground(Void... voids) {
@@ -91,20 +107,27 @@ public class SearcherController {
 
             @Override
             protected void onPostExecute(List<CarmenFeature> carmenFeatures) {
-                // Update the search results UI
-//                searchResultsLayout.removeAllViews();
                 addSearchResults(carmenFeatures);
             }
         }.execute();
     }
 
+    /**
+     * Adds the search results to the search results layout.
+     *
+     * @param results The list of search results.
+     */
     private void addSearchResults(List<CarmenFeature> results) {
-//        addSearchResult("\n");
         for (CarmenFeature feature : results) {
             addSearchResult(Objects.requireNonNull(feature.placeName()));
         }
     }
 
+    /**
+     * Adds a single search result to the search results layout.
+     *
+     * @param result The search result to add.
+     */
     private void addSearchResult(String result) {
         TextView textView = new TextView(resultsContainer.getContext());
         textView.setLayoutParams(new ViewGroup.LayoutParams(

@@ -78,25 +78,4 @@ public class Searcher {
         return wayPoint;
     }
 
-    public String getResultsNames(String query) {
-        System.out.println("HOLAAAAAAA");
-        MapboxGeocoding client = MapboxGeocoding.builder()
-                .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
-                .query(query)
-                .build();
-        System.out.println("hola");
-        Response<GeocodingResponse> geocodingResponseResponse;
-        try {
-            geocodingResponseResponse = client.executeCall();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        if (geocodingResponseResponse.body().features() != null) {
-            List<CarmenFeature> resultsNames = geocodingResponseResponse.body().features();
-            return (resultsNames.get(0) != null) ? resultsNames.get(0).placeName(): " hasdfasdlfasfasdfasdfñlkkjs";
-        }
-        else {
-            return " no se pudo";
-        }
-    }
 }
