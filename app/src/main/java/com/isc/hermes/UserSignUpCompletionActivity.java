@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.isc.hermes.database.user.UsersCollectionHandler;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.model.User;
 
@@ -31,6 +32,14 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private Button buttonRegister;
     private ImageView imgUser;
     private User userRegistered;
+
+    private UsersCollectionHandler handler;
+
+    private void chargeImage(){
+        if (userRegistered.getPathImageUser() != null)
+            Glide.with(this).load(Uri.parse(
+                    userRegistered.getPathImageUser())).into(imgUser);
+    }
 
     /**
      * Assigns values to the components view.
@@ -93,7 +102,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
-                //TODO: Save the registeredUser in dataBase
+                saveToDB(userRegistered);
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             } else comboBoxTextField.setHelperText("Required");
@@ -133,5 +142,10 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         generateActionToButtonSignUp();
         loadUserImageInView();
         loadInformationAboutUserInTextFields();
+	handler = new UsersCollectionHandler();
+    }
+
+    private void saveToDB(User user){
+        handler.save(user);
     }
 }

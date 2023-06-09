@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id("de.mannodermaus.android-junit5") version "1.9.3.0"
 }
 
 ext {
@@ -66,3 +67,4 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
 
 }
+
