@@ -60,6 +60,10 @@ public class MapReportIncidentClickEventListener implements MapboxMap.OnMapClick
         return true;
     }
 
+    /**
+     * Method to perform action to click on map
+     * @param point Is point passed as parameter with its latitude and longitude
+     */
     private void doMarkOnMapAction(LatLng point){
         PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
         List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
@@ -77,6 +81,9 @@ public class MapReportIncidentClickEventListener implements MapboxMap.OnMapClick
         }
     }
 
+    /**
+     * Method to init all elements on report incident form
+     */
     private void initForm(){
         formLayout = ((AppCompatActivity)context).findViewById(R.id.incident_form);
         entryAnimation = new TranslateAnimation(0, 0, 1000, 0);
