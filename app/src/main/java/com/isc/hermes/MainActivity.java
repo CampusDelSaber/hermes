@@ -1,12 +1,16 @@
 package com.isc.hermes;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.ImageButton;
+
+import com.isc.hermes.controller.SearcherController;
+import com.isc.hermes.model.Searcher;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -37,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean visibilityMenu = false;
     private GoogleAuthentication googleAuthentication;
 
-
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
      *
@@ -52,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         initMapView();
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
-        addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
     }
@@ -95,7 +97,9 @@ public class MainActivity extends AppCompatActivity {
         googleAuthentication.signOut(this);
         Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
         startActivity(intent);
+    }
 
+    /**
      * Method to add the searcher to the main scene above the map
      */
     private void addMapboxSearcher() {
@@ -112,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         currentLocationController = new CurrentLocationController(this, mapDisplay);
         currentLocationController.initLocation();
     }
-
 
     /**
      * Method for initializing the Mapbox object instance.
