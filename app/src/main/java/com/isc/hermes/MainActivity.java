@@ -1,15 +1,20 @@
 package com.isc.hermes;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
+import com.isc.hermes.controller.SearcherController;
+import com.isc.hermes.model.Searcher;
+import android.widget.Button;
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
+
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
@@ -34,8 +39,19 @@ public class MainActivity extends AppCompatActivity {
         initMapView();
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
+        addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
+    }
+
+    /**
+     * Method to add the searcher to the main scene above the map
+     */
+    private void addMapboxSearcher() {
+        Searcher searcher = new Searcher();
+        SearcherController searcherController = new SearcherController(searcher,
+                findViewById(R.id.searchResults),findViewById(R.id.searchView));
+        searcherController.runSearcher();
     }
 
     /**
@@ -134,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method for adding maps styles listener
+     * Method for adding maps styles.xml listener
      */
     private void mapStyleListener(){
         ImageButton styleButton = findViewById(R.id.btn_change_style);
