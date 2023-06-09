@@ -3,11 +3,14 @@ package com.isc.hermes.controller.authentication;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.isc.hermes.R;
 import com.isc.hermes.model.User;
@@ -42,6 +45,38 @@ public class GoogleAuthentication implements IAuthentication {
      */
     public Intent signIn() {
         return this.googleSignInClient.getSignInIntent();
+    }
+
+    /**
+     * Method called when the sign-in button is clicked.
+     * <p>
+     * This method generates an Intent for startActivityForResult()
+     * that will close the current session of the user
+     * </p>
+     */
+    public void signOut(){
+        googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                System.out.println("YOUR ACCOUNT WAS CLOSED SUCCESSFULLY");
+            }
+        });
+    }
+
+    /**
+     * Method called when the sign-in button is clicked.
+     * <p>
+     * This method generates an Intent for startActivityForResult()
+     * which removes all user information within the app
+     * </p>
+     */
+    public void revokeAccess(){
+        googleSignInClient.revokeAccess().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                System.out.println("YOUR ACCOUNT WAS SUCCESSFULLY DELETED");
+            }
+        });
     }
 
     /**
