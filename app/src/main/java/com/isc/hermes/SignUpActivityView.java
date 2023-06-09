@@ -1,13 +1,11 @@
 package com.isc.hermes;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -15,10 +13,8 @@ import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.model.User;
 
 import java.util.HashMap;
-
 import java.util.Map;
 import java.util.Objects;
-
 import timber.log.Timber;
 
 
@@ -40,6 +36,18 @@ public class SignUpActivityView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_view);
         initiateAuthenticationServices();
+        creationActionAboutUs();
+    }
+
+    /**
+     *  It is the action of returning to about us, to get out of the sing In.
+     *
+     *  You will find the button of "About Us", and by clicking it you can go back.
+     */
+    private void creationActionAboutUs(){
+        TextView btn=findViewById(R.id.bttn_about_us);
+        btn.setOnClickListener(v -> startActivity(
+                new Intent(SignUpActivityView.this,AboutUs.class)));
     }
 
     /**
