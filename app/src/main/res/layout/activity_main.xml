@@ -57,27 +57,26 @@
         android:id="@+id/btn_change_style"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_margin="10dp"
-        android:src="@drawable/layer_icon"
         android:layout_gravity="right"
+        android:layout_margin="15dp"
         android:background="@android:color/transparent"
-        />
+        android:src="@drawable/layer_icon"
+        android:translationY="150px" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <ImageButton
             android:id="@+id/locationButton"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="10dp"
-            android:text="@string/get_location_text"
-            android:src="@drawable/current_location_icon"
             android:background="@android:color/transparent"
-            />
+            android:src="@drawable/current_location_icon"
+            android:text="@string/get_location_text" />
 
         <ImageButton
             android:id="@+id/reportIncidentButton"
