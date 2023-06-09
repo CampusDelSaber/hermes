@@ -4,6 +4,8 @@ package com.isc.hermes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageButton;
+
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.model.Searcher;
 import android.widget.Button;
@@ -12,7 +14,6 @@ import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
-
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
+
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        initMapDisplay();
+        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
         mapStyleListener();
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         currentLocationController.initLocation();
     }
 
+
     /**
      * Method for initializing the Mapbox object instance.
      */
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
      * Method for initializing the MapDisplay object instance.
      */
     private void initMapDisplay() {
-        mapDisplay = new MapDisplay(mapView, new MapConfigure());
+        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
     }
 
     /**
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
      * Method for adding maps styles.xml listener
      */
     private void mapStyleListener(){
-        Button styleButton = findViewById(R.id.btn_change_style);
+        ImageButton styleButton = findViewById(R.id.btn_change_style);
         styleButton.setOnClickListener(styleMap -> {
             if (mapStyle.equals("default")) {
                 mapStyle = "satellite";
