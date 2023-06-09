@@ -1,6 +1,8 @@
 package com.isc.hermes.utils;
 
 
+import android.content.Context;
+
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 /**
@@ -12,8 +14,9 @@ public class MapClickEventsManager {
 
     MapLongClickEventListener mapLongClickEventListener;
 
-    public MapClickEventsManager(MapboxMap mapboxMap){
-        mapClickEventListener = new MapClickEventListener(mapboxMap);
+    public MapClickEventsManager(MapboxMap mapboxMap, Context context){
+        mapClickEventListener = new MapClickEventListener(mapboxMap,context);
         mapLongClickEventListener = new MapLongClickEventListener(mapboxMap);
     }
+
 }

@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initMapView();
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
-
         mapDisplay.onCreate(savedInstanceState);
 
         incidentType=findViewById(R.id.incident_spinner);

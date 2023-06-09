@@ -12,7 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.isc.hermes.R;
+import com.isc.hermes.utils.MapClickEventListener;
+import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.utils.MapLongClickEventListener;
+import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -28,8 +32,10 @@ public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
     private final Context context;
-
     FloatingActionButton reportButton;
+    MapClickEventListener mapClickEventListener;
+    MapboxMap mapboxMap;
+    MapLongClickEventListener mapLongClickEventListener;
 
     /**
      * Constructor to create a MapDisplay object.
@@ -41,13 +47,14 @@ public class MapDisplay {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
         this.context = context;
-        //reportButton = ((AppCompatActivity) context).findViewById(R.id.report_fab_button);
+        mapConfigure.setContext(context);
+        initFabButton();
     }
 
 
-
     public void initFabButton() {
-        reportButton.setOnClickListener(v -> Toast.makeText(context, "To report incident: Do click on map\n To report traffic: click to mark start point and long click to mark end point", Toast.LENGTH_SHORT).show());
+        FloatingActionButton fabButton = ((AppCompatActivity) context).findViewById(R.id.fab_button);
+        fabButton.setOnClickListener(v -> Toast.makeText(context, "To report incident: Do click on map\n To report traffic: click to mark start point and long click to mark end point", Toast.LENGTH_SHORT).show());
     }
 
 
@@ -59,13 +66,6 @@ public class MapDisplay {
     public void onCreate(Bundle savedInstanceState) {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapConfigure::configure);
-        /*reportButton.setOnClickListener(v -> {
-            if(incidentForm.getVisibility() != View.VISIBLE) {
-                incidentForm.setVisibility(View.VISIBLE);
-            } else {
-                incidentForm.setVisibility(View.GONE);
-            }
-        });*/
     }
 
 
