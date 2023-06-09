@@ -6,7 +6,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 /**
- * Data
+ * The UserData class stores the user's data.
  */
 public class UserData {
 
@@ -27,6 +27,11 @@ public class UserData {
         this.fullName = fullName;
     }
 
+    /**
+     * Exports this class as a Document class.
+     *
+     * @return A document class populated with the UserData class fields.
+     */
     public Document exportToDocument(){
         return new Document()
             .append("_id", new ObjectId())
@@ -38,6 +43,12 @@ public class UserData {
             .append("profileImage", profileImagePath);
     }
 
+    /**
+     * Transforms a Document class into a UserData class.
+     *
+     * @param document the class to be transformed.
+     * @return outputs an UserData class
+     */
     public static UserData transform(Document document){
         return new UserData(
                 document.getString("username"),
@@ -49,6 +60,12 @@ public class UserData {
         );
     }
 
+    /**
+     * Transforms a User class into a UserData class.
+     *
+     * @param user the class to be transformed.
+     * @return outputs an UserData class
+     */
     public static UserData transform(User user){
         return new UserData(
                 user.getUserName(),
@@ -60,6 +77,11 @@ public class UserData {
         );
     }
 
+    /**
+     * Returns the userID class field.
+     *
+     * @return userID
+     */
     public String getUserID() {
         return userID;
     }

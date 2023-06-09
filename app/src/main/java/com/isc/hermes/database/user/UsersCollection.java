@@ -6,7 +6,7 @@ import com.isc.hermes.database.Hermesdb;
 import com.mongodb.client.MongoCollection;
 
 /**
- * User
+ * The UsersCollection class handles the connection with MongoDB
  */
 public class UsersCollection implements Collectible{
     private Hermesdb hermesdb;
@@ -15,6 +15,11 @@ public class UsersCollection implements Collectible{
     private MongoCollection<Document> users;
 
 
+    /**
+     * It is a singleton method to have a single instance of the UsersCollection.
+     *
+     * @return The UsersCollection object.
+     */
     public static Collectible getInstance() {
         if (collection == null)
             collection = new UsersCollection();
@@ -33,6 +38,11 @@ public class UsersCollection implements Collectible{
         users = hermesdb.getHermesDatabase().getCollection(COLLECTION_NAME);
     }
 
+    /**
+     * This method returns the connection to the collection of UsersCollection created.
+     *
+     * @return UsersCollection object.
+     */
     @Override
     public MongoCollection<Document> getCollection(){
         if (users == null)

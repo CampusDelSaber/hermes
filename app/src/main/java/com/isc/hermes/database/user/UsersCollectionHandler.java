@@ -8,7 +8,7 @@ import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 
 /**
- * Handler
+ * Handles the CRUD operations with MongoDB
  */
 public class UsersCollectionHandler {
 
@@ -18,6 +18,11 @@ public class UsersCollectionHandler {
         jsonTree = UsersCollection.getInstance().getCollection();
     }
 
+    /**
+     * Saves an UserData object into the MongoDB
+     *
+     * @param userData the object to be saved
+     */
     public void save(UserData userData){
         try{
             jsonTree.insertOne(userData.exportToDocument());
@@ -26,6 +31,11 @@ public class UsersCollectionHandler {
         }
     }
 
+    /**
+     * Saves an User object into the MongoDB
+     *
+     * @param user the object to be saved
+     */
     public void save(User user){
         try{
             jsonTree.insertOne(UserData.transform(user).exportToDocument());
@@ -34,6 +44,12 @@ public class UsersCollectionHandler {
         }
     }
 
+    /**
+     * Retrieves the information of a user, based on its ID
+     *
+     * @param userID the unique identifier of the user
+     * @return an UserData object populated with the user's information.
+     */
     public UserData get(String userID){
         MongoCursor<Document> jsonTree = this.jsonTree.find().iterator();
         while (jsonTree.hasNext()){
