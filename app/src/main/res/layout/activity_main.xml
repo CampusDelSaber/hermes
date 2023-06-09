@@ -78,6 +78,7 @@
             android:src="@drawable/current_location_icon"
             android:text="@string/get_location_text" />
 
+
         <ImageButton
             android:id="@+id/reportIncidentButton"
             android:layout_width="30dp"
