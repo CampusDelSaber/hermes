@@ -69,7 +69,7 @@
             android:showDividers="middle">
 
             <TextView
-                android:layout_width="303dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/informationSection"
                 android:textAlignment="center"
@@ -124,7 +124,7 @@
                 app:startIconDrawable="@drawable/baseline_type_user_24">
 
                 <AutoCompleteTextView
-                    android:id="@+id/autoCompleteText"
+                    android:id="@+id/textFieldUserType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/typeUser"
