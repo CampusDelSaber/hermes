@@ -2,14 +2,22 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -20,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
+    private boolean visibilityMenu = false;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -36,6 +45,34 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay.onCreate(savedInstanceState);
         mapStyleListener();
         initCurrentLocationController();
+    }
+
+    /**
+     *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
+     *
+     * @param view Helps build the view.
+     */
+    public void openSideMenu(View view) {
+        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
+        if (!visibilityMenu) {
+            lateralMenu.setVisibility(View.VISIBLE);
+            visibilityMenu = true;
+            mapView.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                    mapboxMap.getUiSettings().setScrollGesturesEnabled(false);
+                }
+            });
+        } else {
+            lateralMenu.setVisibility(View.GONE);
+            visibilityMenu = false;
+            mapView.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                    mapboxMap.getUiSettings().setScrollGesturesEnabled(true);
+                }
+            });
+        }
     }
 
     /**
