@@ -35,4 +35,41 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         });
     }
+
+    private void chargeImage(){
+        if (userRegistered.getPathImageUser() != null)
+            Glide.with(this).load(Uri.parse(
+                    userRegistered.getPathImageUser())).into(imgUser);
+    }
+
+    private void assignValuesToComponentsView() {
+        textNameComplete = findViewById(R.id.textNameComplete);
+        textFieldUserName = findViewById(R.id.textFieldUserName);
+        textFieldEmail = findViewById(R.id.textFieldEmail);
+        imgUser = findViewById(R.id.imgUser);
+        textFieldEmail.setHorizontallyScrolling(true);
+        textFieldUserName.setHorizontallyScrolling(true);
+    }
+
+    private void chargeInformationAboutUserInTextFields(){
+        textNameComplete.setText(userRegistered.getFullName());
+        textFieldUserName.setText(userRegistered.getUserName());
+        textFieldEmail.setText(userRegistered.getEmail());
+    }
+
+    private void getUserInformation() {
+        Intent intent = getIntent();
+        userRegistered = intent.getParcelableExtra("userObtained");
+        generateActionToComboBox();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_user_sign_up_completion_view);
+        getUserInformation();
+        assignValuesToComponentsView();
+        chargeImage();
+        chargeInformationAboutUserInTextFields();
+    }
 }
