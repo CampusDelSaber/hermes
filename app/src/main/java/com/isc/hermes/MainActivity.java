@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +12,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.controller.authentication.GoogleAuthentication;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -29,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
+    private GoogleAuthentication googleAuthentication;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -38,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        googleAuthentication = new GoogleAuthentication();
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
@@ -73,6 +80,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public void logOut(View view){
+        googleAuthentication.signOut(this);
+        Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
+        startActivity(intent);
+
     }
 
     /**

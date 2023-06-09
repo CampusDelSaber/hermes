@@ -54,7 +54,8 @@ public class GoogleAuthentication implements IAuthentication {
      * that will close the current session of the user
      * </p>
      */
-    public void signOut(){
+    public void signOut(Context context){
+        configureAccess(context);
         googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -71,12 +72,7 @@ public class GoogleAuthentication implements IAuthentication {
      * </p>
      */
     public void revokeAccess(){
-        googleSignInClient.revokeAccess().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                System.out.println("YOUR ACCOUNT WAS SUCCESSFULLY DELETED");
-            }
-        });
+        googleSignInClient.revokeAccess();
     }
 
     /**

@@ -31,7 +31,7 @@ public interface IAuthentication {
     /**
      * This method logs out the user session
      */
-    void signOut();
+    void signOut(Context context);
 
     /**
      * This method deletes the user information within the app
