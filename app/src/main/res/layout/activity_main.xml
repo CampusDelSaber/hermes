@@ -9,6 +9,16 @@
     tools:context=".MainActivity" android:orientation="horizontal" android:textAlignment="gravity"
     mapbox:flow_horizontalAlign="center" mapbox:flow_verticalAlign="center">
 
+    <TextView
+        android:id="@+id/hamburgerButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/hamburgermenu"
+        android:elevation="20dp"
+        android:onClick="openSideMenu"
+        android:translationX="10dp"
+        android:translationY="10dp" />
+
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -35,17 +45,58 @@
                 mapbox:layout_constraintStart_toStartOf="parent"
                 mapbox:layout_constraintTop_toTopOf="parent"
                 mapbox:layout_constraintVertical_bias="0.077" />
+
+            <ImageButton
+                android:id="@+id/locationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:src="@drawable/current_location_icon"
+                android:text="@string/get_location_text"
+                mapbox:layout_constraintBottom_toBottomOf="parent"
+                mapbox:layout_constraintEnd_toEndOf="parent"
+                mapbox:layout_constraintHorizontal_bias="0.954"
+                mapbox:layout_constraintStart_toStartOf="parent"
+                mapbox:layout_constraintTop_toTopOf="parent"
+                mapbox:layout_constraintVertical_bias="0.976" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.mapbox.mapboxsdk.maps.MapView>
 
-    <ImageButton
-        android:id="@+id/locationButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:text="@string/get_location_text"
-        android:src="@drawable/current_location_icon"
-        />
+    <LinearLayout
+        android:id="@+id/lateralMenu"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:background="@color/palatinateBlue"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="bottom"
+        android:elevation="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Account"
+            android:textColor="@color/white"
+            android:onClick="showAccount"
+            android:gravity="center"
+            ></TextView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:textColor="@color/white"
+            android:background="@color/mapboxRed"
+            android:text="Log out"
+            android:onClick="logOut"
+            android:gravity="center"
+            ></TextView>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
