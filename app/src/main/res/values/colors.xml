@@ -2,6 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="red">#C11515</color>
+
+    <!--COLOR PALETTE-->
+    <color name="oxfordBlue">#002147</color>
+    <color name="palatinateBlue">#0038e1</color>
+    <color name="jet">#333333</color>
+    <color name="silver">#cccccc</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blueOxford_app_theme">#002147</color>
     <color name="blueClayola_Button">#4D74E6</color>
