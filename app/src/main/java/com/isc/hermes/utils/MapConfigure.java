@@ -3,7 +3,6 @@ package com.isc.hermes.utils;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 
