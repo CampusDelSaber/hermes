@@ -58,5 +58,5 @@
             mapbox:srcCompat="@drawable/speaker" />
     </LinearLayout>
 
-    <include layout="@layout/waypoint_info_fragment" />
+    <include layout="@layout/incident_form_fragment" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
