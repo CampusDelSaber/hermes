@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,6 +12,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
+import com.isc.hermes.model.User;
 
 import java.util.HashMap;
 
@@ -90,6 +90,13 @@ public class SignUpActivityView extends AppCompatActivity {
         );
     }
 
+    private void sendUserBetweenActivities(User user) {
+        Intent intent = new Intent(this, UserSignUpCompletionActivity.class);
+        intent.putExtra("userObtained", user);
+        System.out.println(user);
+        startActivity(intent);
+    }
+
     /**
      * This method controls the activity produced in the activity
      *
@@ -104,10 +111,12 @@ public class SignUpActivityView extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if (authenticationServices.containsKey(requestCode)) {
-                authenticator.handleSignInResult(data);
+                User user = authenticator.getUserBySignInResult(data);
+                sendUserBetweenActivities(authenticator.getUserBySignInResult(data));
             }
         } catch (ApiException e) {
-            Toast.makeText(SignUpActivityView.this,"Wait a moment ",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivityView.this,"Wait a moment ",
+                    Toast.LENGTH_SHORT).show();
             Timber.tag("LOG").e(e);
         }
     }

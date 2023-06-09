@@ -3,7 +3,9 @@ package com.isc.hermes.controller.authentication;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
+import com.isc.hermes.model.User;
 
 /**
  * This is an Interface for authentication functionality.
@@ -39,6 +41,7 @@ public interface IAuthentication {
      * Handles the sign-in result.
      *
      * @param data The Intent data containing the sign-in result.
+     * @return an account with user information.
      */
-    void handleSignInResult(Intent data) throws ApiException;
+    User getUserBySignInResult(Intent data) throws ApiException;
 }

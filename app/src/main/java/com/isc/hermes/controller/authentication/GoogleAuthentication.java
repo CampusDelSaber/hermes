@@ -10,6 +10,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.isc.hermes.R;
+import com.isc.hermes.model.User;
 
 /**
  * This class is in charge of authentication by the google service
@@ -48,16 +49,27 @@ public class GoogleAuthentication implements IAuthentication {
         return GoogleSignIn.getLastSignedInAccount(context) != null;
     }
 
+    private User getUserByAccount(GoogleSignInAccount account) {
+        System.out.println(account.getDisplayName());
+        User user = new User(account.getEmail(), account.getPhotoUrl().toString(),
+                account.getIdToken());
+        user.setUserName(account.getGivenName());
+        user.setFullName(account.getGivenName(), account.getFamilyName());
+        return user;
+    }
+
     /**
      * Handles the sign-in result.
      *
      * @param data The completed sign-in task.
+     * @return a user with its elements.
      */
-    public void handleSignInResult(Intent data) throws ApiException {
+    public User getUserBySignInResult(Intent data) throws ApiException {
+        googleSignInClient.signOut();
         Task<GoogleSignInAccount> completedTask = GoogleSignIn.getSignedInAccountFromIntent(data);
         GoogleSignInAccount account;
-            account = completedTask.getResult(ApiException.class);
-            // The verification IdToken will be do it by another task
-            System.out.println(account.getEmail());
+        account = completedTask.getResult(ApiException.class);
+        System.out.println(account.getFamilyName() + "ddddd");
+        return getUserByAccount(account);
     }
 }
