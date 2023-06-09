@@ -1,8 +1,10 @@
-package com.isc.hermes.model;
+package com.isc.hermes.model.searcher;
 
 
 import android.os.StrictMode;
 
+import com.isc.hermes.model.WayPoint;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -31,6 +33,7 @@ public class Searcher {
         MapboxGeocoding client = MapboxGeocoding.builder()
                 .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
                 .query(query)
+                .autocomplete(true)
                 .build();
 
         Response<GeocodingResponse> geocodingResponseResponse;

@@ -1,7 +1,7 @@
 package com.isc.hermes;
 
 import static org.junit.Assert.assertEquals;
-import com.isc.hermes.model.Searcher;
+import com.isc.hermes.model.searcher.Searcher;
 import com.isc.hermes.model.WayPoint;
 import org.junit.Test;
 import java.util.List;

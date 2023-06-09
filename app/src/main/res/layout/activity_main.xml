@@ -17,35 +17,42 @@
         mapbox:mapbox_cameraTargetLng="-66.1568"
         mapbox:mapbox_cameraZoom="12">
 
-        <ScrollView
-            android:id="@+id/searchResults"
-            android:layout_width="371dp"
-            android:layout_height="191dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="16dp"
-            android:background="#FFFFFF"
-            android:text="@string/app_name"
-            android:contentDescription="@string/app_name">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/searchResultsLayout"
+            <SearchView
+                android:id="@+id/searchView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:rotationX="2"
+                android:visibility="visible" />
 
-        <SearchView
-            android:id="@+id/searchView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:rotationX="2"
-            android:visibility="visible" />
+            <ScrollView
+                android:id="@+id/searchResults"
+                android:layout_width="371dp"
+                android:layout_height="191dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="16dp"
+                android:background="#FFFFFF"
+                android:contentDescription="@string/app_name"
+                android:text="@string/app_name">
+
+                <LinearLayout
+                    android:id="@+id/searchResultsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
+
+        </LinearLayout>
 
 
     </com.mapbox.mapboxsdk.maps.MapView>

@@ -2,20 +2,23 @@ package com.isc.hermes.controller;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import com.isc.hermes.R;
-import com.isc.hermes.model.Searcher;
+import com.isc.hermes.model.searcher.Searcher;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
 public class SearcherController {
-    private static final long SEARCH_DELAY_MS = 300; // Throttling delay in milliseconds
+    private static final long SEARCH_DELAY_MS = 100; // Throttling delay in milliseconds
 
     private ScrollView resultsContainer;
     private LinearLayout searchResultsLayout;
@@ -26,6 +29,7 @@ public class SearcherController {
 
     public SearcherController(Searcher searcherModel, ScrollView resultsContainer, SearchView searchView) {
         this.searcher = searcherModel;
+        resultsContainer.setVisibility(View.INVISIBLE);
         this.resultsContainer = resultsContainer;
         this.searchResultsLayout = resultsContainer.findViewById(R.id.searchResultsLayout);
         this.searchView = searchView;
@@ -56,8 +60,15 @@ public class SearcherController {
                 searchRunnable = new Runnable() {
                     @Override
                     public void run() {
-                        if(!newText.isEmpty()) performSearch(newText);
-                        else searchResultsLayout.removeAllViews();
+                        if(!newText.isEmpty()){
+                            resultsContainer.setVisibility(View.VISIBLE);
+                            searchResultsLayout.removeAllViews();
+                            performSearch(newText);
+                        }
+                        else {
+                            searchResultsLayout.removeAllViews();
+                            resultsContainer.setVisibility(View.INVISIBLE);
+                        }
                     }
                 };
                 searchHandler.postDelayed(searchRunnable, SEARCH_DELAY_MS);
@@ -70,7 +81,7 @@ public class SearcherController {
     private void performSearch(String query) {
         // Clear previous search results
         searchResultsLayout.removeAllViews();
-
+//        addSearchResults(searcher.getSuggestionsFeatures(query));
         // Make the API call asynchronously
         new AsyncTask<Void, Void, List<CarmenFeature>>() {
             @Override
@@ -81,12 +92,14 @@ public class SearcherController {
             @Override
             protected void onPostExecute(List<CarmenFeature> carmenFeatures) {
                 // Update the search results UI
+//                searchResultsLayout.removeAllViews();
                 addSearchResults(carmenFeatures);
             }
         }.execute();
     }
 
     private void addSearchResults(List<CarmenFeature> results) {
+//        addSearchResult("\n");
         for (CarmenFeature feature : results) {
             addSearchResult(Objects.requireNonNull(feature.placeName()));
         }
@@ -98,7 +111,7 @@ public class SearcherController {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
-        textView.setText((result.isEmpty()) ? result : "- " + result);
+        textView.setText("- " + result);
 
         searchResultsLayout.addView(textView);
     }
