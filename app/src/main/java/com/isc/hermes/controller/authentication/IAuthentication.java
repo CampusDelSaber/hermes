@@ -3,7 +3,6 @@ package com.isc.hermes.controller.authentication;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.model.User;
 

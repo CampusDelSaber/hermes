@@ -25,7 +25,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private TextView textNameComplete;
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldEmail;
-    private Button bttnRegister;
+    private Button buttonRegister;
     private ImageView imgUser;
     private User userRegistered;
 
@@ -38,7 +38,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         textFieldUserName = findViewById(R.id.textFieldUserName);
         textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldEmail.setHorizontallyScrolling(true);
-        bttnRegister = findViewById(R.id.bttnRegister);
+        buttonRegister = findViewById(R.id.buttonRegister);
         imgUser = findViewById(R.id.imgUser);
     }
 
@@ -87,7 +87,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * and navigates the user to the main activity.
      */
     private void generateActionToButtonSignUp() {
-        bttnRegister.setOnClickListener(v -> {
+        buttonRegister.setOnClickListener(v -> {
             //save user to database
             System.out.println(userRegistered);
             Intent intent = new Intent(this, MainActivity.class);

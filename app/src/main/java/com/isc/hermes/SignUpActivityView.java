@@ -41,7 +41,6 @@ public class SignUpActivityView extends AppCompatActivity {
 
     /**
      *  It is the action of returning to about us, to get out of the sing In.
-     *
      *  You will find the button of "About Us", and by clicking it you can go back.
      */
     private void creationActionAboutUs(){
