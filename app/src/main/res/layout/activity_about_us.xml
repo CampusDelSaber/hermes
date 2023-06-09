@@ -144,6 +144,7 @@
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="12dp"
                     android:background="@color/white"
+                    android:paddingRight="12dp"
                     android:text="@string/InformationGPS"
                     app:layout_constraintStart_toEndOf="@+id/indicator_1"
                     app:layout_constraintTop_toBottomOf="@+id/body4_text2"
@@ -182,6 +183,7 @@
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="12dp"
                     android:background="@color/white"
+                    android:paddingRight="12dp"
                     android:text="@string/ProtectUser"
                     app:layout_constraintStart_toEndOf="@+id/imageView3"
                     app:layout_constraintTop_toBottomOf="@+id/body6_text2"
@@ -222,11 +224,11 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="12dp"
                     android:background="@color/white"
+                    android:paddingRight="12dp"
                     android:text="@string/FindPlaces"
                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                     app:layout_constraintTop_toBottomOf="@+id/body7_text2"
-                    tools:ignore="MissingConstraints"
-                    tools:layout_editor_absoluteX="193dp" />
+                    tools:ignore="MissingConstraints" />
 
                 <TextView
                     android:id="@+id/body11_text"
