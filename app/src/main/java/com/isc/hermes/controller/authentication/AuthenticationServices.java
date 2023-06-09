@@ -8,6 +8,12 @@ import com.isc.hermes.R;
 public enum AuthenticationServices {
     GOOGLE(R.id.googleButton);
     private final int id;
+
+    /**
+     * Constructs an instance of AuthenticationServices with the specified ID.
+     *
+     * @param id The ID to assign to the AuthenticationServices instance.
+     */
     AuthenticationServices(int id){
         this.id = id;
     }

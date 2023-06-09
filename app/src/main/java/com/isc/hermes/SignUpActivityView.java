@@ -80,16 +80,21 @@ public class SignUpActivityView extends AppCompatActivity {
      *
      * @param view it contains the event info.
      */
-    public void SignUp(View view) {
+    public void signUp(View view) {
         if (authenticator != null) return;
         authenticator = authenticationServices.get(view.getId());
         if (authenticator == null) return;
-        startActivityForResult(
+        startActivityForResult( //TODO Solve This
                 authenticator.signIn()
                 , view.getId()
         );
     }
 
+    /**
+     * Sends a User object to another activity using an Intent.
+     *
+     * @param user The User object to be sent to the other activity.
+     */
     private void sendUserBetweenActivities(User user) {
         Intent intent = new Intent(this, UserSignUpCompletionActivity.class);
         intent.putExtra("userObtained", user);
