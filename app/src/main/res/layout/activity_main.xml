@@ -34,7 +34,7 @@
             <ScrollView
                 android:id="@+id/searchResults"
                 android:layout_width="371dp"
-                android:layout_height="191dp"
+                android:layout_height="159dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="10dp"

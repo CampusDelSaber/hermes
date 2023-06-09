@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Method to add the searcher to the main scene above the map
+     */
     private void addMapboxSearcher() {
         Searcher searcher = new Searcher();
         SearcherController searcherController = new SearcherController(searcher,

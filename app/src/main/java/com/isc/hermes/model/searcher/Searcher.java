@@ -4,7 +4,6 @@ package com.isc.hermes.model.searcher;
 import android.os.StrictMode;
 
 import com.isc.hermes.model.WayPoint;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -19,9 +18,7 @@ import retrofit2.Response;
 /**
  * Class to represent the searcher functionality of the app, setting the methods to make a call at the api to receive the real time suggestions of a query received
  *
- * @see WayPoint
- * @see Point
- * @see CarmenFeature
+ * @see CarmenFeature a feature reresented with geojson properties
  */
 public class Searcher {
     /**
