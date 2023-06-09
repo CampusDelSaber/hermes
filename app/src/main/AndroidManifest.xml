@@ -36,6 +36,9 @@
             android:name=".UserSignUpCompletion"
             android:exported="false" />
         <activity
+            android:name=".AboutUs"
+            android:exported="false" />
+        <activity
             android:name=".SignUpActivityView"
             android:exported="true">
             <intent-filter>

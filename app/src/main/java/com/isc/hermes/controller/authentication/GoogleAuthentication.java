@@ -49,8 +49,13 @@ public class GoogleAuthentication implements IAuthentication {
         return GoogleSignIn.getLastSignedInAccount(context) != null;
     }
 
+    /**
+     * Retrieves a User object based on a GoogleSignInAccount.
+     *
+     * @param account The GoogleSignInAccount used to create the User object.
+     * @return The User object created from the GoogleSignInAccount.
+     */
     private User getUserByAccount(GoogleSignInAccount account) {
-        System.out.println(account.getDisplayName());
         User user = new User(account.getEmail(), account.getPhotoUrl().toString(),
                 account.getIdToken());
         user.setUserName(account.getGivenName());
@@ -69,7 +74,6 @@ public class GoogleAuthentication implements IAuthentication {
         Task<GoogleSignInAccount> completedTask = GoogleSignIn.getSignedInAccountFromIntent(data);
         GoogleSignInAccount account;
         account = completedTask.getResult(ApiException.class);
-        System.out.println(account.getFamilyName() + "ddddd");
         return getUserByAccount(account);
     }
 }
