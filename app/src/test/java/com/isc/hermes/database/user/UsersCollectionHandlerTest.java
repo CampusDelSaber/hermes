@@ -6,19 +6,23 @@ import org.junit.jupiter.api.Test;
 class UsersCollectionHandlerTest {
 
     private UserData makeUser(){
-        return new UserData("user",
-                "email",
-                2000,
-                true,
-                "");
+        return new UserData(
+                "user",
+                "false_email",
+                "2121",
+                "Administrator",
+                "path/to/image",
+                "test user");
     }
 
-    private UserData makeUser(int userId){
-        return new UserData("user",
-                "email",
+    private UserData makeUser(String userId){
+        return new UserData(
+                "user",
+                "false_email",
                 userId,
-                false,
-                "");
+                "Administrator",
+                "path/to/image",
+                "test user");
     }
 
     @Test
@@ -30,7 +34,7 @@ class UsersCollectionHandlerTest {
 
     @Test
     void userRetrieved(){
-        int userId = 2121;
+        String userId = "2121";
         UsersCollectionHandler handler = new UsersCollectionHandler();
         handler.save(makeUser(userId));
         UserData userData = handler.get(userId);
@@ -40,7 +44,7 @@ class UsersCollectionHandlerTest {
 
     @Test
     void userNotRetrieved(){
-        int userId = 2121;
+        String userId = "2121";
         UsersCollectionHandler handler = new UsersCollectionHandler();
         UserData userData = handler.get(userId);
 

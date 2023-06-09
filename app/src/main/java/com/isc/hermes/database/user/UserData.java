@@ -1,5 +1,7 @@
 package com.isc.hermes.database.user;
 
+import com.isc.hermes.model.User;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -8,58 +10,57 @@ import org.bson.types.ObjectId;
  */
 public class UserData {
 
-    private String username;
+    private String userName;
+    private String fullName;
     private String email;
-    private String profileImage;
-    private int userID;
-    private boolean isPrivileged;
+    private String profileImagePath;
+    private String userID;
+    private String userType;
     public static String UNIQUE_ID = "userID";
 
-    public UserData(String username, String email, int userID, boolean isPrivileged, String profileImage) {
-        this.username = username;
+    public UserData(String userName, String email, String userID, String userType, String profileImagePath, String fullName) {
+        this.userName = userName;
         this.email = email;
         this.userID = userID;
-        this.isPrivileged = isPrivileged;
-        this.profileImage = profileImage;
+        this.userType = userType;
+        this.profileImagePath = profileImagePath;
+        this.fullName = fullName;
     }
 
-    public Document export(){
+    public Document exportToDocument(){
         return new Document()
             .append("_id", new ObjectId())
-            .append("username", username)
+            .append("username", userName)
+            .append("fullName", fullName)
             .append("email", email)
             .append("userID", userID)
-            .append("isPrivileged", isPrivileged)
-            .append("profileImage", profileImage);
+            .append("isPrivileged", userType)
+            .append("profileImage", profileImagePath);
     }
 
     public static UserData transform(Document document){
         return new UserData(
                 document.getString("username"),
+                document.getString("fullName"),
                 document.getString("email"),
-                document.getInteger("userID"),
-                document.getBoolean("isPrivileged"),
+                document.getString("userID"),
+                document.getString("userID"),
                 document.getString("profileImage")
         );
     }
 
-    public String getUsername() {
-        return username;
+    public static UserData transform(User user){
+        return new UserData(
+                user.getUserName(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getId(),
+                user.getTypeUser(),
+                user.getPathImageUser()
+        );
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public int getUserID() {
+    public String getUserID() {
         return userID;
-    }
-
-    public boolean getPrivileged() {
-        return isPrivileged;
     }
 }

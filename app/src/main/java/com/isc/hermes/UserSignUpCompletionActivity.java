@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.isc.hermes.database.user.UsersCollectionHandler;
 import com.isc.hermes.model.User;
 
 public class UserSignUpCompletionActivity extends AppCompatActivity {
@@ -25,6 +26,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private Button bttnRegister;
     private ImageView imgUser;
     private User userRegistered;
+
+    private UsersCollectionHandler handler;
+
     private AutoCompleteTextView generateComponentsToComboBox() {
         String[] items = {"Administrator", "General"};
         AutoCompleteTextView autoCompleteText = findViewById(R.id.textFieldUserType);
@@ -43,8 +47,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
 
     private void generateActionToButtonSignUp() {
         bttnRegister.setOnClickListener(v -> {
-            //save user to database
-            System.out.println(userRegistered);
+            saveToDB(userRegistered);
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         });
@@ -86,5 +89,10 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         generateActionToButtonSignUp();
         chargeImage();
         chargeInformationAboutUserInTextFields();
+        handler = new UsersCollectionHandler();
+    }
+
+    private void saveToDB(User user){
+        handler.save(user);
     }
 }

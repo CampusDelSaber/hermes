@@ -1,5 +1,6 @@
 package com.isc.hermes.database.user;
 
+import com.isc.hermes.model.User;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -19,13 +20,21 @@ public class UsersCollectionHandler {
 
     public void save(UserData userData){
         try{
-            jsonTree.insertOne(userData.export());
+            jsonTree.insertOne(userData.exportToDocument());
         }catch(MongoException e){
             e.printStackTrace();
         }
     }
 
-    public UserData get(int userID){
+    public void save(User user){
+        try{
+            jsonTree.insertOne(UserData.transform(user).exportToDocument());
+        }catch(MongoException e){
+            e.printStackTrace();
+        }
+    }
+
+    public UserData get(String userID){
         MongoCursor<Document> jsonTree = this.jsonTree.find().iterator();
         while (jsonTree.hasNext()){
             Document node = jsonTree.next();
@@ -33,10 +42,12 @@ public class UsersCollectionHandler {
                 continue;
             }
 
-            if (node.getInteger(UserData.UNIQUE_ID) == userID){
+            if (node.getString(UserData.UNIQUE_ID).equals(userID)){
                 return UserData.transform(node);
             }
         }
+
+        // TODO: when the user is not found, raise an error.
         return null;
     }
 }
