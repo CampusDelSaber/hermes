@@ -88,14 +88,14 @@
             ></TextView>
 
         <TextView
+            android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:textColor="@color/white"
             android:background="@color/mapboxRed"
-            android:text="Log out"
-            android:onClick="logOut"
             android:gravity="center"
-            ></TextView>
+            android:onClick="logOut"
+            android:text="Log out"
+            android:textColor="@color/white"></TextView>
 
     </LinearLayout>
 
