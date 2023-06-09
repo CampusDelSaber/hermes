@@ -94,7 +94,21 @@ public class User implements Parcelable {
     }
 
     public void setFullName(String name, String lastName){
-        this.fullName = getFirstWord(name) + " " + getFirstWord(lastName);
-        System.out.println(fullName);
+        StringBuilder str = new StringBuilder();
+        str.append(getFirstWord(name));
+        if (lastName != null) str.append(" ").append(getFirstWord(lastName));
+        this.fullName = str.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", userName='" + userName + '\'' +
+                ", pathImageUser='" + pathImageUser + '\'' +
+                ", typeUser='" + typeUser + '\'' +
+                ", id='" + id + '\'' +
+                '}';
     }
 }

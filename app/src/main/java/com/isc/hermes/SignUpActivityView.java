@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -94,6 +93,7 @@ public class SignUpActivityView extends AppCompatActivity {
     private void sendUserBetweenActivities(User user) {
         Intent intent = new Intent(this, UserSignUpCompletionActivity.class);
         intent.putExtra("userObtained", user);
+        System.out.println(user);
         startActivity(intent);
     }
 
@@ -110,8 +110,10 @@ public class SignUpActivityView extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (authenticationServices.containsKey(requestCode))
-                sendUserBetweenActivities(authenticator.handleSignInResult(data));
+            if (authenticationServices.containsKey(requestCode)) {
+                User user = authenticator.getUserBySignInResult(data);
+                sendUserBetweenActivities(authenticator.getUserBySignInResult(data));
+            }
         } catch (ApiException e) {
             Toast.makeText(SignUpActivityView.this,"Wait a moment ",
                     Toast.LENGTH_SHORT).show();
