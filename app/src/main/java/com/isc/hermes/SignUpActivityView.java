@@ -70,9 +70,21 @@ public class SignUpActivityView extends AppCompatActivity {
         authenticationServices.forEach((key, authentication) -> {
             if (authentication.checkUserSignIn(this)) {
                 Toast.makeText(SignUpActivityView.this, "The user is already authenticated", Toast.LENGTH_SHORT).show();
-                //The functionality for sign should be here
+                changeSceneToMap(findViewById(R.id.googleButton));
             }
         });
+    }
+
+    /**
+     * This method changes the scene to the map and closes the window that was there before.
+     *
+     * @param view the view belonging to the one that triggered the incident.
+     *
+     */
+    public void changeSceneToMap(View view){
+        Intent changeSceneToMap = new Intent(SignUpActivityView.this, MainActivity.class);
+        startActivity(changeSceneToMap);
+        finish();
     }
 
     /**
@@ -81,13 +93,13 @@ public class SignUpActivityView extends AppCompatActivity {
      * @param view it contains the event info.
      */
     public void SignUp(View view) {
-        if (authenticator != null) return;
+        if (authenticator != null){
+            changeSceneToMap(view);
+            return;
+        }
+
         authenticator = authenticationServices.get(view.getId());
-        if (authenticator == null) return;
-        startActivityForResult(
-                authenticator.signIn()
-                , view.getId()
-        );
+        startActivityForResult(authenticator.signIn(), view.getId());
     }
 
     /**
