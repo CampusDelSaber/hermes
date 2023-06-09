@@ -170,21 +170,4 @@ public class User implements Parcelable {
         if (lastName != null) str.append(" ").append(Utils.getFirstWord(lastName));
         this.fullName = str.toString();
     }
-
-    /**
-     * Returns a string representation of the `User` object.
-     *
-     * @return A string representation of the `User` object.
-     */
-    @Override
-    public String toString() {
-        return "User{" +
-                "fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
-                ", userName='" + userName + '\'' +
-                ", pathImageUser='" + pathImageUser + '\'' +
-                ", typeUser='" + typeUser + '\'' +
-                ", id='" + id + '\'' +
-                '}';
-    }
 }
