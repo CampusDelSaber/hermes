@@ -35,7 +35,7 @@ public class SignUpActivityView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_view);
-        initiateAuthenticationServices();
+        startAuthenticationServices();
         creationActionAboutUs();
     }
 
@@ -44,7 +44,7 @@ public class SignUpActivityView extends AppCompatActivity {
      *  You will find the button of "About Us", and by clicking it you can go back.
      */
     private void creationActionAboutUs(){
-        TextView btn=findViewById(R.id.bttn_about_us);
+        TextView btn = findViewById(R.id.bttn_about_us);
         btn.setOnClickListener(v -> startActivity(
                 new Intent(SignUpActivityView.this,AboutUs.class)));
     }
@@ -57,11 +57,11 @@ public class SignUpActivityView extends AppCompatActivity {
      * and create the corresponding authentication objects.
      * </p>
      */
-    private void initiateAuthenticationServices() {
+    private void startAuthenticationServices() {
         authenticationServices = new HashMap<>();
-        for (AuthenticationServices value : AuthenticationServices.values()) {
-            authenticationServices.put(value.getID(), AuthenticationFactory.createAuthentication(value));
-            Objects.requireNonNull(authenticationServices.get(value.getID())).configureAccess(this);
+        for (AuthenticationServices service : AuthenticationServices.values()) {
+            authenticationServices.put(service.getID(), AuthenticationFactory.createAuthentication(service));
+            Objects.requireNonNull(authenticationServices.get(service.getID())).configureAccess(this);
         }
     }
 
@@ -91,7 +91,7 @@ public class SignUpActivityView extends AppCompatActivity {
         if (authenticator != null) return;
         authenticator = authenticationServices.get(view.getId());
         if (authenticator == null) return;
-        startActivityForResult( //TODO Solve This
+        startActivityForResult( //TODO: Solve this is a deprecated method.
                 authenticator.signIn()
                 , view.getId()
         );

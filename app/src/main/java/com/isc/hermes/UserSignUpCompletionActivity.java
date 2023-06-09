@@ -1,6 +1,7 @@
 package com.isc.hermes;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.model.User;
 
 /**
@@ -25,6 +27,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private TextView textNameComplete;
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldEmail;
+    private TextInputLayout comboBoxTextField;
     private Button buttonRegister;
     private ImageView imgUser;
     private User userRegistered;
@@ -40,13 +43,14 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         textFieldEmail.setHorizontallyScrolling(true);
         buttonRegister = findViewById(R.id.buttonRegister);
         imgUser = findViewById(R.id.imgUser);
+        comboBoxTextField = findViewById(R.id.comboBoxTextField);
     }
 
     /**
      * Charges information about the user in the text fields.
      * Sets the name, username, and email of the user to the respective TextView and AutoCompleteTextView components.
      */
-    private void chargeInformationAboutUserInTextFields(){
+    private void loadInformationAboutUserInTextFields(){
         textNameComplete.setText(userRegistered.getFullName());
         textFieldUserName.setText(userRegistered.getUserName());
         textFieldEmail.setText(userRegistered.getEmail());
@@ -88,10 +92,11 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      */
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
-            //save user to database
-            System.out.println(userRegistered);
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            if (userRegistered.getTypeUser() != null) {
+                //TODO: Save the registeredUser in dataBase
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            } else comboBoxTextField.setHelperText("Required");
         });
     }
 
@@ -99,7 +104,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * Charges the user's profile image into the ImageView if available.
      * If the user has a path to their profile image, it uses Glide to load the image into the ImageView.
      */
-    private void chargeUserImageInView(){
+    private void loadUserImageInView(){
         if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
                     userRegistered.getPathImageUser())).into(imgUser);
     }
@@ -126,7 +131,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         generateActionToComboBox();
         assignValuesToComponentsView();
         generateActionToButtonSignUp();
-        chargeUserImageInView();
-        chargeInformationAboutUserInTextFields();
+        loadUserImageInView();
+        loadInformationAboutUserInTextFields();
     }
 }
