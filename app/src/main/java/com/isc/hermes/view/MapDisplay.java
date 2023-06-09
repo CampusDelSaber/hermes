@@ -43,7 +43,7 @@ public class MapDisplay {
         ImageButton reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.reportIncidentButton);
         reportIncidentButton.setOnClickListener(v -> {
             MapClickEventsManager.isOnReportIncidentMode = true;
-            Toast.makeText(context,"To report incident: Do click on map\n To report traffic: click to mark start point and long click to mark end point",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"To report incident touch on map",Toast.LENGTH_SHORT).show();
         });
     }
 
