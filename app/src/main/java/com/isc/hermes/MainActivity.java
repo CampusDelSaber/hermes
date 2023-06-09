@@ -82,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to close the current Google session in which we are
+     * It also returns us to the tab to enter our email
+     *
+     * @param view Helps build the view.
+     */
     public void logOut(View view){
         googleAuthentication.signOut(this);
         Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
