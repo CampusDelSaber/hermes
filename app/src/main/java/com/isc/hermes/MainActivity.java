@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.isc.hermes.controller.SearcherController;
-import com.isc.hermes.model.searcher.Searcher;
+import com.isc.hermes.model.Searcher;
 import android.widget.Button;
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;

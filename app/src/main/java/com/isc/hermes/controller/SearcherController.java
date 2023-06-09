@@ -9,7 +9,7 @@ import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import com.isc.hermes.R;
-import com.isc.hermes.model.searcher.Searcher;
+import com.isc.hermes.model.Searcher;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +20,7 @@ import java.util.Objects;
  * and updating the search results UI.
  */
 public class SearcherController {
-    private static final long SEARCH_DELAY_MS = 100; // Throttling delay in milliseconds
+    private static final long SEARCH_DELAY_MS = 100;
     private ScrollView resultsContainer;
     private LinearLayout searchResultsLayout;
     private SearchView searchView;
@@ -59,9 +59,10 @@ public class SearcherController {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Add a point on the map to start the navigation
+                //TODO: Add a point on the map to start the navigation
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (searchRunnable != null) {
@@ -76,6 +77,7 @@ public class SearcherController {
 
     /**
      * Method to manage the view update results in ui
+     *
      * @param newText new text received from the text field
      */
     private void manageSearchViewUpdate(String newText) {
