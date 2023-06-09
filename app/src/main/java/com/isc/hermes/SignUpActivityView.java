@@ -13,6 +13,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
+import com.isc.hermes.model.User;
 
 import java.util.HashMap;
 
@@ -90,6 +91,12 @@ public class SignUpActivityView extends AppCompatActivity {
         );
     }
 
+    private void sendUserBetweenActivities(User user) {
+        Intent intent = new Intent(this, UserSignUpCompletionActivity.class);
+        intent.putExtra("userObtained", user);
+        startActivity(intent);
+    }
+
     /**
      * This method controls the activity produced in the activity
      *
@@ -103,11 +110,11 @@ public class SignUpActivityView extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (authenticationServices.containsKey(requestCode)) {
-                authenticator.handleSignInResult(data);
-            }
+            if (authenticationServices.containsKey(requestCode))
+                sendUserBetweenActivities(authenticator.handleSignInResult(data));
         } catch (ApiException e) {
-            Toast.makeText(SignUpActivityView.this,"Wait a moment ",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivityView.this,"Wait a moment ",
+                    Toast.LENGTH_SHORT).show();
             Timber.tag("LOG").e(e);
         }
     }
