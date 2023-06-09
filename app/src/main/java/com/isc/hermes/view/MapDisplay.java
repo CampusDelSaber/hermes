@@ -1,9 +1,11 @@
 package com.isc.hermes.view;
 
 import android.os.Bundle;
-
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -11,12 +13,13 @@ import com.mapbox.mapboxsdk.maps.MapView;
 public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
+    private MapboxMap mapboxMap;
 
     /**
      * Constructor to create a MapDisplay object.
      *
-     * @param mapView the MapView object to display the map
-     * @param mapConfigure the MapConfigure object to configure the map
+     * @param mapView       the MapView object to display the map
+     * @param mapConfigure  the MapConfigure object to configure the map
      */
     public MapDisplay(MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
@@ -30,7 +33,10 @@ public class MapDisplay {
      */
     public void onCreate(Bundle savedInstanceState) {
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(mapConfigure::configure);
+        mapView.getMapAsync(mapboxMap -> {
+            this.mapboxMap = mapboxMap;
+            mapConfigure.configure(mapboxMap);
+        });
     }
 
     /**
@@ -82,5 +88,32 @@ public class MapDisplay {
      */
     public void onSaveInstanceState(Bundle outState) {
         mapView.onSaveInstanceState(outState);
+    }
+
+    /** Getter for the MapboxMap object.
+     *
+     * @return the MapboxMap object
+     */
+    public MapboxMap getMapboxMap() {
+        return mapboxMap;
+    }
+
+    /**
+     * Method to set the map style to satellite, dark and default.
+     *
+     * @param mapStyle is the style for the map.
+     */
+    public void setMapStyle(String mapStyle) {
+        if (mapView != null && mapStyle != null) {
+            mapView.getMapAsync(mapboxMap -> {
+                if (mapStyle.equals("satellite")) {
+                    mapboxMap.setStyle(Style.SATELLITE_STREETS);
+                } else if (mapStyle.equals("dark")) {
+                    mapboxMap.setStyle(Style.DARK);
+                } else {
+                    mapboxMap.setStyle(Style.MAPBOX_STREETS);
+                }
+            });
+        }
     }
 }
