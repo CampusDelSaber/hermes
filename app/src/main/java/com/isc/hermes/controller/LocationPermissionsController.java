@@ -51,6 +51,10 @@ public class LocationPermissionsController implements PermissionsListener {
      * It initializes the PermissionsManager to handle the permission request.
      */
     public void requestLocationPermissionAccess(){
+        Toast.makeText(
+                activity, "Please, give permissions to access to location to the app",
+                Toast.LENGTH_SHORT
+        ).show();
         permissionsManager = new PermissionsManager(this);
         permissionsManager.requestLocationPermissions(activity);
         locationPermissionsModel.setGranted(
