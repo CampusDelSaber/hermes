@@ -11,16 +11,6 @@
     tools:context=".MainActivity">
 
 
-    <TextView
-        android:id="@+id/hamburgerButton"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/hamburgermenu"
-        android:elevation="20dp"
-        android:onClick="openSideMenu"
-        android:translationX="10dp"
-        android:translationY="10dp" />
-
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"

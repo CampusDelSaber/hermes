@@ -1,5 +1,6 @@
 package com.isc.hermes;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,27 +8,12 @@ import android.widget.ImageButton;
 
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.model.Searcher;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.authentication.GoogleAuthentication;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -38,8 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
-    private boolean visibilityMenu = false;
-    private GoogleAuthentication googleAuthentication;
+
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -49,54 +34,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        googleAuthentication = new GoogleAuthentication();
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
+        addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
-    }
-
-    /**
-     *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
-     *
-     * @param view Helps build the view.
-     */
-    public void openSideMenu(View view) {
-        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
-        if (!visibilityMenu) {
-            lateralMenu.setVisibility(View.VISIBLE);
-            visibilityMenu = true;
-            mapView.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                    mapboxMap.getUiSettings().setScrollGesturesEnabled(false);
-                }
-            });
-        } else {
-            lateralMenu.setVisibility(View.GONE);
-            visibilityMenu = false;
-            mapView.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                    mapboxMap.getUiSettings().setScrollGesturesEnabled(true);
-                }
-            });
-        }
-    }
-
-    /**
-     * This method is used to close the current Google session in which we are
-     * It also returns us to the tab to enter our email
-     *
-     * @param view Helps build the view.
-     */
-    public void logOut(View view){
-        googleAuthentication.signOut(this);
-        Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
-        startActivity(intent);
     }
 
     /**
@@ -116,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         currentLocationController = new CurrentLocationController(this, mapDisplay);
         currentLocationController.initLocation();
     }
+
 
     /**
      * Method for initializing the Mapbox object instance.
