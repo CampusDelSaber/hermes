@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,7 +17,20 @@
         android:layout_height="match_parent"
         mapbox:mapbox_cameraTargetLat="-17.3895"
         mapbox:mapbox_cameraTargetLng="-66.1568"
-        mapbox:mapbox_cameraZoom="13"/>
+        mapbox:mapbox_cameraZoom="13">
+
+
+    </com.mapbox.mapboxsdk.maps.MapView>
+
+    <ImageButton
+        android:id="@+id/btn_change_style"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/layer_icon"
+        android:background="@android:color/transparent"
+        />
+
 
 
     <LinearLayout
@@ -45,8 +57,6 @@
             android:background="@android:color/transparent"
             mapbox:srcCompat="@drawable/speaker" />
     </LinearLayout>
-
-
 
     <include layout="@layout/waypoint_info_fragment" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -11,7 +11,9 @@ import com.isc.hermes.R;
 import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -112,12 +114,30 @@ public class MapDisplay {
         mapView.onSaveInstanceState(outState);
     }
 
-    /**
-     * Getter for the MapboxMap object.
+    /** Getter for the MapboxMap object.
      *
      * @return the MapboxMap object
      */
     public MapboxMap getMapboxMap() {
         return mapboxMap;
+    }
+
+    /**
+     * Method to set the map style to satellite, dark and default.
+     *
+     * @param mapStyle is the style for the map.
+     */
+    public void setMapStyle(String mapStyle) {
+        if (mapView != null && mapStyle != null) {
+            mapView.getMapAsync(mapboxMap -> {
+                if (mapStyle.equals("satellite")) {
+                    mapboxMap.setStyle(Style.SATELLITE_STREETS);
+                } else if (mapStyle.equals("dark")) {
+                    mapboxMap.setStyle(Style.DARK);
+                } else {
+                    mapboxMap.setStyle(Style.MAPBOX_STREETS);
+                }
+            });
+        }
     }
 }
