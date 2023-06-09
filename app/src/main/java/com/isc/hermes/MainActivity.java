@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.model.searcher.Searcher;
+import android.widget.Button;
+import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -14,10 +16,13 @@ import com.mapbox.mapboxsdk.maps.MapView;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
+ * Handles current user location functionality.
  */
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
+    private String mapStyle = "default";
+    private CurrentLocationController currentLocationController;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -33,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         initMapDisplay();
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
-
+        mapStyleListener();
+        initCurrentLocationController();
     }
 
     /**
@@ -44,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
         SearcherController searcherController = new SearcherController(searcher,
                 findViewById(R.id.searchResults),findViewById(R.id.searchView));
         searcherController.runSearcher();
+    }
+
+    /**
+     * This method will init the current location controller to get the real time user location
+     */
+    private void initCurrentLocationController(){
+        currentLocationController = new CurrentLocationController(this, mapDisplay);
+        currentLocationController.initLocation();
     }
 
     /**
@@ -130,5 +144,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapDisplay.onSaveInstanceState(outState);
+    }
+
+    /**
+     * Method for adding maps styles listener
+     */
+    private void mapStyleListener(){
+        Button styleButton = findViewById(R.id.btn_change_style);
+        styleButton.setOnClickListener(styleMap -> {
+            if (mapStyle.equals("default")) {
+                mapStyle = "satellite";
+            } else if (mapStyle.equals("satellite")) {
+                mapStyle = "dark";
+            } else {
+                mapStyle = "default";
+            }
+            mapDisplay.setMapStyle(mapStyle);
+        });
     }
 }

@@ -54,7 +54,34 @@
 
         </LinearLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <Button
+                android:id="@+id/btn_change_style"
+                android:layout_width="40dp"
+                android:layout_height="48dp"
+                android:backgroundTint="@color/material_dynamic_neutral90"
+                android:padding="11dp"
+                mapbox:icon="@drawable/layer_icon"
+                mapbox:iconTint="@color/black"
+                mapbox:layout_constraintBottom_toBottomOf="parent"
+                mapbox:layout_constraintEnd_toEndOf="parent"
+                mapbox:layout_constraintHorizontal_bias="0.981"
+                mapbox:layout_constraintStart_toStartOf="parent"
+                mapbox:layout_constraintTop_toTopOf="parent"
+                mapbox:layout_constraintVertical_bias="0.077" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.mapbox.mapboxsdk.maps.MapView>
 
+    <ImageButton
+        android:id="@+id/locationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:text="@string/get_location_text"
+        android:src="@drawable/current_location_icon"
+        />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
