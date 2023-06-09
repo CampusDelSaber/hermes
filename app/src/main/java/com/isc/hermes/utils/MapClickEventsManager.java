@@ -14,7 +14,6 @@ public class MapClickEventsManager {
 
     public MapClickEventsManager(MapboxMap mapboxMap, Context context){
         new MapReportIncidentClickEventListener(mapboxMap, context);
-        new MapReportIncidentLongClickEventListener(mapboxMap);
     }
 
 }

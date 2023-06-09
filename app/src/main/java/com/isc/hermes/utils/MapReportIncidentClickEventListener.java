@@ -52,6 +52,7 @@ public class MapReportIncidentClickEventListener implements MapboxMap.OnMapClick
      */
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
+        
         if (MapClickEventsManager.isOnReportIncidentMode){
             doMarkOnMapAction(point);
         }
@@ -70,7 +71,8 @@ public class MapReportIncidentClickEventListener implements MapboxMap.OnMapClick
 
             pointSet = true;
         } else {
-            Toast.makeText(context, "Click on a street or avenue", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(context, "Touch on street or avenue", Toast.LENGTH_SHORT).show();
         }
     }
 
