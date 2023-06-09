@@ -12,8 +12,8 @@ import com.mapbox.mapboxsdk.maps.Style;
  */
 public class MapConfigure {
 
-    PlacesSearchedManager manager;
-    Context context;
+    private PlacesSearchedManager manager;
+    private Context context;
 
     /**
      * Configures a MapboxMap object with the MAPBOX_STREETS style.

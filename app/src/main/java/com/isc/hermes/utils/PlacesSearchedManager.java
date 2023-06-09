@@ -9,7 +9,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
  */
 public class PlacesSearchedManager {
 
-    PlacesSearchedOnTheMap placesSearchedOnTheMap;
+    private PlacesSearchedOnTheMap placesSearchedOnTheMap;
 
     /**
      * This method is the constructor of the class in which we will instantiate the waypoints.
