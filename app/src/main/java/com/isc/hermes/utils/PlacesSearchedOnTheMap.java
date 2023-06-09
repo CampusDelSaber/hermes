@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class PlacesSearchedOnTheMap {
     private final MapboxMap mapboxMap;
-    List<LatLng> pointList = new ArrayList<>();
+    List<LatLng> pointList = new ArrayList<>(); //TODO: Once the searcher functionality is added delete this line
 
     /**
      * This method is the class constructor.
@@ -23,7 +23,7 @@ public class PlacesSearchedOnTheMap {
      */
     public PlacesSearchedOnTheMap(MapboxMap mapboxMap, Context context) {
         this.mapboxMap = mapboxMap;
-        pointTest();
+        //pointTest(); //TODO: uncomment this method to test the functionality then this line must be deleted
         displayPoint(pointList);
     }
 
