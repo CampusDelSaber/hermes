@@ -10,13 +10,11 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
  */
 public class MapClickEventsManager {
 
-    MapClickEventListener mapClickEventListener;
-
-    MapLongClickEventListener mapLongClickEventListener;
+    public static boolean isOnReportIncidentMode = false;
 
     public MapClickEventsManager(MapboxMap mapboxMap, Context context){
-        mapClickEventListener = new MapClickEventListener(mapboxMap,context);
-        mapLongClickEventListener = new MapLongClickEventListener(mapboxMap);
+        new MapReportIncidentClickEventListener(mapboxMap, context);
+        new MapReportIncidentLongClickEventListener(mapboxMap);
     }
 
 }

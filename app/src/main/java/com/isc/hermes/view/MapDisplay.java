@@ -2,28 +2,16 @@ package com.isc.hermes.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.isc.hermes.R;
-import com.isc.hermes.utils.MapClickEventListener;
 import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
-import com.isc.hermes.utils.MapLongClickEventListener;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.IconFactory;
-import com.mapbox.mapboxsdk.annotations.Marker;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -32,29 +20,29 @@ public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
     private final Context context;
-    FloatingActionButton reportButton;
-    MapClickEventListener mapClickEventListener;
-    MapboxMap mapboxMap;
-    MapLongClickEventListener mapLongClickEventListener;
+    private MapboxMap mapboxMap;
 
     /**
      * Constructor to create a MapDisplay object.
      *
-     * @param mapView the MapView object to display the map
-     * @param mapConfigure the MapConfigure object to configure the map
+     * @param mapView       the MapView object to display the map
+     * @param mapConfigure  the MapConfigure object to configure the map
      */
     public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
         this.context = context;
         mapConfigure.setContext(context);
-        initFabButton();
+        initReportIncidentButton();
     }
 
 
-    public void initFabButton() {
-        FloatingActionButton fabButton = ((AppCompatActivity) context).findViewById(R.id.fab_button);
-        fabButton.setOnClickListener(v -> Toast.makeText(context, "To report incident: Do click on map\n To report traffic: click to mark start point and long click to mark end point", Toast.LENGTH_SHORT).show());
+    public void initReportIncidentButton() {
+        ImageButton reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.reportIncidentButton);
+        reportIncidentButton.setOnClickListener(v -> {
+            MapClickEventsManager.isOnReportIncidentMode = true;
+            Toast.makeText(context,"To report incident: Do click on map\n To report traffic: click to mark start point and long click to mark end point",Toast.LENGTH_SHORT).show();
+        });
     }
 
 
@@ -65,7 +53,10 @@ public class MapDisplay {
      */
     public void onCreate(Bundle savedInstanceState) {
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(mapConfigure::configure);
+        mapView.getMapAsync(mapboxMap -> {
+            this.mapboxMap = mapboxMap;
+            mapConfigure.configure(mapboxMap);
+        });
     }
 
 
@@ -119,5 +110,14 @@ public class MapDisplay {
      */
     public void onSaveInstanceState(Bundle outState) {
         mapView.onSaveInstanceState(outState);
+    }
+
+    /**
+     * Getter for the MapboxMap object.
+     *
+     * @return the MapboxMap object
+     */
+    public MapboxMap getMapboxMap() {
+        return mapboxMap;
     }
 }

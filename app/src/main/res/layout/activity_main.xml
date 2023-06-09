@@ -12,44 +12,41 @@
     tools:context=".MainActivity">
 
 
-    <!-- Otros elementos del diseño -->
-
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         mapbox:mapbox_cameraTargetLat="-17.3895"
         mapbox:mapbox_cameraTargetLng="-66.1568"
-        mapbox:mapbox_cameraZoom="12">
+        mapbox:mapbox_cameraZoom="13"/>
 
-
-    </com.mapbox.mapboxsdk.maps.MapView>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp">
+        android:orientation="vertical"
+        >
+        <ImageButton
+            android:id="@+id/locationButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:text="@string/get_location_text"
+            android:src="@drawable/current_location_icon"
+            android:background="@android:color/transparent"
+            />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            app:popupTheme="@style/Widget.AppCompat.PopupMenu" />
-
-
+        <ImageButton
+            android:id="@+id/reportIncidentButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            mapbox:srcCompat="@drawable/speaker" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="78dp"
-        android:layout_height="74dp"
-        app:fabSize="normal"
-        app:popupTheme="@style/Widget.AppCompat.PopupMenu"
-        mapbox:layout_anchor="@+id/mapView"
-        mapbox:layout_anchorGravity="end|bottom"
-        mapbox:srcCompat="@drawable/speaker" />
+
 
     <include layout="@layout/waypoint_info_fragment" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

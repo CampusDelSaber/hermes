@@ -1,5 +1,6 @@
 package com.isc.hermes.utils;
 
+
 import androidx.annotation.NonNull;
 
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -9,13 +10,11 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 /**
  * Class to configure the event of do a long click on a map
  */
-public class MapLongClickEventListener implements MapboxMap.OnMapLongClickListener{
-
-    private LatLng latLngPoint;
+public class MapReportIncidentLongClickEventListener implements MapboxMap.OnMapLongClickListener{
 
     private final MapboxMap mapboxMap;
 
-    public MapLongClickEventListener(MapboxMap mapboxMap){
+    public MapReportIncidentLongClickEventListener(MapboxMap mapboxMap){
         this.mapboxMap = mapboxMap;
         mapboxMap.addOnMapLongClickListener(this);
     }
@@ -28,11 +27,10 @@ public class MapLongClickEventListener implements MapboxMap.OnMapLongClickListen
      */
     @Override
     public boolean onMapLongClick(@NonNull LatLng point) {
-        latLngPoint = point;
-        MarkerOptions markerOptions = new MarkerOptions().position(latLngPoint);
+        MarkerOptions markerOptions = new MarkerOptions().position(point);
         mapboxMap.addMarker(markerOptions);
         return true;
     }
 
-    public LatLng getLatLngPoint() {return latLngPoint;}
+
 }

@@ -2,7 +2,6 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -10,20 +9,20 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
+ * Handles current user location functionality.
  */
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
-    Spinner incidentType;
-    Spinner incidentEstimatedTime;
-    Button cancelButton;
-    RelativeLayout formLayout;
+    private CurrentLocationController currentLocationController;
+
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -39,24 +38,16 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
 
-        incidentType=findViewById(R.id.incident_spinner);
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this, R.array.incidents_type, R.layout.incident_spinner_items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentType.setAdapter(adapter);
 
-        incidentEstimatedTime =findViewById(R.id.incident_time_spinner);
-        ArrayAdapter<CharSequence> adapterTime=ArrayAdapter.createFromResource(this, R.array.incidents_estimated_time, R.layout.incident_spinner_items);
-        adapterTime.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentEstimatedTime.setAdapter(adapterTime);
+        initCurrentLocationController();
+    }
 
-        cancelButton = findViewById(R.id.cancel_button);
-        formLayout = findViewById(R.id.incident_form);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                formLayout.setVisibility(View.GONE);
-            }
-        });
+    /**
+     * This method will init the current location controller to get the real time user location
+     */
+    private void initCurrentLocationController(){
+        currentLocationController = new CurrentLocationController(this, mapDisplay);
+        currentLocationController.initLocation();
     }
 
 
