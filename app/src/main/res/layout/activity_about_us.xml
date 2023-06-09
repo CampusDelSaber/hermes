@@ -16,22 +16,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/blueOxford_app_theme"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:textAlignment="center">
 
             <ImageButton
                 android:id="@+id/imageButtonBack"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:contentDescription="@string/DescriptionBack"
                 android:layout_marginLeft="20dp"
+                android:contentDescription="@string/DescriptionBack"
                 app:srcCompat="@drawable/backbutton" />
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="281dp"
+                android:layout_height="37dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:text="@string/AboutUsApp"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
