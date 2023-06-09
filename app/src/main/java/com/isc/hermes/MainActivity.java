@@ -1,11 +1,12 @@
 package com.isc.hermes;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean visibilityMenu = false;
     private GoogleAuthentication googleAuthentication;
 
+
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
      *
@@ -48,8 +50,9 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        initMapDisplay();
+        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
+        addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
     }
@@ -93,6 +96,13 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
         startActivity(intent);
 
+     * Method to add the searcher to the main scene above the map
+     */
+    private void addMapboxSearcher() {
+        Searcher searcher = new Searcher();
+        SearcherController searcherController = new SearcherController(searcher,
+                findViewById(R.id.searchResults),findViewById(R.id.searchView));
+        searcherController.runSearcher();
     }
 
     /**
@@ -102,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         currentLocationController = new CurrentLocationController(this, mapDisplay);
         currentLocationController.initLocation();
     }
+
 
     /**
      * Method for initializing the Mapbox object instance.
@@ -121,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
      * Method for initializing the MapDisplay object instance.
      */
     private void initMapDisplay() {
-        mapDisplay = new MapDisplay(mapView, new MapConfigure());
+        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
     }
 
     /**
@@ -190,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method for adding maps styles listener
+     * Method for adding maps styles.xml listener
      */
     private void mapStyleListener(){
-        Button styleButton = findViewById(R.id.btn_change_style);
+        ImageButton styleButton = findViewById(R.id.btn_change_style);
         styleButton.setOnClickListener(styleMap -> {
             if (mapStyle.equals("default")) {
                 mapStyle = "satellite";
