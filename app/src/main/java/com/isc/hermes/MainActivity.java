@@ -1,21 +1,39 @@
 package com.isc.hermes;
 
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconSize;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textColor;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textField;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textOffset;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textSize;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
+import android.os.StrictMode;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
+
+import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -23,6 +41,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
+    private LinearLayout searchResultsLayout;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -36,13 +55,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initMapView();
         initMapDisplay();
-        Searcher searcher = new Searcher();
-        SearcherController searcherController = new SearcherController(searcher,
-                findViewById(R.id.searchResults),
-                findViewById(R.id.searchResultsLayout));
-
-        searcherController.manageResultsContainerBehaviour();
         mapDisplay.onCreate(savedInstanceState);
+        searchResultsLayout = findViewById(R.id.searchResultsLayout);
+        addMapboxSearcher();
+    }
+
+    private void addMapboxSearcher() {
+
+        // Create a SearchView widget and set it up
+        SearchView searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Searcher searcher = new Searcher();
+                SearcherController searcherController = new SearcherController(searcher,
+                        findViewById(R.id.searchResults));
+                searcherController.manageResultsContainerBehaviour();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Handle text changes or suggestions if needed
+                return false;
+            }
+        });
     }
 
     /**

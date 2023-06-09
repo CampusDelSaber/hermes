@@ -1,6 +1,8 @@
 package com.isc.hermes.model;
 
 
+import android.os.StrictMode;
+
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -20,7 +22,6 @@ import retrofit2.Response;
  * @see CarmenFeature
  */
 public class Searcher {
-
     /**
      * Method to get the the suggestions features carmen List to have access of all the properties to render the locations
      * @param query the consult of the searcher field text
@@ -34,6 +35,8 @@ public class Searcher {
 
         Response<GeocodingResponse> geocodingResponseResponse;
         try {
+            StrictMode.ThreadPolicy gfgPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(gfgPolicy);
             geocodingResponseResponse = client.executeCall();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -70,5 +73,27 @@ public class Searcher {
                 point.latitude(),
                 point.longitude());
         return wayPoint;
+    }
+
+    public String getResultsNames(String query) {
+        System.out.println("HOLAAAAAAA");
+        MapboxGeocoding client = MapboxGeocoding.builder()
+                .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
+                .query(query)
+                .build();
+        System.out.println("hola");
+        Response<GeocodingResponse> geocodingResponseResponse;
+        try {
+            geocodingResponseResponse = client.executeCall();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (geocodingResponseResponse.body().features() != null) {
+            List<CarmenFeature> resultsNames = geocodingResponseResponse.body().features();
+            return (resultsNames.get(0) != null) ? resultsNames.get(0).placeName(): " hasdfasdlfasfasdfasdfñlkkjs";
+        }
+        else {
+            return " no se pudo";
+        }
     }
 }
