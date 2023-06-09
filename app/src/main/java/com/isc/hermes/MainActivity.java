@@ -5,11 +5,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-<<<<<<< HEAD
-
 import android.graphics.Color;
-=======
->>>>>>> 2447e5a8ec50a7e5600a7b1e18e1d06dcbe1e3c1
 import android.os.Bundle;
 import android.util.Log;
 
@@ -150,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onSaveInstanceState(outState);
         mapDisplay.onSaveInstanceState(outState);
     }
-<<<<<<< HEAD
 
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
@@ -172,6 +167,3 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 }
-=======
-}
->>>>>>> 2447e5a8ec50a7e5600a7b1e18e1d06dcbe1e3c1
