@@ -10,6 +10,8 @@ import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
+import com.isc.hermes.model.User;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,17 +35,16 @@ public class SignUpActivityView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_view);
-        initiateAuthenticationServices();
+        startAuthenticationServices();
         creationActionAboutUs();
     }
 
     /**
      *  It is the action of returning to about us, to get out of the sing In.
-     *
      *  You will find the button of "About Us", and by clicking it you can go back.
      */
     private void creationActionAboutUs(){
-        TextView btn=findViewById(R.id.bttn_about_us);
+        TextView btn = findViewById(R.id.bttn_about_us);
         btn.setOnClickListener(v -> startActivity(
                 new Intent(SignUpActivityView.this,AboutUs.class)));
     }
@@ -56,11 +57,11 @@ public class SignUpActivityView extends AppCompatActivity {
      * and create the corresponding authentication objects.
      * </p>
      */
-    private void initiateAuthenticationServices() {
+    private void startAuthenticationServices() {
         authenticationServices = new HashMap<>();
-        for (AuthenticationServices value : AuthenticationServices.values()) {
-            authenticationServices.put(value.getID(), AuthenticationFactory.createAuthentication(value));
-            Objects.requireNonNull(authenticationServices.get(value.getID())).configureAccess(this);
+        for (AuthenticationServices service : AuthenticationServices.values()) {
+            authenticationServices.put(service.getID(), AuthenticationFactory.createAuthentication(service));
+            Objects.requireNonNull(authenticationServices.get(service.getID())).configureAccess(this);
         }
     }
 
@@ -86,14 +87,25 @@ public class SignUpActivityView extends AppCompatActivity {
      *
      * @param view it contains the event info.
      */
-    public void SignUp(View view) {
+    public void signUp(View view) {
         if (authenticator != null) return;
         authenticator = authenticationServices.get(view.getId());
         if (authenticator == null) return;
-        startActivityForResult(
+        startActivityForResult( //TODO: Solve this is a deprecated method.
                 authenticator.signIn()
                 , view.getId()
         );
+    }
+
+    /**
+     * Sends a User object to another activity using an Intent.
+     *
+     * @param user The User object to be sent to the other activity.
+     */
+    private void sendUserBetweenActivities(User user) {
+        Intent intent = new Intent(this, UserSignUpCompletionActivity.class);
+        intent.putExtra("userObtained", user);
+        startActivity(intent);
     }
 
     /**
@@ -109,11 +121,11 @@ public class SignUpActivityView extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (authenticationServices.containsKey(requestCode)) {
-                authenticator.handleSignInResult(data);
-            }
+            if (authenticationServices.containsKey(requestCode))
+                sendUserBetweenActivities(authenticator.getUserBySignInResult(data));
         } catch (ApiException e) {
-            Toast.makeText(SignUpActivityView.this,"Wait a moment ",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivityView.this,"Wait a moment ",
+                    Toast.LENGTH_SHORT).show();
             Timber.tag("LOG").e(e);
         }
     }
