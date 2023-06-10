@@ -3,17 +3,25 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 
 import com.isc.hermes.controller.SearcherController;
+import com.isc.hermes.controller.authentication.GoogleAuthentication;
 import com.isc.hermes.model.Searcher;
 import android.widget.Button;
+import android.widget.LinearLayout;
+
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -24,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
-
+    private boolean visibilityMenu = false;
+    private GoogleAuthentication googleAuthentication;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -37,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
+        googleAuthentication = new GoogleAuthentication();
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
@@ -54,6 +64,39 @@ public class MainActivity extends AppCompatActivity {
         searcherController.runSearcher();
     }
 
+    /**
+     *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
+     *
+     * @param view Helps build the view.
+     */
+    public void openSideMenu(View view) {
+        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
+        if (!visibilityMenu) {
+            lateralMenu.setVisibility(View.VISIBLE);
+            visibilityMenu = true;
+            setMapScrollGesturesEnabled(false);
+        } else {
+            lateralMenu.setVisibility(View.GONE);
+            visibilityMenu = false;
+            setMapScrollGesturesEnabled(true);
+        }
+    }
+
+    private void setMapScrollGesturesEnabled(boolean enabled) {
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled);
+            }
+        });
+    }
+
+    public void logOut(View view){
+        googleAuthentication.signOut(this);
+        Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
+        startActivity(intent);
+
+    }
     /**
      * This method will init the current location controller to get the real time user location
      */

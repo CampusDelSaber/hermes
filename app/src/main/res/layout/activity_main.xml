@@ -19,28 +19,73 @@
         mapbox:mapbox_cameraTargetLng="-66.1568"
         mapbox:mapbox_cameraZoom="12">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <SearchView
-                android:id="@+id/searchView"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView4"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:rotationX="2" />
+                android:layout_height="60dp"
+                android:backgroundTint="@color/blueOxford_app_theme"
+                mapbox:cardElevation="10dp"
+                tools:ignore="MissingConstraints">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/hamburgerButton"
+                    android:layout_width="35dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/burger_menu_button"
+                    android:elevation="20dp"
+                    android:onClick="openSideMenu"
+                    android:translationX="10dp"
+                    android:translationY="10dp"
+                    mapbox:layout_constraintBottom_toBottomOf="parent"
+                    mapbox:layout_constraintEnd_toEndOf="parent"
+                    mapbox:layout_constraintHorizontal_bias="0.0"
+                    mapbox:layout_constraintStart_toStartOf="parent"
+                    mapbox:layout_constraintTop_toTopOf="parent"
+                    mapbox:layout_constraintVertical_bias="0.26"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="vertical"
+                    android:paddingStart="90dp"
+                    android:paddingEnd="60dp">
+
+                    <SearchView
+                        android:id="@+id/searchView"
+                        android:layout_width="match_parent"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="38px"
+                        android:background="@color/white"
+                        android:rotationX="2" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <ScrollView
                 android:id="@+id/searchResults"
-                android:layout_width="371dp"
+                android:layout_width="match_parent"
                 android:layout_height="159dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="90dp"
+                android:layout_marginEnd="60dp"
+                android:layout_marginBottom="520dp"
                 android:background="#FFFFFF"
                 android:contentDescription="@string/app_name"
-                android:text="@string/app_name">
+                android:elevation="0dp"
+                android:text="@string/app_name"
+                android:translationZ="90dp"
+                mapbox:layout_constraintBottom_toBottomOf="parent"
+                mapbox:layout_constraintEnd_toEndOf="parent"
+                mapbox:layout_constraintStart_toStartOf="parent"
+                mapbox:layout_constraintTop_toBottomOf="@+id/cardView4">
 
                 <LinearLayout
                     android:id="@+id/searchResultsLayout"
@@ -48,8 +93,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
             </ScrollView>
-
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.mapbox.mapboxsdk.maps.MapView>
 
@@ -61,7 +105,9 @@
         android:layout_margin="15dp"
         android:background="@android:color/transparent"
         android:src="@drawable/layer_icon"
-        android:translationY="150px" />
+        android:translationY="250px"
+        tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,TouchTargetSizeCheck"
+        android:importantForAccessibility="no" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -76,7 +122,9 @@
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
             android:src="@drawable/current_location_icon"
-            android:text="@string/get_location_text" />
+            android:text="@string/get_location_text"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+            android:importantForAccessibility="no" />
 
 
         <ImageButton
@@ -85,11 +133,46 @@
             android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
-            mapbox:srcCompat="@drawable/speaker" />
+            mapbox:srcCompat="@drawable/speaker"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+            android:importantForAccessibility="no" />
     </LinearLayout>
 
     <include
         layout="@layout/incident_form_fragment"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
+
+    <LinearLayout
+        android:id="@+id/lateralMenu"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:background="@color/blueOxford_app_theme"
+        android:elevation="10dp"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone"
+        mapbox:layout_constraintBottom_toBottomOf="parent"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:onClick="showAccount"
+            android:text="Account"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/mapboxRed"
+            android:gravity="center"
+            android:onClick="logOut"
+            android:text="Log out"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
