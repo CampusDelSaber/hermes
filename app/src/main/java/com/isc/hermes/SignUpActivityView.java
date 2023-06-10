@@ -1,11 +1,13 @@
 package com.isc.hermes;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -15,6 +17,7 @@ import com.isc.hermes.model.User;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
 import timber.log.Timber;
 
 
