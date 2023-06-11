@@ -1,20 +1,14 @@
 package com.isc.hermes;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-
 import com.isc.hermes.controller.SearcherController;
-import com.isc.hermes.controller.authentication.GoogleAuthentication;
 import com.isc.hermes.model.Searcher;
-import android.widget.Button;
 import android.widget.LinearLayout;
-
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
@@ -33,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
-    private GoogleAuthentication googleAuthentication;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -46,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        googleAuthentication = new GoogleAuthentication();
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
@@ -102,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
      * @param view The view of the button that has been clicked.
      */
     public void logOut(View view){
-        googleAuthentication.signOut(this);
+        SignUpActivityView.authenticator.signOut(this);
         Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
         startActivity(intent);
-
     }
+
     /**
      * This method will init the current location controller to get the real time user location
      */
@@ -208,13 +200,9 @@ public class MainActivity extends AppCompatActivity {
     private void mapStyleListener(){
         ImageButton styleButton = findViewById(R.id.btn_change_style);
         styleButton.setOnClickListener(styleMap -> {
-            if (mapStyle.equals("default")) {
-                mapStyle = "satellite";
-            } else if (mapStyle.equals("satellite")) {
-                mapStyle = "dark";
-            } else {
-                mapStyle = "default";
-            }
+            if (mapStyle.equals("default")) mapStyle = "satellite";
+            else if (mapStyle.equals("satellite")) mapStyle = "dark";
+            else mapStyle = "default";
             mapDisplay.setMapStyle(mapStyle);
         });
     }

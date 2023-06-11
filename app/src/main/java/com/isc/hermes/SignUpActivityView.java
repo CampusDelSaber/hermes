@@ -5,19 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.model.User;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import timber.log.Timber;
 
 
@@ -27,7 +23,7 @@ import timber.log.Timber;
 public class SignUpActivityView extends AppCompatActivity {
 
     private Map<Integer, IAuthentication> authenticationServices;
-    private IAuthentication authenticator;
+    public static IAuthentication authenticator;
 
     /**
      * Method for creating the view and configuring it using the components xml.
@@ -79,8 +75,8 @@ public class SignUpActivityView extends AppCompatActivity {
         super.onStart();
         authenticationServices.forEach((key, authentication) -> {
             if (authentication.checkUserSignIn(this)) {
-                Toast.makeText(SignUpActivityView.this, "The user is already authenticated", Toast.LENGTH_SHORT).show();
-                //The functionality for sign should be here
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -91,7 +87,6 @@ public class SignUpActivityView extends AppCompatActivity {
      * @param view it contains the event info.
      */
     public void signUp(View view) {
-        if (authenticator != null) return;
         authenticator = authenticationServices.get(view.getId());
         if (authenticator == null) return;
         startActivityForResult( //TODO: Solve this is a deprecated method.

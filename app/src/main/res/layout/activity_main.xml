@@ -147,6 +147,7 @@
         android:id="@+id/lateralMenu"
         android:layout_width="300dp"
         android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
         android:background="@color/blueOxford_app_theme"
         android:elevation="10dp"
         android:gravity="bottom"
@@ -161,7 +162,7 @@
             android:layout_height="60dp"
             android:gravity="center"
             android:onClick="showAccount"
-            android:text="Account"
+            android:text="@string/account_text"
             android:textColor="@color/white" />
 
         <TextView
@@ -171,7 +172,7 @@
             android:background="@color/mapboxRed"
             android:gravity="center"
             android:onClick="logOut"
-            android:text="Log out"
+            android:text="@string/log_out_text"
             android:textColor="@color/white" />
 
     </LinearLayout>
