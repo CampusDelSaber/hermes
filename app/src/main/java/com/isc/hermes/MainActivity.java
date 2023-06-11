@@ -82,6 +82,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Enables or disables map scroll gestures.
+     *
+     * @param enabled Boolean indicating whether to enable map scroll gestures.
+     */
     private void setMapScrollGesturesEnabled(boolean enabled) {
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -91,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Logs out the current user and redirects to the login activity.
+     *
+     * @param view The view of the button that has been clicked.
+     */
     public void logOut(View view){
         googleAuthentication.signOut(this);
         Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
