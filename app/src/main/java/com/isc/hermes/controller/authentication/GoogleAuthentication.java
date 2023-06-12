@@ -2,6 +2,7 @@ package com.isc.hermes.controller.authentication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -13,9 +14,12 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.isc.hermes.R;
+import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.model.User;
 
 import java.util.Objects;
+
+import timber.log.Timber;
 
 /**
  * This class is in charge of authentication by the google service
@@ -59,9 +63,20 @@ public class GoogleAuthentication implements IAuthentication {
         googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                System.out.println("YOUR ACCOUNT WAS CLOSED SUCCESSFULLY");
+                Toast.makeText(context, "Your account was closed successfully",
+                        Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Retrieves the service type for authentication.
+     *
+     * @return The service type for authentication (in this case, AuthenticationServices.GOOGLE).
+     */
+    @Override
+    public AuthenticationServices getServiceType() {
+        return AuthenticationServices.GOOGLE;
     }
 
     /**
@@ -103,7 +118,6 @@ public class GoogleAuthentication implements IAuthentication {
      * @return a user with its elements.
      */
     public User getUserBySignInResult(Intent data) throws ApiException {
-        googleSignInClient.signOut();
         Task<GoogleSignInAccount> completedTask = GoogleSignIn.getSignedInAccountFromIntent(data);
         GoogleSignInAccount account;
         account = completedTask.getResult(ApiException.class);

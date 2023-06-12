@@ -16,6 +16,8 @@
     <string name="access_token">sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA</string>
     <string name="web_client_id">628551362001-osi4l1rcdiqt00got5n0hvn1akoc2una.apps.googleusercontent.com</string>
     <string name="get_location_text">Get Location</string>
+    <string name="log_out_text">Log out</string>
+    <string name="account_text">Account</string>
     <string-array name="incidents_type">
         <item>Traffic Incident</item>
         <item>Natural Disaster</item>

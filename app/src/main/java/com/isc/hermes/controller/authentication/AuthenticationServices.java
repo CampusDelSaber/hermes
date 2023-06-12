@@ -19,6 +19,19 @@ public enum AuthenticationServices {
     }
 
     /**
+     * Retrieves an AuthenticationServices object based on the specified ID.
+     *
+     * @param id The ID of the AuthenticationServices object to retrieve.
+     * @return The AuthenticationServices object with the specified ID, or null if not found.
+     */
+    public static AuthenticationServices getAuthentication(int id){
+        AuthenticationServices authenticationService = null;
+        for(AuthenticationServices services: AuthenticationServices.values()){
+            if(services.getID() == id) authenticationService = services;
+        } return authenticationService;
+    }
+
+    /**
      * This method returns the id of the authentication service.
      *
      * @return id authentication service
