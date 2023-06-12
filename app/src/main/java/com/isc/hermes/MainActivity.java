@@ -57,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * This method is used to display a view where you can see the information about your account.
+     *
+     * @param view Helps build the view
+     */
+    public void showAccount(View view) {
+        System.out.println("Your account information will be displayed");
+    }
+
+    /**
      *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
      *
      * @param view Helps build the view.

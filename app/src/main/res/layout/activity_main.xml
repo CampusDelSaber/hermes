@@ -37,7 +37,7 @@
                     android:layout_height="32dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="4dp"
-                    android:background="@drawable/burger_menu_button"
+                    android:background="@drawable/img_burger_menu_button"
                     android:elevation="20dp"
                     android:onClick="openSideMenu"
                     android:translationX="10dp"
@@ -104,7 +104,7 @@
         android:layout_gravity="right"
         android:layout_margin="15dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/layer_icon"
+        android:src="@drawable/img_layer_icon"
         android:translationY="250px"
         tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,TouchTargetSizeCheck"
         android:importantForAccessibility="no" />
@@ -121,7 +121,7 @@
             android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/current_location_icon"
+            android:src="@drawable/img_current_location_icon"
             android:text="@string/get_location_text"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
             android:importantForAccessibility="no" />
@@ -133,7 +133,7 @@
             android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
-            mapbox:srcCompat="@drawable/speaker"
+            mapbox:srcCompat="@drawable/img_speaker"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
             android:importantForAccessibility="no" />
     </LinearLayout>
