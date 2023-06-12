@@ -3,10 +3,15 @@ package com.isc.hermes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 import com.isc.hermes.controller.SearcherController;
+import com.isc.hermes.controller.authentication.AuthenticationFactory;
+import com.isc.hermes.controller.authentication.AuthenticationServices;
+import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
 import com.isc.hermes.controller.CurrentLocationController;
@@ -154,16 +159,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mapDisplay.onResume();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                this);
+        AuthenticationServices authenticationServices  = AuthenticationServices.getAuthentication(
+                sharedPreferences.getInt("cuenta",0));
+        if(authenticationServices != null)
+            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
+                    authenticationServices);
+
     }
 
-    /**
-     * Method for pausing the MapView object instance.
-     */
+    /** Method for pausing the MapView object instance.*/
     @Override
     protected void onPause() {
         super.onPause();
         mapDisplay.onPause();
-    }
+        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor miEditor = datos.edit();
+        miEditor.putInt("cuenta", SignUpActivityView.authenticator.getServiceType().getID());
+        miEditor.apply();}
 
     /**
      * Method for stopping the MapView object instance.

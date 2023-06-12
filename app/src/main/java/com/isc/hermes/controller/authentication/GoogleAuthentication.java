@@ -59,6 +59,7 @@ public class GoogleAuthentication implements IAuthentication {
      * </p>
      */
     public void signOut(Context context){
+        configureAccess(context);
         googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -66,6 +67,16 @@ public class GoogleAuthentication implements IAuthentication {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Retrieves the service type for authentication.
+     *
+     * @return The service type for authentication (in this case, AuthenticationServices.GOOGLE).
+     */
+    @Override
+    public AuthenticationServices getServiceType() {
+        return AuthenticationServices.GOOGLE;
     }
 
     /**
@@ -107,7 +118,6 @@ public class GoogleAuthentication implements IAuthentication {
      * @return a user with its elements.
      */
     public User getUserBySignInResult(Intent data) throws ApiException {
-        googleSignInClient.signOut();
         Task<GoogleSignInAccount> completedTask = GoogleSignIn.getSignedInAccountFromIntent(data);
         GoogleSignInAccount account;
         account = completedTask.getResult(ApiException.class);

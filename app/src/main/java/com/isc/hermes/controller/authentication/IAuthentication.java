@@ -34,6 +34,11 @@ public interface IAuthentication {
     void signOut(Context context);
 
     /**
+     * Retrieves the service type for authentication.
+     */
+    AuthenticationServices getServiceType();
+
+    /**
      * This method deletes the user information within the app
      */
     void revokeAccess();
