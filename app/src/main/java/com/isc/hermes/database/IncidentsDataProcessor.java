@@ -13,9 +13,9 @@ import timber.log.Timber;
  * Class responsible for processing incidents data obtained from the API.
  */
 public class IncidentsDataProcessor {
-    private final ApiHandler apiHandler;
+    private ApiHandler apiHandler;
     private final String INCIDENTS_COLLECTION_NAME = "incidents";
-    private final ApiResponseParser responseParser;
+    private ApiResponseParser responseParser;
     private static IncidentsDataProcessor instance;
 
     /**
@@ -74,5 +74,21 @@ public class IncidentsDataProcessor {
     public static IncidentsDataProcessor getInstance() {
         if (instance == null) instance = new IncidentsDataProcessor();
         return instance;
+    }
+
+    public ApiHandler getApiHandler() {
+        return apiHandler;
+    }
+
+    public void setApiHandler(ApiHandler apiHandler) {
+        this.apiHandler = apiHandler;
+    }
+
+    public void setResponseParser(ApiResponseParser responseParser) {
+        this.responseParser = responseParser;
+    }
+
+    public ApiResponseParser getResponseParser() {
+        return responseParser;
     }
 }
