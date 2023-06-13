@@ -7,6 +7,11 @@ import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LONGITUDE;
 
 import com.isc.hermes.requests.geocoders.StreetValidator;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -50,27 +55,50 @@ public class CoordinateGen {
     /**
      * This method generate a valid point surrounded by another as a reference.
      *
-     * @param previousPoint point reference.
-     * @return point surrounded generated.
+     * @param referencePoint to found others points.
+     * @param radium the size radium valid to found a coordinates.
+     * @return near point.
      */
-    private double[] generateNextPoint(double[] previousPoint) {
+    public double[] getNearPoint(double[] referencePoint, Radium radium) {
         double[] pointCoordinates = new double[2];
         int maxAttempts = 10000;
         double randomAngle, distance;
-        double distanceThreshold = 0.0001;
 
         for (int i = 0; i < maxAttempts; i++) {
             randomAngle = Math.random() * 2 * Math.PI;
-            distance = Math.random() * distanceThreshold;
-            pointCoordinates[0] = previousPoint[0] + distance * Math.cos(randomAngle);
-            ;
-            pointCoordinates[1] = previousPoint[1] + distance * Math.sin(randomAngle);
-            ;
+            distance = Math.random() * radium.getValue();
+            pointCoordinates[0] = referencePoint[0] + distance * Math.cos(randomAngle);
+            pointCoordinates[1] = referencePoint[1] + distance * Math.sin(randomAngle);
+
             if (streetValidator.isPointStreet(pointCoordinates[0], pointCoordinates[1])) {
                 return pointCoordinates;
             }
         }
         return null;
+    }
+
+    private boolean isValidToGeneratePolygon(double[] referencePoint, int amountEdges) {
+        return referencePoint != null && amountEdges > 2;
+    }
+
+    public Geometry generatePolygon(double[] referencePoint, Radium radium, int amountEdges) {
+        Geometry geometry = null;
+        List<Coordinate> coordinates = new ArrayList<>();
+        GeometryFactory geometryFactory = new GeometryFactory();
+        DelaunayTriangulationBuilder triangulationBuilder = new DelaunayTriangulationBuilder();
+
+        if (isValidToGeneratePolygon(referencePoint, amountEdges)) {
+            coordinates.add(new Coordinate(referencePoint[0], referencePoint[1]));
+            double[] newCoordinate;
+            for (int i = 0; i < amountEdges; i++) {
+                newCoordinate = getNearPoint(referencePoint, radium);
+                coordinates.add(new Coordinate(newCoordinate[0], newCoordinate[1]));
+            }
+            triangulationBuilder.setSites(coordinates);
+            geometry = triangulationBuilder.getTriangles(geometryFactory).union();
+        }
+
+        return geometry;
     }
 
     /**
@@ -79,7 +107,7 @@ public class CoordinateGen {
      * @param amountPoints that has the lineString.
      * @return lineString coordinates generated.
      */
-    public List<double[]> generateLineString(int amountPoints) {
+    public List<double[]> generateLineString(Radium radium, int amountPoints) {
         List<double[]> pointCoordinates = new ArrayList<>();
         double[] startPoint = generatePoint();
         double[] previousPoint, newPoint;
@@ -89,7 +117,7 @@ public class CoordinateGen {
 
             for (int i = 1; i < amountPoints; i++) {
                 previousPoint = pointCoordinates.get(i - 1);
-                newPoint = generateNextPoint(previousPoint);
+                newPoint = getNearPoint(previousPoint, radium);
                 if (newPoint == null) return pointCoordinates;
                 pointCoordinates.add(newPoint);
             }
