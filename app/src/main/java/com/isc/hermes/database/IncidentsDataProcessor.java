@@ -9,24 +9,43 @@ import java.util.concurrent.Future;
 
 import timber.log.Timber;
 
+/**
+ * Class responsible for processing incidents data obtained from the API.
+ */
 public class IncidentsDataProcessor {
-    private ApiHandler apiHandler;
+    private final ApiHandler apiHandler;
     private final String INCIDENTS_COLLECTION_NAME = "incidents";
-    private ApiResponseParser responseParser;
+    private final ApiResponseParser responseParser;
+    private static IncidentsDataProcessor instance;
 
-    public IncidentsDataProcessor(){
-        apiHandler = new ApiHandler();
+    /**
+     * Constructs a new instance of IncidentsDataProcessor.
+     */
+    public IncidentsDataProcessor() {
+        apiHandler = ApiHandler.getInstance();
         responseParser = ApiResponseParser.getInstance();
     }
 
+    /**
+     * Retrieves all incidents from the API.
+     *
+     * @return The JSONArray containing all incidents.
+     * @throws ExecutionException   If an error occurs during execution.
+     * @throws InterruptedException If the operation is interrupted.
+     */
     public JSONArray getAllIncidents() throws ExecutionException, InterruptedException {
-        Future<String> future = apiHandler.getFutureCollectionGetString(INCIDENTS_COLLECTION_NAME);
+        Future<String> future = apiHandler.getFutureCollectionString(INCIDENTS_COLLECTION_NAME);
         String futureResponse = future.get();
         JSONArray incidentsArray = responseParser.getJSONArrayOnResult(futureResponse);
         handleApiResponseExample(incidentsArray);
         return incidentsArray;
     }
 
+    /**
+     * Handles the API response and processes the incidents data.
+     *
+     * @param incidentsArray The JSONArray containing the incidents data.
+     */
     public void handleApiResponseExample(JSONArray incidentsArray) {
         try {
             for (int i = 0; i < incidentsArray.length(); i++) {
@@ -46,5 +65,14 @@ public class IncidentsDataProcessor {
             e.printStackTrace();
         }
     }
-}
 
+    /**
+     * Retrieves the singleton instance of IncidentsDataProcessor.
+     *
+     * @return The singleton instance of IncidentsDataProcessor.
+     */
+    public static IncidentsDataProcessor getInstance() {
+        if (instance == null) instance = new IncidentsDataProcessor();
+        return instance;
+    }
+}

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.model.Searcher;
@@ -15,22 +14,6 @@ import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import timber.log.Timber;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -58,19 +41,6 @@ public class MainActivity extends AppCompatActivity {
         addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
-
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<String> future = executor.submit(() -> fetchDataFromApi(
-                "https://api-rest-hermes.onrender.com/incidents"));
-
-        try {
-            String result = future.get();
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-            handleApiResponse(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Timber.tag("sss").d("sss");
-        }
     }
 
     /**
@@ -193,56 +163,5 @@ public class MainActivity extends AppCompatActivity {
             }
             mapDisplay.setMapStyle(mapStyle);
         });
-    }
-
-    private String fetchDataFromApi(String apiUrl) {
-        StringBuilder response = new StringBuilder();
-
-        try {
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            InputStream inputStream = connection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                response.append(line);
-            }
-
-            System.out.println(response);
-            System.out.println("response");
-            bufferedReader.close();
-            inputStream.close();
-            connection.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return response.toString();
-    }
-
-    private void handleApiResponse(String result) {
-        try {
-            JSONArray incidentsArray = new JSONArray(result);
-            Timber.tag("HOLA").d(result);
-
-            // Process each incident object
-            for (int i = 0; i < incidentsArray.length(); i++) {
-                JSONObject incidentObj = incidentsArray.getJSONObject(i);
-                String id = incidentObj.getString("_id");
-                String type = incidentObj.getString("type");
-                String reason = incidentObj.getString("reason");
-                String dateCreated = incidentObj.getString("dateCreated");
-
-                // Process the incident data as needed
-                Timber.tag("Incident").d("ID: %s", id);
-                Timber.tag("Incident").d("Type: %s", type);
-                Timber.tag("Incident").d("Reason: %s", reason);
-                Timber.tag("Incident").d("Date Created: %s", dateCreated);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 }
