@@ -56,12 +56,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0"
     implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.5.0'
     implementation group: 'io.github.cdimascio', name: 'java-dotenv', version: '5.2.2'
-<<<<<<< HEAD
     testImplementation "org.mockito:mockito-core:3.+"
     testImplementation 'org.json:json:20180813'
-=======
     //Google Authentication Dependency
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
 }
->>>>>>> b361a38f6dd5d6be30766762d31b7c02d82c2e90
 
