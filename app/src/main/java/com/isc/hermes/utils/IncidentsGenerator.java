@@ -1,19 +1,24 @@
-package com.isc.hermes.model;
+package com.isc.hermes.utils;
 
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.Polygon;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+/**
+ * This class generate different shapes of incidents; zones, points, and lines.
+ */
 public class IncidentsGenerator {
 
+    /**
+     * This method generates many random polygons nearby the location.
+     * @param currentLat Latitude of the location to generate polygon nearby.
+     * @param currentLng Longitude of the location to generate polygon nearby.
+     * @param quantity How many polygons need.
+     * @return an array of polygons
+     */
     public static Polygon[] generateIncidentsZones(double currentLat,
                                                          double currentLng,
                                                          int quantity) {
@@ -26,6 +31,13 @@ public class IncidentsGenerator {
         return polygons;
     }
 
+    /**
+     * This method us used to generate one Polygon nearby the location.
+     * @param currentLat Latitude of the location to generate polygon nearby.
+     * @param currentLng Longitude of the location to generate polygon nearby.
+     * @param numVertex number of vertex of the polygon.
+     * @return an Polygon (MapBox)
+     */
     public static Polygon getRandomPolygon(double currentLat, double currentLng, int numVertex) {
         LatLng[] coordinatesList = CoordinatesGenerator.getVariousCloserCoordinates(
                 currentLat,
@@ -36,7 +48,12 @@ public class IncidentsGenerator {
         System.out.println(polygon);
         return polygon;
     }
-    
+
+    /**
+     *
+     * @param coordinatesList
+     * @return
+     */
     public static List<List<Point>> convertToList(LatLng[] coordinatesList) {
         List<List<Point>> points = new ArrayList<>();
         points.add(new ArrayList<>());

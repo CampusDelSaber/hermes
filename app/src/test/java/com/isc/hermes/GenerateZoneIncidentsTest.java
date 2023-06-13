@@ -3,16 +3,15 @@ package com.isc.hermes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.isc.hermes.model.CoordinatesGenerator;
-import com.isc.hermes.model.IncidentsGenerator;
-import com.mapbox.geojson.Polygon;
+import com.isc.hermes.utils.CoordinatesGenerator;
+import com.isc.hermes.utils.IncidentsGenerator;
 
 import org.junit.Test;
 
 public class GenerateZoneIncidentsTest {
     @Test
     public void coordinates() {
-        assertNotNull(CoordinatesGenerator.getVariousCoordinates(-17.387072, -66.089125, 5));
+        assertNotNull(CoordinatesGenerator.getVariousFarAwayCoordinates(-17.387072, -66.089125, 5));
     }
 
     @Test
