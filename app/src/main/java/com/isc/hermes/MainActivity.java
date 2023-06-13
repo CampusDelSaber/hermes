@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.isc.hermes.controller.SearcherController;
@@ -60,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
         mapStyleListener();
         initCurrentLocationController();
 
-        // Execute the API call asynchronously
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<String> future = executor.submit(() -> fetchDataFromApi("https://test-rest-hermes.onrender.com/incidents"));
+        Future<String> future = executor.submit(() -> fetchDataFromApi(
+                "https://api-rest-hermes.onrender.com/incidents"));
 
         try {
             String result = future.get();

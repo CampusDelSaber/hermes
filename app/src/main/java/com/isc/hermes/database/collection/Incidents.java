@@ -1,6 +1,5 @@
 package com.isc.hermes.database.collection;
 
-import com.isc.hermes.database.Hermesdb;
 import com.mongodb.client.MongoCollection;
 
 import org.bson.Document;
@@ -10,8 +9,6 @@ import org.bson.Document;
  */
 public class Incidents implements Collectible {
 
-    private Hermesdb hermesdb;
-    private MongoCollection<Document> incidents;
     private static Collectible collection;
     private final String COLLECTION_NAME = "incidents";
 
@@ -31,25 +28,11 @@ public class Incidents implements Collectible {
      * This is a constructor method to initialize their variables.
      */
     private Incidents() {
-        this.hermesdb = Hermesdb.getInstance();
-    }
-
-    /**
-     * This method returns the connection to the collection of incidents created.
-     *
-     * @return incidents collection.
-     */
-    public MongoCollection<Document> getCollection() {
-        if (incidents == null)
-            initCollection();
-
-        return incidents;
     }
 
     /**
      * This method gets the connection to the incident connection using the hermes database.
      */
     private void initCollection() {
-        incidents = hermesdb.getHermesDatabase().getCollection(COLLECTION_NAME);
     }
 }

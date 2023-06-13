@@ -14,6 +14,5 @@ public interface Collectible {
      *
      * @return collection connection.
      */
-    public MongoCollection<Document> getCollection();
 
 }
