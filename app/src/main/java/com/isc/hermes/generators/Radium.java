@@ -1,5 +1,8 @@
 package com.isc.hermes.generators;
 
+/**
+ * This class has the responsibility to store radium values on geodetic units.
+ */
 public enum Radium {
 
     FIFTY_METERS(0.00045),
@@ -11,10 +14,20 @@ public enum Radium {
 
     private final double value;
 
+    /**
+     * This is the constructor method to build the radium value.
+     *
+     * @param value to build the radium.
+     */
     Radium(double value) {
         this.value = value;
     }
 
+    /**
+     * This is a getter method to get radium value built.
+     *
+     * @return radium value.
+     */
     public double getValue() {
         return value;
     }
