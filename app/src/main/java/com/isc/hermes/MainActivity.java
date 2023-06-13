@@ -1,41 +1,38 @@
 package com.isc.hermes;
 
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.util.Log;
 
-import com.isc.hermes.model.IncidentsGenerator;
 import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.controller.SearcherController;
+import com.isc.hermes.controller.authentication.AuthenticationFactory;
+import com.isc.hermes.controller.authentication.AuthenticationServices;
+import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
-import com.mapbox.geojson.Polygon;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.PolygonOptions;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.geometry.LatLngBounds;
-import com.mapbox.mapboxsdk.geometry.VisibleRegion;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.Projection;
-import com.mapbox.mapboxsdk.style.layers.FillLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-
-import timber.log.Timber;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
+    private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
+    private boolean visibilityMenu = false;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -48,9 +45,73 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        initMapDisplay();
+        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
+        addMapboxSearcher();
+        mapStyleListener();
         initCurrentLocationController();
+    }
+
+    /**
+     * Method to add the searcher to the main scene above the map
+     */
+    private void addMapboxSearcher() {
+        Searcher searcher = new Searcher();
+        SearcherController searcherController = new SearcherController(searcher,
+                findViewById(R.id.searchResults),findViewById(R.id.searchView));
+        searcherController.runSearcher();
+    }
+
+    /**
+     * This method is used to display a view where you can see the information about your account.
+     *
+     * @param view Helps build the view
+     */
+    public void showAccount(View view) {
+        System.out.println("Your account information will be displayed");
+    }
+
+    /**
+     *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
+     *
+     * @param view Helps build the view.
+     */
+    public void openSideMenu(View view) {
+        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
+        if (!visibilityMenu) {
+            lateralMenu.setVisibility(View.VISIBLE);
+            visibilityMenu = true;
+            setMapScrollGesturesEnabled(false);
+        } else {
+            lateralMenu.setVisibility(View.GONE);
+            visibilityMenu = false;
+            setMapScrollGesturesEnabled(true);
+        }
+    }
+
+    /**
+     * Enables or disables map scroll gestures.
+     *
+     * @param enabled Boolean indicating whether to enable map scroll gestures.
+     */
+    private void setMapScrollGesturesEnabled(boolean enabled) {
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled);
+            }
+        });
+    }
+
+    /**
+     * Logs out the current user and redirects to the login activity.
+     *
+     * @param view The view of the button that has been clicked.
+     */
+    public void logOut(View view){
+        SignUpActivityView.authenticator.signOut(this);
+        Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
+        startActivity(intent);
     }
 
     /**
@@ -60,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         currentLocationController = new CurrentLocationController(this, mapDisplay);
         currentLocationController.initLocation();
     }
+
 
     /**
      * Method for initializing the Mapbox object instance.
@@ -79,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Method for initializing the MapDisplay object instance.
      */
     private void initMapDisplay() {
-        mapDisplay = new MapDisplay(mapView, new MapConfigure());
+        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
     }
 
     /**
@@ -98,16 +160,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onResume() {
         super.onResume();
         mapDisplay.onResume();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                this);
+        AuthenticationServices authenticationServices  = AuthenticationServices.getAuthentication(
+                sharedPreferences.getInt("cuenta",0));
+        if(authenticationServices != null)
+            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
+                    authenticationServices);
+
     }
 
-    /**
-     * Method for pausing the MapView object instance.
-     */
+    /** Method for pausing the MapView object instance.*/
     @Override
     protected void onPause() {
         super.onPause();
         mapDisplay.onPause();
-    }
+        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor miEditor = datos.edit();
+        miEditor.putInt("cuenta", SignUpActivityView.authenticator.getServiceType().getID());
+        miEditor.apply();}
 
     /**
      * Method for stopping the MapView object instance.
@@ -147,23 +218,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapDisplay.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onMapReady(@NonNull MapboxMap mapboxMap) {
-        Polygon[] polygons = IncidentsGenerator.generateIncidentsZones(
-                -17.395495,
-                -66.148099,
-                5);
-
-        for (Polygon polygon : polygons) {
-            mapboxMap.getStyle().addSource(new GeoJsonSource("polygon-source", polygon));
-            FillLayer polygonLayer = new FillLayer("polygon-layer", "polygon-source");
-            polygonLayer.setProperties(
-                    fillOpacity(0.5f),
-                    fillColor("#3bb2d0")
-            );
-
-            mapboxMap.getStyle().addLayer(polygonLayer);
-            Log.i("Mapbox", "Polygon added");
-        }
+    /**
+     * Method for adding maps styles.xml listener
+     */
+    private void mapStyleListener(){
+        ImageButton styleButton = findViewById(R.id.btn_change_style);
+        styleButton.setOnClickListener(styleMap -> {
+            if (mapStyle.equals("default")) mapStyle = "satellite";
+            else if (mapStyle.equals("satellite")) mapStyle = "dark";
+            else mapStyle = "default";
+            mapDisplay.setMapStyle(mapStyle);
+        });
     }
 }
