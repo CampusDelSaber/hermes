@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
-        android:id="@+id/waypoint_info"
+        android:id="@+id/waypoint_options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
@@ -30,11 +30,11 @@
                 />
 
             <TextView
-                android:id="@+id/incident_tablelayout"
+                android:id="@+id/place_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
-                android:text="Place Name..."
+                android:text="Place Name"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"

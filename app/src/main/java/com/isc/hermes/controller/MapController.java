@@ -23,32 +23,21 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
  */
 public class MapController implements MapboxMap.OnMapClickListener {
     private final MapboxMap mapboxMap;
-    private final Context context;
-    private RelativeLayout waypointInfo;
-    private final IncidentFormController incidentForm;
-    /*private Button cancelButton;
-    private Button acceptButton;*/
-    private Button reportIncidentButton;
+    private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
 
-
+    /**
+     * This is the constructor method.
+     *
+     * @param mapboxMap Is the map.
+     * @param context Is the context application.
+     */
     public MapController(MapboxMap mapboxMap, Context context ) {
         this.mapboxMap = mapboxMap;
-        this.context = context;
-        incidentForm = new IncidentFormController(context, this);
-        assignViews();
-        initForm();
+        waypointOptionsController = new WaypointOptionsController(context, this);
         mapboxMap.addOnMapClickListener(this);
         isMarked = false;
-        setIncidentComponents();
-    }
-
-    private void assignViews() {
-        //incidentForm = ((AppCompatActivity)context).findViewById(R.id.incident_form);
-        waypointInfo = ((AppCompatActivity)context).findViewById(R.id.waypoint_info);
-        /*cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button);
-        acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);*/
-        reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
+        Animations.loadAnimations();
     }
 
     /**
@@ -58,10 +47,7 @@ public class MapController implements MapboxMap.OnMapClickListener {
      */
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
-
-        /*if (MapClickEventsManager.isOnReportIncidentMode){
-            doMarkOnMapAction(point);
-        }*/
+        waypointOptionsController.assignPlaceName(point);
         doMarkOnMapAction(point);
         return true;
     }
@@ -73,35 +59,22 @@ public class MapController implements MapboxMap.OnMapClickListener {
     private void doMarkOnMapAction(LatLng point){
         if (isMarked){
             deleteMarks();
-            if(waypointInfo.getVisibility() == View.VISIBLE) {
-                waypointInfo.startAnimation(Animations.exitAnimation);
-                waypointInfo.setVisibility(View.GONE);
+            if(waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
+                waypointOptionsController.getWaypointOptions().startAnimation(Animations.exitAnimation);
+                waypointOptionsController.getWaypointOptions().setVisibility(View.GONE);
             }
-            if(incidentForm.getIncidentForm().getVisibility() == View.VISIBLE) {
-                incidentForm.getIncidentForm().startAnimation(Animations.exitAnimation);
-                incidentForm.getIncidentForm().setVisibility(View.GONE);
+            if(waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
+                waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
+                waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
             }
             isMarked = false;
         } else {
             MarkerOptions markerOptions = new MarkerOptions().position(point);
             mapboxMap.addMarker(markerOptions);
-            waypointInfo.startAnimation(Animations.entryAnimation);
-            waypointInfo.setVisibility(View.VISIBLE);
+            waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
+            waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
             isMarked = true;
         }
-    }
-
-    /**
-     * Method to init all elements on report incident form
-     */
-    private void initForm(){
-
-        reportIncidentButton.setOnClickListener(v -> {
-            waypointInfo.startAnimation(Animations.exitAnimation);
-            incidentForm.getIncidentForm().startAnimation(Animations.entryAnimation);
-            incidentForm.getIncidentForm().setVisibility(View.VISIBLE);
-            waypointInfo.setVisibility(View.GONE);
-        });
     }
 
     /**
@@ -114,29 +87,9 @@ public class MapController implements MapboxMap.OnMapClickListener {
     }
 
     /**
-     * Method assign values to the incident components.
-     *
-     * <p>
-     *     This method assign values and views to the incident components such as the incident type
-     *     spinner, incident estimated time spinner and incident estimated time number picker.
-     * </p>
+     * This is a setter method to isMarked attribute.
+     * @param marked Is the new value to isMarked.
      */
-    public void setIncidentComponents() {
-        Spinner incidentType = ((AppCompatActivity) context).findViewById(R.id.incident_spinner);
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(context, R.array.incidents_type, R.layout.incident_spinner_items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentType.setAdapter(adapter);
-
-        Spinner incidentEstimatedTime = ((AppCompatActivity) context).findViewById(R.id.incident_time_spinner);
-        ArrayAdapter<CharSequence> adapterTime=ArrayAdapter.createFromResource(context, R.array.incidents_estimated_time, R.layout.incident_spinner_items);
-        adapterTime.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentEstimatedTime.setAdapter(adapterTime);
-
-        NumberPicker incidentTimePicker = ((AppCompatActivity) context).findViewById(R.id.numberPicker);
-        incidentTimePicker.setMinValue(1);
-        incidentTimePicker.setMaxValue(10);
-    }
-
     public void setMarked(boolean marked) {
         isMarked = marked;
     }

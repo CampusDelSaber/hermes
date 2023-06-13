@@ -9,14 +9,10 @@ public class Animations {
     public static TranslateAnimation entryAnimation;
     public static TranslateAnimation exitAnimation;
 
-    static {
-        setAnimations();
-    }
-
     /**
      * This class assign the values for the animations.
      */
-    private static void setAnimations() {
+    public static void loadAnimations() {
         entryAnimation = new TranslateAnimation(0, 0, 800, 0);
         entryAnimation.setDuration(600);
         entryAnimation.setStartOffset(50);

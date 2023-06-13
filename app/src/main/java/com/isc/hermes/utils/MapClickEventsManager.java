@@ -11,8 +11,6 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
  */
 public class MapClickEventsManager {
 
-    public static boolean isOnReportIncidentMode = false;
-
     /**
      * Class to set click manager to mapbox map
      * @param mapboxMap Is map set
