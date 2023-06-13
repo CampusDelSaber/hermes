@@ -15,7 +15,6 @@ public class Connection {
 
     private static Connection connection;
     private static MongoClient mongodb;
-    private Dotenv dotenv;
 
     /**
      * It is a singleton method to have a single instance of the connection.
@@ -27,13 +26,6 @@ public class Connection {
             connection = new Connection();
         }
         return connection;
-    }
-
-    /**
-     * This is a constructor method to initialize their variables.
-     */
-    private Connection() {
-        this.dotenv = Dotenv.load();
     }
 
     /**
@@ -65,7 +57,7 @@ public class Connection {
      * @return connection URI
      */
     private ConnectionString getConnectionURI() {
-        return new ConnectionString(Objects.requireNonNull(dotenv.get("MONGODB_URI")));
+        return new ConnectionString("mongodb+srv://hermesmapapp:jzFAZXVdzEyCfHwh@hermes-cluster.qqt9zti.mongodb.net/hermesmapdb?retryWrites=true&w=majority");
     }
 
     /**
