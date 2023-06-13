@@ -3,6 +3,7 @@ package com.isc.hermes.utils;
 
 import android.content.Context;
 
+import com.isc.hermes.controller.MapController;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 /**
@@ -18,7 +19,7 @@ public class MapClickEventsManager {
      * @param context Is mproject context
      */
     public MapClickEventsManager(MapboxMap mapboxMap, Context context){
-        new MapReportIncidentClickEventListener(mapboxMap, context);
+        new MapController(mapboxMap, context);
     }
 
 }
