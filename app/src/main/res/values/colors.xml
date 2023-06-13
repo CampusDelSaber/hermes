@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#000000</color>
+
+    <color name="redOriginal">#ff0000</color>
+    <color name="green">#00ff00</color>
     <!--COLOR PALETTE-->
     <color name="oxfordBlue">#002147</color>
     <color name="palatinateBlue">#0038e1</color>
