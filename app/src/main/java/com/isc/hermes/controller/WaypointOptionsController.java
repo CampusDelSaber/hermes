@@ -50,33 +50,6 @@ public class WaypointOptionsController {
         setButtonsOnClick();
     }
 
-    public void assignPlaceName(LatLng point) {
-        MapboxGeocoding geocoding = MapboxGeocoding.builder()
-                .accessToken(String.valueOf(R.string.access_token))
-                .query(Point.fromLngLat(point.getLongitude(), point.getLatitude()))
-                .geocodingTypes(GeocodingCriteria.TYPE_PLACE)
-                .build();
-
-        geocoding.enqueueCall(new Callback<GeocodingResponse>() {
-            @Override
-            public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<CarmenFeature> results = response.body().features();
-                    if (results.size() > 0) {
-                        CarmenFeature feature = results.get(0);
-                        String placeNameText = feature.placeName();
-                        placeName.setText(placeNameText);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GeocodingResponse> call, Throwable t) {
-                placeName.setText("Waypoint");
-            }
-        });
-    }
-
     /**
      * Method to assign functionality to the buttons of the view.
      */
