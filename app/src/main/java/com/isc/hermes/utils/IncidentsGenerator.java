@@ -26,7 +26,6 @@ public class IncidentsGenerator {
         for (int i = 0; i < quantity; i++) {
             Polygon polygon = getRandomPolygon(currentLat, currentLng, 5);
             polygons[i] = polygon;
-            System.out.println("NEW POLYGON: " + polygon);
         }
         return polygons;
     }
@@ -44,15 +43,15 @@ public class IncidentsGenerator {
                 currentLng,
                 numVertex);
 
-        Polygon polygon = Polygon.fromLngLats(convertToList(coordinatesList));
-        System.out.println(polygon);
-        return polygon;
+        return Polygon.fromLngLats(convertToList(coordinatesList));
     }
 
     /**
+     * These method is used to generate a list of list of points from an LatLng array,
+     * for the purpose of use the list of list to make a Polygon from LngLats.
      *
-     * @param coordinatesList
-     * @return
+     * @param coordinatesList Array of latitudes and longitudes of vertices points.
+     * @return a list points (List of list).
      */
     public static List<List<Point>> convertToList(LatLng[] coordinatesList) {
         List<List<Point>> points = new ArrayList<>();
