@@ -47,7 +47,6 @@ public class MapController implements MapboxMap.OnMapClickListener {
      */
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
-        waypointOptionsController.assignPlaceName(point);
         doMarkOnMapAction(point);
         return true;
     }
