@@ -1,9 +1,19 @@
 package com.isc.hermes.view;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.isc.hermes.R;
+import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -11,6 +21,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
+    private final Context context;
     private MapboxMap mapboxMap;
 
     /**
@@ -19,10 +30,14 @@ public class MapDisplay {
      * @param mapView       the MapView object to display the map
      * @param mapConfigure  the MapConfigure object to configure the map
      */
-    public MapDisplay(MapView mapView, MapConfigure mapConfigure) {
+    public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
+        this.context = context;
+        mapConfigure.setContext(context);
     }
+
+
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -36,6 +51,8 @@ public class MapDisplay {
             mapConfigure.configure(mapboxMap);
         });
     }
+
+
 
     /**
      * Method for starting the MapView object instance.
@@ -88,12 +105,30 @@ public class MapDisplay {
         mapView.onSaveInstanceState(outState);
     }
 
-    /**
-     * Getter for the MapboxMap object.
+    /** Getter for the MapboxMap object.
      *
      * @return the MapboxMap object
      */
     public MapboxMap getMapboxMap() {
         return mapboxMap;
+    }
+
+    /**
+     * Method to set the map style to satellite, dark and default.
+     *
+     * @param mapStyle is the style for the map.
+     */
+    public void setMapStyle(String mapStyle) {
+        if (mapView != null && mapStyle != null) {
+            mapView.getMapAsync(mapboxMap -> {
+                if (mapStyle.equals("satellite")) {
+                    mapboxMap.setStyle(Style.SATELLITE_STREETS);
+                } else if (mapStyle.equals("dark")) {
+                    mapboxMap.setStyle(Style.DARK);
+                } else {
+                    mapboxMap.setStyle(Style.MAPBOX_STREETS);
+                }
+            });
+        }
     }
 }
