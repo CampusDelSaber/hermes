@@ -57,6 +57,7 @@ public class IncidentFormController {
             incidentForm.setVisibility(View.GONE);
             mapController.deleteMarks();
             Toast.makeText(context, "Incident Saved Correctly.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, getIncidentInformation(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -91,4 +92,23 @@ public class IncidentFormController {
     public RelativeLayout getIncidentForm() {
         return incidentForm;
     }
+
+    private String getIncidentInformation() {
+        Spinner incidentTypeSpinner = ((AppCompatActivity) context).findViewById(R.id.incident_spinner);
+        String selectedIncidentType = incidentTypeSpinner.getSelectedItem().toString();
+
+        NumberPicker incidentTimePicker = ((AppCompatActivity) context).findViewById(R.id.numberPicker);
+        int selectedIncidentTime = incidentTimePicker.getValue();
+
+        Spinner incidentTimeSpinner = ((AppCompatActivity) context).findViewById(R.id.incident_time_spinner);
+        String selectedIncidentTimeOption = incidentTimeSpinner.getSelectedItem().toString();
+
+        String incidentType = selectedIncidentType;
+        int incidentTime = selectedIncidentTime;
+        String incidentTimeOption = selectedIncidentTimeOption;
+
+        return incidentType + " " + incidentTime +" "+ incidentTimeOption;
+
+    }
+
 }
