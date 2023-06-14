@@ -2,6 +2,8 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -65,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view Helps build the view
      */
-    public void showAccount(View view) {
-        System.out.println("Your account information will be displayed");
+    public void goToAccountInformation(View view) {
+        Intent intent = new Intent(this, AccountInformation.class);
+        startActivity(intent);
     }
 
     /**
