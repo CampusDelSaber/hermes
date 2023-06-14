@@ -16,8 +16,8 @@ public class Validate extends AppCompatActivity {
     private EditText codeInput;
     private TextView result;
     private Button submit;
-    private CreatePass createPass = new CreatePass();
-    private String code = createPass.generatePass();
+    private CreateVerificationCode createPass = new CreateVerificationCode();
+    private String code = createPass.generateVerificationCode();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
