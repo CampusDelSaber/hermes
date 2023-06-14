@@ -1,7 +1,9 @@
 package com.isc.hermes.model;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ public class Validate extends AppCompatActivity {
     private String code = createPass.generateVerificationCode();
     private ValidationPeriod validationPeriod;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +37,7 @@ public class Validate extends AppCompatActivity {
         submit = findViewById(R.id.submitCode);
 
         validationPeriod = new ValidationPeriod();
+        validationPeriod.createValidationPeriod();
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
