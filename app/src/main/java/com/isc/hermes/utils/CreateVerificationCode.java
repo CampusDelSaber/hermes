@@ -1,4 +1,4 @@
-package com.isc.hermes.model;
+package com.isc.hermes.utils;
 
 import java.util.Random;
 
@@ -15,9 +15,8 @@ public class CreateVerificationCode {
     }
 
     private int getDigits() {
-        Random random = new Random();
         int minimum = 0;
         int maximum = 9;
-        return random.nextInt(maximum - minimum + 1) + minimum;
+        return new Random().nextInt(maximum - minimum + 1) + minimum;
     }
 }

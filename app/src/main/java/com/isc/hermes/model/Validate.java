@@ -8,8 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.isc.hermes.R;
+import com.isc.hermes.utils.CreateVerificationCode;
+import com.isc.hermes.utils.ValidationPeriod;
 
 public class Validate extends AppCompatActivity {
 
@@ -18,6 +19,7 @@ public class Validate extends AppCompatActivity {
     private Button submit;
     private CreateVerificationCode createPass = new CreateVerificationCode();
     private String code = createPass.generateVerificationCode();
+    private ValidationPeriod validationPeriod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class Validate extends AppCompatActivity {
         result = findViewById(R.id.resultMessage);
         codeInput = findViewById(R.id.codeInput);
         submit = findViewById(R.id.submitCode);
+
+        validationPeriod = new ValidationPeriod();
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
