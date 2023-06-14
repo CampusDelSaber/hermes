@@ -27,7 +27,7 @@ public class CurrentLocationController {
     private AppCompatActivity activity;
     private final LocationPermissionsController locationPermissionsController;
     private final MapDisplay mapDisplay;
-    private CurrentLocationModel currentLocationModel;
+    private static CurrentLocationModel currentLocationModel;
 
     /**
      * Constructs a new CurrentLocationController with the specified activity and map display.
@@ -114,5 +114,9 @@ public class CurrentLocationController {
             );
         } else
             Toast.makeText(activity, "Location permission denied.", Toast.LENGTH_SHORT).show();
+    }
+
+    public static CurrentLocationModel getCurrentLocationModel() {
+        return currentLocationModel;
     }
 }

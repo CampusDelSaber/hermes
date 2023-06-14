@@ -10,6 +10,8 @@ import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.isc.hermes.R;
+import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.model.CurrentLocationModel;
 
 public class GenerateIncidentView {
     private AppCompatActivity activity;
@@ -24,14 +26,9 @@ public class GenerateIncidentView {
 
     public void initIncidentGeneratorView() {
         ImageButton locationButton = activity.findViewById(R.id.generateIncidentButton);
+        CurrentLocationModel currentLocation = CurrentLocationController.getCurrentLocationModel();
         locationButton.setOnClickListener(v -> // Imprimir un log con nivel de información
-                Log.i("INFOMAU", "Este es un mensaje de log de nivel información ---- pppp"));
-
-        //relativeLayout = activity.findViewById(R.id.generateIncidentButton);
-        //relativeLayout.setVisibility(View.GONE);
-        //NumberPicker numberPicker = activity.findViewById(R.id.numberIncidentsPicker);
-        //numberPicker.setMinValue(1);
-        //numberPicker.setMaxValue(10);
+                Log.i("INFOMAU", currentLocation.getLatitude()+" , "+currentLocation.getLongitude()));
     }
 
 

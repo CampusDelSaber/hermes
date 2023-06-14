@@ -154,10 +154,10 @@
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 
-    <include
+    <!--<include
         layout="@layout/generate_random_indicent_form"
         mapbox:layout_anchor="@+id/mapView"
-        mapbox:layout_anchorGravity="center" />
+        mapbox:layout_anchorGravity="center" />-->
 
     <LinearLayout
         android:id="@+id/lateralMenu"
