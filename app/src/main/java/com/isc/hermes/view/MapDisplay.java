@@ -2,13 +2,8 @@ package com.isc.hermes.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.isc.hermes.R;
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.controller.IncidentsGetterController;
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
@@ -21,8 +16,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
-    private final Context context;
     private MapboxMap mapboxMap;
+    private IncidentsGetterController incidentsGetterController;
 
     /**
      * Constructor to create a MapDisplay object.
@@ -33,11 +28,9 @@ public class MapDisplay {
     public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
-        this.context = context;
         mapConfigure.setContext(context);
+        incidentsGetterController = IncidentsGetterController.getInstance();
     }
-
-
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -49,10 +42,12 @@ public class MapDisplay {
         mapView.getMapAsync(mapboxMap -> {
             this.mapboxMap = mapboxMap;
             mapConfigure.configure(mapboxMap);
+
+            mapboxMap.addOnCameraIdleListener(
+                    () -> incidentsGetterController.getNearIncidentsWithinRadius(mapboxMap)
+            );
         });
     }
-
-
 
     /**
      * Method for starting the MapView object instance.
