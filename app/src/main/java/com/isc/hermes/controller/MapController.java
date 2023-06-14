@@ -81,11 +81,12 @@ public class MapController implements MapboxMap.OnMapClickListener {
             if(waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
                 waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
-                doMarkOnMapAction2(point);
             }
             if(waypointOptionsController.getTrafficFormController().getTrafficForm().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getTrafficFormController().getTrafficForm().startAnimation(Animations.exitAnimation);
                 waypointOptionsController.getTrafficFormController().getTrafficForm().setVisibility(View.GONE);
+                doMarkOnMapAction2(point);
+
 
             }
             isMarked = false;
@@ -99,32 +100,40 @@ public class MapController implements MapboxMap.OnMapClickListener {
         }
     }
 
+    /**
+     * Method to perform action to click on map and
+     * will help to control that the point is placed at a point
+     * and from that point create the traffic line that is there.
+     * @param point2 Is point passed as parameter with its latitude and longitude
+     */
     private void doMarkOnMapAction2(LatLng point2) {
+
 
         PointF screenPoint2 = mapboxMap.getProjection().toScreenLocation(point2);
         List<Feature> features2 = mapboxMap.queryRenderedFeatures(screenPoint2);
 
-        if (previousPoint != null && (features2.get(0).geometry().type().equals("MultiLineString") || features2.get(0).geometry().type().equals("LineString"))) {
+
+            if (previousPoint != null && (features2.get(0).geometry().type().equals("MultiLineString") || features2.get(0).geometry().type().equals("LineString"))) {
                 List<LatLng> points = new ArrayList<>();
                 points.add(previousPoint);
                 points.add(point2);
+
                 if (drawnLine != null) {
                     mapboxMap.removePolyline(drawnLine);
                 }
+
                 drawnLine = mapboxMap.addPolyline(new PolylineOptions()
                         .addAll(points)
                         .color(Color.RED)
                         .width(5f));
-            isMarked = false;
             }else {
-            Toast.makeText(context, "Touch on street or avenue", Toast.LENGTH_SHORT).show();
-            isMarked = false;
-        }
+                Toast.makeText(context, "Touch on street or avenue", Toast.LENGTH_SHORT).show();
+            }
+
             previousPoint = point2;
+        }
 
 
-
-    }
 
     /**
      * Method to delete all the marks in the map.
