@@ -65,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view Helps build the view
      */
-    public void showAccount(View view) {
-        System.out.println("Your account information will be displayed");
+    public void goToAccountInformation(View view) {
+        Intent intent = new Intent(this, AccountInformation.class);
+        startActivity(intent);
     }
 
     /**
@@ -119,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         currentLocationController = new CurrentLocationController(this, mapDisplay);
         currentLocationController.initLocation();
     }
-
 
     /**
      * Method for initializing the Mapbox object instance.
