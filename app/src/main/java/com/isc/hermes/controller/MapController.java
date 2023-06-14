@@ -70,6 +70,8 @@ public class MapController implements MapboxMap.OnMapClickListener {
      * @param point Is point passed as parameter with its latitude and longitude
      */
     private void doMarkOnMapAction(LatLng point){
+        PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
+        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
         if (isMarked){
             deleteMarks();
             if(waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
@@ -79,11 +81,12 @@ public class MapController implements MapboxMap.OnMapClickListener {
             if(waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
                 waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
+                doMarkOnMapAction2(point);
             }
             if(waypointOptionsController.getTrafficFormController().getTrafficForm().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getTrafficFormController().getTrafficForm().startAnimation(Animations.exitAnimation);
                 waypointOptionsController.getTrafficFormController().getTrafficForm().setVisibility(View.GONE);
-                doMarkOnMapAction2(point);
+
             }
             isMarked = false;
         } else {
@@ -92,6 +95,7 @@ public class MapController implements MapboxMap.OnMapClickListener {
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
             isMarked = true;
+
         }
     }
 
@@ -99,11 +103,8 @@ public class MapController implements MapboxMap.OnMapClickListener {
 
         PointF screenPoint2 = mapboxMap.getProjection().toScreenLocation(point2);
         List<Feature> features2 = mapboxMap.queryRenderedFeatures(screenPoint2);
-        if (!features2.isEmpty() && (features2.get(0).geometry().type().equals("MultiLineString") || features2.get(0).geometry().type().equals("LineString"))) {
-            MarkerOptions markerOptions = new MarkerOptions().position(point2);
-            mapboxMap.addMarker(markerOptions);
-            markerCount++;
-            if (previousPoint != null && (features2.get(0).geometry().type().equals("MultiLineString") || features2.get(0).geometry().type().equals("LineString"))) {
+
+        if (previousPoint != null && (features2.get(0).geometry().type().equals("MultiLineString") || features2.get(0).geometry().type().equals("LineString"))) {
                 List<LatLng> points = new ArrayList<>();
                 points.add(previousPoint);
                 points.add(point2);
@@ -114,11 +115,15 @@ public class MapController implements MapboxMap.OnMapClickListener {
                         .addAll(points)
                         .color(Color.RED)
                         .width(5f));
-            }
-            previousPoint = point2;
-        } else {
+            isMarked = false;
+            }else {
             Toast.makeText(context, "Touch on street or avenue", Toast.LENGTH_SHORT).show();
+            isMarked = false;
         }
+            previousPoint = point2;
+
+
+
     }
 
     /**
