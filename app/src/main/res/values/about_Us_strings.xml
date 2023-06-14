@@ -12,7 +12,10 @@
     <string name="DescriptionWarning">Warning</string>
     <string name="AccidentAlerts">Real-time accident alerts.</string>
     <string name="MessengGoodbye">Go beyond your limits!
-PLUS ULTRA!</string>
+PLUS ULTRA!
+
+
+    </string>
     <string name="FindPlaces">Find the places you need to go near you.</string>
     <string name="FarewellApp">We believe that the combination of these technologies will provide an even more immersive and enriching browsing experience.
 Feel free to ask us additional questions or request more details about Hermes. We are here to help you.</string>
