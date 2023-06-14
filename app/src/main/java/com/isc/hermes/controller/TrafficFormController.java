@@ -27,13 +27,13 @@ public class TrafficFormController {
     /**
      * This is the constructor method. Init all the necessary components.
      *
-     * @param context Is the context application.
+     * @param context       Is the context application.
      * @param mapController Is the controller of the map.
      */
     public TrafficFormController(Context context, MapController mapController) {
         this.context = context;
         this.mapController = mapController;
-        incidentForm = ((AppCompatActivity)context).findViewById(R.id.traffic_form);
+        incidentForm = ((AppCompatActivity) context).findViewById(R.id.traffic_form);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button);
         acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);
         setButtonsOnClick();
@@ -44,7 +44,7 @@ public class TrafficFormController {
     /**
      * Method to assign functionality to the buttons of the view.
      */
-    private void setButtonsOnClick(){
+    private void setButtonsOnClick() {
         cancelButton.setOnClickListener(v -> {
             mapController.setMarked(false);
             incidentForm.startAnimation(Animations.exitAnimation);
@@ -65,18 +65,18 @@ public class TrafficFormController {
      * Method assign values to the incident components.
      *
      * <p>
-     *     This method assign values and views to the incident components such as the incident type
-     *     spinner, incident estimated time spinner and incident estimated time number picker.
+     * This method assign values and views to the incident components such as the incident type
+     * spinner, incident estimated time spinner and incident estimated time number picker.
      * </p>
      */
     public void setTrafficComponents() {
         Spinner incidentType = ((AppCompatActivity) context).findViewById(R.id.traffic_spinner);
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(context, R.array.traffic_level, R.layout.incident_spinner_items);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.traffic_level, R.layout.incident_spinner_items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         incidentType.setAdapter(adapter);
 
         Spinner incidentEstimatedTime = ((AppCompatActivity) context).findViewById(R.id.incident_time_spinner);
-        ArrayAdapter<CharSequence> adapterTime=ArrayAdapter.createFromResource(context, R.array.traffic_estimated_time, R.layout.incident_spinner_items);
+        ArrayAdapter<CharSequence> adapterTime = ArrayAdapter.createFromResource(context, R.array.traffic_estimated_time, R.layout.incident_spinner_items);
         adapterTime.setDropDownViewResource(android.R.layout.simple_spinner_item);
         incidentEstimatedTime.setAdapter(adapterTime);
 
@@ -87,6 +87,7 @@ public class TrafficFormController {
 
     /**
      * This is a getter method to Incident form layout.
+     *
      * @return Return a layout.
      */
     public RelativeLayout getTrafficForm() {
