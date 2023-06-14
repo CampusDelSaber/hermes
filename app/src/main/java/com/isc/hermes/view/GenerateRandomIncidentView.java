@@ -10,7 +10,7 @@ import com.isc.hermes.generators.Radium;
 /**
  * This class is used to initialize the view to select how to generate incidents.
  */
-public class GenerateRandomIncidentVIew {
+public class GenerateRandomIncidentView {
     private AppCompatActivity activity;
     private Spinner spinner;
     private EditText numberIncidentsEdit;
@@ -21,7 +21,7 @@ public class GenerateRandomIncidentVIew {
      *
      * @param activity Receives an AppCompacActivity to get the xml elements and initialize it.
      */
-    public GenerateRandomIncidentVIew(AppCompatActivity activity){
+    public GenerateRandomIncidentView(AppCompatActivity activity){
         this.activity = activity;
         layout = activity.findViewById(R.id.GenerateIncidentView);
         layout.setVisibility(View.GONE);
