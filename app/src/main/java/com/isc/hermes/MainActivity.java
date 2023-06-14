@@ -2,8 +2,6 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -122,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         currentLocationController = new CurrentLocationController(this, mapDisplay);
         currentLocationController.initLocation();
     }
-
 
     /**
      * Method for initializing the Mapbox object instance.
