@@ -18,6 +18,9 @@
     <string name="get_location_text">Get Location</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
+    <string name="list_button_text">List</string>
+    <string name="download_button_text">Download\n</string>
+    <string name="cancel">Cancel</string>
     <string-array name="incidents_type">
         <item>Traffic Incident</item>
         <item>Natural Disaster</item>
