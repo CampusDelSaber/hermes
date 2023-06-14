@@ -1,6 +1,8 @@
 package com.isc.hermes.controller;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.location.LocationManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -77,13 +79,30 @@ public class CurrentLocationController {
     }
 
     /**
+     * The isLocationEnabled method checks if the location is enabled on the device.
+     *<p>
+     * It verifies by checking the status of the GPS location is enabled, this
+     * will be given in a boolean and it will check for network room verification.
+     * </p>
+     * @return true if GPS is enabled, otherwise false.
+     */
+    private boolean isLocationEnabled() {
+        LocationManager locationManager =
+                (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+
+        boolean gpsEnabled =
+                locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean networkEnabled =
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        return gpsEnabled || networkEnabled;
+    }
+
+    /**
      * Method for enabling the location component on the map.
      */
     @SuppressWarnings("MissingPermission")
     private void enableLocationComponent() {
-        if (mapDisplay.getMapboxMap() == null || mapDisplay.getMapboxMap().getStyle() == null)
-            return;
-
         if (locationPermissionsController.checkLocationPermissions()) {
             LocationComponentOptions locationComponentOptions =
                     LocationComponentOptions.builder(activity).pulseEnabled(true).build();
@@ -92,12 +111,12 @@ public class CurrentLocationController {
                     LocationComponentActivationOptions.builder(
                                     activity, Objects.requireNonNull(mapDisplay.getMapboxMap().getStyle()))
                             .locationComponentOptions(locationComponentOptions).build();
+            if (isLocationEnabled()) {
+                activateLocation(locationComponentActivationOptions);
+                onLocationEngineConnected();
+            } else Toast.makeText(activity, "Please, turn on your GPS.", Toast.LENGTH_SHORT).show();
 
-            activateLocation(locationComponentActivationOptions);
-            onLocationEngineConnected();
-        } else {
-            locationPermissionsController.requestLocationPermissionAccess();
-        }
+        } else locationPermissionsController.requestLocationPermissionAccess();
     }
 
     /**
@@ -109,16 +128,12 @@ public class CurrentLocationController {
     private void activateLocation(
             LocationComponentActivationOptions locationComponentActivationOptions
     ) {
-        try {
             mapDisplay.getMapboxMap().getLocationComponent().activateLocationComponent(
                     locationComponentActivationOptions
             );
             mapDisplay.getMapboxMap().getLocationComponent().setLocationComponentEnabled(true);
             mapDisplay.getMapboxMap().getLocationComponent().setCameraMode(CameraMode.TRACKING);
             mapDisplay.getMapboxMap().getLocationComponent().setRenderMode(RenderMode.COMPASS);
-        } catch (Exception e) {
-            Toast.makeText(activity, "Please,turn on your GPS.", Toast.LENGTH_SHORT).show();
-        }
     }
 
     /**
