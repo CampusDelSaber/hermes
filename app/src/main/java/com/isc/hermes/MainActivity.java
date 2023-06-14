@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void addMapboxSearcher() {
         Searcher searcher = new Searcher();
-        SearcherController searcherController = new SearcherController(searcher,
+        /*SearcherController searcherController = new SearcherController(searcher,
                 findViewById(R.id.searchResults),findViewById(R.id.searchView));
-        searcherController.runSearcher();
+        searcherController.runSearcher();*/
     }
 
     /**

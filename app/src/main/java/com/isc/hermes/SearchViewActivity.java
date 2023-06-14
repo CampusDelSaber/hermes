@@ -1,5 +1,6 @@
 package com.isc.hermes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.SearchView;
 
@@ -7,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.isc.hermes.model.Place;
+import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.PlacesAdapter;
@@ -21,6 +22,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     private PlacesAdapter adapter;
     private Searcher searcher;
     private SearchView searchView;
+    private SearcherController searcherController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +37,16 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+        searcherController = new SearcherController(searcher, adapter);
+        searchView.setOnQueryTextListener(searcherController.getOnQueryTextListener(this));
+    }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.clearWayPoints();
-                List<WayPoint> wayPoints = searcher.getSearcherSuggestionsPlacesInfo(newText);
-                for (WayPoint wayPoint : wayPoints) {
-                    adapter.addWayPoint(wayPoint);
-                }
-                return false;
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        searcherController.shutdown();
+        Intent intent = new Intent(SearchViewActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Override
