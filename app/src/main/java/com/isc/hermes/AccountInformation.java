@@ -19,6 +19,9 @@ public class AccountInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
+        deleteAccountAction();
+        uploadImageProfileAction();
+        editAccountAction();
     }
 
     /**
@@ -29,5 +32,29 @@ public class AccountInformation extends AppCompatActivity {
     public void goToPrincipalView(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * This method is used to delete an account using on click action.
+     */
+    public void deleteAccountAction() {
+        findViewById(R.id.buttonDeleteAccount).setOnClickListener( v ->
+                System.out.println("the action for delete account will be here"));
+    }
+
+    /**
+     * This method is used to upload the image account information using on click action.
+     */
+    public void uploadImageProfileAction() {
+        findViewById(R.id.buttonUploadImage).setOnClickListener( v ->
+                System.out.println("the action for upload profile picture will be here"));
+    }
+
+    /**
+     * This method is used to edit an account information using on click action.
+     */
+    public void editAccountAction() {
+        findViewById(R.id.buttonEditInformation).setOnClickListener( v ->
+                System.out.println("the action for edit account information will be here"));
     }
 }

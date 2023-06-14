@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/account_title"
                 android:textColor="@color/silver"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,43 +60,44 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView4"
         tools:layout_editor_absoluteX="0dp">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="188dp" />
-
         <ImageView
             android:id="@+id/imageView5"
             android:layout_width="183dp"
             android:layout_height="165dp"
             android:importantForAccessibility="no"
-            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintBottom_toTopOf="@+id/buttonUploadImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.55"
             tools:srcCompat="@tools:sample/avatars" />
 
+        <Button
+            android:id="@+id/buttonUploadImage"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/blueOxford_app_theme"
+            android:drawableLeft="@drawable/baseline_upload_24"
+            android:text="@string/edit_profile"
+            android:textSize="13sp"
+            app:cornerRadius="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
         <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:gravity="center"
             android:orientation="vertical"
-            android:padding="20dp"
+            android:padding="10dp"
             android:showDividers="middle"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline3">
-
-            <Button
-                android:id="@+id/editPictureButton"
-                android:layout_width="140dp"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/blueOxford_app_theme"
-                android:text="Edit Picture"
-                android:textAlignment="center" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.96">
 
             <TextView
                 android:layout_width="match_parent"
@@ -104,80 +105,46 @@
                 android:text="@string/informationSection"
                 android:textAlignment="center"
                 android:textColor="@color/blueOxford_app_theme"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                android:layout_height="20dp" />
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:hint="@string/complete_name"
+                app:startIconDrawable="@drawable/baseline_contacts_24">
 
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <AutoCompleteTextView
+                    android:id="@+id/textFieldFullName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/complete_name"
-                    app:startIconDrawable="@drawable/baseline_contacts_24">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/textFieldFullName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/edit_info_icon"
-                        android:inputType="none"
-                        android:paddingRight="20dp"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <ImageView
-                    android:id="@+id/editFullNameButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/edit_info_icon" />
-            </LinearLayout>
+                    android:inputType="none"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:hint="@string/userName"
+                app:startIconDrawable="@drawable/baseline_perm_identity_24">
 
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <AutoCompleteTextView
+                    android:id="@+id/textFieldUserName"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/userName"
-                    app:startIconDrawable="@drawable/baseline_perm_identity_24">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/textFieldUserName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/edit_info_icon"
-                        android:inputType="none"
-                        android:paddingRight="20dp"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageView
-                    android:id="@+id/editUsernameButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/edit_info_icon" />
-
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Space
                 android:layout_width="match_parent"
@@ -222,16 +189,43 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                android:layout_height="22dp" />
 
-            <Button
-                android:id="@+id/editInformationButton"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/WID"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/blueOxford_app_theme"
-                android:text="Save changes" />
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/buttonDeleteAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/mapboxRedDark"
+                    android:drawableLeft="@drawable/baseline_no_accounts_24"
+                    android:text="@string/delete_account"
+                    android:textSize="13sp"
+                    app:cornerRadius="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/buttonEditInformation"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
+                <Button
+                    android:id="@+id/buttonEditInformation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/blueOxford_app_theme"
+                    android:drawableLeft="@drawable/baseline_drive_file_rename_outline_24"
+                    android:text="@string/edit_information"
+                    android:textSize="13sp"
+                    app:cornerRadius="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/buttonDeleteAccount"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
