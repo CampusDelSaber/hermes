@@ -1,7 +1,5 @@
 package com.isc.hermes;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +9,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.model.User;
@@ -94,8 +95,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
                 //TODO: Save the registeredUser in dataBase
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(this, MainActivity.class);
+                //startActivity(intent);
+                verifyAdministration();
             } else comboBoxTextField.setHelperText("Required");
         });
     }
@@ -133,5 +135,23 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         generateActionToButtonSignUp();
         loadUserImageInView();
         loadInformationAboutUserInTextFields();
+    }
+
+    private void verifyAdministration(){
+        AutoCompleteTextView autoCompleteText = findViewById(R.id.textFieldUserType);
+        autoCompleteText.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedItem = (String) parent.getItemAtPosition(position);
+
+            // Verificar si el usuario es administrador
+            if (selectedItem.equals("Administrator")) {
+                // Abrir la ventana SendEmailActivity
+                Intent intent = new Intent(UserSignUpCompletionActivity.this, SendEmailActivity.class);
+                startActivity(intent);
+            } else {
+                // Abrir la ventana MainActivity
+                Intent intent = new Intent(UserSignUpCompletionActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

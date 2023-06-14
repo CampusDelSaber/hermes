@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name= "VerifyCode"> Verification code input field</string>
+    <string name= "verify_code_hint"> Enter verification code</string>
+    <string name="verify_code_label">Verify Code</string>
+
+</resources>
