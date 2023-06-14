@@ -99,24 +99,52 @@ public class CurrentLocationController {
     }
 
     /**
-     * Method for enabling the location component on the map.
+     * The method is going to check for enabling the location components on the map.
      */
     @SuppressWarnings("MissingPermission")
     private void enableLocationComponent() {
         if (locationPermissionsController.checkLocationPermissions()) {
-            LocationComponentOptions locationComponentOptions =
-                    LocationComponentOptions.builder(activity).pulseEnabled(true).build();
-
-            LocationComponentActivationOptions locationComponentActivationOptions =
-                    LocationComponentActivationOptions.builder(
-                                    activity, Objects.requireNonNull(mapDisplay.getMapboxMap().getStyle()))
-                            .locationComponentOptions(locationComponentOptions).build();
             if (isLocationEnabled()) {
-                activateLocation(locationComponentActivationOptions);
-                onLocationEngineConnected();
-            } else Toast.makeText(activity, "Please, turn on your GPS.", Toast.LENGTH_SHORT).show();
+                activateLocationComponent();
+            } else {
+                showMessageToEnableGps();
+            }
+        } else {
+            requestLocationPermissions();
+        }
+    }
 
-        } else locationPermissionsController.requestLocationPermissionAccess();
+    /**
+     * The activateLocationComponent method is responsible for activating the location component.
+     */
+    private void activateLocationComponent() {
+        LocationComponentOptions locationComponentOptions =
+                LocationComponentOptions.builder(activity).pulseEnabled(true).build();
+
+        LocationComponentActivationOptions locationComponentActivationOptions =
+                LocationComponentActivationOptions.builder(
+                                activity, Objects.requireNonNull(mapDisplay.getMapboxMap().getStyle()))
+                        .locationComponentOptions(locationComponentOptions).build();
+
+        activateLocation(locationComponentActivationOptions);
+        onLocationEngineConnected();
+    }
+
+    /**
+     * Displays the message to enable GPS on the device.
+     */
+    private void showMessageToEnableGps() {
+        Toast.makeText(activity, "Please, turn on your GPS.", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * This method requests location permissions.
+     * <p>
+     * Method is in charge of requesting the location permissions if they are not present.
+     * </p>
+     */
+    private void requestLocationPermissions() {
+        locationPermissionsController.requestLocationPermissionAccess();
     }
 
     /**
