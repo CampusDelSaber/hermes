@@ -8,6 +8,9 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+/**
+ * Model class that represents an incident.
+ */
 public class Incident {
     private String id;
     private String type;
@@ -16,6 +19,16 @@ public class Incident {
     private Date deathDate;
     private JSONObject geometry;
 
+    /**
+     * Constructs an instance of Incident.
+     *
+     * @param id          The ID of the incident.
+     * @param type        The type of the incident.
+     * @param reason      The reason for the incident.
+     * @param dateCreated The date the incident was created.
+     * @param deathDate   The date of death related to the incident.
+     * @param geometry    The geometry information of the incident.
+     */
     public Incident(
             String id, String type, String reason, Date dateCreated, Date deathDate,
             JSONObject geometry
@@ -28,10 +41,21 @@ public class Incident {
         this.geometry = geometry;
     }
 
+    /**
+     * Retrieves the geometry information of the incident.
+     *
+     * @return The geometry information.
+     */
     public JSONObject getGeometry() {
         return geometry;
     }
 
+    /**
+     * Retrieves the point coordinates of the incident as a LatLng object.
+     *
+     * @return The LatLng object representing the point coordinates.
+     * @throws JSONException if there is an error parsing the JSON or accessing the coordinates.
+     */
     public LatLng getPointCoordinates() throws JSONException {
         JSONArray coordinatesArray = geometry.getJSONArray("coordinates");
         double lng = coordinatesArray.getDouble(0);

@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The controller responsible for getting incidents near a specific location within a radius.
+ */
 public class IncidentsGetterController {
     private final ISO8601Converter iso8601Converter;
     private final IncidentsDataProcessor incidentsDataProcessor;
@@ -24,6 +27,9 @@ public class IncidentsGetterController {
     private IncidentGetterModel incidentGetterModel;
     private final ExecutorService executorService;
 
+    /**
+     * Constructs an instance of IncidentsGetterController.
+     */
     public IncidentsGetterController() {
         this.iso8601Converter = ISO8601Converter.getInstance();
         this.incidentsDataProcessor = IncidentsDataProcessor.getInstance();
@@ -31,6 +37,11 @@ public class IncidentsGetterController {
         this.executorService = Executors.newSingleThreadExecutor();
     }
 
+    /**
+     * Retrieves incidents near the specified location within a radius.
+     *
+     * @param mapboxMap The Mapbox map instance.
+     */
     public void getNearIncidentsWithinRadius(MapboxMap mapboxMap) {
         executorService.execute(() -> {
             LatLng cameraFocus = mapboxMap.getCameraPosition().target;
@@ -43,6 +54,12 @@ public class IncidentsGetterController {
         });
     }
 
+    /**
+     * Parses the JSON array of incidents and converts them into a list of Incident objects.
+     *
+     * @param incidentsArray The JSON array of incidents.
+     * @return The list of Incident objects.
+     */
     private List<Incident> parseIncidentResponse(JSONArray incidentsArray) {
         List<Incident> incidents = new ArrayList<>();
 
@@ -68,6 +85,11 @@ public class IncidentsGetterController {
         return incidents;
     }
 
+    /**
+     * Retrieves the singleton instance of IncidentsGetterController.
+     *
+     * @return The singleton instance.
+     */
     public static IncidentsGetterController getInstance(){
         if (instance == null) instance = new IncidentsGetterController();
         return instance;
