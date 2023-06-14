@@ -11,12 +11,12 @@ import com.isc.hermes.model.WayPoint;
 
 import java.util.Locale;
 
-public class PlaceViewHolder extends RecyclerView.ViewHolder {
+public class SearcherViewHolder extends RecyclerView.ViewHolder {
     TextView placeName;
     TextView placeLocation;
     WayPointClickListener wayPointClickListener;
 
-    PlaceViewHolder(@NonNull View itemView, WayPointClickListener wayPointClickListener) {
+    SearcherViewHolder(@NonNull View itemView, WayPointClickListener wayPointClickListener) {
         super(itemView);
         this.wayPointClickListener = wayPointClickListener;
         placeName = itemView.findViewById(R.id.placeName);

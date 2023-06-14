@@ -1,5 +1,6 @@
 package com.isc.hermes.utils;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +13,25 @@ import com.isc.hermes.model.WayPoint;
 
 import java.util.List;
 
-public class PlacesAdapter extends RecyclerView.Adapter<PlaceViewHolder> {
+public class SearcherAdapter extends RecyclerView.Adapter<SearcherViewHolder> {
 
     private List<WayPoint> wayPoints;
     private WayPointClickListener wayPointClickListener;
 
-    public PlacesAdapter(List<WayPoint> wayPoints, WayPointClickListener wayPointClickListener) {
+    public SearcherAdapter(List<WayPoint> wayPoints, WayPointClickListener wayPointClickListener) {
         this.wayPoints = wayPoints;
         this.wayPointClickListener = wayPointClickListener;
     }
 
     @NonNull
     @Override
-    public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SearcherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search, parent, false);
-        return new PlaceViewHolder(view, wayPointClickListener);
+        return new SearcherViewHolder(view, wayPointClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SearcherViewHolder holder, int position) {
         holder.bind(wayPoints.get(position));
     }
 
@@ -44,6 +45,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlaceViewHolder> {
         notifyItemInserted(wayPoints.size() - 1);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clearWayPoints() {
         this.wayPoints.clear();
         notifyDataSetChanged();

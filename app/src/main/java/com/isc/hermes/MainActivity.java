@@ -9,10 +9,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
-import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
@@ -49,21 +47,10 @@ public class MainActivity extends AppCompatActivity {
         initMapView();
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
-        addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
         searchView = findViewById(R.id.searchView);
         changeSearchView();
-    }
-
-    /**
-     * Method to add the searcher to the main scene above the map
-     */
-    private void addMapboxSearcher() {
-        Searcher searcher = new Searcher();
-        /*SearcherController searcherController = new SearcherController(searcher,
-                findViewById(R.id.searchResults),findViewById(R.id.searchView));
-        searcherController.runSearcher();*/
     }
 
     /**
