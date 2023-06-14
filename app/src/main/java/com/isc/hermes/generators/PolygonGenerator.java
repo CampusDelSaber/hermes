@@ -8,6 +8,9 @@ import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This method has the responsibility to generate polygon coordinates data.
+ */
 public class PolygonGenerator extends CoordinateGen {
 
     private Geometry polygon;
@@ -17,7 +20,10 @@ public class PolygonGenerator extends CoordinateGen {
     private DelaunayTriangulationBuilder triangulationBuilder;
     private CoordinateParser coordinateParser;
 
-
+    /**
+     * This is the constructor method to initialize all necessary variables to
+     * generate polygon coordinates data.
+     */
     public PolygonGenerator() {
         this.coordinateParser = new CoordinateParser();
         this.pointGenerator = new PointGenerator();
@@ -26,6 +32,13 @@ public class PolygonGenerator extends CoordinateGen {
         this.triangulationBuilder = new DelaunayTriangulationBuilder();
     }
 
+    /**
+     * This method generate a polygon coordinates using a limited range.
+     *
+     * @param referencePoint to get the main point reference of limited range.
+     * @param radium to get the radium using the reference point.
+     * @return the polygon coordinates generated.
+     */
     public List<Double[]> getPolygon(Double[] referencePoint, Radium radium) {
         polygonCoordinates.clear();
 
@@ -41,10 +54,22 @@ public class PolygonGenerator extends CoordinateGen {
         return coordinateParser.parseToDoubles(polygon);
     }
 
+    /**
+     * This method verify if the reference point is valid to generate a polygon coordinates.
+     *
+     * @param referencePoint to verify if it valid.
+     * @return boolean to know if it is valid.
+     */
     private boolean isValidToGeneratePolygon(Double[] referencePoint) {
         return referencePoint != null && referencePoint.length == 2;
     }
 
+    /**
+     * This method build triangulation using the polygon coordinates generated.
+     *
+     * @param polygonCoordinates are the coordinates generated.
+     * @return triangulation built.
+     */
     public Geometry buildTriangulation(List<Coordinate> polygonCoordinates) {
         triangulationBuilder.setSites(polygonCoordinates);
         return triangulationBuilder.getTriangles(geometryFactory).union();

@@ -31,14 +31,28 @@ public class CoordinateGen {
         this.streetValidator = new StreetValidator();
     }
 
+    /**
+     * This method reset the content of coordinates list.
+     */
     protected void resetGeneratedCoordinates() {
         coordinates.clear();
     }
 
+    /**
+     * This method generate a random angle.
+     *
+     * @return random angle.
+     */
     protected double getRandomAngle() {
         return Math.random() * 2 * Math.PI;
     }
 
+    /**
+     * This method generate the distance using a radium.
+     *
+     * @param radium to generate the near distance.
+     * @return near distance.
+     */
     protected double getNearDistance(Radium radium) {
         return Math.random() * radium.getValue();
     }

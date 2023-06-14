@@ -2,10 +2,16 @@ package com.isc.hermes.generators;
 
 import java.util.List;
 
+/**
+ * This method has the responsibility to generate linestring coordinates data.
+ */
 public class LinestringGenerator extends CoordinateGen {
 
     private PointGenerator pointGenerator;
 
+    /**
+     * This is the constructor method to initialize the point generator to generate linestring.
+     */
     public LinestringGenerator() {
         this.pointGenerator = new PointGenerator();
     }

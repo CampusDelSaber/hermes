@@ -1,5 +1,8 @@
 package com.isc.hermes.generators;
 
+/**
+ * This method has the responsibility to generate point coordinates data.
+ */
 public class PointGenerator extends CoordinateGen {
 
     private int maxAttempts;
@@ -22,6 +25,9 @@ public class PointGenerator extends CoordinateGen {
         return coordinate;
     }
 
+    /**
+     * This method reset the value of attempts amount.
+     */
     private void resetAttempts() {
         maxAttempts = 10000;
     }
