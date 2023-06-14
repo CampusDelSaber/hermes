@@ -35,17 +35,8 @@ public class MapDisplay {
         this.mapConfigure = mapConfigure;
         this.context = context;
         mapConfigure.setContext(context);
-        initReportIncidentButton();
     }
 
-
-    public void initReportIncidentButton() {
-        ImageButton reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.reportIncidentButton);
-        reportIncidentButton.setOnClickListener(v -> {
-            MapClickEventsManager.isOnReportIncidentMode = true;
-            Toast.makeText(context,"To report incident touch on map",Toast.LENGTH_SHORT).show();
-        });
-    }
 
 
     /**

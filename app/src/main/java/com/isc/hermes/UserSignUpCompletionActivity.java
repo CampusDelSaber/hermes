@@ -95,9 +95,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
                 //TODO: Save the registeredUser in dataBase
-                //Intent intent = new Intent(this, MainActivity.class);
-                //startActivity(intent);
-                verifyAdministration();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                //verifyAdministration();
             } else comboBoxTextField.setHelperText("Required");
         });
     }

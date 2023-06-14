@@ -1,13 +1,14 @@
 package com.isc.hermes;
 
-import androidx.annotation.IdRes;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
-import android.widget.ImageButton;
+import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.IdRes;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * This class is in charge of controlling the activity of about us.
@@ -19,7 +20,6 @@ public class AboutUs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
 
-        actionButtonBack();
         creationLabelLine();
 
     }
@@ -41,7 +41,7 @@ public class AboutUs extends AppCompatActivity {
      * @param title source text.
      */
     private void creationLineSpan(@IdRes int id, String title){
-        TextView textView1 = (TextView) findViewById(id);
+        TextView textView1 = findViewById(id);
         SpannableString textU = new SpannableString(title);
         textU.setSpan(new UnderlineSpan(), 0, textU.length(), 0);
         textView1.setText(textU);
@@ -51,9 +51,8 @@ public class AboutUs extends AppCompatActivity {
      *  It is the action of returning to sing In, to get out of the about us.
      *  You will find the button, and by clicking it you can go back.
      */
-    private void actionButtonBack(){
-        ImageButton btn=findViewById(R.id.imageButtonBack);
-        btn.setOnClickListener(v -> startActivity(
-                new Intent(AboutUs.this,SignUpActivityView.class)));
+    public void goToBack(View view){
+        Intent intent = new Intent(this, SignUpActivityView.class);
+        startActivity(intent);
     }
 }
