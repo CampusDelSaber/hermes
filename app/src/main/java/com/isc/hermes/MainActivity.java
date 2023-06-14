@@ -2,17 +2,21 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
+
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
+
 import android.widget.LinearLayout;
+
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private void addMapboxSearcher() {
         Searcher searcher = new Searcher();
         SearcherController searcherController = new SearcherController(searcher,
-                findViewById(R.id.searchResults),findViewById(R.id.searchView));
+                findViewById(R.id.searchResults), findViewById(R.id.searchView));
         searcherController.runSearcher();
     }
 
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
+     * This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
      *
      * @param view Helps build the view.
      */
@@ -107,16 +111,19 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view The view of the button that has been clicked.
      */
-    public void logOut(View view){
-        SignUpActivityView.authenticator.signOut(this);
-        Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
+    public void logOut(View view) {
+        if (SignUpActivityView.authenticator != null) {
+            SignUpActivityView.authenticator.signOut(this);
+        }
+        Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
+
     }
 
     /**
      * This method will init the current location controller to get the real time user location
      */
-    private void initCurrentLocationController(){
+    private void initCurrentLocationController() {
         currentLocationController = new CurrentLocationController(this, mapDisplay);
         currentLocationController.initLocation();
     }
@@ -158,25 +165,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mapDisplay.onResume();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                this);
-        AuthenticationServices authenticationServices  = AuthenticationServices.getAuthentication(
-                sharedPreferences.getInt("cuenta",0));
-        if(authenticationServices != null)
-            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
-                    authenticationServices);
+        SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
+        String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
+        if (!nameServiceUsed.equals("default")) {
+                SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
+        }
 
     }
 
-    /** Method for pausing the MapView object instance.*/
+    /**
+     * Method for pausing the MapView object instance.
+     */
     @Override
     protected void onPause() {
         super.onPause();
         mapDisplay.onPause();
-        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor miEditor = datos.edit();
-        miEditor.putInt("cuenta", SignUpActivityView.authenticator.getServiceType().getID());
-        miEditor.apply();}
+        SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        if(SignUpActivityView.authenticator!= null){
+            editor.putString(getString(R.string.save_authentication_state), SignUpActivityView.authenticator.getServiceType().name());
+            editor.apply();
+        }
+    }
 
     /**
      * Method for stopping the MapView object instance.
@@ -219,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Method for adding maps styles.xml listener
      */
-    private void mapStyleListener(){
+    private void mapStyleListener() {
         ImageButton styleButton = findViewById(R.id.btn_change_style);
         styleButton.setOnClickListener(styleMap -> {
             if (mapStyle.equals("default")) mapStyle = "satellite";
