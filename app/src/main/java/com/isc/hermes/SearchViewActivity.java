@@ -3,21 +3,29 @@ package com.isc.hermes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.isc.hermes.controller.SearcherController;
+import com.isc.hermes.model.MapboxEventManager;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.PlacesAdapter;
 import com.isc.hermes.utils.WayPointClickListener;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchViewActivity extends AppCompatActivity implements WayPointClickListener {
+    public interface MapboxMapListener {
+        void addMarker(MarkerOptions markerOptions);
+    }
+
     private RecyclerView recyclerView;
     private PlacesAdapter adapter;
     private Searcher searcher;
@@ -51,6 +59,15 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
 
     @Override
     public void onItemClick(WayPoint wayPoint) {
-        // Add listener
+        Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
+        LatLng selectedLocation = new LatLng(wayPoint.getLatitude(), wayPoint.getLongitude());
+
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(selectedLocation)
+                .title(wayPoint.getPlaceName());
+
+        MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
+        mapboxEventManager.addMarker(markerOptions);
     }
+
 }

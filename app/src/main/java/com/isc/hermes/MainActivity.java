@@ -11,12 +11,14 @@ import android.widget.ImageButton;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
+import com.isc.hermes.model.MapboxEventManager;
 import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -25,7 +27,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchViewActivity.MapboxMapListener {
     private MapView mapView;
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
         /*SearcherController searcherController = new SearcherController(searcher,
                 findViewById(R.id.searchResults),findViewById(R.id.searchView));
         searcherController.runSearcher();*/
+        MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
+        mapboxEventManager.setMapboxMapListener(this);
+
     }
 
     /**
@@ -227,5 +232,10 @@ public class MainActivity extends AppCompatActivity {
             else mapStyle = "default";
             mapDisplay.setMapStyle(mapStyle);
         });
+    }
+
+    @Override
+    public void addMarker(MarkerOptions markerOptions) {
+        mapDisplay.getMapboxMap().addMarker(markerOptions);
     }
 }
