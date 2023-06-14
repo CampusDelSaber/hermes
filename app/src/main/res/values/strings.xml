@@ -22,6 +22,11 @@
     <string name="delete_account_warning_text">By accepting your data will be permanently deleted</string>
     <string name="im_sure_text">Im sure!</string>
     <string name="Better_not_text">Better not</string>
+    <string name="account_title">Account Information</string>
+    <string name="edit_information">Edit Information</string>
+    <string name="edit_profile">Upload Profile</string>
+    <string name="complete_name">Full Name</string>
+    <string name="delete_account">Delete Account</string>
     <string-array name="incidents_type">
         <item>Traffic Incident</item>
         <item>Natural Disaster</item>
