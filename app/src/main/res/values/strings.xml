@@ -30,4 +30,9 @@
         <item>day</item>
         <item>month</item>
     </string-array>
+    <string name="incident_manager_text">Incident Manager</string>
+    <string name="incidents_manager">Incidents Manager</string>
+    <string name="add_incident_icon">Add an new incident</string>
+    <string name="edit_incident_icon">Add an new incident</string>
+    <string name="delete_incident_icon">Add an new incident</string>
 </resources>
