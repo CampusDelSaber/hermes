@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class IncidentsUploader {
     private final String API_URL = "https://api-rest-hermes.onrender.com/";
@@ -41,5 +44,24 @@ public class IncidentsUploader {
         outputStream.writeBytes(incidentJsonString);
         outputStream.flush();
         outputStream.close();
+    }
+    public  String createRandomIncidentId() {
+        List<Character> characters = new ArrayList<>();
+        Random random = new Random();
+        for (char c = '0'; c <= '9'; c++) {
+            characters.add(c);
+        }
+        for (char c = 'a'; c <= 'z'; c++) {
+            characters.add(c);
+        }
+        StringBuilder final_id = new StringBuilder();
+        int length = 15;
+
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(characters.size());
+            char randomCharacter = characters.get(randomIndex);
+            final_id.append(randomCharacter);
+        }
+        return final_id.toString();
     }
 }
