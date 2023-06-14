@@ -42,26 +42,16 @@ public class PolygonGenerator extends CoordinateGen {
     public List<Double[]> getPolygon(Double[] referencePoint, Radium radium) {
         polygonCoordinates.clear();
 
-        if (isValidToGeneratePolygon(referencePoint)) {
-            polygonCoordinates.add(new Coordinate(referencePoint[0], referencePoint[1]));
+        if (isValidReferencePoint(referencePoint)) {
+            polygonCoordinates.add(coordinateParser.doubleToCoordinate(referencePoint));
             for (int i = 0; i < 15; i++) {
                 coordinate = pointGenerator.getNearPoint(referencePoint, radium);
-                polygonCoordinates.add(new Coordinate(coordinate[0], coordinate[1]));
+                polygonCoordinates.add(coordinateParser.doubleToCoordinate(coordinate));
             }
             polygon = buildTriangulation(polygonCoordinates);
         }
 
         return coordinateParser.parseToDoubles(polygon);
-    }
-
-    /**
-     * This method verify if the reference point is valid to generate a polygon coordinates.
-     *
-     * @param referencePoint to verify if it valid.
-     * @return boolean to know if it is valid.
-     */
-    private boolean isValidToGeneratePolygon(Double[] referencePoint) {
-        return referencePoint != null && referencePoint.length == 2;
     }
 
     /**

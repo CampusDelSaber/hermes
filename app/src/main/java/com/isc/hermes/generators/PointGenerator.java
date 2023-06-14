@@ -1,5 +1,7 @@
 package com.isc.hermes.generators;
 
+import java.util.List;
+
 /**
  * This method has the responsibility to generate point coordinates data.
  */
@@ -42,9 +44,33 @@ public class PointGenerator extends CoordinateGen {
     public Double[] getNearPoint(Double[] referencePoint, Radium radium) {
         double randomAngle = getRandomAngle();
         double distance = getNearDistance(radium);
+        Double[] coordinate = new Double[2];
         coordinate[0] = referencePoint[0] + distance * Math.cos(randomAngle);
         coordinate[1] = referencePoint[1] + distance * Math.sin(randomAngle);
         return coordinate;
+    }
+
+    /**
+     * This method generate a multi points coordinates list on a limit area.
+     *
+     * @param referencePoint to get the main point of limit area.
+     * @param radium to get points of limit area.
+     * @param amountPoints are the amount the points to found.
+     * @return multi points coordinates.
+     */
+    public List<Double[]> getPointCoordinates(
+            Double[] referencePoint,
+            Radium radium,
+            int amountPoints
+    ) {
+        coordinates.clear();
+        if (isValidReferencePoint(referencePoint)) {
+            for (int i = 0; i < amountPoints; i++) {
+                coordinates.add(getNearPoint(referencePoint, radium));
+            }
+        }
+
+        return coordinates;
     }
 
 }

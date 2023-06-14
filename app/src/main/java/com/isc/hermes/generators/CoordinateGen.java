@@ -75,4 +75,13 @@ public class CoordinateGen {
         return random.nextDouble() * (MAX_LATITUDE - MIN_LATITUDE) + MIN_LATITUDE;
     }
 
+    /**
+     * This method verify if the reference point is valid to generate a polygon coordinates.
+     *
+     * @param referencePoint to verify if it valid.
+     * @return boolean to know if it is valid.
+     */
+    protected boolean isValidReferencePoint(Double[] referencePoint) {
+        return referencePoint != null && referencePoint.length == 2;
+    }
 }

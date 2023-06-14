@@ -27,7 +27,7 @@ public class LinestringGenerator extends CoordinateGen {
             Radium radium,
             int amountPoints
     ) {
-        if (referencePoint != null && amountPoints > 1) {
+        if (isValidReferencePoint(referencePoint) && amountPoints > 2) {
             resetGeneratedCoordinates();
             coordinates.add(referencePoint);
 
