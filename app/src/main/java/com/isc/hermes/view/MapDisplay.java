@@ -16,7 +16,6 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
-    private final Context context;
     private MapboxMap mapboxMap;
     private IncidentsGetterController incidentsGetterController;
 
@@ -29,7 +28,6 @@ public class MapDisplay {
     public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
-        this.context = context;
         mapConfigure.setContext(context);
         incidentsGetterController = IncidentsGetterController.getInstance();
     }

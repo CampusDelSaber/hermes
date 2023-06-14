@@ -1,5 +1,9 @@
 package com.isc.hermes.model.incidents;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -26,5 +30,12 @@ public class Incident {
 
     public JSONObject getGeometry() {
         return geometry;
+    }
+
+    public LatLng getPointCoordinates() throws JSONException {
+        JSONArray coordinatesArray = geometry.getJSONArray("coordinates");
+        double lng = coordinatesArray.getDouble(0);
+        double lat = coordinatesArray.getDouble(1);
+        return new LatLng(lat, lng);
     }
 }
