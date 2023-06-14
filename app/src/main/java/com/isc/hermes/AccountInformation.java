@@ -19,6 +19,7 @@ public class AccountInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
+        deleteAccountAction();
     }
 
     /**
@@ -29,5 +30,13 @@ public class AccountInformation extends AppCompatActivity {
     public void goToPrincipalView(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * This method is used delete and account using on click action.
+     */
+    public void deleteAccountAction() {
+        findViewById(R.id.buttonDeleteAccount).setOnClickListener( v ->
+                System.out.println("the action for button will be her"));
     }
 }
