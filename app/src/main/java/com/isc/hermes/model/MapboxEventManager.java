@@ -1,6 +1,9 @@
 package com.isc.hermes.model;
 
-import com.isc.hermes.SearchViewActivity.MapboxMapListener;
+import android.widget.Toast;
+
+import com.isc.hermes.SearchViewActivity;
+import com.isc.hermes.model.MapboxMapListener;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 
 public class MapboxEventManager {
@@ -20,9 +23,11 @@ public class MapboxEventManager {
         mapboxMapListener = listener;
     }
 
-    public void addMarker(MarkerOptions markerOptions) {
+    public boolean addMarker(MarkerOptions markerOptions) {
         if (mapboxMapListener != null) {
             mapboxMapListener.addMarker(markerOptions);
+            return true;
         }
+        return false;
     }
 }

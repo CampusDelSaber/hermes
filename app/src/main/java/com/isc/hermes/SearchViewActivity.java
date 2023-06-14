@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchViewActivity extends AppCompatActivity implements WayPointClickListener {
-    public interface MapboxMapListener {
-        void addMarker(MarkerOptions markerOptions);
-    }
 
     private RecyclerView recyclerView;
     private PlacesAdapter adapter;
@@ -66,8 +63,14 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
                 .position(selectedLocation)
                 .title(wayPoint.getPlaceName());
 
+
+
         MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
-        mapboxEventManager.addMarker(markerOptions);
+        if(mapboxEventManager.addMarker(markerOptions)){
+            Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
+        }
+        else
+            Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
     }
 
 }
