@@ -7,11 +7,11 @@
 
     <RelativeLayout
         android:id="@+id/incident_form"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="250dp"
         android:animateLayoutChanges="true"
-        android:gravity="bottom"
-        android:visibility="visible"
+        android:background="@drawable/top_rounded_background"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,9 +20,7 @@
         <TextView
             android:id="@+id/top_border"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mapboxBlueDark"
-            />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/incident_tablelayout"
@@ -32,17 +30,19 @@
             android:background="@color/white"
             android:gravity="center"
             android:text="Incident Report"
+            android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/incident_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/incident_tablelayout"
             android:layout_gravity="bottom"
             android:background="@color/white"
-            android:foregroundGravity="bottom">
+            android:foregroundGravity="bottom"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/incident_text"
@@ -51,6 +51,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:text="Incident Type"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold">
 
@@ -60,7 +61,6 @@
                 android:id="@+id/incident_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/incident_text"
                 android:layout_marginStart="10dp"
                 android:textSize="14sp">
 
@@ -70,32 +70,34 @@
                 android:id="@+id/incident_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/incident_spinner"
                 android:layout_marginStart="10dp"
                 android:text="Estimated Time"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <NumberPicker
-                android:id="@+id/numberPicker"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="65dp"
-                android:layout_below="@id/incident_time"
-                android:layout_marginStart="10dp"/>
+                android:layout_height="wrap_content">
 
-            <Spinner
-                android:id="@+id/incident_time_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/incident_time"
-                android:layout_marginStart="100dp"
-                android:layout_marginTop="24dp" />
+                <NumberPicker
+                    android:id="@+id/numberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="10dp" />
+
+                <Spinner
+                    android:id="@+id/incident_time_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="24dp" />
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/numberPicker"
-                android:layout_marginTop="0dp">
+                android:layout_marginBottom="10dp">
 
                 <Button
                     android:id="@+id/accept_button"
@@ -103,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="100dp"
-                    android:backgroundTint="@color/mapboxBlueDark"
+                    android:backgroundTint="@color/oxfordBlue"
                     android:text="Accept"
                     android:textColor="@color/white" />
 
@@ -113,11 +115,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="100dp"
-                    android:backgroundTint="@color/mapboxBlueDark"
+                    android:backgroundTint="@color/oxfordBlue"
                     android:text="Cancel"
                     android:textColor="@color/white" />
             </RelativeLayout>
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,6 @@ import android.widget.ImageButton;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
 import com.isc.hermes.controller.CurrentLocationController;
