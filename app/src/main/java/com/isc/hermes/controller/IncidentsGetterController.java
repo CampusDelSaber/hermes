@@ -1,52 +1,51 @@
 package com.isc.hermes.controller;
 
-import com.isc.hermes.database.collection.Incidents;
+import com.isc.hermes.model.incidents.Incident;
+import com.isc.hermes.utils.ISO8601Converter;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
-import org.bson.Document;
-import org.bson.conversions.Bson;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class IncidentsGetterController {
     private static final double BASE_RADIUS = 1000.0; // Base radius in meters
     private static final int MAX_ZOOM = 18; // Maximum supported zoom level
     private static final double MIN_DISTANCE = 10.0; // Minimum distance in kilometers
+    private final ISO8601Converter iso8601Converter;
 
+    public IncidentsGetterController() {
+        this.iso8601Converter = ISO8601Converter.getInstance();
+    }
 
-    public void getIncidentsWithinRadius(MapboxMap mapboxMap) {
+    public List<Incident> getIncidentsWithinRadius(MapboxMap mapboxMap) throws IOException {
         LatLng cameraFocus = mapboxMap.getCameraPosition().target;
         int zoom = (int) mapboxMap.getCameraPosition().zoom;
 
         double radius = calculateRadiusFromZoom(zoom);
 
-        Date currentDate = new Date();
+        // Construct the URL for the API request
+        String apiUrl = buildApiUrl(cameraFocus, radius);
 
-        Bson filter = Filters.and(
-                Filters.nearSphere(
-                        "geometry", toPoint(cameraFocus), radius / 6371000,
-                        MIN_DISTANCE), // Divide by Earth's radius in meters (approx. 6371000)
-                Filters.gt("deathDate", currentDate)
-        );
+        URL url = new URL(apiUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        MongoCollection<Document> collection = Incidents.getInstance().getCollection();
-        FindIterable<Document> documents = collection.find(filter);
+        // Parse the response and retrieve the incidents
+        List<Incident> incidents = parseIncidentResponse("{}");
 
-        MongoCursor<Document> cursor = documents.iterator();
-
-        while (cursor.hasNext()) {
-            Document document = cursor.next();
-            System.out.println(document.toJson());
-        }
-
-        cursor.close();
+        return incidents;
     }
 
     private double calculateRadiusFromZoom(int zoom) {
@@ -59,5 +58,35 @@ public class IncidentsGetterController {
     private Point toPoint(LatLng latLng) {
         Position position = new Position(latLng.getLongitude(), latLng.getLatitude());
         return new Point(position);
+    }
+
+    private String buildApiUrl(LatLng latLng, double radius) {
+        // Build the URL for the API request based on the center point and radius
+        String baseUrl = "https://example.com/incidents";
+        String latitude = Double.toString(latLng.getLatitude());
+        String longitude = Double.toString(latLng.getLongitude());
+        String radiusString = Double.toString(radius / 1000.0); // Convert radius from meters to kilometers
+
+        return String.format("%s?latitude=%s&longitude=%s&radius=%s", baseUrl, latitude, longitude, radiusString);
+    }
+
+    private List<Incident> parseIncidentResponse(String jsonResponse) throws JSONException {
+        List<Incident> incidents = new ArrayList<>();
+
+        JSONArray incidentsArray = new JSONArray(jsonResponse);
+        for (int i = 0; i < incidentsArray.length(); i++) {
+            JSONObject incidentObj = incidentsArray.getJSONObject(i);
+            String id = incidentObj.getString("id");
+            String type = incidentObj.getString("type");
+            String reason = incidentObj.getString("reason");
+            Date dateCreated = iso8601Converter.convertISO8601ToDate(incidentObj.getString("dateCreated"));
+            Date deathDate = iso8601Converter.convertISO8601ToDate(incidentObj.getString("dateCreated"));
+            JSONObject geometry = incidentObj.getJSONObject("geometry");
+
+            Incident incident = new Incident(id, type, reason, dateCreated, deathDate, geometry);
+            incidents.add(incident);
+        }
+
+        return incidents;
     }
 }
