@@ -29,6 +29,7 @@ import retrofit2.Response;
 public class WaypointOptionsController {
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
+    private final TrafficFormController trafficFormController;
     private final Button navigateButton;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
@@ -43,11 +44,13 @@ public class WaypointOptionsController {
     public WaypointOptionsController(Context context, MapController mapController) {
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = new IncidentFormController(context, mapController);
+        trafficFormController = new TrafficFormController(context,mapController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         placeName = ((AppCompatActivity) context).findViewById(R.id.place_name);
         setButtonsOnClick();
+
     }
 
     /**
@@ -67,8 +70,14 @@ public class WaypointOptionsController {
 
         reportTrafficButton.setOnClickListener(v -> {
 
+            waypointOptions.startAnimation(Animations.exitAnimation);
+            trafficFormController.getTrafficForm().startAnimation(Animations.entryAnimation);
+            trafficFormController.getTrafficForm().setVisibility(View.VISIBLE);
+            waypointOptions.setVisibility(View.GONE);
+
         });
     }
+
 
     /**
      * This is a getter method to waypoint options layout.
@@ -84,5 +93,9 @@ public class WaypointOptionsController {
      */
     public IncidentFormController getIncidentFormController() {
         return incidentFormController;
+    }
+
+    public TrafficFormController getTrafficFormController() {
+        return trafficFormController;
     }
 }

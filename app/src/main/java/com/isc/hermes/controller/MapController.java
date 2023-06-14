@@ -66,6 +66,10 @@ public class MapController implements MapboxMap.OnMapClickListener {
                 waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
                 waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
             }
+            if(waypointOptionsController.getTrafficFormController().getTrafficForm().getVisibility() == View.VISIBLE) {
+                waypointOptionsController.getTrafficFormController().getTrafficForm().startAnimation(Animations.exitAnimation);
+                waypointOptionsController.getTrafficFormController().getTrafficForm().setVisibility(View.GONE);
+            }
             isMarked = false;
         } else {
             MarkerOptions markerOptions = new MarkerOptions().position(point);

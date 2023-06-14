@@ -24,6 +24,16 @@
         <item>Social Incident</item>
         <item>Danger Zone</item>
     </string-array>
+    <string-array name="traffic_level">
+        <item>Normal</item>
+        <item>Conditional</item>
+        <item>Discontinued</item>
+        <item>Saturated</item>
+    </string-array>
+    <string-array name="traffic_estimated_time">
+        <item>min</item>
+        <item>hr</item>
+    </string-array>
     <string-array name="incidents_estimated_time">
         <item>min</item>
         <item>hr</item>
