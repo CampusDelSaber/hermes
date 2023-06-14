@@ -86,8 +86,6 @@ public class MapController implements MapboxMap.OnMapClickListener {
                 waypointOptionsController.getTrafficFormController().getTrafficForm().startAnimation(Animations.exitAnimation);
                 waypointOptionsController.getTrafficFormController().getTrafficForm().setVisibility(View.GONE);
                 doMarkOnMapAction2(point);
-
-
             }
             isMarked = false;
         } else {
@@ -107,31 +105,87 @@ public class MapController implements MapboxMap.OnMapClickListener {
      * @param point2 Is point passed as parameter with its latitude and longitude
      */
     private void doMarkOnMapAction2(LatLng point2) {
-
-
         PointF screenPoint2 = mapboxMap.getProjection().toScreenLocation(point2);
         List<Feature> features2 = mapboxMap.queryRenderedFeatures(screenPoint2);
 
+        if (previousPoint != null) {
+            boolean isValidStreet = false;
 
-            if (previousPoint != null && (features2.get(0).geometry().type().equals("MultiLineString") || features2.get(0).geometry().type().equals("LineString"))) {
-                List<LatLng> points = new ArrayList<>();
-                points.add(previousPoint);
-                points.add(point2);
+            for (Feature feature : features2) {
+                String geometryType = feature.geometry().type();
+
+                if (geometryType.equals("MultiLineString") || geometryType.equals("LineString")) {
+                    isValidStreet = true;
+                    break;
+                }
+            }
+
+            if (isValidStreet) {
+                List<LatLng> originalPoints = new ArrayList<>();
+                originalPoints.add(previousPoint);
+                originalPoints.add(point2);
+
+                List<LatLng> offsetPoints = getSideOffsetPoints(originalPoints, 50); // Desplazamiento lateral de 50 metros
 
                 if (drawnLine != null) {
                     mapboxMap.removePolyline(drawnLine);
                 }
 
                 drawnLine = mapboxMap.addPolyline(new PolylineOptions()
-                        .addAll(points)
+                        .addAll(offsetPoints)
                         .color(Color.RED)
                         .width(5f));
-            }else {
+
+                previousPoint = point2;
+            } else {
                 Toast.makeText(context, "Touch on street or avenue", Toast.LENGTH_SHORT).show();
             }
-
+        } else {
             previousPoint = point2;
         }
+    }
+
+    private List<LatLng> getSideOffsetPoints(List<LatLng> points, double offsetDistance) {
+        List<LatLng> offsetPoints = new ArrayList<>();
+
+        if (points.size() < 2) {
+            return offsetPoints;
+        }
+
+        LatLng startPoint = points.get(0);
+        LatLng endPoint = points.get(1);
+
+        double bearing = calculateBearing(startPoint, endPoint);
+        double angle = Math.toRadians(bearing - 90); // Desplazamiento a un costado
+
+        double startLat = Math.toRadians(startPoint.getLatitude());
+        double startLng = Math.toRadians(startPoint.getLongitude());
+        double distance = offsetDistance / 6371000.0; // Radio de la Tierra
+
+        double endLat = Math.asin(Math.sin(startLat) * Math.cos(distance) +
+                Math.cos(startLat) * Math.sin(distance) * Math.cos(angle));
+        double endLng = startLng + Math.atan2(Math.sin(angle) * Math.sin(distance) * Math.cos(startLat),
+                Math.cos(distance) - Math.sin(startLat) * Math.sin(endLat));
+
+        offsetPoints.add(new LatLng(Math.toDegrees(startLat), Math.toDegrees(startLng)));
+        offsetPoints.add(new LatLng(Math.toDegrees(endLat), Math.toDegrees(endLng)));
+
+        return offsetPoints;
+    }
+
+    private double calculateBearing(LatLng startPoint, LatLng endPoint) {
+        double lat1 = Math.toRadians(startPoint.getLatitude());
+        double lon1 = Math.toRadians(startPoint.getLongitude());
+        double lat2 = Math.toRadians(endPoint.getLatitude());
+        double lon2 = Math.toRadians(endPoint.getLongitude());
+
+        double y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+        double bearing = Math.atan2(y, x);
+
+        return (Math.toDegrees(bearing) + 360) % 360;
+    }
+
 
 
 
