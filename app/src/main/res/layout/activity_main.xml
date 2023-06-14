@@ -116,6 +116,16 @@
         android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/generateIncidentButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            mapbox:srcCompat="@drawable/img_icon_incident_generate"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+            android:importantForAccessibility="no" />
+
+        <ImageButton
             android:id="@+id/locationButton"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -136,10 +146,16 @@
             mapbox:srcCompat="@drawable/img_speaker"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
             android:importantForAccessibility="no" />
+
     </LinearLayout>
 
     <include
         layout="@layout/incident_form_fragment"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
+        layout="@layout/generate_random_indicent_form"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 

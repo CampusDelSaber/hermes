@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
+
+import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
+        addIncidentGeneratorButton();
     }
 
     /**
@@ -119,6 +122,11 @@ public class MainActivity extends AppCompatActivity {
     private void initCurrentLocationController(){
         currentLocationController = new CurrentLocationController(this, mapDisplay);
         currentLocationController.initLocation();
+    }
+
+    //TODO: Comentar
+    private void addIncidentGeneratorButton(){
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this );
     }
 
 
