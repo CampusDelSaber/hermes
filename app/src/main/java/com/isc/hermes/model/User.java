@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.isc.hermes.model.Utils.Utils;
+import com.isc.hermes.model.user.UserRoles;
 
 /**
  * The `User` class represents a user in the application. It stores information about the user, such as their full name,
@@ -14,7 +15,7 @@ public class User implements Parcelable {
     private String email;
     private String userName;
     private String pathImageUser;
-    private String typeUser;
+    private UserRoles role;
     private String id;
 
     /**
@@ -40,7 +41,7 @@ public class User implements Parcelable {
         email = in.readString();
         userName = in.readString();
         pathImageUser = in.readString();
-        typeUser = in.readString();
+        setRole(in.readString());
         id = in.readString();
     }
 
@@ -56,7 +57,7 @@ public class User implements Parcelable {
         dest.writeString(email);
         dest.writeString(userName);
         dest.writeString(pathImageUser);
-        dest.writeString(typeUser);
+        dest.writeString(getRole());
         dest.writeString(id);
     }
 
@@ -135,17 +136,17 @@ public class User implements Parcelable {
      *
      * @return The type of the user.
      */
-    public String getTypeUser() {
-        return typeUser;
+    public String getRole() {
+        return role.getRole();
     }
 
     /**
      * Sets the type of the user.
      *
-     * @param typeUser The type of the user.
+     * @param role The type of the user.
      */
-    public void setTypeUser(String typeUser) {
-        this.typeUser = typeUser;
+    public void setRole(String role) {
+        this.role = UserRoles.transform(role);
     }
 
 

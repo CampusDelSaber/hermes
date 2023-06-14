@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.model.User;
+import com.isc.hermes.model.user.UserRoles;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -64,9 +65,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * @return The generated AutoCompleteTextView for the combo box.
      */
     private AutoCompleteTextView generateComponentsToComboBox() {
-        String[] items = {"Administrator", "General"};
+        String[] roles = UserRoles.export();
         AutoCompleteTextView autoCompleteText = findViewById(R.id.textFieldUserType);
-        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, items);
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, roles);
         autoCompleteText.setAdapter(adapterItems);
         return autoCompleteText;
     }
@@ -79,7 +80,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private void generateActionToComboBox() {
         generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
             String item = parent.getItemAtPosition(position).toString();
-            userRegistered.setTypeUser(item);
+            userRegistered.setRole(item);
             Toast.makeText(getApplicationContext(), "Item: " + item,
                     Toast.LENGTH_SHORT).show();
         });
@@ -92,7 +93,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      */
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
-            if (userRegistered.getTypeUser() != null) {
+            if (userRegistered.getRole() != null) {
                 //TODO: Save the registeredUser in dataBase
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
