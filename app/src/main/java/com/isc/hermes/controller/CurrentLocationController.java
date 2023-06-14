@@ -126,8 +126,12 @@ public class CurrentLocationController {
                                 activity, Objects.requireNonNull(mapDisplay.getMapboxMap().getStyle()))
                         .locationComponentOptions(locationComponentOptions).build();
 
-        activateLocation(locationComponentActivationOptions);
-        onLocationEngineConnected();
+        if (isLocationEnabled()) {
+            activateLocation(locationComponentActivationOptions);
+            onLocationEngineConnected();
+        } else {
+            showMessageToEnableGps();
+        }
     }
 
     /**
