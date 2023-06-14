@@ -16,86 +16,45 @@ import java.util.Random;
  */
 public class CoordinateGen {
 
-    private int maxAttempts;
-    private Random random;
-    private StreetValidator streetValidator;
+    protected Random random;
+    protected Double[] coordinate;
+    protected List<Double[]> coordinates;
+    protected StreetValidator streetValidator;
 
     /**
      * This is the constructor method to initialize necessary variables.
      */
     public CoordinateGen() {
         this.random = new Random();
+        this.coordinate = new Double[2];
+        this.coordinates = new ArrayList<>();
         this.streetValidator = new StreetValidator();
     }
 
     /**
-     * This method generate a point coordinate within a habitable zone.
-     *
-     * @return point coordinate.
+     * This method reset the content of coordinates list.
      */
-    public double[] generatePoint() {
-        double[] pointCoordinates = new double[2];
-        maxAttempts = 10000;
-
-        do {
-            pointCoordinates[0] = generateRandomLongitude();
-            pointCoordinates[1] = generateRandomLatitude();
-            maxAttempts--;
-        } while (!streetValidator.isPointStreet(pointCoordinates[0], pointCoordinates[1])
-                && maxAttempts > 0);
-
-        return pointCoordinates;
+    protected void resetGeneratedCoordinates() {
+        coordinates.clear();
     }
 
     /**
-     * This method generate a valid point surrounded by another as a reference.
+     * This method generate a random angle.
      *
-     * @param previousPoint point reference.
-     * @return point surrounded generated.
+     * @return random angle.
      */
-    private double[] generateNextPoint(double[] previousPoint) {
-        double[] pointCoordinates = new double[2];
-        int maxAttempts = 10000;
-        double randomAngle, distance;
-        double distanceThreshold = 0.0001;
-
-        for (int i = 0; i < maxAttempts; i++) {
-            randomAngle = Math.random() * 2 * Math.PI;
-            distance = Math.random() * distanceThreshold;
-            pointCoordinates[0] = previousPoint[0] + distance * Math.cos(randomAngle);
-            ;
-            pointCoordinates[1] = previousPoint[1] + distance * Math.sin(randomAngle);
-            ;
-            if (streetValidator.isPointStreet(pointCoordinates[0], pointCoordinates[1])) {
-                return pointCoordinates;
-            }
-        }
-        return null;
+    protected double getRandomAngle() {
+        return Math.random() * 2 * Math.PI;
     }
 
     /**
-     * This method generate a valid lineString coordinates.
+     * This method generate the distance using a radium.
      *
-     * @param amountPoints that has the lineString.
-     * @return lineString coordinates generated.
+     * @param radium to generate the near distance.
+     * @return near distance.
      */
-    public List<double[]> generateLineString(int amountPoints) {
-        List<double[]> pointCoordinates = new ArrayList<>();
-        double[] startPoint = generatePoint();
-        double[] previousPoint, newPoint;
-
-        if (startPoint != null) {
-            pointCoordinates.add(startPoint);
-
-            for (int i = 1; i < amountPoints; i++) {
-                previousPoint = pointCoordinates.get(i - 1);
-                newPoint = generateNextPoint(previousPoint);
-                if (newPoint == null) return pointCoordinates;
-                pointCoordinates.add(newPoint);
-            }
-        }
-
-        return pointCoordinates;
+    protected double getNearDistance(Radium radium) {
+        return Math.random() * radium.getValue();
     }
 
     /**
@@ -103,7 +62,7 @@ public class CoordinateGen {
      *
      * @return longitude coordinate.
      */
-    private double generateRandomLongitude() {
+    protected double generateRandomLongitude() {
         return random.nextDouble() * (MAX_LONGITUDE - MIN_LONGITUDE) + MIN_LONGITUDE;
     }
 
@@ -112,8 +71,17 @@ public class CoordinateGen {
      *
      * @return latitude coordinate.
      */
-    private double generateRandomLatitude() {
+    protected double generateRandomLatitude() {
         return random.nextDouble() * (MAX_LATITUDE - MIN_LATITUDE) + MIN_LATITUDE;
     }
 
+    /**
+     * This method verify if the reference point is valid to generate a polygon coordinates.
+     *
+     * @param referencePoint to verify if it valid.
+     * @return boolean to know if it is valid.
+     */
+    protected boolean isValidReferencePoint(Double[] referencePoint) {
+        return referencePoint != null && referencePoint.length == 2;
+    }
 }
