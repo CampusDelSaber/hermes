@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
@@ -14,6 +15,8 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.MapboxEventManager;
 import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
+
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements SearchViewActivit
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
+    private SearchView searchView;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -50,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements SearchViewActivit
         addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
+        searchView = findViewById(R.id.searchView);
+        changeSearchView();
     }
 
     /**
@@ -90,6 +96,15 @@ public class MainActivity extends AppCompatActivity implements SearchViewActivit
             visibilityMenu = false;
             setMapScrollGesturesEnabled(true);
         }
+    }
+
+    private void changeSearchView() {
+        searchView.setOnClickListener(v -> {
+            new Handler().post(() -> {
+                Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
+                startActivity(intent);
+            });
+        });
     }
 
     /**

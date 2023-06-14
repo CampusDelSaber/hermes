@@ -44,14 +44,15 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
 
         searcherController = new SearcherController(searcher, adapter);
         searchView.setOnQueryTextListener(searcherController.getOnQueryTextListener(this));
+
+        searchView.requestFocus();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         searcherController.shutdown();
-        Intent intent = new Intent(SearchViewActivity.this, MainActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     @Override
