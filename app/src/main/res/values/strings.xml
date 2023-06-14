@@ -19,6 +19,8 @@
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
     <string name="account_title">Account Information</string>
+    <string name="edit_information">Edit Information</string>
+    <string name="edit_profile">Upload Profile</string>
     <string name="complete_name">Full Name</string>
     <string name="delete_account">Delete Account</string>
     <string-array name="incidents_type">
