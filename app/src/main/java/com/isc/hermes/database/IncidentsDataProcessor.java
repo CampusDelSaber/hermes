@@ -1,5 +1,7 @@
 package com.isc.hermes.database;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +41,41 @@ public class IncidentsDataProcessor {
         JSONArray incidentsArray = responseParser.getJSONArrayOnResult(futureResponse);
         handleApiResponseExample(incidentsArray);
         return incidentsArray;
+    }
+
+    /**
+     * This method gets the near incidents from the API
+     * @param latLng the coordinates to be able where to get the incidents
+     * @param radius the radius of the incidents near to that coordinates
+     * @return the incidents JSON Array response
+     */
+    public JSONArray getNearIncidents(LatLng latLng, double radius) {
+        try{
+            Future<String> future =
+                    apiHandler.getFutureCollectionString(buildApiUrlNearIncidents(latLng, radius));
+            String futureResponse = future.get();
+            return responseParser.getJSONArrayOnResult(futureResponse);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new JSONArray();
+    }
+
+    /**
+     * This method will build the url to make the read operation to the API of near incidents
+     * @param latLng the coordinates to be able where to get the incidents
+     * @param radius the radius of the incidents near to that coordinates
+     * @return the API url to get the near incidents
+     */
+    private String buildApiUrlNearIncidents(LatLng latLng, double radius) {
+        String latitude = Double.toString(latLng.getLatitude());
+        String longitude = Double.toString(latLng.getLongitude());
+        String radiusString = Double.toString(radius / 1000.0); // Convert radius from meters to kilometers
+
+        return String.format(
+                "%s?latitude=%s&longitude=%s&radius=%s",
+                INCIDENTS_COLLECTION_NAME, latitude, longitude, radiusString
+        );
     }
 
     /**
