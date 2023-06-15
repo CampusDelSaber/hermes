@@ -1,6 +1,11 @@
 package com.isc.hermes.controller;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Utility class containing helper methods for image manipulation.
@@ -23,5 +28,16 @@ public class Utils {
         int y = (height - size) / 2;
 
         return Bitmap.createBitmap(bitmap, x, y, size, size);
+    }
+
+    public static Uri getUriFromBitmap(Context context, Bitmap bitmap) {
+        Uri uri = null;
+        try {
+            String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap,
+                    "Title", null);
+            uri = Uri.parse(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }return uri;
     }
 }

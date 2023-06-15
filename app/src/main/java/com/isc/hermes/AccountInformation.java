@@ -1,28 +1,24 @@
 package com.isc.hermes;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.InputType;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-
 import com.isc.hermes.controller.Utils;
+import com.isc.hermes.model.Utils.ImageBBUploader;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
@@ -103,6 +99,7 @@ public class AccountInformation extends AppCompatActivity {
      * @param resultCode  The result code from the activity.
      * @param data        The intent containing the result data.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -112,7 +109,11 @@ public class AccountInformation extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = Utils.cropToSquare(bitmap);
-                imageView.setImageBitmap(croppedBitmap);
+
+                Uri uri = Utils.getUriFromBitmap(this, croppedBitmap);
+                imageView.setImageURI(uri);
+
+                ImageBBUploader.uploadToImgur(new File(selectedImageUri.getPath()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
