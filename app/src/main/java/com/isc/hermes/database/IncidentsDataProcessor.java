@@ -70,11 +70,11 @@ public class IncidentsDataProcessor {
     private String buildApiUrlNearIncidents(LatLng latLng, double radius) {
         String latitude = Double.toString(latLng.getLatitude());
         String longitude = Double.toString(latLng.getLongitude());
-        String radiusString = Double.toString(radius / 1000.0); // Convert radius from meters to kilometers
+        String radiusString = Double.toString(radius / 100.0);
 
         return String.format(
-                "%s?latitude=%s&longitude=%s&radius=%s",
-                INCIDENTS_COLLECTION_NAME, latitude, longitude, radiusString
+                "%s?longitude=%s&latitude=%s&radius=%s",
+                INCIDENTS_COLLECTION_NAME, longitude, latitude, radiusString
         );
     }
 
