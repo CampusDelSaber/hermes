@@ -18,6 +18,11 @@
     <string name="get_location_text">Get Location</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
+    <string name="verifyEmailTittle">Verify your email address </string>
+    <string name="emailVerificationSent"> An email with verification code has been sent to</string>
+    <string name="userEmail"> sebastian.faustino@example.com</string>
+    <string name="enterCodeLabel"> Please enter the code here</string>
+    <string name="resendLabel"> did not get an email ? Resend</string>
     <string-array name="incidents_type">
         <item>Traffic Incident</item>
         <item>Natural Disaster</item>

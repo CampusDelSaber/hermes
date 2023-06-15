@@ -82,6 +82,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
             userRegistered.setTypeUser(item);
             Toast.makeText(getApplicationContext(), "Item: " + item,
                     Toast.LENGTH_SHORT).show();
+
         });
     }
 
@@ -91,11 +92,16 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * and navigates the user to the main activity.
      */
     private void generateActionToButtonSignUp() {
+
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
                 //TODO: Save the registeredUser in dataBase
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                if(userRegistered.getTypeUser().equals("Administrator")){
+                    Intent intentEmailVerification = new Intent(this, EmailVerificationActivity.class);
+                    startActivity(intentEmailVerification);
+                } else {
+                    Intent intentMain = new Intent(this, MainActivity.class);
+                    startActivity(intentMain);}
             } else comboBoxTextField.setHelperText("Required");
         });
     }
