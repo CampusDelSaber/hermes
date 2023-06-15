@@ -164,9 +164,9 @@ public class IncidentFormController {
      @return The HTTP response code indicating the status of the upload.
      */
     private int uploadIncidentDataBase(){
-        String id = IncidentsUtils.generateObjectId();
-        String dateCreated = IncidentsUtils.generateCurrentDateCreated();
-        String deathDate = IncidentsUtils.addTimeToCurrentDate(getIncidentTime());
+        String id = IncidentsUtils.getInstance().generateObjectId();
+        String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
+        String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
         String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
