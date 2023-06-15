@@ -69,12 +69,12 @@ public class Searcher {
      */
     private WayPoint instanceWaypointFeature(CarmenFeature feature) {
         Point point = feature.center();
-        WayPoint wayPoint = new WayPoint(
+        assert point != null;
+        return new WayPoint(
                 feature.placeName(),
                 feature.properties(),
                 point.latitude(),
                 point.longitude());
-        return wayPoint;
     }
 
 }

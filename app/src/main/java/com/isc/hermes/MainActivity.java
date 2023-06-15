@@ -1,50 +1,28 @@
 package com.isc.hermes;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
-import com.mapbox.api.geocoding.v5.MapboxGeocoding;
-import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.core.exceptions.ServicesException;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import timber.log.Timber;
+
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -56,13 +34,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
-
-    private MainActivity mainActivity = this;
-    private MapboxMap mapboxMap;
-    private Button chooseCityButton;
-    private EditText latEditText;
-    private EditText longEditText;
-    private EditText searchInput;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -81,23 +52,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapStyleListener();
         initCurrentLocationController();
         mapView.getMapAsync(this);
-        //mapView.getMapAsync(this);
     }
 
     /**
      * Called when the map is ready to be used.
-     *
      */
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
-        this.mapboxMap = mapboxMap;
-        FilterController filterController = new FilterController(mapView, mapboxMap, this);
-        mapboxMap.setStyle(new Style.Builder(), new Style.OnStyleLoaded() {
-            @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                filterController.initComponents();
-            }
-        });
+        FilterController filterController = new FilterController(mapboxMap, this);
+        mapboxMap.setStyle(new Style.Builder(), style -> filterController.initComponents());
     }
 
     /**
@@ -143,12 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param enabled Boolean indicating whether to enable map scroll gestures.
      */
     private void setMapScrollGesturesEnabled(boolean enabled) {
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled);
-            }
-        });
+        mapView.getMapAsync(mapboxMap -> mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled));
     }
 
     /**
@@ -185,12 +143,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.mapView);
     }
 
-    /**
-     * Method for initializing the MapDisplay object instance.
-     */
-    private void initMapDisplay() {
-        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
-    }
 
     /**
      * Method for starting the MapView object instance.
