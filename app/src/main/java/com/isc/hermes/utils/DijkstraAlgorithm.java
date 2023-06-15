@@ -28,39 +28,7 @@ public class DijkstraAlgorithm {
 
         initializeDistancesAndParents(graph, source, distances, parents, queue);
 
-        while (!queue.isEmpty()) {
-            Node current = queue.poll();
-
-            if (current == destination) {
-                break; // Reached the destination, stop the algorithm
-            }
-
-            assert current != null;
-            for (Edge edge : current.getEdges()) {
-                Node adjacent = edge.getDestination();
-                double newDistance = distances.get(current) + edge.getWeight();
-
-                if (newDistance < distances.get(adjacent)) {
-                    distances.put(adjacent, newDistance);
-                    parents.put(adjacent, current);
-
-                    // Update the priority queue with the new distance
-                    queue.remove(adjacent);
-                    queue.add(adjacent);
-                }
-            }
-        }
-
-        // Backtrack from the destination to the source to retrieve the shortest path
-        List<Node> shortestPath = new ArrayList<>();
-        Node current = destination;
-
-        while (current != null) {
-            shortestPath.add(0, current);
-            current = parents.get(current);
-        }
-
-        return shortestPath;
+        return calculateShortestPath(destination, distances, parents, queue);
     }
 
     /**
@@ -70,20 +38,71 @@ public class DijkstraAlgorithm {
      * @param source    The source node from which the shortest path is calculated.
      * @param distances A map to store the distances from the source node to each node.
      * @param parents   A map to store the parent node of each node in the shortest path.
+     * @param queue       The queue with the nodes
      */
     public void initializeDistancesAndParents(
             Graph graph, Node source, Map<Node, Double> distances, Map<Node, Node> parents,
             PriorityQueue<Node> queue
     ) {
         for (Node node : graph.getNodes().values()) {
-            if (node == source) {
-                distances.put(node, 0.0);
-            } else {
-                distances.put(node, Double.MAX_VALUE);
-            }
+            if (node == source) distances.put(node, 0.0);
+            else distances.put(node, Double.MAX_VALUE);
             parents.put(node, null);
             queue.add(node);
         }
+    }
+
+    /**
+     * Calculates the shortest path in the given graph from the source node to the destination node.
+     *
+     * @param destination The destination node.
+     * @param distances   A map of distances from the source node to each node.
+     * @param parents     A map of parent nodes for each node in the shortest path.
+     * @param queue       The queue with the nodes
+     * @return The list of nodes representing the shortest path from source to destination.
+     */
+    public List<Node> calculateShortestPath(
+            Node destination, Map<Node, Double> distances, Map<Node, Node> parents,
+            PriorityQueue<Node> queue
+    ) {
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+
+            if (current == destination) break;
+            assert current != null;
+            for (Edge edge : current.getEdges()) {
+                Node adjacent = edge.getDestination();
+                double newDistance = distances.get(current) + edge.getWeight();
+
+                if (newDistance < distances.get(adjacent)) {
+                    distances.put(adjacent, newDistance);
+                    parents.put(adjacent, current);
+
+                    queue.remove(adjacent);
+                    queue.add(adjacent);
+                }
+            }
+        }
+        return retrieveShortestPath(destination, parents);
+    }
+
+    /**
+     * Retrieves the shortest path from the destination node to the source node based on the parents map.
+     *
+     * @param destination The destination node.
+     * @param parents     A map of parent nodes for each node in the shortest path.
+     * @return The list of nodes representing the shortest path from source to destination.
+     */
+    public List<Node> retrieveShortestPath(Node destination, Map<Node, Node> parents) {
+        List<Node> shortestPath = new ArrayList<>();
+        Node current = destination;
+
+        while (current != null) {
+            shortestPath.add(0, current);
+            current = parents.get(current);
+        }
+
+        return shortestPath;
     }
 
     /**
