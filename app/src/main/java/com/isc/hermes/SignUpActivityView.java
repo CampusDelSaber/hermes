@@ -121,10 +121,8 @@ public class SignUpActivityView extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == REQUEST_CODE){
-                if(resultCode == RESULT_OK){
+            if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
                     sendUserBetweenActivities(authenticator.getUserBySignInResult(data));
-                }
             }
         } catch (ApiException e) {
             Toast.makeText(SignUpActivityView.this,"Wait a moment ",
