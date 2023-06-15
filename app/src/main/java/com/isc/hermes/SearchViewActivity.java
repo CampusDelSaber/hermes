@@ -1,7 +1,7 @@
 package com.isc.hermes;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -13,7 +13,8 @@ import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.model.MapboxEventManager;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.model.WayPoint;
-import com.isc.hermes.utils.PlacesAdapter;
+import com.isc.hermes.utils.SearcherAdapter;
+import com.isc.hermes.utils.SearcherAdapterUpdater;
 import com.isc.hermes.utils.WayPointClickListener;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -21,33 +22,63 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This activity is used for handling the search view operation.
+ * It implements the WayPointClickListener interface to listen for click events on the items in the RecyclerView.
+ */
 public class SearchViewActivity extends AppCompatActivity implements WayPointClickListener {
 
     private RecyclerView recyclerView;
-    private PlacesAdapter adapter;
+    private SearcherAdapter adapter;
     private Searcher searcher;
     private SearchView searchView;
     private SearcherController searcherController;
+    private SearcherAdapterUpdater adapterUpdater;
+    private ImageView imageView;
 
+    /**
+     * This method initializes the activity.
+     * @param savedInstanceState A mapping from String keys to various Parcelable values.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_view);
+
+        initRecyclerView();
+        setupSearchView();
+        goBackMainPage();
+    }
+
+    /**
+     * This method initializes the RecyclerView and related classes.
+     */
+    private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycle_view_searched);
         searchView = findViewById(R.id.searcher_view);
+        imageView = findViewById(R.id.back_arrow_main);
 
         searcher = new Searcher();
         List<WayPoint> wayPoints = new ArrayList<>();
-        adapter = new PlacesAdapter(wayPoints, this);
+        adapter = new SearcherAdapter(wayPoints, this);
+        adapterUpdater = new SearcherAdapterUpdater(this, adapter);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
-        searcherController = new SearcherController(searcher, adapter);
-        searchView.setOnQueryTextListener(searcherController.getOnQueryTextListener(this));
+    /**
+     * This method sets up the SearchView and related classes.
+     */
+    private void setupSearchView() {
+        searcherController = new SearcherController(searcher, adapterUpdater);
+        searchView.setOnQueryTextListener(searcherController.getOnQueryTextListener());
 
         searchView.requestFocus();
     }
 
+    /**
+     * This method is called when the activity is about to be destroyed.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -55,6 +86,10 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         finish();
     }
 
+    /**
+     * This method is called when an item in the RecyclerView is clicked.
+     * @param wayPoint The item that was clicked.
+     */
     @Override
     public void onItemClick(WayPoint wayPoint) {
         Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
@@ -74,4 +109,13 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
             Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * This method is called when the back arrow is clicked.
+     */
+    private void goBackMainPage() {
+        imageView.setOnClickListener(v -> {
+            searcherController.shutdown();
+            finish();
+        });
+    }
 }

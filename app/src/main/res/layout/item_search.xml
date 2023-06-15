@@ -24,24 +24,24 @@
 
         <TextView
             android:id="@+id/placeName"
-            android:layout_width="match_parent"
+            android:layout_width="286dp"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
             android:textColor="@color/white"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/placeLocation"
-            android:layout_width="match_parent"
+            android:layout_width="296dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="14sp" />
     </LinearLayout>
 
     <ImageView
-        android:layout_width="24dp"
+        android:layout_width="25dp"
         android:layout_height="42dp"
-        android:src="@drawable/ic_go" />
+        android:src="@drawable/right_arrow" />
 
 
 </LinearLayout>

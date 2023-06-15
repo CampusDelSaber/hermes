@@ -1,21 +1,12 @@
 package com.isc.hermes.controller;
 
-import android.app.Activity;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.SearchView;
-import android.widget.TextView;
-import com.isc.hermes.R;
+
+import com.isc.hermes.utils.SearcherAdapterUpdater;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.model.WayPoint;
-import com.isc.hermes.utils.PlacesAdapter;
-import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,16 +17,28 @@ import java.util.concurrent.Executors;
  */
 public class SearcherController {
     private final Searcher searcher;
-    private final PlacesAdapter adapter;
+    private final SearcherAdapterUpdater adapterUpdater;
     private final ExecutorService executorService;
 
-    public SearcherController(Searcher searcher, PlacesAdapter adapter) {
+    /**
+     * Constructs a new SearcherController.
+     *
+     * @param searcher the searcher that will be used to search for data.
+     * @param adapterUpdater the adapterUpdater that will be used to update the adapter with new data.
+     */
+    public SearcherController(Searcher searcher, SearcherAdapterUpdater adapterUpdater) {
         this.searcher = searcher;
-        this.adapter = adapter;
+        this.adapterUpdater = adapterUpdater;
         this.executorService = Executors.newSingleThreadExecutor();
     }
 
-    public SearchView.OnQueryTextListener getOnQueryTextListener(Activity activity) {
+    /**
+     * Returns a listener for text changes in the search view.
+     * When the text changes, it triggers a search and updates the adapter with the new results.
+     *
+     * @return a listener for text changes in the search view.
+     */
+    public SearchView.OnQueryTextListener getOnQueryTextListener() {
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -46,18 +49,17 @@ public class SearcherController {
             public boolean onQueryTextChange(String newText) {
                 executorService.execute(() -> {
                     List<WayPoint> newWayPoints = searcher.getSearcherSuggestionsPlacesInfo(newText);
-                    activity.runOnUiThread(() -> {
-                        adapter.clearWayPoints();
-                        for (WayPoint wayPoint : newWayPoints) {
-                            adapter.addWayPoint(wayPoint);
-                        }
-                    });
+                    adapterUpdater.updateWayPoints(newWayPoints);
                 });
                 return false;
             }
         };
     }
 
+    /**
+     * Shuts down the executor service.
+     * This should be called when the controller is no longer needed, to free up resources.
+     */
     public void shutdown() {
         executorService.shutdown();
     }

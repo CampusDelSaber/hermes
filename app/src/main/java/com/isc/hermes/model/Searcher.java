@@ -53,6 +53,9 @@ public class Searcher {
      * @return the features list with the waypoint of the suggestions
      */
     public List<WayPoint> getSearcherSuggestionsPlacesInfo(String query) {
+        if (query.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
         List<WayPoint> featuresInfoList = new ArrayList<>();
         List<CarmenFeature> suggestions = getSuggestionsFeatures(query);
         for (CarmenFeature feature : suggestions) {
