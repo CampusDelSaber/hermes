@@ -3,7 +3,9 @@ package com.isc.hermes;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 /**
@@ -15,6 +17,8 @@ public class AccountInformation extends AppCompatActivity {
     private Button buttonSaveInformation;
     private Button buttonEditInformation;
     private Button buttonDeleteAccount;
+    private AutoCompleteTextView textFieldUserName;
+    private AutoCompleteTextView textFieldFullName;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -33,6 +37,8 @@ public class AccountInformation extends AppCompatActivity {
         buttonUploadImage =  findViewById(R.id.buttonUploadImage);
         buttonEditInformation =  findViewById(R.id.buttonEditInformation);
         buttonDeleteAccount =  findViewById(R.id.buttonDeleteAccount);
+        textFieldFullName = findViewById(R.id.textFieldFullName);
+        textFieldUserName = findViewById(R.id.textFieldUserName);
     }
 
     /**
@@ -64,6 +70,9 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void editAccountAction(View view) {
         buttonSaveInformation.setVisibility(View.VISIBLE);
+        textFieldUserName.setInputType(InputType.TYPE_CLASS_TEXT);
+        textFieldFullName.setInputType(InputType.TYPE_CLASS_TEXT);
+        System.out.println(textFieldFullName.getText());
     }
 
     /**
@@ -71,5 +80,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void saveAccountInformationAction(View view) {
         buttonSaveInformation.setVisibility(View.INVISIBLE);
+        textFieldUserName.setInputType(InputType.TYPE_NULL);
+        textFieldFullName.setInputType(InputType.TYPE_NULL);
     }
 }

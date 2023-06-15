@@ -117,6 +117,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:helperTextTextColor="@color/blueLogo"
                 android:hint="@string/complete_name"
                 app:startIconDrawable="@drawable/baseline_contacts_24">
 
@@ -137,6 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/userName"
+                app:helperTextTextColor="@color/blueLogo"
                 app:startIconDrawable="@drawable/baseline_perm_identity_24">
 
                 <AutoCompleteTextView
