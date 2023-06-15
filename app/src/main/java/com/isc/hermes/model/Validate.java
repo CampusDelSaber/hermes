@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.isc.hermes.R;
+import com.isc.hermes.database.VerificationCodesManager;
 import com.isc.hermes.utils.CreateVerificationCode;
 import com.isc.hermes.utils.ValidationPeriod;
 
@@ -22,6 +23,7 @@ public class Validate extends AppCompatActivity {
     private CreateVerificationCode createPass = new CreateVerificationCode();
     private String code = createPass.generateVerificationCode();
     private ValidationPeriod validationPeriod;
+    private VerificationCodesManager verificationCodesManager;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -36,8 +38,8 @@ public class Validate extends AppCompatActivity {
         codeInput = findViewById(R.id.codeInput);
         submit = findViewById(R.id.submitCode);
 
-        validationPeriod = new ValidationPeriod();
-        validationPeriod.createValidationPeriod();
+        verificationCodesManager = new VerificationCodesManager();
+        verificationCodesManager.addVerificationCode("gandarillas.delgado.denis@gmail.com");
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override

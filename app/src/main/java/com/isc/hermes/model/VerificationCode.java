@@ -11,14 +11,14 @@ import java.util.Date;
 
 public class VerificationCode {
 
-    private String userEmail, verificationCode;
-    private Date validationPeriod;
+    private String email, verificationCode;
+    private Date deathDate;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public VerificationCode(String userEmail) {
-        this.userEmail = userEmail;
+        this.email = userEmail;
         this.verificationCode = new CreateVerificationCode().generateVerificationCode();
-        this.validationPeriod = new ValidationPeriod().createValidationPeriod();
+        this.deathDate = new ValidationPeriod().createValidationPeriod();
     }
 
 }

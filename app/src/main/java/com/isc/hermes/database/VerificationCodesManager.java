@@ -1,5 +1,13 @@
 package com.isc.hermes.database;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import com.isc.hermes.model.VerificationCode;
+
+import java.util.concurrent.Future;
+
 public class VerificationCodesManager {
 
     private ApiHandler apiHandler;
@@ -13,6 +21,9 @@ public class VerificationCodesManager {
         apiResponseParser = ApiResponseParser.getInstance();
     }
 
-    public void addVerificationCode(String verificationCode, String userEmail) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void addVerificationCode(String userEmail) {
+        VerificationCode verificationCode = new VerificationCode(userEmail);
+        apiHandler.postFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, verificationCode);
     }
 }
