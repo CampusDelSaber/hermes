@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -71,6 +72,11 @@ public class IncidentFormController {
     public void setIncidentComponents() {
         Spinner incidentType = ((AppCompatActivity) context).findViewById(R.id.incident_spinner);
         ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(context, R.array.incidents_type, R.layout.incident_spinner_items);
+        Resources res = Resources.getSystem();
+        String[] incident_types = res.getStringArray(R.array.incidents_type);
+        for (String type : incident_types) {
+
+        }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         incidentType.setAdapter(adapter);
 
