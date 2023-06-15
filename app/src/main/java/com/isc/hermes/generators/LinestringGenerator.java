@@ -47,8 +47,8 @@ public class LinestringGenerator extends CoordinateGen implements IGeometryGener
      * @return TypeGeometry type.
      */
     @Override
-    public TypeGeometry getTypeGeometry() {
-        return TypeGeometry.LINESTRING;
+    public GeometryType getTypeGeometry() {
+        return GeometryType.LINESTRING;
     }
 
 }

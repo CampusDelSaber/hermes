@@ -48,4 +48,16 @@ public class Geometry {
     public void setCoordinates(ArrayList<Double[]> coordinates) {
         this.coordinates = coordinates;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Geometry{" +
+                "\ntype='" + type + '\'' +
+                ",\ncoordinates = \t");
+        for(Double[] currentCoordinate: coordinates){
+            stringBuilder.append("[ "+ currentCoordinate[0] + ", " + currentCoordinate[1]+" ]");
+        }
+        return stringBuilder.toString();
+    }
 }

@@ -1,8 +1,10 @@
 package com.isc.hermes.generators;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This interface abstracts the features of a generator.
+ */
 public interface IGeometryGenerator {
     /**
      * This method generates points that form geoemetric objects.
@@ -18,5 +20,5 @@ public interface IGeometryGenerator {
      *
      * @return TypeGeometry type.
      */
-    TypeGeometry getTypeGeometry();
+    GeometryType getTypeGeometry();
 }

@@ -1,5 +1,7 @@
 package com.isc.hermes.generators;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,31 +10,25 @@ import java.util.List;
  */
 public class PointGenerator extends CoordinateGen implements IGeometryGenerator {
 
-    private int maxAttempts;
+    private final int MAXATTEMPTS = 500;
 
     /**
      * This method generate a point coordinate within a habitable zone.
      *
      * @return point coordinate.
      */
-    public Double[] getStreetPoint() {
-        resetAttempts();
-
+    public Double[] getStreetPoint(Double[] referencePoint, Radium radium) {
+        int indexAttemps = 0;
+        Double[] randomPoint;
+        Boolean found = false;
         do {
-            coordinate[0] = generateRandomLongitude();
-            coordinate[1] = generateRandomLatitude();
-            maxAttempts--;
-        } while (!streetValidator.isPointStreet(coordinate[0], coordinate[1])
-                && maxAttempts > 0);
-
-        return coordinate;
-    }
-
-    /**
-     * This method reset the value of attempts amount.
-     */
-    private void resetAttempts() {
-        maxAttempts = 10000;
+            randomPoint = getNearPoint(referencePoint, radium);
+            indexAttemps++;
+            if( streetValidator.isPointStreet(randomPoint[1], randomPoint[0])){
+                found = true;
+            }
+        } while (!found && indexAttemps < MAXATTEMPTS);
+        return randomPoint;
     }
 
     /**
@@ -65,14 +61,19 @@ public class PointGenerator extends CoordinateGen implements IGeometryGenerator 
             Radium radium,
             int amountPoints
     ) {
-        coordinates.clear();
-        if (isValidReferencePoint(referencePoint)) {
-            for (int i = 0; i < amountPoints; i++) {
-                coordinates.add(getNearPoint(referencePoint, radium));
+        List<Double[]> coordinatesGenerated = new ArrayList<>();
+        if (isValidReferencePoint(referencePoint))
+        {
+            if(amountPoints == 1){
+                Double[] pointGenerated = getStreetPoint(referencePoint, radium);
+                coordinatesGenerated.add(pointGenerated);
+            }else {
+                for (int i = 0; i < amountPoints; i++){
+                    coordinatesGenerated.add(getNearPoint(referencePoint, radium));
+                }
             }
         }
-
-        return coordinates;
+        return coordinatesGenerated;
     }
 
     /**
@@ -81,7 +82,7 @@ public class PointGenerator extends CoordinateGen implements IGeometryGenerator 
      * @return TypeGeometry type.
      */
     @Override
-    public TypeGeometry getTypeGeometry() {
-        return TypeGeometry.POINT;
+    public GeometryType getTypeGeometry() {
+        return GeometryType.POINT;
     }
 }

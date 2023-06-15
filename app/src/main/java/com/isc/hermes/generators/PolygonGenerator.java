@@ -1,8 +1,6 @@
 package com.isc.hermes.generators;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 
 import java.util.ArrayList;
@@ -60,8 +58,8 @@ public class PolygonGenerator extends CoordinateGen implements IGeometryGenerato
      * @return TypeGeometry type.
      */
     @Override
-    public TypeGeometry getTypeGeometry() {
-        return TypeGeometry.POLYGON;
+    public GeometryType getTypeGeometry() {
+        return GeometryType.POLYGON;
     }
 
     /**
