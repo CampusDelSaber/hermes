@@ -31,10 +31,10 @@ public class MapPolygonController implements MapClickConfigurationController {
     private final MapboxMap mapboxMap;
     private final PolygonOptionsController polygonOptionsController;
     private final List<List<Point>> allPolygonsPoints;
-    private List<Point> polygonPoints;
-    private List<Double[]> coordinates;
-    private CoordinateParser coordinateParser;
-    private GeometryFactory geometryFactory;
+    private final List<Point> polygonPoints;
+    private final List<Double[]> coordinates;
+    private final CoordinateParser coordinateParser;
+    private final GeometryFactory geometryFactory;
 
     public MapPolygonController(MapboxMap mapboxMap, Context context ) {
         this.mapboxMap = mapboxMap;
