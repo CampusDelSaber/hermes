@@ -1,6 +1,7 @@
 package com.isc.hermes;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     private SearchView searchView;
     private SearcherController searcherController;
     private SearcherAdapterUpdater adapterUpdater;
+    private ImageView imageView;
 
     /**
      * This method initializes the activity.
@@ -41,6 +43,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
 
         initRecyclerView();
         setupSearchView();
+        goBackMainPage();
     }
 
     /**
@@ -49,6 +52,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycle_view_searched);
         searchView = findViewById(R.id.searcher_view);
+        imageView = findViewById(R.id.back_arrow_main);
 
         searcher = new Searcher();
         List<WayPoint> wayPoints = new ArrayList<>();
@@ -85,5 +89,15 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     @Override
     public void onItemClick(WayPoint wayPoint) {
         // Add listener
+    }
+
+    /**
+     * This method is called when the back arrow is clicked.
+     */
+    private void goBackMainPage() {
+        imageView.setOnClickListener(v -> {
+            searcherController.shutdown();
+            finish();
+        });
     }
 }
