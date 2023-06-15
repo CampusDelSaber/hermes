@@ -1,6 +1,7 @@
 package com.isc.hermes.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
@@ -137,7 +138,7 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Calculate the routes
-        Map<String, List<Node>> routes = dijkstraAlgorithm.getRoutes(graph, nodeA, nodeD);
+        Map<String, List<Node>> routes = dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD);
 
         // Check the fastest route
         List<Node> fastestRoute = routes.get("A");
@@ -149,5 +150,4 @@ public class DijkstraAlgorithmTest {
         assertEquals(nodeC, fastestRoute.get(1));
         assertEquals(nodeD, fastestRoute.get(2));
     }
-
 }

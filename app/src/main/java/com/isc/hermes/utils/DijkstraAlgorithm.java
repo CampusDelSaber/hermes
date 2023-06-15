@@ -2,12 +2,7 @@ package com.isc.hermes.utils;
 
 import com.isc.hermes.model.graph.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * This class implements Dijkstra's algorithm for
@@ -15,6 +10,33 @@ import java.util.PriorityQueue;
  */
 public class DijkstraAlgorithm {
     private static DijkstraAlgorithm instance;
+    private static final int MAX_ROUTE_ALTERNATIVES = 3;
+
+    /**
+     * Calculates the shortest path from the source node to the destination node in the given graph.
+     *
+     * @param graph       The graph in which to find the shortest path.
+     * @param source      The source node.
+     * @param destination The destination node.
+     * @return A map with route alternatives as keys and their corresponding list of nodes as values.
+     */
+    public Map<String, List<Node>> getPathAlternatives(Graph graph, Node source, Node destination) {
+        Map<String, List<Node>> routeAlternatives = new HashMap<>();
+
+        for (int i = 0; i < MAX_ROUTE_ALTERNATIVES; i++) {
+            List<Node> shortestPath = getShortestPath(graph, source, destination);
+            if (shortestPath.isEmpty()) {
+                break;
+            }
+
+            String routeKey = getRouteKey(i);
+            routeAlternatives.put(routeKey, shortestPath);
+
+            removeEdgesFromGraph(graph, shortestPath);
+        }
+
+        return routeAlternatives;
+    }
 
     /**
      * Calculates the shortest path from the source node to the destination node in the given graph.
@@ -42,15 +64,18 @@ public class DijkstraAlgorithm {
      * @param source    The source node from which the shortest path is calculated.
      * @param distances A map to store the distances from the source node to each node.
      * @param parents   A map to store the parent node of each node in the shortest path.
-     * @param queue       The queue with the nodes
+     * @param queue     The queue with the nodes.
      */
-    public void initializeDistancesAndParents(
+    private void initializeDistancesAndParents(
             Graph graph, Node source, Map<Node, Double> distances, Map<Node, Node> parents,
             PriorityQueue<Node> queue
     ) {
         for (Node node : graph.getNodes().values()) {
-            if (node == source) distances.put(node, 0.0);
-            else distances.put(node, Double.MAX_VALUE);
+            if (node == source) {
+                distances.put(node, 0.0);
+            } else {
+                distances.put(node, Double.MAX_VALUE);
+            }
             parents.put(node, null);
             queue.add(node);
         }
@@ -62,17 +87,19 @@ public class DijkstraAlgorithm {
      * @param destination The destination node.
      * @param distances   A map of distances from the source node to each node.
      * @param parents     A map of parent nodes for each node in the shortest path.
-     * @param queue       The queue with the nodes
+     * @param queue       The queue with the nodes.
      * @return The list of nodes representing the shortest path from source to destination.
      */
-    public List<Node> calculateShortestPath(
+    private List<Node> calculateShortestPath(
             Node destination, Map<Node, Double> distances, Map<Node, Node> parents,
             PriorityQueue<Node> queue
     ) {
         while (!queue.isEmpty()) {
             Node current = queue.poll();
 
-            if (current == destination) break;
+            if (current == destination) {
+                break;
+            }
             assert current != null;
             for (Edge edge : current.getEdges()) {
                 Node adjacent = edge.getDestination();
@@ -97,7 +124,7 @@ public class DijkstraAlgorithm {
      * @param parents     A map of parent nodes for each node in the shortest path.
      * @return The list of nodes representing the shortest path from source to destination.
      */
-    public List<Node> retrieveShortestPath(Node destination, Map<Node, Node> parents) {
+    private List<Node> retrieveShortestPath(Node destination, Map<Node, Node> parents) {
         List<Node> shortestPath = new ArrayList<>();
         Node current = destination;
 
@@ -110,49 +137,38 @@ public class DijkstraAlgorithm {
     }
 
     /**
-     * Calculates the shortest path and alternative routes from the source node
-     * to the destination node in the given graph.
+     * Removes the edges of the nodes in the given shortest path from the graph.
      *
-     * @param graph       The graph in which to find the routes.
-     * @param source      The source node.
-     * @param destination The destination node.
-     * @return A map of routes, where the key represents the route name and the value
-     * is the list of nodes representing the route. Key "A" represents the shortest route
+     * @param graph       The graph from which to remove the edges.
+     * @param shortestPath The shortest path with nodes whose edges should be removed.
      */
-    public Map<String, List<Node>> getRoutes(Graph graph, Node source, Node destination) {
-
-        Map<String, List<Node>> routes = new HashMap<>();
-        routes.put("A", getShortestPath(graph, source, destination));
-
-        List<Node> alternativeRoute1 = findAlternativeRoute(graph, source, destination);
-        if (alternativeRoute1 != null) routes.put("B", alternativeRoute1);
-        List<Node> alternativeRoute2 = findAlternativeRoute(graph, source, destination);
-        if (alternativeRoute2 != null) routes.put("C", alternativeRoute2);
-
-        return routes;
+    private void removeEdgesFromGraph(Graph graph, List<Node> shortestPath) {
+        for (int i = 0; i < shortestPath.size() - 1; i++) {
+            Node currentNode = shortestPath.get(i);
+            Node nextNode = shortestPath.get(i + 1);
+            currentNode.removeEdgeTo(nextNode);
+        }
     }
-
-    /**
-     * Finds an alternative route from the source node to the destination node using the given parents map.
-     *
-     * @param graph       The graph.
-     * @param source      The source node.
-     * @param destination The destination node.
-     * @return The list of nodes representing the alternative route, or null if no alternative route is found.
-     */
-    private List<Node> findAlternativeRoute(Graph graph, Node source, Node destination) {
-        // TODO: Logic to find alternative routes
-        return null;
-    }
-
 
     /**
      * Gets the singleton instance of the DijkstraAlgorithm class.
      *
-     * @return the instance of DijkstraAlgorithm
+     * @return the instance of DijkstraAlgorithm.
      */
     public static DijkstraAlgorithm getInstance() {
-        if (instance == null) instance = new DijkstraAlgorithm();
+        if (instance == null) {
+            instance = new DijkstraAlgorithm();
+        }
         return instance;
+    }
+
+    /**
+     * Generates a route key based on the index of the route.
+     *
+     * @param index The index of the route.
+     * @return The route key.
+     */
+    private String getRouteKey(int index) {
+        return "Route " + (char) ('A' + index);
     }
 }
