@@ -24,17 +24,4 @@ public class Utils {
         if (wordsArray.length > 0) expectedWord = wordsArray[0];
         return expectedWord;
     }
-
-    public static String transformToCamelcase(String word){
-        StringBuilder builder = new StringBuilder();
-        char[] letters = word.strip().toCharArray();
-
-        builder.append(Character.toString(letters[0]).toUpperCase());
-        for (int index = 1; index < letters.length; index++) {
-            builder.append(Character.toString(letters[index]).toLowerCase());
-        }
-
-        return builder.toString();
-    }
-
 }

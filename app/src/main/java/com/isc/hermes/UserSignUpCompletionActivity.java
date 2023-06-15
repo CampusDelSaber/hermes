@@ -33,6 +33,8 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private ImageView imgUser;
     private User userRegistered;
 
+    private SignUpTransition transition;
+
     /**
      * Assigns values to the components view.
      * Finds and initializes the TextView, AutoCompleteTextView, Button, and ImageView components from the layout.
@@ -93,10 +95,10 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      */
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
-            if (userRegistered.getRole() != null) {
+            if (userRegistered.getRoleAsString() != null) {
                 //TODO: Save the registeredUser in dataBase
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                transition.transitionBasedOnRole(userRegistered.getRole(), this);
+
             } else comboBoxTextField.setHelperText("Required");
         });
     }
@@ -128,6 +130,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_sign_up_completion_view);
+
         getUserInformation();
         generateActionToComboBox();
         assignValuesToComponentsView();
