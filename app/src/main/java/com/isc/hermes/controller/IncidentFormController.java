@@ -17,10 +17,14 @@ import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.utils.Animations;
 
+import org.bson.types.ObjectId;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
@@ -71,7 +75,7 @@ public class IncidentFormController {
                 @Override
                 protected Integer doInBackground(Void... voids) {
                     // JSON payload representing the incident
-                    String jsonPayload = "{\"_id\": \"647f77f7ca71d0ca1049542f\",\"type\": \"Social-Event\",\"reason\": \"March.\",\"dateCreated\": \"2018-12-10T13:49:51.141Z\",\"deathDate\": \"2019-12-10T13:49:51.141Z\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [12, 123]}}";
+                    String jsonPayload = "{\"_id\": \"" + generateObjectId() + "\",\"type\": \"TEST2-Event\",\"reason\": \"March.\",\"dateCreated\": \"2018-12-10T13:49:51.141Z\",\"deathDate\": \"2019-12-10T13:49:51.141Z\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [12, 123]}}";
                     try {
                         URL url = new URL("https://api-rest-hermes.onrender.com/incidents");
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -82,10 +86,10 @@ public class IncidentFormController {
                         connection.setDoOutput(true);
 
                         // Send the JSON payload
-                        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                        outputStream.writeBytes(jsonPayload);
-                        outputStream.flush();
-                        outputStream.close();
+                        try (OutputStream outputStream = connection.getOutputStream()) {
+                            byte[] payloadBytes = jsonPayload.getBytes(StandardCharsets.UTF_8);
+                            outputStream.write(payloadBytes, 0, payloadBytes.length);
+                        }
 
                         // Get the response code
                         return connection.getResponseCode();
@@ -101,7 +105,7 @@ public class IncidentFormController {
                         System.out.println("Incident uploaded successfully.");
                         Toast.makeText(context, "GOOOD", Toast.LENGTH_SHORT).show();
                     } else {
-                        System.out.println("FAILED" + responseCode);
+                        System.out.println("FAILED: " + responseCode);
                     }
                 }
             };
@@ -109,9 +113,11 @@ public class IncidentFormController {
             // Execute the task
             task.execute();
         });
-
     }
-
+    private String generateObjectId() {
+        ObjectId objectId = new ObjectId();
+        return objectId.toHexString();
+    }
     /**
      * Method assign values to the incident components.
      *
