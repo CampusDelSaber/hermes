@@ -12,6 +12,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.isc.hermes.R;
+import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.database.TrafficUploader;
+import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.utils.Animations;
 
 /**
@@ -23,6 +26,14 @@ public class TrafficFormController {
     private final Button cancelButton;
     private final Button acceptButton;
     private final MapController mapController;
+
+    int numberEstimate = 123;
+    String timeMunutes = "minutes";
+    String levelTraffic = "Normal";
+
+
+
+
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -92,5 +103,23 @@ public class TrafficFormController {
      */
     public RelativeLayout getTrafficForm() {
         return incidentForm;
+    }
+    private String getIncidentType(){
+        String selectedIncidentType = levelTraffic;
+        return selectedIncidentType;
+    }
+    private String getIncidentTime(){
+        int selectedIncidentTime = numberEstimate;
+        String selectedIncidentTimeOption = timeMunutes;
+        return selectedIncidentTime+ " " + selectedIncidentTimeOption;
+    }
+
+    public int uploadIncidentDataBase(){
+        String id = IncidentsUtils.getInstance().generateObjectId();
+        String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
+        String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
+        String coordinates = TrafficUploader.getInstance().getCoordinates();
+        String JsonString = TrafficUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,coordinates);
+        return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
 }
