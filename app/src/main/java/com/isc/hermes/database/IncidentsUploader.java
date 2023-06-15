@@ -1,111 +1,93 @@
 package com.isc.hermes.database;
 
-import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.model.CurrentLocationModel;
-import java.text.DateFormat;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import org.bson.types.ObjectId;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+
 
 public class IncidentsUploader {
-    private final String API_URL = "https://api-rest-hermes.onrender.com/";
+    private final String API_URL = "https://api-rest-hermes.onrender.com/incidents";
     private static IncidentsUploader instance;
+    private LatLng lastClickedPoint;
 
-    public void uploadIncident(String incidentJsonString){
+    public int uploadIncident(String incidentJsonString){
         try {
             URL url = new URL(API_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            // Set the necessary headers
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            // Send the JSON payload
-            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.writeBytes(incidentJsonString);
-            outputStream.flush();
-            outputStream.close();
-
-            // Get the response code
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                System.out.println("Incident uploaded successfully.");
-            } else {
-                System.out.println("Failed to upload incident. Response Code: " + responseCode);
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                byte[] payloadBytes = incidentJsonString.getBytes(StandardCharsets.UTF_8);
+                outputStream.write(payloadBytes, 0, payloadBytes.length);
             }
 
-            connection.disconnect();
+            return connection.getResponseCode();
         } catch (IOException e) {
             e.printStackTrace();
+            return -1;
         }
-
-    }
-    public  String createRandomIncidentId() {
-        List<Character> characters = new ArrayList<>();
-        Random random = new Random();
-        for (char c = '0'; c <= '9'; c++) {
-            characters.add(c);
-        }
-        for (char c = 'a'; c <= 'z'; c++) {
-            characters.add(c);
-        }
-        StringBuilder final_id = new StringBuilder();
-        int length = 15;
-
-        for (int i = 0; i < length; i++) {
-            int randomIndex = random.nextInt(characters.size());
-            char randomCharacter = characters.get(randomIndex);
-            final_id.append(randomCharacter);
-        }
-        return final_id.toString();
     }
 
-    public double getCurrentLatitude(){
-        return CurrentLocationController.getInstance().getLatitude();
-    }
-    public double getCurrentLongitude(){
-        return CurrentLocationController.getInstance().getLongitude();
+    public String generateCurrentDateCreated() {
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return dateFormat.format(currentDate);
     }
 
-    public String createJSONString(String id, String type, String reason, String time, String geometryType, String longitud, String latitud) {
-        Date currentDate = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-        String currentDateString = dateFormat.format(currentDate);
-
+    public String addTimeToCurrentDate(String timeDuration) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        if (time.contains("minute")) {
-            int minutes = Integer.parseInt(time.split(" ")[0]);
-            calendar.add(Calendar.MINUTE, minutes);
-        } else if (time.contains("hour")) {
-            int hours = Integer.parseInt(time.split(" ")[0]);
-            calendar.add(Calendar.HOUR, hours);
-        } else if (time.contains("day")) {
-            int days = Integer.parseInt(time.split(" ")[0]);
-            calendar.add(Calendar.DAY_OF_MONTH, days);
+        calendar.setTime(new Date());
+
+        String[] parts = timeDuration.split(" ");
+        int amount = Integer.parseInt(parts[0]);
+        String unit = parts[1].toLowerCase();
+
+        if (unit.equals("minute") || unit.equals("minutes")) {
+            calendar.add(Calendar.MINUTE, amount);
+        } else if (unit.equals("hour") || unit.equals("hours")) {
+            calendar.add(Calendar.HOUR, amount);
+        } else if (unit.equals("day") || unit.equals("days")) {
+            calendar.add(Calendar.DAY_OF_YEAR, amount);
+        } else if (unit.equals("month") || unit.equals("months")) {
+            calendar.add(Calendar.MONTH, amount);
         }
-        Date deathDate = calendar.getTime();
-        String deathDateString = dateFormat.format(deathDate);
 
-        String jsonString = "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" +
-                currentDateString + "\",\"deathDate\": \"" + deathDateString + "\",\"geometry\": {\"type\": \"" + geometryType +
-                "\",\"coordinates\": [" + latitud + ", " + longitud + "]}}";
-
-        return jsonString;
+        Date modifiedDate = calendar.getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return dateFormat.format(modifiedDate);
     }
 
+    public String generateObjectId() {
+        ObjectId objectId = new ObjectId();
+        return objectId.toHexString();
+    }
+    public String generateJsonIncident(String id, String type, String reason, String dateCreated, String deathDate, String coordinates) {
+        return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + "}}";
+    }
+
+    public LatLng getLastClickedPoint() {
+        return lastClickedPoint;
+    }
+
+    public void setLastClickedPoint(LatLng point) {
+        lastClickedPoint = point;
+    }
+    public String getCoordinates(){
+        String[] parts = lastClickedPoint.toString().split("[=,]");
+        String latitude = parts[1].trim();
+        String longitude = parts[3].trim();
+        return "[" + latitude + ", " + longitude + "]";
+    }
     public static IncidentsUploader getInstance() {
         if (instance == null) instance = new IncidentsUploader();
         return instance;

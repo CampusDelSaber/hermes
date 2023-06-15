@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.isc.hermes.R;
+import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -48,6 +49,7 @@ public class MapController implements MapboxMap.OnMapClickListener {
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
         doMarkOnMapAction(point);
+        IncidentsUploader.getInstance().setLastClickedPoint(point);
         return true;
     }
 

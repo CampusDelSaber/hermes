@@ -70,42 +70,18 @@ public class IncidentFormController {
             mapController.deleteMarks();
             Toast.makeText(context, "Incident Saved Correctly.", Toast.LENGTH_SHORT).show();
 
-            // Start a background task to perform the network request
             @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected Integer doInBackground(Void... voids) {
-                    // JSON payload representing the incident
-                    String jsonPayload = "{\"_id\": \"" + generateObjectId() + "\",\"type\": \"TEST2-Event\",\"reason\": \"March.\",\"dateCreated\": \"2018-12-10T13:49:51.141Z\",\"deathDate\": \"2019-12-10T13:49:51.141Z\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [12, 123]}}";
-                    try {
-                        URL url = new URL("https://api-rest-hermes.onrender.com/incidents");
-                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                        // Set the necessary headers
-                        connection.setRequestMethod("POST");
-                        connection.setRequestProperty("Content-Type", "application/json");
-                        connection.setDoOutput(true);
-
-                        // Send the JSON payload
-                        try (OutputStream outputStream = connection.getOutputStream()) {
-                            byte[] payloadBytes = jsonPayload.getBytes(StandardCharsets.UTF_8);
-                            outputStream.write(payloadBytes, 0, payloadBytes.length);
-                        }
-
-                        // Get the response code
-                        return connection.getResponseCode();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return -1;
-                    }
+                    return uploadIncidentDataBase();
                 }
 
                 @Override
                 protected void onPostExecute(Integer responseCode) {
                     if (responseCode == HttpURLConnection.HTTP_OK) {
-                        System.out.println("Incident uploaded successfully.");
-                        Toast.makeText(context, "GOOOD", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Incident uploaded successfully.", Toast.LENGTH_SHORT).show();
                     } else {
-                        System.out.println("FAILED: " + responseCode);
+                        Toast.makeText(context, "Incident could not be uploaded.", Toast.LENGTH_SHORT).show();
                     }
                 }
             };
@@ -114,10 +90,7 @@ public class IncidentFormController {
             task.execute();
         });
     }
-    private String generateObjectId() {
-        ObjectId objectId = new ObjectId();
-        return objectId.toHexString();
-    }
+
     /**
      * Method assign values to the incident components.
      *
@@ -164,12 +137,13 @@ public class IncidentFormController {
         String selectedIncidentTimeOption = incidentTimeSpinner.getSelectedItem().toString();
         return selectedIncidentTime+ " " + selectedIncidentTimeOption;
     }
-    private void uploadIncidentDataBase(){
-        String id = IncidentsUploader.getInstance().createRandomIncidentId();
-        String longitud = IncidentsUploader.getInstance().getCurrentLongitude()+"";
-        String latitud = IncidentsUploader.getInstance().getCurrentLatitude()+"";
-        String JsonString = IncidentsUploader.getInstance().createJSONString("1ba","1ba","Reason", "getIncidentTime()","Point", "longitud", "latitud");
-        IncidentsUploader.getInstance().uploadIncident(JsonString);
+    private int uploadIncidentDataBase(){
+        String id = IncidentsUploader.getInstance().generateObjectId();
+        String dateCreated = IncidentsUploader.getInstance().generateCurrentDateCreated();
+        String deathDate = IncidentsUploader.getInstance().addTimeToCurrentDate(getIncidentTime());
+        String coordinates = IncidentsUploader.getInstance().getCoordinates();
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,coordinates);
+        return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 
 
