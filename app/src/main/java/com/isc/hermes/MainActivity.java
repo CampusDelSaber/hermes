@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
+
+import com.isc.hermes.controller.IncidentDialogController;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -228,4 +230,10 @@ public class MainActivity extends AppCompatActivity {
             mapDisplay.setMapStyle(mapStyle);
         });
     }
+    public void openIncidentsDialog(View view){
+        IncidentDialogController incidentDialogController = new IncidentDialogController(this);
+        //here might a singleton for giving the current values to show
+        incidentDialogController.show("Traffic", "An car hit a bike", "20 minutes", "[123231,41321]");
+    }
+
 }
