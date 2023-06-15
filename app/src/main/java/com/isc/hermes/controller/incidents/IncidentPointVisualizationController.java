@@ -3,6 +3,7 @@ package com.isc.hermes.controller.incidents;
 import android.content.Context;
 
 import com.isc.hermes.R;
+import com.isc.hermes.model.incidents.Incident;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 
@@ -21,6 +22,12 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class IncidentPointVisualizationController {
@@ -44,33 +51,45 @@ public class IncidentPointVisualizationController {
      * @param pointList list of places that will be marked on the map.
      */
     public void displayPoint(IncidentGetterModel pointList) throws JSONException {
-        for (int i = 0; i < pointList.getIncidentList().size(); i++) {
-            System.out.println("COMO EEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSS" +  pointList.getIncidentList().size());
-            LatLng pointCoordinates = pointList.getIncidentList().get(i).getPointCoordinates();
-            IconFactory iconFactory = IconFactory.getInstance(context);
+        IconFactory iconFactory = IconFactory.getInstance(context);
 
-            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.mapbox_marker_icon_default);
-            drawable.setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
+        for (Incident incident : pointList.getIncidentList()) {
+            LatLng pointCoordinates = incident.getPointCoordinates();
+            Icon icon = createIcon();
 
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
+            MarkerOptions waypoint = createMarkerOptions(pointCoordinates, icon);
 
-            Icon icon = iconFactory.fromBitmap(bitmap);
-
-            MarkerOptions waypoint = new MarkerOptions()
-                    .position(pointCoordinates)
-                    .icon(icon);
-
-            if (pointList.getIncidentList().get(i).getType().equals("Accident")){
-                mapboxMap.addMarker(waypoint);
-            }else if (pointList.getIncidentList().get(i).getType().equals("Social-Event")){
-                mapboxMap.addMarker(waypoint);
-            } else if (pointList.getIncidentList().get(i).getType().equals("Street obstruction")) {
+            if (isDesiredIncidentType(incident.getType())) {
                 mapboxMap.addMarker(waypoint);
             }
         }
+    }
+
+    private Icon createIcon() {
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.mapbox_marker_icon_default);
+        drawable.setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
+
+        Bitmap bitmap = createBitmapFromDrawable(drawable);
+        return IconFactory.getInstance(context).fromBitmap(bitmap);
+    }
+
+    private Bitmap createBitmapFromDrawable(Drawable drawable) {
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    private MarkerOptions createMarkerOptions(LatLng position, Icon icon) {
+        return new MarkerOptions()
+                .position(position)
+                .icon(icon);
+    }
+
+    private boolean isDesiredIncidentType(String incidentType) {
+        Set<String> desiredTypes = new HashSet<>(Arrays.asList("Accident", "Social-Event", "Street obstruction"));
+        return desiredTypes.contains(incidentType);
     }
 
 }
