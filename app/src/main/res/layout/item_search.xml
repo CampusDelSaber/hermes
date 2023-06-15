@@ -1,47 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/searchItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/selector_item"
-    android:orientation="horizontal"
     android:padding="16dp">
 
     <ImageView
         android:id="@+id/pinIcon"
         android:layout_width="34dp"
         android:layout_height="41dp"
-        android:src="@drawable/ic_pin" />
+        android:src="@drawable/ic_pin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/placeName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        tools:ignore="RtlSymmetry">
+        android:layout_marginEnd="22dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/right_arrow"
+        app:layout_constraintStart_toEndOf="@id/pinIcon"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/placeName"
-            android:layout_width="286dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/placeLocation"
-            android:layout_width="296dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/placeLocation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/pinIcon"
+        app:layout_constraintEnd_toStartOf="@id/right_arrow"
+        app:layout_constraintTop_toBottomOf="@id/placeName" />
 
     <ImageView
+        android:id="@+id/right_arrow"
         android:layout_width="25dp"
         android:layout_height="42dp"
-        android:src="@drawable/right_arrow" />
+        android:src="@drawable/right_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
