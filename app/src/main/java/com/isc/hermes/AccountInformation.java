@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.isc.hermes.controller.DeleteAccountWarningDialog;
+
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
  */
 public class AccountInformation extends AppCompatActivity {
+
+    DeleteAccountWarningDialog dialog;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -22,6 +26,7 @@ public class AccountInformation extends AppCompatActivity {
         deleteAccountAction();
         uploadImageProfileAction();
         editAccountAction();
+        initializeWaningPopup();
     }
 
     /**
@@ -38,8 +43,12 @@ public class AccountInformation extends AppCompatActivity {
      * This method is used to delete an account using on click action.
      */
     public void deleteAccountAction() {
-        findViewById(R.id.buttonDeleteAccount).setOnClickListener( v ->
-                System.out.println("the action for delete account will be here"));
+        findViewById(R.id.buttonDeleteAccount).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.show();
+            }
+        });
     }
 
     /**
@@ -56,5 +65,12 @@ public class AccountInformation extends AppCompatActivity {
     public void editAccountAction() {
         findViewById(R.id.buttonEditInformation).setOnClickListener( v ->
                 System.out.println("the action for edit account information will be here"));
+    }
+
+    /**
+     * This method initialize the popup warning when we pressed on the delete account button
+     */
+    private void initializeWaningPopup(){
+        this.dialog = new DeleteAccountWarningDialog(this);
     }
 }
