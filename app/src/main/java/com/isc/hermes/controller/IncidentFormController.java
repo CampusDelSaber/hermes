@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.utils.Animations;
 
 import org.bson.types.ObjectId;
@@ -122,14 +123,21 @@ public class IncidentFormController {
     public RelativeLayout getIncidentForm() {
         return incidentForm;
     }
+    /**
 
-
-
+     Retrieves the selected incident type from the incident spinner.
+     @return The selected incident type as a string.
+     */
     private String getIncidentType(){
         Spinner incidentTypeSpinner = ((AppCompatActivity) context).findViewById(R.id.incident_spinner);
         String selectedIncidentType = incidentTypeSpinner.getSelectedItem().toString();
         return selectedIncidentType;
     }
+    /**
+
+     Retrieves the selected incident time from the number picker and time spinner.
+     @return The selected incident time as a  string.
+     */
     private String getIncidentTime(){
         NumberPicker incidentTimePicker = ((AppCompatActivity) context).findViewById(R.id.numberPicker);
         int selectedIncidentTime = incidentTimePicker.getValue();
@@ -137,10 +145,16 @@ public class IncidentFormController {
         String selectedIncidentTimeOption = incidentTimeSpinner.getSelectedItem().toString();
         return selectedIncidentTime+ " " + selectedIncidentTimeOption;
     }
+
+    /**
+
+     Uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
+     @return The HTTP response code indicating the status of the upload.
+     */
     private int uploadIncidentDataBase(){
-        String id = IncidentsUploader.getInstance().generateObjectId();
-        String dateCreated = IncidentsUploader.getInstance().generateCurrentDateCreated();
-        String deathDate = IncidentsUploader.getInstance().addTimeToCurrentDate(getIncidentTime());
+        String id = IncidentsUtils.generateObjectId();
+        String dateCreated = IncidentsUtils.generateCurrentDateCreated();
+        String deathDate = IncidentsUtils.addTimeToCurrentDate(getIncidentTime());
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
         String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
