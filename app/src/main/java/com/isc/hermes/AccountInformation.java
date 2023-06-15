@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -99,7 +100,6 @@ public class AccountInformation extends AppCompatActivity {
      * @param resultCode  The result code from the activity.
      * @param data        The intent containing the result data.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -110,10 +110,7 @@ public class AccountInformation extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = Utils.cropToSquare(bitmap);
 
-                Uri uri = Utils.getUriFromBitmap(this, croppedBitmap);
-                imageView.setImageURI(uri);
-
-                ImageBBUploader.uploadToImgur(new File(selectedImageUri.getPath()));
+                imageView.setImageBitmap(croppedBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -127,9 +124,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void editAccountAction(View view) {
         buttonSaveInformation.setVisibility(View.VISIBLE);
-        textFieldFullName.setFocusable(true);
-        textFieldFullName.setFocusableInTouchMode(true); // user touches widget on phone with touch screen
-        textFieldFullName.setClickable(true);
+        textFieldFullName.setEnabled(false);
     }
 
     /**
@@ -139,8 +134,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void saveAccountInformationAction(View view) {
         buttonSaveInformation.setVisibility(View.INVISIBLE);
-        textFieldFullName.setFocusable(false);
-        textFieldFullName.setFocusableInTouchMode(false); // user touches widget on phone with touch screen
-        textFieldFullName.setClickable(false);
+        textFieldFullName.setEnabled(true);
+        System.out.println(textFieldFullName.getText());
     }
 }
