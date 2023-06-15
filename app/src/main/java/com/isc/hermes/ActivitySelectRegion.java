@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -158,7 +159,24 @@ public class ActivitySelectRegion extends AppCompatActivity {
         builder.setView(view);
         alertDialog = builder.create();
         view.findViewById(R.id.cancel_name_region_popup).setOnClickListener(v -> closePopup());
-        view.findViewById(R.id.ok_name_region_popup).setOnClickListener(v -> sendData(inputName.getText().toString()));
+        view.findViewById(R.id.ok_name_region_popup).setOnClickListener(v -> validateInput(inputName));
+    }
+
+    /**
+     * This method validates the input in the EditText field.
+     *
+     * @param editText The EditText field to validate.
+     */
+    private void validateInput(EditText editText) {
+        String text = editText.getText().toString();
+        if (TextUtils.isEmpty(text)) {
+            editText.setError("This field is required");
+        } else if (text.length() > 15) {
+            editText.setError("Max 15 characters allowed");
+            editText.setText("");
+        } else {
+            sendData(text);
+        }
     }
 
     /**
