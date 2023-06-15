@@ -18,6 +18,7 @@
     <string name="get_location_text">Get Location</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
+
     <string name="list_button_text">List</string>
     <string name="download_button_text">Download\n</string>
     <string name="cancel">Cancel</string>
@@ -25,6 +26,10 @@
     <string name="tittle_region_popup">Give a name to your map</string>
     <string name="your_name_map">Your name map</string>
     <string name="close">Close</string>
+
+    <string name="incidents_uploaded">Incident uploaded successfully.</string>
+    <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
+    <string name="incidents_api_url">https://api-rest-hermes.onrender.com/incidents</string>
     <string-array name="incidents_type">
         <item>Traffic Incident</item>
         <item>Natural Disaster</item>
