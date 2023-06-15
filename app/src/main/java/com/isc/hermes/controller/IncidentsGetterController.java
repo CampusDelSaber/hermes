@@ -49,6 +49,9 @@ public class IncidentsGetterController {
             int zoom = cameraZoom > 40 ? 40 : Math.max(cameraZoom, 12);
 
             JSONArray incidentsArray = incidentsDataProcessor.getNearIncidents(cameraFocus, zoom);
+            for (Incident incident: parseIncidentResponse(incidentsArray) ){
+                System.out.println(incident.getId()+ " "+  incident.getType()+ " "+  incident.getReason()+ " "+ incident.getGeometry().toString());
+            }
             incidentGetterModel.setIncidentList(parseIncidentResponse(incidentsArray));
             System.out.println(incidentGetterModel.getIncidentList());
         });
@@ -83,6 +86,9 @@ public class IncidentsGetterController {
         }
 
         return incidents;
+    }
+    public IncidentGetterModel getIncidentGetterModel(){
+        return incidentGetterModel;
     }
 
     /**
