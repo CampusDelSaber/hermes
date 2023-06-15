@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+/**
+ * This class implements Dijkstra's algorithm for
+ * finding the shortest path between two nodes in a graph.
+ */
 public class DijkstraAlgorithm {
     private static DijkstraAlgorithm instance;
 
@@ -142,6 +146,11 @@ public class DijkstraAlgorithm {
     }
 
 
+    /**
+     * Gets the singleton instance of the DijkstraAlgorithm class.
+     *
+     * @return the instance of DijkstraAlgorithm
+     */
     public static DijkstraAlgorithm getInstance() {
         if (instance == null) instance = new DijkstraAlgorithm();
         return instance;
