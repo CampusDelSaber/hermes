@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.View;
 import android.widget.ImageButton;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
@@ -227,5 +228,10 @@ public class MainActivity extends AppCompatActivity {
             else mapStyle = "default";
             mapDisplay.setMapStyle(mapStyle);
         });
+    }
+
+    public void OfflineModeSettings(View view) {
+        Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
+        startActivity(intent);
     }
 }

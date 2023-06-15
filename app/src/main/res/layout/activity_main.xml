@@ -155,6 +155,14 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:gravity="center"
+            android:onClick="OfflineModeSettings"
+            android:text="@string/Offline_Settings_text"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
             android:onClick="showAccount"
             android:text="@string/account_text"
             android:textColor="@color/white" />
