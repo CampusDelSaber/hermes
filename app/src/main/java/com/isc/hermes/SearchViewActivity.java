@@ -17,7 +17,12 @@ import com.isc.hermes.utils.WayPointClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This activity is used for handling the search view operation.
+ * It implements the WayPointClickListener interface to listen for click events on the items in the RecyclerView.
+ */
 public class SearchViewActivity extends AppCompatActivity implements WayPointClickListener {
+
     private RecyclerView recyclerView;
     private SearcherAdapter adapter;
     private Searcher searcher;
@@ -25,6 +30,10 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     private SearcherController searcherController;
     private SearcherAdapterUpdater adapterUpdater;
 
+    /**
+     * This method initializes the activity.
+     * @param savedInstanceState A mapping from String keys to various Parcelable values.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +43,9 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         setupSearchView();
     }
 
+    /**
+     * This method initializes the RecyclerView and related classes.
+     */
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycle_view_searched);
         searchView = findViewById(R.id.searcher_view);
@@ -46,6 +58,9 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    /**
+     * This method sets up the SearchView and related classes.
+     */
     private void setupSearchView() {
         searcherController = new SearcherController(searcher, adapterUpdater);
         searchView.setOnQueryTextListener(searcherController.getOnQueryTextListener());
@@ -53,6 +68,9 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         searchView.requestFocus();
     }
 
+    /**
+     * This method is called when the activity is about to be destroyed.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -60,6 +78,10 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         finish();
     }
 
+    /**
+     * This method is called when an item in the RecyclerView is clicked.
+     * @param wayPoint The item that was clicked.
+     */
     @Override
     public void onItemClick(WayPoint wayPoint) {
         // Add listener
