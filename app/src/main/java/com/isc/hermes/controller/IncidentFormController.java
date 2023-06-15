@@ -38,6 +38,11 @@ public class IncidentFormController {
         acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);
         setButtonsOnClick();
         setIncidentComponents();
+
+    }
+
+    public MapController getMapController() {
+        return mapController;
     }
 
     /**
@@ -49,14 +54,15 @@ public class IncidentFormController {
             incidentForm.startAnimation(Animations.exitAnimation);
             incidentForm.setVisibility(View.GONE);
             mapController.deleteMarks();
+
         });
 
         acceptButton.setOnClickListener(v -> {
             mapController.setMarked(false);
             incidentForm.startAnimation(Animations.exitAnimation);
             incidentForm.setVisibility(View.GONE);
-            mapController.deleteMarks();
             Toast.makeText(context, "Incident Saved Correctly.", Toast.LENGTH_SHORT).show();
+            mapController.deleteMarks();
         });
     }
 
