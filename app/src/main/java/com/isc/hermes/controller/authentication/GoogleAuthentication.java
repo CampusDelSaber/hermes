@@ -14,18 +14,17 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.isc.hermes.R;
-import com.isc.hermes.SignUpActivityView;
-import com.isc.hermes.model.User;
+import com.isc.hermes.user.Payload;
+import com.isc.hermes.user.Repository;
 
 import java.util.Objects;
-
-import timber.log.Timber;
 
 /**
  * This class is in charge of authentication by the google service
  */
 public class GoogleAuthentication implements IAuthentication {
     private GoogleSignInClient googleSignInClient;
+    private Repository userRepository;
 
 
     /**
@@ -37,6 +36,8 @@ public class GoogleAuthentication implements IAuthentication {
                 .requestEmail()
                 .build();
         this.googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions);
+
+        userRepository = Repository.getInstance();
     }
 
     /**
@@ -58,15 +59,10 @@ public class GoogleAuthentication implements IAuthentication {
      * that will close the current session of the user
      * </p>
      */
-    public void signOut(Context context){
+    public void signOut(Context context) {
         configureAccess(context);
-        googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(context, "Your account was closed successfully",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        googleSignInClient.signOut().addOnCompleteListener(task -> Toast.makeText(context, "Your account was closed successfully",
+                Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -86,7 +82,7 @@ public class GoogleAuthentication implements IAuthentication {
      * which removes all user information within the app
      * </p>
      */
-    public void revokeAccess(){
+    public void revokeAccess() {
         googleSignInClient.revokeAccess();
     }
 
@@ -103,12 +99,14 @@ public class GoogleAuthentication implements IAuthentication {
      * @param account The GoogleSignInAccount used to create the User object.
      * @return The User object created from the GoogleSignInAccount.
      */
-    private User getUserByAccount(GoogleSignInAccount account) {
-        User user = new User(account.getEmail(), Objects.requireNonNull(account.getPhotoUrl()).toString(),
-                account.getIdToken());
-        user.setUserName(account.getGivenName());
-        user.setFullName(account.getGivenName(), account.getFamilyName());
-        return user;
+    private Payload getUserByAccount(GoogleSignInAccount account) {
+
+        return new Payload(
+                account.getEmail(),
+                account.getId(),
+                Objects.requireNonNull(account.getPhotoUrl()).toString(),
+                account.getGivenName(),
+                account.getFamilyName());
     }
 
     /**
@@ -117,10 +115,10 @@ public class GoogleAuthentication implements IAuthentication {
      * @param data The completed sign-in task.
      * @return a user with its elements.
      */
-    public User getUserBySignInResult(Intent data) throws ApiException {
+    public int getUserBySignInResult(Intent data) throws ApiException {
         Task<GoogleSignInAccount> completedTask = GoogleSignIn.getSignedInAccountFromIntent(data);
         GoogleSignInAccount account;
         account = completedTask.getResult(ApiException.class);
-        return getUserByAccount(account);
+        return userRepository.put(getUserByAccount(account));
     }
 }

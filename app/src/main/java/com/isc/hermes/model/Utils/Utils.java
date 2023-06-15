@@ -1,10 +1,5 @@
 package com.isc.hermes.model.Utils;
 
-import com.isc.hermes.model.User;
-import com.isc.hermes.model.user.UserRoles;
-
-import java.util.Arrays;
-
 /**
  * Utility class containing various helper methods.
  * This class provides common utility methods that can be used across the application.

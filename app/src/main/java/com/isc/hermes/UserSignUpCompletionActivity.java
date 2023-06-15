@@ -13,8 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
-import com.isc.hermes.model.User;
+import com.isc.hermes.model.exceptions.CorruptedTokenException;
 import com.isc.hermes.model.user.UserRoles;
+import com.isc.hermes.user.Repository;
+import com.isc.hermes.user.User;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -31,9 +33,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private TextInputLayout comboBoxTextField;
     private Button buttonRegister;
     private ImageView imgUser;
-    private User userRegistered;
 
     private SignUpTransition transition;
+    private User userRegistered;
 
     /**
      * Assigns values to the components view.
@@ -81,9 +83,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      */
     private void generateActionToComboBox() {
         generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
-            String item = parent.getItemAtPosition(position).toString();
-            userRegistered.setRole(item);
-            Toast.makeText(getApplicationContext(), "Item: " + item,
+            String userRoleChoose = parent.getItemAtPosition(position).toString();
+            userRegistered.setRole(UserRoles.transform(userRoleChoose));
+            Toast.makeText(getApplicationContext(), "Item: " + userRoleChoose,
                     Toast.LENGTH_SHORT).show();
         });
     }
@@ -95,7 +97,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      */
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
-            if (userRegistered.getRoleAsString() != null) {
+            if (userRegistered.getRole() != null) {
                 //TODO: Save the registeredUser in dataBase
                 transition.transitionBasedOnRole(userRegistered.getRole(), this);
 
@@ -118,7 +120,13 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      */
     private void getUserInformation() {
         Intent intent = getIntent();
-        userRegistered = intent.getParcelableExtra("userObtained");
+        int registeredUserTokenValue = intent.getIntExtra("registeredUserTokenValue", -1);
+
+        if (registeredUserTokenValue < 0){
+            throw new CorruptedTokenException("The token should not be less than 0");
+        }
+
+        userRegistered = Repository.getInstance().get(registeredUserTokenValue);
     }
 
     /**
@@ -137,5 +145,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         generateActionToButtonSignUp();
         loadUserImageInView();
         loadInformationAboutUserInTextFields();
+
+        transition = new SignUpTransition();
     }
 }

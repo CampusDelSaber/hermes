@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TransitionHandler {
-    private Map<UserRoles, Class<?>> rolesClassMap;
+    private final Map<UserRoles, Class<?>> rolesClassMap;
     private static TransitionHandler self;
 
     private TransitionHandler(){
@@ -25,6 +25,6 @@ public class TransitionHandler {
     }
 
     public Class<?> cash(UserRoles role){
-        return MainActivity.class;
+        return rolesClassMap.get(role);
     }
 }

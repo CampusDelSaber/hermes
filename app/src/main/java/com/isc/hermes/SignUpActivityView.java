@@ -10,7 +10,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
-import com.isc.hermes.model.User;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -100,11 +100,11 @@ public class SignUpActivityView extends AppCompatActivity {
     /**
      * Sends a User object to another activity using an Intent.
      *
-     * @param user The User object to be sent to the other activity.
+     * @param token The User object to be sent to the other activity.
      */
-    private void sendUserBetweenActivities(User user) {
+    private void sendUserBetweenActivities(int token) {
         Intent intent = new Intent(this, UserSignUpCompletionActivity.class);
-        intent.putExtra("userObtained", user);
+        intent.putExtra("registeredUserTokenValue", token);
         startActivity(intent);
     }
 
