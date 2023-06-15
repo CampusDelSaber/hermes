@@ -9,6 +9,7 @@ import android.graphics.Color;
 import androidx.annotation.NonNull;
 
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
+
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapClickEventsManager;
 import com.mapbox.geojson.Point;
