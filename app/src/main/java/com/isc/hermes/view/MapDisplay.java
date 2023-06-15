@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.isc.hermes.controller.IncidentsGetterController;
+import com.isc.hermes.model.incidents.IncidentGetterModel;
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;

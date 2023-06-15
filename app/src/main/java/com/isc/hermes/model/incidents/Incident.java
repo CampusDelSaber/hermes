@@ -62,4 +62,8 @@ public class Incident {
         double lat = coordinatesArray.getDouble(1);
         return new LatLng(lat, lng);
     }
+
+    public String getType() {
+        return type;
+    }
 }
