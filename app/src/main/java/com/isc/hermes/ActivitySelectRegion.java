@@ -1,12 +1,5 @@
 package com.isc.hermes;
 
-import static com.isc.hermes.controller.offline.OfflineController.LAT_LNG_BOUNDS;
-import static com.isc.hermes.controller.offline.OfflineController.MAX_ZOOM;
-import static com.isc.hermes.controller.offline.OfflineController.MIN_ZOOM;
-import static com.isc.hermes.controller.offline.OfflineController.PIXEL_RATIO;
-import static com.isc.hermes.controller.offline.OfflineController.REGION_NAME;
-import static com.isc.hermes.controller.offline.OfflineController.STYLE;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.isc.hermes.model.RegionData;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -129,12 +123,8 @@ public class ActivitySelectRegion extends AppCompatActivity {
      */
     private Intent createIntent(String regionName, String styleUrl, double minZoom, double maxZoom, float pixelRatio, LatLngBounds latLngBounds) {
         Intent intent = new Intent();
-        intent.putExtra(STYLE, styleUrl);
-        intent.putExtra(MIN_ZOOM, minZoom);
-        intent.putExtra(MAX_ZOOM, maxZoom);
-        intent.putExtra(PIXEL_RATIO, pixelRatio);
-        intent.putExtra(LAT_LNG_BOUNDS, latLngBounds);
-        intent.putExtra(REGION_NAME, regionName);
+        RegionData regionData  = new RegionData(regionName,styleUrl, minZoom, maxZoom, pixelRatio,latLngBounds);
+        intent.putExtra("REGION_DATA",regionData);
         return intent;
     }
 
