@@ -116,6 +116,11 @@ public class CurrentLocationController {
         } else
             Toast.makeText(activity, "Location permission denied.", Toast.LENGTH_SHORT).show();
     }
+    /**
+     * Retrieves the instance of the CurrentLocationModel class.
+     *
+     * @return The instance of the CurrentLocationModel class.
+     */
     public static CurrentLocationModel getInstance() {
         if (currentLocationModel == null) currentLocationModel = new CurrentLocationModel();
         return currentLocationModel;

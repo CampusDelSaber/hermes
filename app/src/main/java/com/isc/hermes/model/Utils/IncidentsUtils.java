@@ -1,7 +1,5 @@
 package com.isc.hermes.model.Utils;
 
-import com.isc.hermes.database.IncidentsUploader;
-
 import org.bson.types.ObjectId;
 
 import java.text.SimpleDateFormat;
@@ -14,7 +12,21 @@ import java.util.Map;
  * This is a Utility class for handling incidents-related operations.
  */
 public class IncidentsUtils {
+    private Map<String, Integer> unitMap;
     private static IncidentsUtils instance;
+
+    public IncidentsUtils() {
+        this.unitMap = new HashMap<>();
+        unitMap.put("minute", Calendar.MINUTE);
+        unitMap.put("minutes", Calendar.MINUTE);
+        unitMap.put("hour", Calendar.HOUR);
+        unitMap.put("hours", Calendar.HOUR);
+        unitMap.put("day", Calendar.DAY_OF_YEAR);
+        unitMap.put("days", Calendar.DAY_OF_YEAR);
+        unitMap.put("month", Calendar.MONTH);
+        unitMap.put("months", Calendar.MONTH);
+    }
+
     /**
      * This method generates a new ObjectId as a hexadecimal string.
      *
@@ -33,15 +45,6 @@ public class IncidentsUtils {
     public String addTimeToCurrentDate(String timeDuration) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        Map<String, Integer> unitMap = new HashMap<>();
-        unitMap.put("minute", Calendar.MINUTE);
-        unitMap.put("minutes", Calendar.MINUTE);
-        unitMap.put("hour", Calendar.HOUR);
-        unitMap.put("hours", Calendar.HOUR);
-        unitMap.put("day", Calendar.DAY_OF_YEAR);
-        unitMap.put("days", Calendar.DAY_OF_YEAR);
-        unitMap.put("month", Calendar.MONTH);
-        unitMap.put("months", Calendar.MONTH);
 
         String[] parts = timeDuration.split(" ");
         int amount = Integer.parseInt(parts[0]);
