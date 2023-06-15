@@ -93,6 +93,18 @@
                     android:textColor="@color/white"
                     android:backgroundTint="@color/oxfordBlue">
                 </Button>
+
+                <Button
+                    android:id="@+id/report_natural_disaster_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Natural Disaster"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/oxfordBlue">
+                </Button>
             </LinearLayout>
         </LinearLayout>
 

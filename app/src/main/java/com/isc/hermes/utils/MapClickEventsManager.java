@@ -3,7 +3,8 @@ package com.isc.hermes.utils;
 
 import android.content.Context;
 
-import com.isc.hermes.controller.MapController;
+import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 /**
@@ -11,13 +12,27 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
  */
 public class MapClickEventsManager {
 
-    /**
-     * Class to set click manager to mapbox map
-     * @param mapboxMap Is map set
-     * @param context Is mproject context
-     */
-    public MapClickEventsManager(MapboxMap mapboxMap, Context context){
-        new MapController(mapboxMap, context);
+    private static MapClickEventsManager instance;
+    private MapboxMap mapboxMap;
+    private Context context;
+
+    private MapClickConfigurationController configurationController;
+
+
+    public static MapClickEventsManager getInstance(){
+        if (instance==null) instance = new MapClickEventsManager();
+        return instance;
     }
 
+    public void setMapboxMap(MapboxMap mapboxMap){this.mapboxMap = mapboxMap;}
+    public void setContext(Context context){this.context = context;}
+    public MapboxMap getMapboxMap(){return this.mapboxMap;}
+    public void setMapClickConfiguration(MapClickConfigurationController controller){
+        this.configurationController = controller;
+        mapboxMap.addOnMapClickListener(configurationController);
+    }
+
+    public void removeCurrentClickController(){
+        configurationController.discardFromMap(this.getMapboxMap());
+    }
 }

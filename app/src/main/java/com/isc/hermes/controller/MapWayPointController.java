@@ -2,16 +2,10 @@ package com.isc.hermes.controller;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.isc.hermes.R;
+import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -22,7 +16,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 /**
  * Class to configure the event of do click on a map
  */
-public class MapController implements MapboxMap.OnMapClickListener {
+public class MapWayPointController implements MapClickConfigurationController {
     private final MapboxMap mapboxMap;
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
@@ -33,10 +27,9 @@ public class MapController implements MapboxMap.OnMapClickListener {
      * @param mapboxMap Is the map.
      * @param context Is the context application.
      */
-    public MapController(MapboxMap mapboxMap, Context context ) {
+    public MapWayPointController(MapboxMap mapboxMap, Context context ) {
         this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
-        mapboxMap.addOnMapClickListener(this);
         isMarked = false;
         Animations.loadAnimations();
     }
@@ -94,4 +87,6 @@ public class MapController implements MapboxMap.OnMapClickListener {
     public void setMarked(boolean marked) {
         isMarked = marked;
     }
+
+    public void discardFromMap(MapboxMap mapboxMap) {mapboxMap.removeOnMapClickListener(this);}
 }
