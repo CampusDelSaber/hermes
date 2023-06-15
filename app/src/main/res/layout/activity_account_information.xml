@@ -78,6 +78,7 @@
             android:layout_height="48dp"
             android:backgroundTint="@color/blueOxford_app_theme"
             android:drawableLeft="@drawable/baseline_upload_24"
+            android:onClick="uploadImageProfileAction"
             android:text="@string/edit_profile"
             android:textSize="13sp"
             app:cornerRadius="20dp"
@@ -202,6 +203,7 @@
                     android:layout_height="50dp"
                     android:backgroundTint="@color/mapboxRedDark"
                     android:drawableLeft="@drawable/baseline_no_accounts_24"
+                    android:onClick="deleteAccountAction"
                     android:text="@string/delete_account"
                     android:textSize="13sp"
                     app:cornerRadius="20dp"
@@ -210,20 +212,37 @@
                     app:layout_constraintStart_toEndOf="@id/buttonEditInformation"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
                 <Button
                     android:id="@+id/buttonEditInformation"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:backgroundTint="@color/blueOxford_app_theme"
                     android:drawableLeft="@drawable/baseline_drive_file_rename_outline_24"
+                    android:onClick="editAccountAction"
                     android:text="@string/edit_information"
                     android:textSize="13sp"
                     app:cornerRadius="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/buttonDeleteAccount"
-                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/buttonSaveInformation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@android:color/holo_green_dark"
+                    android:drawableLeft="@drawable/baseline_save_24"
+                    android:onClick="saveAccountInformationAction"
+                    android:text="@string/save_information"
+                    android:textSize="13sp"
+                    android:visibility="invisible"
+                    app:cornerRadius="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/buttonEditInformation"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="@id/buttonEditInformation"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

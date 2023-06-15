@@ -4,11 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
  */
 public class AccountInformation extends AppCompatActivity {
+
+    private Button buttonUploadImage;
+    private Button buttonSaveInformation;
+    private Button buttonEditInformation;
+    private Button buttonDeleteAccount;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -19,9 +25,14 @@ public class AccountInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
-        deleteAccountAction();
-        uploadImageProfileAction();
-        editAccountAction();
+        assignValuesToComponentsView();
+    }
+
+    private void  assignValuesToComponentsView() {
+        buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
+        buttonUploadImage =  findViewById(R.id.buttonUploadImage);
+        buttonEditInformation =  findViewById(R.id.buttonEditInformation);
+        buttonDeleteAccount =  findViewById(R.id.buttonDeleteAccount);
     }
 
     /**
@@ -37,24 +48,28 @@ public class AccountInformation extends AppCompatActivity {
     /**
      * This method is used to delete an account using on click action.
      */
-    public void deleteAccountAction() {
-        findViewById(R.id.buttonDeleteAccount).setOnClickListener( v ->
-                System.out.println("the action for delete account will be here"));
+    public void deleteAccountAction(View view) {
+        System.out.println("the action for delete account will be here");
     }
 
     /**
      * This method is used to upload the image account information using on click action.
      */
-    public void uploadImageProfileAction() {
-        findViewById(R.id.buttonUploadImage).setOnClickListener( v ->
-                System.out.println("the action for upload profile picture will be here"));
+    public void uploadImageProfileAction(View view) {
+        System.out.println("the action for upload profile picture will be here");
     }
 
     /**
      * This method is used to edit an account information using on click action.
      */
-    public void editAccountAction() {
-        findViewById(R.id.buttonEditInformation).setOnClickListener( v ->
-                System.out.println("the action for edit account information will be here"));
+    public void editAccountAction(View view) {
+        buttonSaveInformation.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * This method is used to edit an account information using on click action.
+     */
+    public void saveAccountInformationAction(View view) {
+        buttonSaveInformation.setVisibility(View.INVISIBLE);
     }
 }

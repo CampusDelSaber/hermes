@@ -19,7 +19,12 @@
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
     <string name="account_title">Account Information</string>
+    <string name="action_save_info">saveAccountInformationAction</string>
+    <string name="action_edit_info">editAccountAction</string>
+    <string name="action_upload_info">uploadImageProfileAction</string>
+    <string name="action_delete_info">deleteAccountAction</string>
     <string name="edit_information">Edit Information</string>
+    <string name="save_information">Save Information</string>
     <string name="edit_profile">Upload Profile</string>
     <string name="complete_name">Full Name</string>
     <string name="delete_account">Delete Account</string>
