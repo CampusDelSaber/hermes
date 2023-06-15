@@ -17,6 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.Geometry;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.MultiLineString;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polyline;
@@ -25,7 +29,10 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * Class to configure the event of do click on a map
@@ -112,22 +119,171 @@ public class MapController implements MapboxMap.OnMapClickListener {
         PointF screenPoint2 = mapboxMap.getProjection().toScreenLocation(point2);
         List<Feature> features2 = mapboxMap.queryRenderedFeatures(screenPoint2);
         if (previousPoint != null && (features2.get(0).geometry().type().equals("MultiLineString") || features2.get(0).geometry().type().equals("LineString"))) {
-            List<LatLng> points = new ArrayList<>();
-            points.add(previousPoint);
-            points.add(point2);
-            if (drawnLine != null) {
-                mapboxMap.removePolyline(drawnLine);
+            Geometry targetGeometry = features2.get(0).geometry();
+            List<LatLng> points = findPathBetweenPoints(previousPoint, point2, targetGeometry);
+            if (points != null) {
+                if (drawnLine != null) {
+                    mapboxMap.removePolyline(drawnLine);
+                }
+                drawnLine = mapboxMap.addPolyline(new PolylineOptions()
+                        .addAll(points)
+                        .color(Color.RED)
+                        .width(5f));
+            } else {
+                Toast.makeText(context, "No valid path found", Toast.LENGTH_SHORT).show();
             }
-            drawnLine = mapboxMap.addPolyline(new PolylineOptions()
-                    .addAll(points)
-                    .color(Color.RED)
-                    .width(5f));
         } else {
             Toast.makeText(context, "Touch on street or avenue", Toast.LENGTH_SHORT).show();
         }
 
         previousPoint = point2;
     }
+    private List<LatLng> findPathBetweenPoints(LatLng startPoint, LatLng endPoint, Geometry targetGeometry) {
+        List<LatLng> pathPoints = new ArrayList<>();
+        pathPoints.add(startPoint);
+        while (true) {
+            LatLng lastPoint = pathPoints.get(pathPoints.size() - 1);
+            LatLng nextPoint = findNextPoint(lastPoint, endPoint, targetGeometry);
+            if (nextPoint != null) {
+                pathPoints.add(nextPoint);
+                if (nextPoint.equals(endPoint)) {
+                    break;
+                }
+            } else {
+                return null; // No valid path found
+            }
+        }
+        return pathPoints;
+    }
+
+    private LatLng findNextPoint(LatLng startPoint, LatLng endPoint, Geometry targetGeometry) {
+        if (targetGeometry instanceof MultiLineString) {
+            MultiLineString multiLineString = (MultiLineString) targetGeometry;
+            List<LineString> lineStrings = multiLineString.lineStrings();
+            Graph graph = buildGraphFromLineStrings(lineStrings);
+            return findShortestPath(startPoint, endPoint, graph);
+        } else if (targetGeometry instanceof LineString) {
+            LineString lineString = (LineString) targetGeometry;
+            List<LatLng> linePoints = convertCoordinatesToLatLng(lineString.coordinates());
+            Graph graph = buildGraphFromLinePoints(linePoints);
+            return findShortestPath(startPoint, endPoint, graph);
+        }
+
+        return null;
+    }
+
+    private Graph buildGraphFromLineStrings(List<LineString> lineStrings) {
+        Graph graph = new Graph();
+
+        for (LineString lineString : lineStrings) {
+            List<LatLng> linePoints = convertCoordinatesToLatLng(lineString.coordinates());
+            for (int i = 0; i < linePoints.size() - 1; i++) {
+                LatLng startPoint = linePoints.get(i);
+                LatLng endPoint = linePoints.get(i + 1);
+                graph.addEdge(startPoint, endPoint);
+            }
+        }
+
+        return graph;
+    }
+
+    private Graph buildGraphFromLinePoints(List<LatLng> linePoints) {
+        Graph graph = new Graph();
+
+        for (int i = 0; i < linePoints.size() - 1; i++) {
+            LatLng startPoint = linePoints.get(i);
+            LatLng endPoint = linePoints.get(i + 1);
+            graph.addEdge(startPoint, endPoint);
+        }
+
+        return graph;
+    }
+
+    private List<LatLng> convertCoordinatesToLatLng(List<Point> coordinates) {
+        List<LatLng> latLngs = new ArrayList<>();
+        for (Point point : coordinates) {
+            latLngs.add(new LatLng(point.latitude(), point.longitude()));
+        }
+        return latLngs;
+    }
+
+    private LatLng findShortestPath(LatLng startPoint, LatLng endPoint, Graph graph) {
+        PriorityQueue<GraphNode> queue = new PriorityQueue<>();
+        Map<LatLng, Double> distanceMap = new HashMap<>();
+        Map<LatLng, LatLng> parentMap = new HashMap<>();
+
+        queue.add(new GraphNode(startPoint, 0.0));
+        distanceMap.put(startPoint, 0.0);
+
+        while (!queue.isEmpty()) {
+            GraphNode current = queue.poll();
+            LatLng currentPoint = current.getPoint();
+
+            if (currentPoint.equals(endPoint)) {
+                return currentPoint; // Found the shortest path
+            }
+
+            if (current.getDistance() > distanceMap.get(currentPoint)) {
+                continue; // Skip outdated nodes
+            }
+
+            List<LatLng> neighbors = graph.getNeighbors(currentPoint);
+            for (LatLng neighbor : neighbors) {
+                double distance = current.getDistance() + currentPoint.distanceTo(neighbor);
+
+                if (!distanceMap.containsKey(neighbor) || distance < distanceMap.get(neighbor)) {
+                    distanceMap.put(neighbor, distance);
+                    parentMap.put(neighbor, currentPoint);
+                    queue.add(new GraphNode(neighbor, distance));
+                }
+            }
+        }
+
+        return null; // No path found
+    }
+
+    class GraphNode implements Comparable<GraphNode> {
+        private LatLng point;
+        private double distance;
+
+        public GraphNode(LatLng point, double distance) {
+            this.point = point;
+            this.distance = distance;
+        }
+
+        public LatLng getPoint() {
+            return point;
+        }
+
+        public double getDistance() {
+            return distance;
+        }
+
+        @Override
+        public int compareTo(GraphNode other) {
+            return Double.compare(distance, other.distance);
+        }
+    }
+
+    class Graph {
+        private Map<LatLng, List<LatLng>> adjacencyMap;
+
+        public Graph() {
+            adjacencyMap = new HashMap<>();
+        }
+
+        public void addEdge(LatLng start, LatLng end) {
+            adjacencyMap.putIfAbsent(start, new ArrayList<>());
+            adjacencyMap.putIfAbsent(end, new ArrayList<>());
+            adjacencyMap.get(start).add(end);
+            adjacencyMap.get(end).add(start);
+        }
+
+        public List<LatLng> getNeighbors(LatLng point) {
+            return adjacencyMap.getOrDefault(point, new ArrayList<>());
+        }
+    }
+
 
     /**
      * Method to delete all the marks in the map.
