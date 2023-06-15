@@ -11,18 +11,19 @@ import java.net.URL;
  * This class is for uploading incidents to the server.
  */
 public class IncidentsUploader {
-    private final String API_URL = "https://api-rest-hermes.onrender.com/incidents";
     private static IncidentsUploader instance;
     private LatLng lastClickedPoint;
+    private final String URL_INCIDENTS_API= "https://api-rest-hermes.onrender.com/incidents";
+
     /**
-     * Uploads an incident in JSON format to the remote server.
+     * This method uploads an incident in JSON format to the remote server.
      *
      * @param incidentJsonString The JSON representation of the incident.
      * @return The HTTP response code indicating the status of the upload.
      */
     public int uploadIncident(String incidentJsonString){
         try {
-            URL url = new URL(API_URL);
+            URL url = new URL(URL_INCIDENTS_API);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("POST");
@@ -41,7 +42,7 @@ public class IncidentsUploader {
         }
     }
     /**
-     * Generates a JSON String representation of an incident.
+     * This method generates a JSON String representation of an incident.
      *
      * @param id          The incident ID.
      * @param type        The type of incident.
@@ -55,7 +56,7 @@ public class IncidentsUploader {
         return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + "}}";
     }
     /**
-     * Returns the last clicked point on the map.
+     * This method returns the last clicked point on the map.
      *
      * @return The last clicked point on the map as a LatLng object.
      */
@@ -64,7 +65,7 @@ public class IncidentsUploader {
     }
 
     /**
-     * Sets the last clicked point on the map.
+     * This method sets the last clicked point on the map.
      *
      * @param point The LatLng object representing the last clicked point on the map.
      */
@@ -73,7 +74,7 @@ public class IncidentsUploader {
     }
 
     /**
-     * Retrieves the coordinates of the last clicked point as a string.
+     * This method retrieves the coordinates of the last clicked point as a string.
      *
      * @return The coordinates of the last clicked point in the format "[latitude, longitude]".
      */
@@ -84,7 +85,7 @@ public class IncidentsUploader {
         return "[" + latitude + ", " + longitude + "]";
     }
     /**
-     * Retrieves the instance of the IncidentsUploader class.
+     * This method retrieves the instance of the IncidentsUploader class.
      *
      * @return The instance of the IncidentsUploader class.
      */
