@@ -4,6 +4,9 @@ import android.util.Log;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.generators.LinestringGenerator;
+import com.isc.hermes.generators.PointGenerator;
+import com.isc.hermes.generators.PolygonGenerator;
 import com.isc.hermes.generators.Radium;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.view.GenerateRandomIncidentView;
@@ -13,7 +16,10 @@ import com.isc.hermes.view.GenerateRandomIncidentView;
  */
 public class GenerateRandomIncidentController  {
 
-    GenerateRandomIncidentView generateRandomIncidentVIew;
+    private GenerateRandomIncidentView generateRandomIncidentVIew;
+    private PointGenerator pointGenerator;
+    private PolygonGenerator polygonGenerator;
+    private LinestringGenerator linestringGenerator;
 
     /**
      * Constructor, initializes the view and the components necessary to generate the incidents.
@@ -35,7 +41,6 @@ public class GenerateRandomIncidentController  {
         int quantity = generateRandomIncidentVIew.getNumberIncidentsSelected();
         if(radium != null && quantity != 0){
             generateRandomIncidentVIew.hideOptions();
-            Log.i("INFOMAU", "Radium:  "+ radium.getValue()+ " --- Quantity : " + quantity);
         }
     }
 }

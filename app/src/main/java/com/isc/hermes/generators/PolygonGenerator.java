@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * This method has the responsibility to generate polygon coordinates data.
  */
-public class PolygonGenerator extends CoordinateGen {
+public class PolygonGenerator extends CoordinateGen implements IGeometryGenerator{
 
     private Geometry polygon;
     private PointGenerator pointGenerator;
@@ -39,9 +39,9 @@ public class PolygonGenerator extends CoordinateGen {
      * @param radium to get the radium using the reference point.
      * @return the polygon coordinates generated.
      */
-    public List<Double[]> getPolygon(Double[] referencePoint, Radium radium) {
+    @Override
+    public List<Double[]> generate(Double[] referencePoint, Radium radium, int amount) {
         polygonCoordinates.clear();
-
         if (isValidReferencePoint(referencePoint)) {
             polygonCoordinates.add(coordinateParser.doubleToCoordinate(referencePoint));
             for (int i = 0; i < 15; i++) {
@@ -52,6 +52,16 @@ public class PolygonGenerator extends CoordinateGen {
         }
 
         return coordinateParser.parseToDoubles(polygon);
+    }
+
+    /**
+     * This method returns the type of geometric object that is generated.
+     *
+     * @return TypeGeometry type.
+     */
+    @Override
+    public TypeGeometry getTypeGeometry() {
+        return TypeGeometry.POLYGON;
     }
 
     /**

@@ -1,11 +1,12 @@
 package com.isc.hermes.generators;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This method has the responsibility to generate point coordinates data.
  */
-public class PointGenerator extends CoordinateGen {
+public class PointGenerator extends CoordinateGen implements IGeometryGenerator {
 
     private int maxAttempts;
 
@@ -58,7 +59,8 @@ public class PointGenerator extends CoordinateGen {
      * @param amountPoints are the amount the points to found.
      * @return multi points coordinates.
      */
-    public List<Double[]> getPointCoordinates(
+    @Override
+    public List<Double[]> generate(
             Double[] referencePoint,
             Radium radium,
             int amountPoints
@@ -73,4 +75,13 @@ public class PointGenerator extends CoordinateGen {
         return coordinates;
     }
 
+    /**
+     * This method returns the type of geometric object that is generated.
+     *
+     * @return TypeGeometry type.
+     */
+    @Override
+    public TypeGeometry getTypeGeometry() {
+        return TypeGeometry.POINT;
+    }
 }
