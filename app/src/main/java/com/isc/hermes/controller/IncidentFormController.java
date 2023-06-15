@@ -54,46 +54,58 @@ public class IncidentFormController {
     }
 
     /**
-     * Method to assign functionality to the buttons of the view.
+     * This method assigns functionality to the buttons of the view.
      */
-    private void setButtonsOnClick(){
+    private void setButtonsOnClick() {
         cancelButton.setOnClickListener(v -> {
-            mapController.setMarked(false);
-            incidentForm.startAnimation(Animations.exitAnimation);
-            incidentForm.setVisibility(View.GONE);
-            mapController.deleteMarks();
+            handleCancelButtonClick();
         });
 
         acceptButton.setOnClickListener(v -> {
-            mapController.setMarked(false);
-            incidentForm.startAnimation(Animations.exitAnimation);
-            incidentForm.setVisibility(View.GONE);
-            mapController.deleteMarks();
-            Toast.makeText(context, "Incident Saved Correctly.", Toast.LENGTH_SHORT).show();
-
-            @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
-                @Override
-                protected Integer doInBackground(Void... voids) {
-                    return uploadIncidentDataBase();
-                }
-
-                @Override
-                protected void onPostExecute(Integer responseCode) {
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        Toast.makeText(context, "Incident uploaded successfully.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, "Incident could not be uploaded.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            };
-
-            // Execute the task
-            task.execute();
+            handleAcceptButtonClick();
         });
     }
-
     /**
-     * Method assign values to the incident components.
+     * This method handles the actions performed when the cancel button is clicked.
+     */
+    private void handleCancelButtonClick() {
+        mapController.setMarked(false);
+        incidentForm.startAnimation(Animations.exitAnimation);
+        incidentForm.setVisibility(View.GONE);
+        mapController.deleteMarks();
+    }
+    /**
+     * This method handles the actions performed when the accept button is clicked.
+     */
+    private void handleAcceptButtonClick() {
+        handleCancelButtonClick();
+        AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... voids) {
+                return uploadIncidentDataBase();
+            }
+
+            @Override
+            protected void onPostExecute(Integer responseCode) {
+                handleUploadResponse(responseCode);
+            }
+        };
+        task.execute();
+    }
+    /**
+     * This method handles the response received after uploading the incident to the database.
+     *
+     * @param responseCode the response code received after uploading the incident
+     */
+    private void handleUploadResponse(Integer responseCode) {
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            Toast.makeText(context, R.string.incidents_uploaded, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, R.string.incidents_not_uploaded, Toast.LENGTH_SHORT).show();
+        }
+    }
+    /**
+     * This method assigns values to the incident components.
      *
      * <p>
      *     This method assign values and views to the incident components such as the incident type
@@ -125,7 +137,7 @@ public class IncidentFormController {
     }
     /**
 
-     Retrieves the selected incident type from the incident spinner.
+     This method etrieves the selected incident type from the incident spinner.
      @return The selected incident type as a string.
      */
     private String getIncidentType(){
@@ -135,7 +147,7 @@ public class IncidentFormController {
     }
     /**
 
-     Retrieves the selected incident time from the number picker and time spinner.
+     This method retrieves the selected incident time from the number picker and time spinner.
      @return The selected incident time as a  string.
      */
     private String getIncidentTime(){
@@ -148,7 +160,7 @@ public class IncidentFormController {
 
     /**
 
-     Uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
+     This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
      @return The HTTP response code indicating the status of the upload.
      */
     private int uploadIncidentDataBase(){
