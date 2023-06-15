@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -27,10 +26,11 @@ import java.util.Objects;
  */
 public class ActivitySelectRegion extends AppCompatActivity {
 
-    private MapView mapView;
     private MapboxMap mapboxMap;
 
     private AlertDialog alertDialog;
+    public static final String MAP_CENTER_LATITUDE = "mapCenterLatitude";
+    public static final String MAP_CENTER_LONGITUDE = "mapCenterLongitude";
 
     /**
      * This method is called when the activity is starting. This is where most initialization should go.
@@ -44,15 +44,27 @@ public class ActivitySelectRegion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this, getString(R.string.access_token));
         setContentView(R.layout.activity_select_region);
-        mapView = findViewById(R.id.mapView);
+        MapView mapView = this.findViewById(R.id.mapViewRegion);
         mapView.onCreate(savedInstanceState);
-        Bundle bundle = getIntent().getExtras();
+        mapView.getMapAsync(this::setStyle);
+        verifyDataReception(getIntent().getExtras());
+        createPopup();
+    }
+
+    /**
+     * This method verifies if the necessary data has been received in the Bundle and configures the MapView accordingly.
+     *
+     * @param bundle The Bundle containing the required data.
+     *               The Bundle must contain the following keys:
+     *               - "mapCenterLatitude": The latitude value for the center of the map.
+     *               - "mapCenterLongitude": The longitude value for the center of the map.
+     */
+    private void verifyDataReception(Bundle bundle) {
         if (bundle != null) {
-            double centerLatitude = bundle.getDouble("mapCenterLatitude");
-            double centerLongitude = bundle.getDouble("mapCenterLongitude");
+            double centerLatitude = bundle.getDouble(MAP_CENTER_LATITUDE);
+            double centerLongitude = bundle.getDouble(MAP_CENTER_LONGITUDE);
             configureMapView(centerLatitude, centerLongitude);
         }
-        createPopup();
     }
 
     /**
@@ -62,13 +74,20 @@ public class ActivitySelectRegion extends AppCompatActivity {
      * @param centerLongitude The longitude value for the center of the map.
      */
     private void configureMapView(double centerLatitude, double centerLongitude) {
-        mapView.getMapAsync(mapboxMap -> {
-            this.mapboxMap = mapboxMap;
-            mapboxMap.setCameraPosition(new CameraPosition.Builder()
-                    .target(new LatLng(centerLatitude, centerLongitude))
-                    .zoom(12)
-                    .build());
-        });
+        mapboxMap.setCameraPosition(new CameraPosition.Builder()
+                .target(new LatLng(centerLatitude, centerLongitude))
+                .zoom(12)
+                .build());
+    }
+
+    /**
+     * This method sets the map style to Mapbox Streets for the provided MapboxMap instance.
+     *
+     * @param map The MapboxMap instance to set the style for.
+     */
+    private void setStyle(MapboxMap map) {
+        this.mapboxMap = map;
+        map.setStyle(new Style.Builder().fromUri(Style.MAPBOX_STREETS));
     }
 
     /**
@@ -94,7 +113,7 @@ public class ActivitySelectRegion extends AppCompatActivity {
             double maxZoom = mapboxMap.getMaxZoomLevel();
             float pixelRatio = getResources().getDisplayMetrics().density;
             LatLngBounds latLngBounds = mapboxMap.getProjection().getVisibleRegion().latLngBounds;
-
+            alertDialog.dismiss();
             Intent intent = createIntent(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds);
             setResult(RESULT_OK, intent);
             finish();
@@ -123,8 +142,8 @@ public class ActivitySelectRegion extends AppCompatActivity {
      */
     private Intent createIntent(String regionName, String styleUrl, double minZoom, double maxZoom, float pixelRatio, LatLngBounds latLngBounds) {
         Intent intent = new Intent();
-        RegionData regionData  = new RegionData(regionName,styleUrl, minZoom, maxZoom, pixelRatio,latLngBounds);
-        intent.putExtra("REGION_DATA",regionData);
+        RegionData regionData = new RegionData(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds);
+        intent.putExtra("REGION_DATA", regionData);
         return intent;
     }
 
@@ -134,35 +153,19 @@ public class ActivitySelectRegion extends AppCompatActivity {
     private void createPopup() {
         LinearLayout popupDialog = findViewById(R.id.region_dialog);
         View view = LayoutInflater.from(ActivitySelectRegion.this).inflate(R.layout.name_a_region_popup, popupDialog);
-        Button naming = view.findViewById(R.id.ok_name_region_popup);
-        Button close = view.findViewById(R.id.cancel_name_region_popup);
         EditText inputName = view.findViewById(R.id.inputName);
         AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySelectRegion.this);
         builder.setView(view);
         alertDialog = builder.create();
-        setDismissPopupAction(close);
-        setRegionNameAction(naming, inputName.getText().toString());
+        view.findViewById(R.id.cancel_name_region_popup).setOnClickListener(v -> closePopup());
+        view.findViewById(R.id.ok_name_region_popup).setOnClickListener(v -> sendData(inputName.getText().toString()));
     }
 
     /**
-     * This method takes care of putting the popup closing function on a button.
-     *
-     * @param close button to close the popup
+     * This method closes the popup to select the region to download.
      */
-    private void setDismissPopupAction(Button close) {
-        close.setOnClickListener(v -> alertDialog.dismiss());
-    }
-
-    /**
-     * This method takes care of setting the region name function to a button.
-     *
-     * @param naming     button to confirm region naming
-     * @param regionName name the region to download
-     */
-    private void setRegionNameAction(Button naming, String regionName) {
-        naming.setOnClickListener(v -> {
-            sendData(regionName);
-        });
+    private void closePopup() {
+        alertDialog.dismiss();
     }
 
 }
