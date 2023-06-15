@@ -156,7 +156,7 @@
             android:layout_height="60dp"
             android:gravity="center"
             android:onClick="OfflineModeSettings"
-            android:text="@string/Offline_Settings_text"
+            android:text="@string/Offline_Mode_text"
             android:textColor="@color/white" />
 
         <TextView

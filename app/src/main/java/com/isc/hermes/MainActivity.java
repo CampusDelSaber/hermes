@@ -230,8 +230,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method used for open a new activity, offline settings.
+     * @param view view
+     */
     public void OfflineModeSettings(View view) {
-        Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
+        Intent intent = new Intent(MainActivity.this, OfflineModeSettingsActivityView.class);
         startActivity(intent);
     }
 }

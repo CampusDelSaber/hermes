@@ -18,7 +18,8 @@
     <string name="get_location_text">Get Location</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
-    <string name="Offline_Settings_text">Offline Settings</string>
+    <string name="Offline_Mode_text">Offline Mode</string>
+    <string name="Offline_maps_text">Offline Maps</string>
     <string-array name="incidents_type">
         <item>Traffic Incident</item>
         <item>Natural Disaster</item>
