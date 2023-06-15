@@ -32,7 +32,13 @@ public class Node {
         return edges;
     }
 
-    public void addEdge(Edge edge) {
+    public void addUnidirectionalEdge(Node destination, double weight) {
+        Edge edge = new Edge(this, destination, weight);
         edges.add(edge);
+    }
+
+    public void addBidirectionalEdge(Node destination, double weight) {
+        addUnidirectionalEdge(destination, weight);
+        destination.addUnidirectionalEdge(this, weight);
     }
 }
