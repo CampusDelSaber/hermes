@@ -13,6 +13,7 @@ import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.MapboxEventManager;
+import com.isc.hermes.model.MapboxMapListener;
 import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -30,7 +31,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements SearchViewActivity.MapboxMapListener {
+public class MainActivity extends AppCompatActivity implements MapboxMapListener {
     private MapView mapView;
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
