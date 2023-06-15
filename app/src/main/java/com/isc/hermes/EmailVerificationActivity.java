@@ -3,18 +3,21 @@ package com.isc.hermes;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
+/**
+ * This class manages the email verification when the user declares themself as a Administrator.
+ */
 public class EmailVerificationActivity extends AppCompatActivity {
-
 
     private EditText[] codeEditTexts;
 
+    /**
+     * This method initiates the window whe its called.
+     * @param savedInstanceState The saved instance.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +25,9 @@ public class EmailVerificationActivity extends AppCompatActivity {
         initComponents();
     }
 
+    /**
+     * This method calls the codeTextFields and groups those in a Array.
+     */
     private void initComponents(){
         codeEditTexts = new EditText[]{
                 findViewById(R.id.codeTextField1),
@@ -35,6 +41,9 @@ public class EmailVerificationActivity extends AppCompatActivity {
         configureEditTexts();
     }
 
+    /**
+     * This method separates every codeTextField and calls configureTextWatcher method.
+     */
     private void configureEditTexts() {
         for (int i = 0; i < codeEditTexts.length; i++) {
             final EditText currentEditText = codeEditTexts[i];
@@ -45,12 +54,18 @@ public class EmailVerificationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method adds a TextChangedListener to every codeTextField.
+     * Puts an onTextChanged listener that reacts when a couple numbers are written on the editText
+     * And set the focus on the next or the previous depending on the number deleted or added.
+     * @param currentEditText the current editText.
+     * @param nextEditText the next editText to step on.
+     */
     private void configureTextWatcher(final EditText currentEditText, final EditText nextEditText) {
 
         currentEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -62,7 +77,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
                     nextEditText.requestFocus();
                     nextEditText.setSelection(nextEditText.getText().length());
                     currentEditText.setFocusableInTouchMode(false);
-
                 }
                 else if (s.length() == 0 && currentEditText != codeEditTexts[0]){
                     EditText previousEditText =  getPreviousEditText(currentEditText);
@@ -73,12 +87,15 @@ public class EmailVerificationActivity extends AppCompatActivity {
                 }
             }
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
     }
 
-
+    /**
+     * This method gets the previous editText from de currentEditText
+     * @param currentEditText takes the previous from the currentEditText
+     * @return return the previous editText.
+     */
     private EditText getPreviousEditText(EditText currentEditText) {
         for (int i = 1; i < codeEditTexts.length; i++) {
             if (codeEditTexts[i] == currentEditText) {
@@ -87,6 +104,4 @@ public class EmailVerificationActivity extends AppCompatActivity {
         }
         return null;
     }
-
-
 }
