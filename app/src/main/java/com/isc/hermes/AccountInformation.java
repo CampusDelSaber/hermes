@@ -12,7 +12,7 @@ import com.isc.hermes.controller.DeleteAccountWarningDialog;
  */
 public class AccountInformation extends AppCompatActivity {
 
-    DeleteAccountWarningDialog dialog;
+    private DeleteAccountWarningDialog dialog;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -26,7 +26,7 @@ public class AccountInformation extends AppCompatActivity {
         deleteAccountAction();
         uploadImageProfileAction();
         editAccountAction();
-        initializeWaningPopup();
+        initializeWarningPopup();
     }
 
     /**
@@ -70,7 +70,7 @@ public class AccountInformation extends AppCompatActivity {
     /**
      * This method initialize the popup warning when we pressed on the delete account button
      */
-    private void initializeWaningPopup(){
+    private void initializeWarningPopup(){
         this.dialog = new DeleteAccountWarningDialog(this);
     }
 }

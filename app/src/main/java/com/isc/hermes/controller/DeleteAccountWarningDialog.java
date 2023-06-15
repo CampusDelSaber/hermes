@@ -17,10 +17,10 @@ import com.isc.hermes.controller.authentication.GoogleAuthentication;
  * It implements a listener which will listen to the option we choose.
  */
 public class DeleteAccountWarningDialog extends Dialog implements View.OnClickListener {
-    private Button imSureButton;
-    private Button betterNotButton;
+    private Button confirmButton;
+    private Button refuseButton;
     private Activity activity;
-    GoogleAuthentication googleAuthentication;
+    private GoogleAuthentication googleAuthentication;
 
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
@@ -30,8 +30,8 @@ public class DeleteAccountWarningDialog extends Dialog implements View.OnClickLi
     public DeleteAccountWarningDialog(Activity activity){
         super(activity);
         initializeDialog();
-        initializeBetterNotButton();
-        initializeImSureButton();
+        initializeRefuseButton();
+        initializeConfirmButton();
         this.activity = activity;
         this.googleAuthentication = new GoogleAuthentication();
     }
@@ -45,19 +45,19 @@ public class DeleteAccountWarningDialog extends Dialog implements View.OnClickLi
     }
 
     /**
-     * This method initializes the "Im Sure" button
+     * This method initializes the "Im Sure" button in the view
      */
-    public void initializeImSureButton(){
-        imSureButton = findViewById(R.id.imSureButton);
-        imSureButton.setOnClickListener(this);
+    public void initializeConfirmButton(){
+        confirmButton = findViewById(R.id.imSureButton);
+        confirmButton.setOnClickListener(this);
     }
 
     /**
-     * This method initializes the "Better Not" button
+     * This method initializes the "Better Not" button in the view
      */
-    public void initializeBetterNotButton(){
-        betterNotButton = findViewById(R.id.betterNotButton);
-        betterNotButton.setOnClickListener(this);
+    public void initializeRefuseButton(){
+        refuseButton = findViewById(R.id.betterNotButton);
+        refuseButton.setOnClickListener(this);
     }
 
     /**
@@ -67,7 +67,7 @@ public class DeleteAccountWarningDialog extends Dialog implements View.OnClickLi
      */
     @Override
     public void onClick(View v) {
-        if (v == imSureButton){
+        if (v == confirmButton){
             googleAuthentication.revokeAccess(getContext());
             dismiss();
             Intent intent = new Intent(this.activity, SignUpActivityView.class);
