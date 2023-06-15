@@ -82,6 +82,10 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
             userRegistered.setTypeUser(item);
             Toast.makeText(getApplicationContext(), "Item: " + item,
                     Toast.LENGTH_SHORT).show();
+            if(userRegistered.getTypeUser().equals("Administrator")){
+                Intent intent = new Intent(this, EmailVerificationActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
