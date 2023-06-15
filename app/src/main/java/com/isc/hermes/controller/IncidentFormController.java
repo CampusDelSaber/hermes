@@ -57,6 +57,7 @@ public class IncidentFormController {
             handleAcceptButtonClick();
         });
     }
+
     /**
      * This method handles the actions performed when the cancel button is clicked.
      */
@@ -66,6 +67,7 @@ public class IncidentFormController {
         incidentForm.setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
     }
+
     /**
      * This method handles the actions performed when the accept button is clicked.
      */

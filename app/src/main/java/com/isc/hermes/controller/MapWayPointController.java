@@ -88,5 +88,9 @@ public class MapWayPointController implements MapClickConfigurationController {
         isMarked = marked;
     }
 
+    /**
+     * Method to will disable this controller from mapbox map given
+     * @param mapboxMap is map witch will disable this controller
+     */
     public void discardFromMap(MapboxMap mapboxMap) {mapboxMap.removeOnMapClickListener(this);}
 }
