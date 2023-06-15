@@ -15,6 +15,7 @@ import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.util.List;
@@ -66,6 +67,8 @@ public class WaypointOptionsController {
             incidentFormController.getIncidentForm().startAnimation(Animations.entryAnimation);
             incidentFormController.getIncidentForm().setVisibility(View.VISIBLE);
             waypointOptions.setVisibility(View.GONE);
+            incidentFormController.getMapController().deleteMarks();
+
         });
 
         reportTrafficButton.setOnClickListener(v -> {
@@ -74,6 +77,7 @@ public class WaypointOptionsController {
             trafficFormController.getTrafficForm().startAnimation(Animations.entryAnimation);
             trafficFormController.getTrafficForm().setVisibility(View.VISIBLE);
             waypointOptions.setVisibility(View.GONE);
+            incidentFormController.getMapController().deleteMarks();
 
         });
     }

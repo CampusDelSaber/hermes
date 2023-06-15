@@ -34,8 +34,8 @@ public class TrafficFormController {
         this.context = context;
         this.mapController = mapController;
         incidentForm = ((AppCompatActivity) context).findViewById(R.id.traffic_form);
-        cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button);
-        acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);
+        cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button_traffic);
+        acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button_traffic);
         setButtonsOnClick();
         setTrafficComponents();
     }

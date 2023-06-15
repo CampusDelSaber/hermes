@@ -79,10 +79,11 @@ public class MapController implements MapboxMap.OnMapClickListener {
      *
      * @param point Is point passed as parameter with its latitude and longitude
      */
+
     private void doMarkOnMapAction(LatLng point) {
         PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
         List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
-        if (isMarked) {
+        if (isMarked || !mapboxMap.getMarkers().isEmpty()) {
             deleteMarks();
             if (waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getWaypointOptions().startAnimation(Animations.exitAnimation);
@@ -90,15 +91,34 @@ public class MapController implements MapboxMap.OnMapClickListener {
             }
             if (waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
-                waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
+
+                if (markerCount == 1 ) {
+                    waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
+                    markerCount = 0;
+                }
+                if (!features.isEmpty() && (features.get(0).geometry().type().equals("MultiLineString") || features.get(0).geometry().type().equals("LineString"))) {
+                    MarkerOptions markerOptions = new MarkerOptions().position(point);
+                    mapboxMap.addMarker(markerOptions);
+                    markerCount++;
+
+
+                }else{
+                    Toast.makeText(context, "Invalid geometry type", Toast.LENGTH_SHORT).show();
+                    waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
+                }
             }
+
             if (waypointOptionsController.getTrafficFormController().getTrafficForm().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getTrafficFormController().getTrafficForm().startAnimation(Animations.exitAnimation);
                 waypointOptionsController.getTrafficFormController().getTrafficForm().setVisibility(View.GONE);
                 doMarkOnMapAction2(point);
             }
             isMarked = false;
+
+
+
         } else {
+
             MarkerOptions markerOptions = new MarkerOptions().position(point);
             mapboxMap.addMarker(markerOptions);
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
@@ -106,6 +126,7 @@ public class MapController implements MapboxMap.OnMapClickListener {
             isMarked = true;
 
         }
+
     }
 
     /**
@@ -138,53 +159,38 @@ public class MapController implements MapboxMap.OnMapClickListener {
 
         previousPoint = point2;
     }
+
     private List<LatLng> findPathBetweenPoints(LatLng startPoint, LatLng endPoint, Geometry targetGeometry) {
         List<LatLng> pathPoints = new ArrayList<>();
         pathPoints.add(startPoint);
+
         while (true) {
             LatLng lastPoint = pathPoints.get(pathPoints.size() - 1);
             LatLng nextPoint = findNextPoint(lastPoint, endPoint, targetGeometry);
             if (nextPoint != null) {
-                pathPoints.add(nextPoint);
                 if (nextPoint.equals(endPoint)) {
+                    pathPoints.add(nextPoint);
                     break;
+                } else {
+                    pathPoints.add(nextPoint);
                 }
             } else {
                 return null; // No valid path found
             }
+
         }
+
         return pathPoints;
     }
 
     private LatLng findNextPoint(LatLng startPoint, LatLng endPoint, Geometry targetGeometry) {
-        if (targetGeometry instanceof MultiLineString) {
-            MultiLineString multiLineString = (MultiLineString) targetGeometry;
-            List<LineString> lineStrings = multiLineString.lineStrings();
-            Graph graph = buildGraphFromLineStrings(lineStrings);
-            return findShortestPath(startPoint, endPoint, graph);
-        } else if (targetGeometry instanceof LineString) {
-            LineString lineString = (LineString) targetGeometry;
-            List<LatLng> linePoints = convertCoordinatesToLatLng(lineString.coordinates());
+        if (targetGeometry instanceof MultiLineString || targetGeometry instanceof LineString) {
+            List<LatLng> linePoints = convertGeometryToLatLng(targetGeometry);
             Graph graph = buildGraphFromLinePoints(linePoints);
             return findShortestPath(startPoint, endPoint, graph);
         }
 
         return null;
-    }
-
-    private Graph buildGraphFromLineStrings(List<LineString> lineStrings) {
-        Graph graph = new Graph();
-
-        for (LineString lineString : lineStrings) {
-            List<LatLng> linePoints = convertCoordinatesToLatLng(lineString.coordinates());
-            for (int i = 0; i < linePoints.size() - 1; i++) {
-                LatLng startPoint = linePoints.get(i);
-                LatLng endPoint = linePoints.get(i + 1);
-                graph.addEdge(startPoint, endPoint);
-            }
-        }
-
-        return graph;
     }
 
     private Graph buildGraphFromLinePoints(List<LatLng> linePoints) {
@@ -196,7 +202,33 @@ public class MapController implements MapboxMap.OnMapClickListener {
             graph.addEdge(startPoint, endPoint);
         }
 
+        // Connect the last point with the first point to create a closed loop, if necessary
+        LatLng firstPoint = linePoints.get(0);
+        LatLng lastPoint = linePoints.get(linePoints.size() - 1);
+        if (!firstPoint.equals(lastPoint)) {
+            graph.addEdge(lastPoint, firstPoint);
+        }
+
+
         return graph;
+    }
+
+
+    private List<LatLng> convertGeometryToLatLng(Geometry geometry) {
+        List<LatLng> latLngs = new ArrayList<>();
+
+        if (geometry instanceof MultiLineString) {
+            MultiLineString multiLineString = (MultiLineString) geometry;
+            List<LineString> lineStrings = multiLineString.lineStrings();
+            for (LineString lineString : lineStrings) {
+                latLngs.addAll(convertCoordinatesToLatLng(lineString.coordinates()));
+            }
+        } else if (geometry instanceof LineString) {
+            LineString lineString = (LineString) geometry;
+            latLngs.addAll(convertCoordinatesToLatLng(lineString.coordinates()));
+        }
+
+        return latLngs;
     }
 
     private List<LatLng> convertCoordinatesToLatLng(List<Point> coordinates) {
@@ -283,6 +315,7 @@ public class MapController implements MapboxMap.OnMapClickListener {
             return adjacencyMap.getOrDefault(point, new ArrayList<>());
         }
     }
+
 
 
     /**
