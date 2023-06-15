@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
@@ -22,42 +20,53 @@ import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-public class FilterController extends AppCompatActivity {
+public class FilterController {
 
+    private MainActivity mainActivity;
     private MapboxMap mapboxMap;
+    private MapView mapView;
     private Button chooseCityButton;
     private EditText latEditText;
     private EditText longEditText;
     private EditText searchInput;
 
+    public FilterController(MapView mapView, MapboxMap mapBox, MainActivity mainActivity) {
+        this.mapView = mapView;
+        this.mapboxMap = mapBox;
+        this.mainActivity = mainActivity;
+    }
+
+    public void initComponents() {
+        initTextViews();
+        initButtons();
+    }
 
     private void initTextViews() {
-        latEditText = findViewById(R.id.geocode_latitude_editText);
-        longEditText = findViewById(R.id.geocode_longitude_editText);
-        searchInput = findViewById(R.id.searchInput);
+        latEditText = mainActivity.findViewById(R.id.geocode_latitude_editText);
+        longEditText = mainActivity.findViewById(R.id.geocode_longitude_editText);
+        searchInput = mainActivity.findViewById(R.id.searchInput);
     }
 
     private void initButtons() {
-        Button startGeocodeButton = findViewById(R.id.start_geocode_button);
-        chooseCityButton = findViewById(R.id.searchButton);
+        Button startGeocodeButton = mainActivity.findViewById(R.id.start_geocode_button);
+        chooseCityButton = mainActivity.findViewById(R.id.searchButton);
 
         startGeocodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Make sure the EditTexts aren't empty
                 if (TextUtils.isEmpty(latEditText.getText().toString())) {
-                    latEditText.setError(getString(R.string.fill_in_a_value));
+                    latEditText.setError(mainActivity.getString(R.string.fill_in_a_value));
                 } else if (TextUtils.isEmpty(longEditText.getText().toString())) {
-                    longEditText.setError(getString(R.string.fill_in_a_value));
+                    longEditText.setError(mainActivity.getString(R.string.fill_in_a_value));
                 } else {
                     if (latCoordinateIsValid(Double.valueOf(latEditText.getText().toString()))
                             && longCoordinateIsValid(Double.valueOf(longEditText.getText().toString()))) {
@@ -65,7 +74,7 @@ public class FilterController extends AppCompatActivity {
                         makeGeocodeSearch(new LatLng(Double.valueOf(latEditText.getText().toString()),
                                 Double.valueOf(longEditText.getText().toString())));
                     } else {
-                        Toast.makeText(FilterController.this, R.string.make_valid_lat, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mainActivity, R.string.make_valid_lat, Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -95,7 +104,7 @@ public class FilterController extends AppCompatActivity {
 
     private void showCityListMenu() {
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
-                .accessToken(getString(R.string.access_token))
+                .accessToken(mainActivity.getString(R.string.access_token))
                 .query(searchInput.getText().toString())
                 .build();
 
@@ -141,7 +150,7 @@ public class FilterController extends AppCompatActivity {
         try {
             // Build a Mapbox geocoding request
             MapboxGeocoding client = MapboxGeocoding.builder()
-                    .accessToken(getString(R.string.access_token))
+                    .accessToken(mainActivity.getString(R.string.access_token))
                     .query(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude()))
                     .geocodingTypes(GeocodingCriteria.TYPE_PLACE)
                     .mode(GeocodingCriteria.MODE_PLACES)
@@ -159,7 +168,7 @@ public class FilterController extends AppCompatActivity {
                             CarmenFeature feature = results.get(0);
                             animateCameraToNewPosition(latLng);
                         } else {
-                            Toast.makeText(FilterController.this, R.string.no_results,
+                            Toast.makeText(mainActivity, R.string.no_results,
                                     Toast.LENGTH_SHORT).show();
                         }
                     }

@@ -1,20 +1,28 @@
 package com.isc.hermes;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
@@ -42,12 +50,14 @@ import timber.log.Timber;
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private MapView mapView;
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
+
+    private MainActivity mainActivity = this;
     private MapboxMap mapboxMap;
     private Button chooseCityButton;
     private EditText latEditText;
@@ -70,7 +80,24 @@ public class MainActivity extends AppCompatActivity {
         addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
-        mapView.getMapAsync((OnMapReadyCallback) this);
+        mapView.getMapAsync(this);
+        //mapView.getMapAsync(this);
+    }
+
+    /**
+     * Called when the map is ready to be used.
+     *
+     */
+    @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        this.mapboxMap = mapboxMap;
+        FilterController filterController = new FilterController(mapView, mapboxMap, this);
+        mapboxMap.setStyle(new Style.Builder(), new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                filterController.initComponents();
+            }
+        });
     }
 
     /**
