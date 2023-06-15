@@ -87,6 +87,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
             userRegistered.setRole(UserRoles.transform(userRoleChoose));
             Toast.makeText(getApplicationContext(), "Item: " + userRoleChoose,
                     Toast.LENGTH_SHORT).show();
+
         });
     }
 
@@ -96,11 +97,11 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * and navigates the user to the main activity.
      */
     private void generateActionToButtonSignUp() {
+
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getRole() != null) {
                 //TODO: Save the registeredUser in dataBase
                 transition.transitionBasedOnRole(userRegistered.getRole(), this);
-
             } else comboBoxTextField.setHelperText("Required");
         });
     }
