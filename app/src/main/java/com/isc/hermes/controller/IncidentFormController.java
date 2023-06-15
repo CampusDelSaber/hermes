@@ -1,10 +1,11 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -14,6 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.view.IncidentTypeButton;
+
+import java.util.ArrayList;
+
+import timber.log.Timber;
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
@@ -24,6 +30,8 @@ public class IncidentFormController {
     private final Button cancelButton;
     private final Button acceptButton;
     private final MapController mapController;
+    private final LinearLayout incidentTypesContainer;
+    public static String incidentType;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -37,6 +45,7 @@ public class IncidentFormController {
         incidentForm = ((AppCompatActivity)context).findViewById(R.id.incident_form);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button);
         acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);
+        incidentTypesContainer = ((AppCompatActivity) context).findViewById(R.id.incidentTypesContainer);
         setButtonsOnClick();
         setIncidentComponents();
     }
@@ -70,15 +79,23 @@ public class IncidentFormController {
      * </p>
      */
     public void setIncidentComponents() {
-        Spinner incidentType = ((AppCompatActivity) context).findViewById(R.id.incident_spinner);
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(context, R.array.incidents_type, R.layout.incident_spinner_items);
-        Resources res = Resources.getSystem();
-        String[] incident_types = res.getStringArray(R.array.incidents_type);
-        for (String type : incident_types) {
+        String[] incidentTypes = context.getResources().getStringArray(R.array.incidents_type);
+        String[] incidentTypeColors = context.getResources().getStringArray(R.array.incidents_type_colors);
+        String[] incidentTypeIcons = context.getResources().getStringArray(R.array.incidents_type_icons);
 
+        if (incidentTypes.length == incidentTypeColors.length &&
+                incidentTypeIcons.length == incidentTypes.length) {
+            for (int i = 0; i < incidentTypes.length; i++) {
+                Button button = IncidentTypeButton.getIncidentTypeButton(
+                        context,
+                        incidentTypes[i].toLowerCase(),
+                        Color.parseColor((String) incidentTypeColors[i]),
+                        incidentTypeIcons[i]);
+                incidentTypesContainer.addView(button);
+            }
+        } else {
+            Timber.i("The arrays about colors, icons and the type buttons have a different size");
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentType.setAdapter(adapter);
 
         Spinner incidentEstimatedTime = ((AppCompatActivity) context).findViewById(R.id.incident_time_spinner);
         ArrayAdapter<CharSequence> adapterTime=ArrayAdapter.createFromResource(context, R.array.incidents_estimated_time, R.layout.incident_spinner_items);

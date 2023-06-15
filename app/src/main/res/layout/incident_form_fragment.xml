@@ -7,11 +7,12 @@
 
     <RelativeLayout
         android:id="@+id/incident_form"
-        android:layout_width="372dp"
-        android:layout_height="341dp"
-        android:layout_margin="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="320dp"
         android:animateLayoutChanges="true"
         android:background="@drawable/top_rounded_background"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,68 +68,12 @@
                 android:scrollbars="none">
 
                 <LinearLayout
+                    android:id="@+id/incidentTypesContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:scrollbarAlwaysDrawHorizontalTrack="false"
-                    android:scrollbars="none">
-
-                    <Button
-                        android:id="@+id/accidentTypeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
-                        android:layout_weight="1"
-                        android:insetTop="4dp"
-                        android:insetBottom="4dp"
-                        android:text="Accident"
-                        app:cornerRadius="12dp"
-                        app:icon="@drawable/car_crash_car_accident_traffic_accident_traffic_collision_svgrepo_com"
-                        app:iconPadding="5dp" />
-
-                    <Button
-                        android:id="@+id/obstructionTypeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="#0038E1"
-                        android:insetTop="4dp"
-                        android:insetBottom="4dp"
-                        android:text="Obstruction"
-                        app:cornerRadius="12dp"
-                        app:icon="@drawable/warning_sign_attention_svgrepo_com"
-                        app:iconPadding="5dp" />
-
-                    <Button
-                        android:id="@+id/socialEventTypeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="#333333"
-                        android:insetTop="4dp"
-                        android:insetBottom="4dp"
-                        android:text="Social Event"
-                        app:cornerRadius="12dp"
-                        app:icon="@drawable/protest_svgrepo_com"
-                        app:iconPadding="5dp" />
-
-                    <Button
-                        android:id="@+id/streetFixTypeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="#CCCCCC"
-                        android:insetTop="4dp"
-                        android:insetBottom="4dp"
-                        android:text="Accident"
-                        app:cornerRadius="12dp"
-                        app:icon="@drawable/hammer_tool_settings_fix_repair_svgrepo_com"
-                        app:iconPadding="5dp" />
-
-                </LinearLayout>
+                    android:scrollbars="none" />
             </HorizontalScrollView>
 
             <TextView
@@ -163,7 +108,7 @@
                     android:id="@+id/incident_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginRight="5dp"
                     android:text="Estimated Time:"
                     android:textColor="@color/black"
@@ -173,20 +118,20 @@
                 <NumberPicker
                     android:id="@+id/numberPicker"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="50dp"
                     android:layout_marginRight="5dp" />
 
                 <Spinner
                     android:id="@+id/incident_time_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginRight="5dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
 

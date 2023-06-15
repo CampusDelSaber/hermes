@@ -19,10 +19,22 @@
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
     <string-array name="incidents_type">
-        <item>Traffic Incident</item>
-        <item>Natural Disaster</item>
-        <item>Social Incident</item>
-        <item>Danger Zone</item>
+        <item>Accident</item>
+        <item>Obstruction</item>
+        <item>Social Event</item>
+        <item>Street Fix</item>
+    </string-array>
+    <string-array name="incidents_type_colors">
+        <item>#002147</item>
+        <item>#0038E1</item>
+        <item>#333333</item>
+        <item>#CCCCCC</item>
+    </string-array>
+    <string-array name="incidents_type_icons">
+        <item>car_crash_car_accident_traffic_accident_traffic_collision_svgrepo_com</item>
+        <item>warning_sign_attention_svgrepo_com</item>
+        <item>protest_svgrepo_com</item>
+        <item>hammer_tool_settings_fix_repair_svgrepo_com</item>
     </string-array>
     <string-array name="incidents_estimated_time">
         <item>min</item>
