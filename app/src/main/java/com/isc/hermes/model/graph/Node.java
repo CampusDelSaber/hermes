@@ -1,5 +1,7 @@
 package com.isc.hermes.model.graph;
 
+import com.isc.hermes.utils.CoordinatesDistanceCalculator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,5 +42,17 @@ public class Node {
     public void addBidirectionalEdge(Node destination, double weight) {
         addUnidirectionalEdge(destination, weight);
         destination.addUnidirectionalEdge(this, weight);
+    }
+
+    public void addUnidirectionalEdge(Node destination) {
+        double weight = CoordinatesDistanceCalculator.getInstance()
+                .calculateDistance(this, destination);
+        Edge edge = new Edge(this, destination, weight);
+        edges.add(edge);
+    }
+
+    public void addBidirectionalEdge(Node destination) {
+        addUnidirectionalEdge(destination);
+        destination.addUnidirectionalEdge(this);
     }
 }
