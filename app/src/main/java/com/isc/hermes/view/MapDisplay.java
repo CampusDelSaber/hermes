@@ -2,13 +2,6 @@ package com.isc.hermes.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.ImageButton;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.isc.hermes.R;
-import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
@@ -121,12 +114,10 @@ public class MapDisplay {
     public void setMapStyle(String mapStyle) {
         if (mapView != null && mapStyle != null) {
             mapView.getMapAsync(mapboxMap -> {
-                if (mapStyle.equals("satellite")) {
-                    mapboxMap.setStyle(Style.SATELLITE_STREETS);
-                } else if (mapStyle.equals("dark")) {
-                    mapboxMap.setStyle(Style.DARK);
-                } else {
-                    mapboxMap.setStyle(Style.MAPBOX_STREETS);
+                switch (mapStyle) {
+                    case "Satellite" -> mapboxMap.setStyle(Style.SATELLITE_STREETS);
+                    case "Dark Mode" -> mapboxMap.setStyle(Style.DARK);
+                    case "Default" -> mapboxMap.setStyle(Style.MAPBOX_STREETS);
                 }
             });
         }

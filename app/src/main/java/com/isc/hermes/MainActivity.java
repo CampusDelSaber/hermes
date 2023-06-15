@@ -7,12 +7,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
-import android.widget.LinearLayout;
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
@@ -28,9 +28,10 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
-    private String mapStyle = "default";
+    private String mapStyle = "Default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
+    private boolean isStyleOptionsVisible = false;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
-        mapStyleListener();
         initCurrentLocationController();
     }
 
@@ -217,15 +217,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method for adding maps styles.xml listener
+     * Method to show/hide the map style menu options.
+     *
+     * @param view The view of the menu map styles button.
      */
-    private void mapStyleListener(){
-        ImageButton styleButton = findViewById(R.id.btn_change_style);
-        styleButton.setOnClickListener(styleMap -> {
-            if (mapStyle.equals("default")) mapStyle = "satellite";
-            else if (mapStyle.equals("satellite")) mapStyle = "dark";
-            else mapStyle = "default";
-            mapDisplay.setMapStyle(mapStyle);
-        });
+    public void openStylesMenu(View view) {
+        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
+        isStyleOptionsVisible = !isStyleOptionsVisible;
+
+        if (isStyleOptionsVisible) {
+            styleOptionsWindow.setVisibility(View.VISIBLE);
+        } else {
+            styleOptionsWindow.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Method to change the map style.
+     *
+     * @param view The button's view of the style that has been clicked.
+     */
+    public void changeMapStyle(View view) {
+        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
+        mapStyle = ((Button) view).getText().toString();
+        mapDisplay.setMapStyle(mapStyle);
+        styleOptionsWindow.setVisibility(View.GONE);
     }
 }
