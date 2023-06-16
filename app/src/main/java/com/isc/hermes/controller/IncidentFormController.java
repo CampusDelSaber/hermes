@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,8 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
-
-import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -31,6 +30,7 @@ public class IncidentFormController {
     private final Button acceptButton;
     private final MapController mapController;
     private final LinearLayout incidentTypesContainer;
+    private final TextView incidentText;
     public static String incidentType;
 
     /**
@@ -46,6 +46,8 @@ public class IncidentFormController {
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button);
         acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);
         incidentTypesContainer = ((AppCompatActivity) context).findViewById(R.id.incidentTypesContainer);
+        incidentText = ((AppCompatActivity) context).findViewById(R.id.incident_text);
+
         setButtonsOnClick();
         setIncidentComponents();
     }
@@ -86,11 +88,14 @@ public class IncidentFormController {
         if (incidentTypes.length == incidentTypeColors.length &&
                 incidentTypeIcons.length == incidentTypes.length) {
             for (int i = 0; i < incidentTypes.length; i++) {
-                Button button = IncidentTypeButton.getIncidentTypeButton(
+                IncidentTypeButton incidentTypeButton = new IncidentTypeButton();
+                Button button = incidentTypeButton.getIncidentTypeButton(
                         context,
                         incidentTypes[i].toLowerCase(),
                         Color.parseColor((String) incidentTypeColors[i]),
                         incidentTypeIcons[i]);
+                setIncidentButtonAction(button);
+
                 incidentTypesContainer.addView(button);
             }
         } else {
@@ -113,5 +118,18 @@ public class IncidentFormController {
      */
     public RelativeLayout getIncidentForm() {
         return incidentForm;
+    }
+
+    public void changeTypeTitle(String title) {
+        incidentText.setText(title);
+    }
+
+    private void setIncidentButtonAction(Button typeButton) {
+        typeButton.setOnClickListener(
+                v -> {
+                    IncidentFormController.incidentType = typeButton.getText().toString();
+                    changeTypeTitle("Incident Type: " + typeButton.getText());
+                }
+        );
     }
 }

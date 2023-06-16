@@ -26,6 +26,7 @@ import com.isc.hermes.controller.IncidentFormController;
 import java.util.Locale;
 
 public class IncidentTypeButton {
+    private static Button buttonSelected;
 
     @SuppressLint("ResourceType")
     public static Button getIncidentTypeButton(Context context,
@@ -33,19 +34,10 @@ public class IncidentTypeButton {
                                                int color,
                                                String iconName) {
         Button typeButton = getStylizedButton(context, type, color, iconName);
-        setAction(typeButton);
 
         return typeButton;
     }
 
-    private static void setAction(Button typeButton) {
-        typeButton.setOnClickListener(
-                v -> {
-                    IncidentFormController.incidentType = typeButton.getText().toString();
-                    Toast.makeText(typeButton.getContext(), typeButton.getText() + " selected", Toast.LENGTH_SHORT).show();
-                }
-        );
-    }
 
     private static Button getStylizedButton(Context context,
                                             String type,
