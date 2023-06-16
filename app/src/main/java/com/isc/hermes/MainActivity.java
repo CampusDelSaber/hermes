@@ -2,11 +2,13 @@ package com.isc.hermes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,12 +19,22 @@ import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
+import com.isc.hermes.model.Utils.PolylineManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.annotation.LineManager;
+import com.mapbox.mapboxsdk.plugins.annotation.LineOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -52,7 +64,26 @@ public class MainActivity extends AppCompatActivity {
         mapStyleListener();
         initCurrentLocationController();
         addIncidentGeneratorButton();
+        mapDisplay.addPolylineToMap();
     }
+
+    /*@Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> {
+            // Agrega el Polyline a través del LineManager
+            LineManager lineManager = new LineManager(mapView, mapboxMap, style);
+            List<LatLng> latLngList = new ArrayList<>();
+            latLngList.add(new LatLng(37.42310572139881,-122.08530802399956));
+            latLngList.add(new LatLng(37.42368853165682,-122.09017088513937));
+            latLngList.add(new LatLng(37.419042832716755,-122.0933129947299));
+            //LineString lineString = LineString.fromLngLats(points);
+
+            lineManager.create(new LineOptions()
+                    .withLatLngs(latLngList)
+                    .withLineColor(String.valueOf(Color.parseColor("#FF0000")))
+                    .withLineWidth(4f));
+        });
+    }*/
 
     /**
      * Method to add the searcher to the main scene above the map
