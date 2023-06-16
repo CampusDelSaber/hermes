@@ -7,12 +7,15 @@ import com.isc.hermes.model.incidents.Incident;
 import android.widget.Toast;
 
 import com.isc.hermes.model.incidents.IncidentGetterModel;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import org.json.JSONException;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -109,9 +112,20 @@ public class IncidentPointVisualizationController {
     private void addMarkersToMap(MarkerOptions waypoint, List<Incident> pointList, Set<String> desiredTypes) {
         for (Incident incident : pointList) {
             String incidentType = incident.getType();
+            Marker marker = null;
             if (desiredTypes.contains(incidentType)) {
-                mapboxMap.addMarker(waypoint);
+                marker = mapboxMap.addMarker(waypoint);
             }
+            if (marker != null) {
+                DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
+                String strDate = dateFormat.format(incident.getDeathDate());
+
+                marker.setTitle(incidentType);
+                marker.setSnippet(incident.getReason() + "" +
+                        "\nEstimated duration until: " +
+                        strDate);
+            }
+            waypoint.getMarker();
         }
     }
 

@@ -41,6 +41,26 @@ public class Incident {
         this.geometry = geometry;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public Date getDeathDate() {
+        return deathDate;
+    }
+
     /**
      * Retrieves the geometry information of the incident.
      *
@@ -63,7 +83,4 @@ public class Incident {
         return new LatLng(lat, lng);
     }
 
-    public String getType() {
-        return type;
-    }
 }

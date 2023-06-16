@@ -2,16 +2,8 @@ package com.isc.hermes.controller;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.isc.hermes.R;
+import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -19,24 +11,26 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
+import org.json.JSONException;
+
 /**
  * Class to configure the event of do click on a map
  */
-public class MapController implements MapboxMap.OnMapClickListener {
+public class MapWayPointController implements MapClickConfigurationController {
     private final MapboxMap mapboxMap;
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
-
+    private Context context;
     /**
      * This is the constructor method.
      *
      * @param mapboxMap Is the map.
      * @param context Is the context application.
      */
-    public MapController(MapboxMap mapboxMap, Context context ) {
+    public MapWayPointController(MapboxMap mapboxMap, Context context ) {
+        this.context = context;
         this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
-        mapboxMap.addOnMapClickListener(this);
         isMarked = false;
         Animations.loadAnimations();
     }
@@ -50,6 +44,11 @@ public class MapController implements MapboxMap.OnMapClickListener {
     public boolean onMapClick(@NonNull LatLng point) {
         doMarkOnMapAction(point);
         IncidentsUploader.getInstance().setLastClickedPoint(point);
+        try {
+            IncidentDialogController.getInstance(context).showDialogCorrect(point);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
@@ -94,4 +93,10 @@ public class MapController implements MapboxMap.OnMapClickListener {
     public void setMarked(boolean marked) {
         isMarked = marked;
     }
+
+    /**
+     * Method to will disable this controller from mapbox map given
+     * @param mapboxMap is map witch will disable this controller
+     */
+    public void discardFromMap(MapboxMap mapboxMap) {mapboxMap.removeOnMapClickListener(this);}
 }
