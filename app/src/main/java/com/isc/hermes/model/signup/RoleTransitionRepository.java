@@ -23,6 +23,12 @@ public class RoleTransitionRepository {
         rolesClassMap.put(UserRoles.GENERAL, MainActivity.class);
     }
 
+    /**
+     * To follow the singleton pattern, this method retrieves an unique instance
+     * of the RoleTransitionRepository class.
+     *
+     * @return static RoleTransitionRepository instance.
+     */
     public static RoleTransitionRepository getInstance(){
         if (self == null){
             self = new RoleTransitionRepository();

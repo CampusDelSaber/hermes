@@ -17,6 +17,12 @@ public class UsersRepository {
         handler = new TokenGenerator();
     }
 
+    /**
+     * To follow the singleton pattern, this method retrieves an unique instance
+     * of the UserRepository class.
+     *
+     * @return static UsersRepository instance.
+     */
     public static UsersRepository getInstance() {
         if (self == null){
             self = new UsersRepository();
