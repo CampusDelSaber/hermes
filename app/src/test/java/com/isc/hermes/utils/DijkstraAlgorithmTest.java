@@ -1,6 +1,7 @@
 package com.isc.hermes.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
@@ -46,8 +47,10 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Find the shortest path from nodeA to nodeD
-        List<Node> shortestPath = dijkstraAlgorithm.getShortestPath(graph, nodeA, nodeD);
+        List<Node> shortestPath =
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A");
 
+        assertNotNull(shortestPath);
         // The shortest path should be [nodeA, nodeC, nodeD]
         assertEquals(3, shortestPath.size());
         assertEquals(nodeA, shortestPath.get(0));
@@ -74,11 +77,11 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Find the shortest path from nodeA to nodeD
-        List<Node> shortestPath = dijkstraAlgorithm.getShortestPath(graph, nodeD, nodeA);
-        for (Node node:shortestPath) {
-            System.out.println(node.getId());
-        }
+        List<Node> shortestPath =
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeD, nodeA).get("Route A");
+        System.out.println(shortestPath);
 
+        assertNotNull(shortestPath);
         // The shortest path should be [nodeD, nodeC, nodeA]
         assertEquals(3, shortestPath.size());
         assertEquals(nodeD, shortestPath.get(0));
@@ -105,12 +108,11 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Find the shortest path from Plaza Principal to Plaza 14 de Septiembre
-        List<Node> shortestPath = dijkstraAlgorithm.getShortestPath(graph, nodeA, nodeD);
+        List<Node> shortestPath =
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A");
 
-        for (Node node : shortestPath) {
-            System.out.println(node.getId());
-        }
-
+        System.out.println(shortestPath);
+        assertNotNull(shortestPath);
         // The shortest path should be [A, C, D]
         assertEquals(3, shortestPath.size());
         assertEquals(nodeA, shortestPath.get(0));
@@ -137,17 +139,92 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Calculate the routes
-        Map<String, List<Node>> routes = dijkstraAlgorithm.getRoutes(graph, nodeA, nodeD);
+        Map<String, List<Node>> routes = dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD);
+
+        System.out.println(routes);
 
         // Check the fastest route
-        List<Node> fastestRoute = routes.get("A");
-        System.out.println(fastestRoute);
+        List<Node> fastestRoute = routes.get("Route A");
 
         // The fastest route should be [nodeA, nodeC, nodeD]
+        assertNotNull(fastestRoute);
         assertEquals(3, fastestRoute.size());
         assertEquals(nodeA, fastestRoute.get(0));
         assertEquals(nodeC, fastestRoute.get(1));
         assertEquals(nodeD, fastestRoute.get(2));
     }
 
+    @Test
+    public void testGetShortestPathAlternatives() {
+        Graph graph = createGraph();
+        Node source = graph.getNode("A");
+        Node destination = graph.getNode("F");
+
+        Map<String, List<Node>> shortestPathAlternatives =
+                dijkstraAlgorithm.getPathAlternatives(graph, source, destination);
+        assertNotNull(shortestPathAlternatives);
+        assertEquals(3, shortestPathAlternatives.size());
+        System.out.println(shortestPathAlternatives);
+
+        // Assert the shortest alternative paths
+        List<Node> alternative1 = shortestPathAlternatives.get("Route A");
+        assertNotNull(alternative1);
+        assertEquals(4, alternative1.size());
+        assertEquals(source, alternative1.get(0));
+        assertEquals(graph.getNode("B"), alternative1.get(1));
+        assertEquals(graph.getNode("D"), alternative1.get(2));
+        assertEquals(destination, alternative1.get(3));
+
+        List<Node> alternative2 = shortestPathAlternatives.get("Route B");
+        assertNotNull(alternative2);
+        assertEquals(4, alternative2.size());
+        assertEquals(source, alternative2.get(0));
+        assertEquals(graph.getNode("C"), alternative2.get(1));
+        assertEquals(graph.getNode("D"), alternative2.get(2));
+        assertEquals(destination, alternative2.get(3));
+
+        List<Node> alternative3 = shortestPathAlternatives.get("Route C");
+        assertNotNull(alternative3);
+        assertEquals(5, alternative3.size());
+        assertEquals(source, alternative3.get(0));
+        assertEquals(graph.getNode("B"), alternative3.get(1));
+        assertEquals(graph.getNode("D"), alternative3.get(2));
+        assertEquals(graph.getNode("E"), alternative3.get(3));
+        assertEquals(destination, alternative3.get(4));
+    }
+
+    private Graph createGraph() {
+        Graph graph = new Graph();
+
+        Node nodeA = new Node("A", 0.0, 0.0);
+        Node nodeB = new Node("B", 1.0, 1.0);
+        Node nodeC = new Node("C", 2.0, 2.0);
+        Node nodeD = new Node("D", 3.0, 3.0);
+        Node nodeE = new Node("E", 4.0, 4.0);
+        Node nodeF = new Node("F", 5.0, 5.0);
+
+        nodeA.addUnidirectionalEdge(nodeB, 1.0);
+        nodeA.addUnidirectionalEdge(nodeC, 2.0);
+        nodeB.addUnidirectionalEdge(nodeD, 2.0);
+        nodeC.addUnidirectionalEdge(nodeD, 1.0);
+        nodeC.addUnidirectionalEdge(nodeE, 3.0);
+        nodeD.addUnidirectionalEdge(nodeE, 2.0);
+        nodeD.addUnidirectionalEdge(nodeF, 1.0);
+        nodeE.addUnidirectionalEdge(nodeF, 2.0);
+
+        // POSSIBLE ROUTES
+        // A - B - D - F
+        // A - C - D - F
+        // A - B - D - E - F
+        // A - C - D - E - F
+
+        graph.addNode(nodeA);
+        graph.addNode(nodeB);
+        graph.addNode(nodeC);
+        graph.addNode(nodeD);
+        graph.addNode(nodeE);
+        graph.addNode(nodeF);
+
+        return graph;
+    }
 }

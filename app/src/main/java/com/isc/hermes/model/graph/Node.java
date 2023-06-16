@@ -3,6 +3,7 @@ package com.isc.hermes.model.graph;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -111,5 +112,32 @@ public class Node {
     public void addBidirectionalEdge(Node destination) {
         addUnidirectionalEdge(destination);
         destination.addUnidirectionalEdge(this);
+    }
+
+    /**
+     * Removes the edge from the current node to the specified destination node.
+     *
+     * @param destination the destination node of the edge to be removed
+     * @return true if the edge is successfully removed, false otherwise
+     */
+    public boolean removeEdgeTo(Node destination) {
+        Iterator<Edge> iterator = edges.iterator();
+        while (iterator.hasNext()) {
+            Edge edge = iterator.next();
+            if (edge.getDestination() == destination) {
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Overrides toString method to show the node id
+     * @return the node id
+     */
+    @Override
+    public String toString() {
+        return id;
     }
 }
