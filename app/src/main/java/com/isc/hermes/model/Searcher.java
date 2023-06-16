@@ -21,7 +21,12 @@ import retrofit2.Response;
  */
 public class Searcher {
 
-    CurrentLocationModel currentLocationModel = new CurrentLocationModel();
+    CurrentLocationModel currentLocationModel;
+
+    public Searcher() {
+        currentLocationModel  = new CurrentLocationModel();
+    }
+
 
     /**
      * Retrieves a list of suggestion features for a given user location and query.
