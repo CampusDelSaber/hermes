@@ -1,6 +1,7 @@
 package com.isc.hermes.utils;
 
 import com.isc.hermes.model.graph.*;
+import com.isc.hermes.model.navigation.Route;
 
 import java.util.*;
 
@@ -23,15 +24,19 @@ public class DijkstraAlgorithm {
     public Map<String, List<Node>> getPathAlternatives(Graph graph, Node source, Node destination) {
         Map<String, List<Node>> routeAlternatives = new HashMap<>();
 
-        PriorityQueue<Route> routeQueue = new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalDistance));
+        PriorityQueue<Route> routeQueue =
+                new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalDistance));
+        routeQueue.add(new Route(getShortestPath(graph, source, destination)));
         routeQueue.add(new Route(source));
 
         while (!routeQueue.isEmpty() && routeAlternatives.size() < MAX_ROUTE_ALTERNATIVES) {
             Route currentRoute = routeQueue.poll();
             Node currentNode = currentRoute.getCurrentNode();
 
-            if (currentNode == destination) {
-                routeAlternatives.put(getRouteKey(routeAlternatives.size()), currentRoute.getPath());
+            List<Node> currentRoutePath = currentRoute.getPath();
+            if (currentNode == destination &&
+                    !routeAlternatives.containsValue(currentRoutePath)) {
+                routeAlternatives.put(getRouteKey(routeAlternatives.size()), currentRoutePath);
                 continue;
             }
 
@@ -48,42 +53,6 @@ public class DijkstraAlgorithm {
         }
 
         return routeAlternatives;
-    }
-
-    private List<List<Node>> findAllPaths(Graph graph, Node source, Node destination) {
-        List<List<Node>> allPaths = new ArrayList<>();
-        List<Node> currentPath = new ArrayList<>();
-        Set<Node> visitedNodes = new HashSet<>();
-
-        currentPath.add(source);
-        visitedNodes.add(source);
-
-        findPathsRecursive(graph, source, destination, currentPath, visitedNodes, allPaths);
-
-        return allPaths;
-    }
-
-    private void findPathsRecursive(
-            Graph graph, Node current, Node destination, List<Node> currentPath,
-            Set<Node> visitedNodes, List<List<Node>> allPaths
-    ) {
-        if (current == destination) {
-            allPaths.add(new ArrayList<>(currentPath));
-            return;
-        }
-
-        for (Edge edge : current.getEdges()) {
-            Node nextNode = edge.getDestination();
-            if (!visitedNodes.contains(nextNode)) {
-                visitedNodes.add(nextNode);
-                currentPath.add(nextNode);
-
-                findPathsRecursive(graph, nextNode, destination, currentPath, visitedNodes, allPaths);
-
-                visitedNodes.remove(nextNode);
-                currentPath.remove(currentPath.size() - 1);
-            }
-        }
     }
 
     /**
@@ -218,42 +187,5 @@ public class DijkstraAlgorithm {
      */
     private String getRouteKey(int index) {
         return "Route " + (char) ('A' + index);
-    }
-}
-
-class Route {
-    private List<Node> path;
-    private double totalDistance;
-
-    public Route(Node initialNode) {
-        path = new ArrayList<>();
-        path.add(initialNode);
-        totalDistance = 0.0;
-    }
-
-    public Route(Route other) {
-        path = new ArrayList<>(other.path);
-        totalDistance = other.totalDistance;
-    }
-
-    public void addNode(Node node, double distance) {
-        path.add(node);
-        totalDistance += distance;
-    }
-
-    public List<Node> getPath() {
-        return path;
-    }
-
-    public double getTotalDistance() {
-        return totalDistance;
-    }
-
-    public Node getCurrentNode() {
-        return path.get(path.size() - 1);
-    }
-
-    public boolean visitedNode(Node node) {
-        return path.contains(node);
     }
 }

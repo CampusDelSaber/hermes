@@ -47,8 +47,10 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Find the shortest path from nodeA to nodeD
-        List<Node> shortestPath = dijkstraAlgorithm.getShortestPath(graph, nodeA, nodeD);
+        List<Node> shortestPath =
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A");
 
+        assertNotNull(shortestPath);
         // The shortest path should be [nodeA, nodeC, nodeD]
         assertEquals(3, shortestPath.size());
         assertEquals(nodeA, shortestPath.get(0));
@@ -75,11 +77,11 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Find the shortest path from nodeA to nodeD
-        List<Node> shortestPath = dijkstraAlgorithm.getShortestPath(graph, nodeD, nodeA);
-        for (Node node:shortestPath) {
-            System.out.println(node.getId());
-        }
+        List<Node> shortestPath =
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeD, nodeA).get("Route A");
+        System.out.println(shortestPath);
 
+        assertNotNull(shortestPath);
         // The shortest path should be [nodeD, nodeC, nodeA]
         assertEquals(3, shortestPath.size());
         assertEquals(nodeD, shortestPath.get(0));
@@ -106,12 +108,11 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Find the shortest path from Plaza Principal to Plaza 14 de Septiembre
-        List<Node> shortestPath = dijkstraAlgorithm.getShortestPath(graph, nodeA, nodeD);
+        List<Node> shortestPath =
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A");
 
-        for (Node node : shortestPath) {
-            System.out.println(node.getId());
-        }
-
+        System.out.println(shortestPath);
+        assertNotNull(shortestPath);
         // The shortest path should be [A, C, D]
         assertEquals(3, shortestPath.size());
         assertEquals(nodeA, shortestPath.get(0));
