@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
+        mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         mapStyleListener();
         initCurrentLocationController();
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
                 findViewById(R.id.searchResults),findViewById(R.id.searchView));
         searcherController.runSearcher();*/
         MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
-        mapboxEventManager.setMapboxMapListener(this);
+        mapboxEventManager.setMapboxMap(mapDisplay.getMapboxMap());
 
     }
 
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
 
     private void changeSearchView() {
         searchView.setOnClickListener(v -> {
+            addMapboxSearcher();
             new Handler().post(() -> {
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
                 startActivity(intent);

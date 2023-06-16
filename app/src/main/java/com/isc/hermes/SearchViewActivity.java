@@ -92,21 +92,14 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
      */
     @Override
     public void onItemClick(WayPoint wayPoint) {
-        Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
-        LatLng selectedLocation = new LatLng(wayPoint.getLatitude(), wayPoint.getLongitude());
-
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(selectedLocation)
-                .title(wayPoint.getPlaceName());
-
-
+//        Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
 
         MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
-        if(mapboxEventManager.addMarker(markerOptions)){
+        if(mapboxEventManager.addMarker(wayPoint)){
             Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
         }
-        else
-            Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+        onDestroy();
     }
 
     /**
