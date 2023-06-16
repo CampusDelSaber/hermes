@@ -111,7 +111,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         FilterController filterController = new FilterController(mapboxMap, this);
-        mapboxMap.setStyle(new Style.Builder(), style -> filterController.initComponents());
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                filterController.initComponents();
+            }
+        });
     }
 
 
