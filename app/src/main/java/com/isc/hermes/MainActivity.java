@@ -8,52 +8,52 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.os.Handler;
 
-import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-import com.isc.hermes.model.Searcher;
+
+import com.isc.hermes.controller.FilterController;
+import com.isc.hermes.controller.CurrentLocationController;
+import android.widget.SearchView;
+import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Utils.MapPolyline;
-import com.isc.hermes.model.Utils.PolylineManager;
+
 import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.utils.MarkerManager;
+import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
-import com.mapbox.geojson.BoundingBox;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.GeoJson;
-import com.mapbox.geojson.LineString;
-import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.plugins.annotation.LineManager;
-import com.mapbox.mapboxsdk.plugins.annotation.LineOptions;
 
 
 
-import java.util.ArrayList;
+
+
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private MapView mapView;
     private MapDisplay mapDisplay;
     private String mapStyle = "Default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
+    private SearchView searchView;
+    private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
 
     /**
@@ -67,11 +67,15 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
+        mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
         initCurrentLocationController();
+        mapView.getMapAsync(this);
+        searchView = findViewById(R.id.searchView);
+        changeSearchView();
         addIncidentGeneratorButton();
+        MarkerManager.getInstance(this).removeSavedMarker();
 
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
     }
@@ -97,11 +101,24 @@ public class MainActivity extends AppCompatActivity {
      * Method to add the searcher to the main scene above the map
      */
     private void addMapboxSearcher() {
-        Searcher searcher = new Searcher();
-        SearcherController searcherController = new SearcherController(searcher,
-                findViewById(R.id.searchResults),findViewById(R.id.searchView));
-        searcherController.runSearcher();
+        sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
+        markerManager = MarkerManager.getInstance(this);
     }
+
+    /**
+     * Called when the map is ready to be used.
+     */
+    @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        FilterController filterController = new FilterController(mapboxMap, this);
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                filterController.initComponents();
+            }
+        });
+    }
+
 
     /**
      * This method is used to display a view where you can see the information about your account.
@@ -113,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
+     * This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
      *
      * @param view Helps build the view.
      */
@@ -131,17 +148,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * This method is used to change the search view.
+     */
+    private void changeSearchView() {
+        addMapboxSearcher();
+        searchView.setOnClickListener(v -> {
+            new Handler().post(() -> {
+                Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
+                startActivity(intent);
+            });
+        });
+    }
+
+    /**
      * Enables or disables map scroll gestures.
      *
      * @param enabled Boolean indicating whether to enable map scroll gestures.
      */
     private void setMapScrollGesturesEnabled(boolean enabled) {
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled);
-            }
-        });
+        mapView.getMapAsync(mapboxMap -> mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled));
     }
 
     /**
@@ -149,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view The view of the button that has been clicked.
      */
-    public void logOut(View view){
+    public void logOut(View view) {
         SignUpActivityView.authenticator.signOut(this);
         Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
         startActivity(intent);
@@ -158,16 +183,16 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method will init the current location controller to get the real time user location
      */
-    private void initCurrentLocationController(){
+    private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
-        currentLocationController.initLocation();
+        currentLocationController.initLocationButton();
     }
 
     /**
      * This method adds the button for incident generation.
      */
-    private void addIncidentGeneratorButton(){
-        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this );
+    private void addIncidentGeneratorButton() {
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this);
     }
 
 
@@ -185,12 +210,6 @@ public class MainActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView);
     }
 
-    /**
-     * Method for initializing the MapDisplay object instance.
-     */
-    private void initMapDisplay() {
-        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
-    }
 
     /**
      * Method for starting the MapView object instance.
@@ -208,17 +227,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mapDisplay.onResume();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                this);
-        AuthenticationServices authenticationServices  = AuthenticationServices.getAuthentication(
-                sharedPreferences.getInt("cuenta",0));
-        if(authenticationServices != null)
-            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
-                    authenticationServices);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        AuthenticationServices authenticationServices = AuthenticationServices.getAuthentication(sharedPreferences.getInt("cuenta", 0));
+        if (authenticationServices != null)
+            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(authenticationServices);
+
+        addMarkers();
     }
 
-    /** Method for pausing the MapView object instance.*/
+    /**
+     * Method for pausing the MapView object instance.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -226,7 +246,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor miEditor = datos.edit();
         miEditor.putInt("cuenta", SignUpActivityView.authenticator.getServiceType().getID());
-        miEditor.apply();}
+        miEditor.apply();
+    }
 
     /**
      * Method for stopping the MapView object instance.
@@ -266,11 +287,6 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay.onSaveInstanceState(outState);
     }
 
-    /**
-     * Method to show/hide the map style menu options.
-     *
-     * @param view The view of the menu map styles button.
-     */
     public void openStylesMenu(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
         LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
@@ -298,5 +314,15 @@ public class MainActivity extends AppCompatActivity {
         mapStyle = ((ImageButton) view).getTag().toString();
         mapDisplay.setMapStyle(mapStyle);
         isStyleOptionsVisible = false;
+    }
+
+    /**
+     * Adds markers to the map based on the shared searcher preferences.
+     * The markers are added using the MarkerManager instance.
+     */
+    private void addMarkers() {
+        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
+                sharedSearcherPreferencesManager.getLatitude(),
+                sharedSearcherPreferencesManager.getLongitude());
     }
 }
