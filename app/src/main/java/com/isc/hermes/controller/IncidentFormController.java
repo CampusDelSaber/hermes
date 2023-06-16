@@ -144,7 +144,7 @@ public class IncidentFormController {
                 incidentTypesContainer.addView(button);
             }
         } else {
-            Timber.i("The arrays about colors, icons and the type buttons have a different size");
+            Timber.i(String.valueOf(R.string.array_size_text_timber));
         }
 
         setEstimatedTimePicker();
@@ -170,18 +170,23 @@ public class IncidentFormController {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedOption = adapterTime.getItem(position).toString();
 
-                if (selectedOption.equals("min")) {
-                    incidentTimePicker.setMinValue(1);
-                    incidentTimePicker.setMaxValue(60);
-                } else if (selectedOption.equals("hr")) {
-                    incidentTimePicker.setMinValue(1);
-                    incidentTimePicker.setMaxValue(24);
-                } else if (selectedOption.equals("day")) {
-                    incidentTimePicker.setMinValue(1);
-                    incidentTimePicker.setMaxValue(31);
-                } else if (selectedOption.equals("month")) {
-                    incidentTimePicker.setMinValue(1);
-                    incidentTimePicker.setMaxValue(12);
+                switch (selectedOption) {
+                    case "min" -> {
+                        incidentTimePicker.setMinValue(1);
+                        incidentTimePicker.setMaxValue(60);
+                    }
+                    case "hr" -> {
+                        incidentTimePicker.setMinValue(1);
+                        incidentTimePicker.setMaxValue(24);
+                    }
+                    case "day" -> {
+                        incidentTimePicker.setMinValue(1);
+                        incidentTimePicker.setMaxValue(31);
+                    }
+                    case "month" -> {
+                        incidentTimePicker.setMinValue(1);
+                        incidentTimePicker.setMaxValue(12);
+                    }
                 }
             }
 
