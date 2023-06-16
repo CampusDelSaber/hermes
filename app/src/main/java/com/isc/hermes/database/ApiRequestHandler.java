@@ -45,6 +45,12 @@ public class ApiRequestHandler {
         return response.toString();
     }
 
+    /**
+     * Sends a POST request to the specified API URL with the provided JSON data.
+     *
+     * @param apiUrl  the URL of the API to send the request to
+     * @param jsonData the JSON data to include in the request body
+     */
     public void postDataFromApi(String apiUrl, String jsonData) {
         try {
             URL url = new URL(apiUrl);
