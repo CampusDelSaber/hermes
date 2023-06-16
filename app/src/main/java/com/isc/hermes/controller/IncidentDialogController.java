@@ -7,8 +7,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.isc.hermes.R;
+import com.isc.hermes.database.IncidentsDataRetriever;
 import com.isc.hermes.model.incidents.Incident;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 public class IncidentDialogController {
@@ -19,8 +24,30 @@ public class IncidentDialogController {
         this.context = context;
     }
 
-    public void show(String title, String reason, String waitTime, String coordinates) {
-        getIncidents();
+    public void show() {
+        IncidentsDataRetriever.getInstance().retrieveIncidents(new IncidentsDataRetriever.IncidentsRetrievalListener() {
+            @Override
+            public void onIncidentsRetrieved(List<Incident> incidents) {
+                if (!incidents.isEmpty()) {
+                    Incident incident = incidents.get(0);
+                    String title = incident.getType();
+                    String reason = incident.getReason();
+                    String waitTime = incident.getDeathDate().toString();
+                    String coordinates = incident.getGeometry().toString();
+                    showIncidentDialog(title, reason, waitTime, coordinates);
+                } else {
+                    System.out.println("NO working");
+                }
+            }
+
+            @Override
+            public void onIncidentsRetrievalFailed(Exception e) {
+                System.out.println("server down");
+            }
+        });
+    }
+
+    private void showIncidentDialog(String title, String reason, String waitTime, String coordinates) {
         dialog = new Dialog(context);
         dialog.setContentView(R.layout.incidents_dialog);
         dialog.setCancelable(true);
@@ -43,12 +70,5 @@ public class IncidentDialogController {
             }
         });
         dialog.show();
-    }
-
-    public void getIncidents(){
-        List<Incident> incidentList = IncidentsGetterController.getInstance().getIncidentGetterModel().getIncidentList();
-        for (Incident incident: incidentList) {
-            System.out.println(incident.getId()+ " "+  incident.getType()+ " "+  incident.getReason()+ " "+ incident.getGeometry().toString());
-        }
     }
 }

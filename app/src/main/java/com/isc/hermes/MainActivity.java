@@ -23,6 +23,11 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.text.ParseException;
+
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
@@ -230,10 +235,9 @@ public class MainActivity extends AppCompatActivity {
             mapDisplay.setMapStyle(mapStyle);
         });
     }
-    public void openIncidentsDialog(View view){
+    public void openIncidentsDialog(View view) throws JSONException, IOException, ParseException {
         IncidentDialogController incidentDialogController = new IncidentDialogController(this);
-        //here might a singleton for giving the current values to show
-        incidentDialogController.show("Traffic", "An car hit a bike", "20 minutes", "[123231,41321]");
+        incidentDialogController.show();
     }
 
 }
