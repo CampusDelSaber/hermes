@@ -3,18 +3,15 @@ package com.isc.hermes;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.SearchView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.SearcherAdapter;
 import com.isc.hermes.utils.SearcherAdapterUpdater;
 import com.isc.hermes.utils.WayPointClickListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
