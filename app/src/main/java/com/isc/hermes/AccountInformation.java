@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpEditAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
@@ -21,6 +22,7 @@ import java.io.IOException;
 
 
 import com.isc.hermes.controller.PopUp.PopUp;
+import com.isc.hermes.model.User;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
@@ -31,8 +33,10 @@ public class AccountInformation extends AppCompatActivity {
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldFullName;
     private AutoCompleteTextView comboBoxField;
+    private AutoCompleteTextView textFieldEmail;
     private ImageView imageView;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private User userRegistered;
     private PopUpEditAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
 
@@ -58,10 +62,17 @@ public class AccountInformation extends AppCompatActivity {
     private void generateActionToComboBox() {
         generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
             String item = parent.getItemAtPosition(position).toString();
-            //update in DB
             Toast.makeText(getApplicationContext(), "Item: " + item,
                     Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void updateTextFieldsByUser() {
+        imageView.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
+        textFieldUserName.setText(userRegistered.getUserName());
+        textFieldFullName.setText(userRegistered.getFullName());
+        textFieldEmail.setText(userRegistered.getEmail());
+        comboBoxField.setText(userRegistered.getTypeUser());
     }
 
     /**
@@ -75,7 +86,20 @@ public class AccountInformation extends AppCompatActivity {
         setContentView(R.layout.activity_account_information);
         assignValuesToComponentsView();
         generateActionToComboBox();
+        getUserInformation();
+        updateTextFieldsByUser();
         initializePopups();
+    }
+
+    /**
+     * Sends a User object to another activity using an Intent.
+     *
+     * @param user The User object to be sent to the other activity.
+     */
+    private void sendUserBetweenActivities(User user) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("userObtained", user);
+        startActivity(intent);
     }
 
     /**
@@ -84,8 +108,7 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void goToPrincipalView(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        sendUserBetweenActivities(userRegistered);
     }
 
     /**
@@ -134,6 +157,15 @@ public class AccountInformation extends AppCompatActivity {
     }
 
     /**
+     * Retrieves the user information passed through the intent.
+     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
+     */
+    private void getUserInformation() {
+        Intent intent = getIntent();
+        userRegistered = intent.getParcelableExtra("userObtained");
+    }
+
+    /**
      * This method is used to edit an account information using on click action.
      *
      * @param view The view that triggers the navigation.
@@ -145,12 +177,18 @@ public class AccountInformation extends AppCompatActivity {
         textFieldUserName.setEnabled(true);
     }
 
+    private  void updateInformationUser() {
+        userRegistered.setTypeUser(String.valueOf(comboBoxField.getText()));
+        userRegistered.setUserName(String.valueOf(textFieldUserName.getText()));
+        userRegistered.setFullName(String.valueOf(textFieldFullName.getText()));
+    }
     /**
      * This method is used to edit an account information using on click action.
      *
      * @param view The view that triggers the navigation.
      */
     public void saveAccountInformationAction(View view) {
+        updateInformationUser();
         popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName,
                 textFieldUserName, comboBoxField);
         popUpDialogEdit.show();
@@ -174,6 +212,7 @@ public class AccountInformation extends AppCompatActivity {
         imageView = findViewById(R.id.imageUpload);
         comboBoxField = findViewById(R.id.textFieldUserType);
         textFieldFullName = findViewById(R.id.textFieldFullName);
+        textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldUserName = findViewById(R.id.textFieldUserName);
         textFieldFullName.setEnabled(false);
         textFieldUserName.setEnabled(false);
