@@ -1,7 +1,5 @@
 package com.isc.hermes.generators;
 
-import android.util.Log;
-
 import com.isc.hermes.model.incidents.*;
 import org.bson.types.ObjectId;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.isc.hermes.generators;
+package com.isc.hermes.model.incidents;
 
 /**
  * This Enum represents the types of geometry that.

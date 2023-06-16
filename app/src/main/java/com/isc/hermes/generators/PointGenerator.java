@@ -1,6 +1,6 @@
 package com.isc.hermes.generators;
 
-import android.util.Log;
+import com.isc.hermes.model.incidents.GeometryType;
 
 import java.util.ArrayList;
 import java.util.List;

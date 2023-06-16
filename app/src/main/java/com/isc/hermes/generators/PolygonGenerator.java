@@ -1,5 +1,7 @@
 package com.isc.hermes.generators;
 
+import com.isc.hermes.model.incidents.GeometryType;
+
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 

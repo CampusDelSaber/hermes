@@ -1,6 +1,5 @@
 package com.isc.hermes.model.incidents;
 
-import com.isc.hermes.generators.GeometryType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

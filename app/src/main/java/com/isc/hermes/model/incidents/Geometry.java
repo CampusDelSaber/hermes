@@ -49,14 +49,21 @@ public class Geometry {
         this.coordinates = coordinates;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Geometry{" +
-                "\ntype='" + type + '\'' +
-                ",\ncoordinates = \t");
-        for(Double[] currentCoordinate: coordinates){
-            stringBuilder.append("[ "+ currentCoordinate[0] + ", " + currentCoordinate[1]+" ]");
+    /**
+     * This method generate a string with the coordinates list.
+     *
+     * @return String with the coordinates.
+     */
+    public String getStringCoordinates(){
+        StringBuilder stringBuilder = new StringBuilder("[");
+        if(coordinates.size() > 1){
+            for (Double[] currentCoordinate : coordinates){
+                stringBuilder.append("["+currentCoordinate[0]+", "+currentCoordinate[1]+"],");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.toString().length()-1);
+            stringBuilder.append("]");
+        }else {
+            stringBuilder.append(coordinates.get(0)[0]+", "+coordinates.get(0)[1]+"]");
         }
         return stringBuilder.toString();
     }
