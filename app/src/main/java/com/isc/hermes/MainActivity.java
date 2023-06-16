@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -19,6 +18,7 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.model.User;
 import android.widget.SearchView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -48,8 +48,9 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private MapView mapView;
     private MapDisplay mapDisplay;
-    private String mapStyle = "Default";
+    private String mapStyle;
     private CurrentLocationController currentLocationController;
+    private User userRegistered;
     private boolean visibilityMenu = false;
     private SearchView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
@@ -67,9 +68,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
+        this.mapStyle = "Default";
         mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
+        getUserInformation();
         initCurrentLocationController();
         mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
@@ -121,12 +124,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     /**
+     * Sends a User object to another activity using an Intent.
+     *
+     * @param user The User object to be sent to the other activity.
+     */
+    private void sendUserBetweenActivities(User user) {
+        Intent intent = new Intent(this, AccountInformation.class);
+        intent.putExtra("userObtained", user);
+        startActivity(intent);
+    }
+
+    /**
      * This method is used to display a view where you can see the information about your account.
      *
      * @param view Helps build the view
      */
-    public void showAccount(View view) {
-        System.out.println("Your account information will be displayed");
+    public void goToAccountInformation(View view) {
+        sendUserBetweenActivities(userRegistered);
     }
 
     /**
@@ -175,8 +189,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param view The view of the button that has been clicked.
      */
     public void logOut(View view) {
-        SignUpActivityView.authenticator.signOut(this);
-        Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
+        if (SignUpActivityView.authenticator != null) {
+            SignUpActivityView.authenticator.signOut(this);
+        }
+        Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
     }
 
@@ -194,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void addIncidentGeneratorButton() {
         GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this);
     }
-
 
     /**
      * Method for initializing the Mapbox object instance.
@@ -227,11 +242,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onResume() {
         super.onResume();
         mapDisplay.onResume();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        AuthenticationServices authenticationServices = AuthenticationServices.getAuthentication(sharedPreferences.getInt("cuenta", 0));
-        if (authenticationServices != null)
-            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(authenticationServices);
+        SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
+        String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
+        if (!nameServiceUsed.equals("default")) {
+                SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
+        }
 
         addMarkers();
     }
@@ -243,10 +258,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onPause() {
         super.onPause();
         mapDisplay.onPause();
-        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor miEditor = datos.edit();
-        miEditor.putInt("cuenta", SignUpActivityView.authenticator.getServiceType().getID());
-        miEditor.apply();
+        SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        if(SignUpActivityView.authenticator!= null){
+            editor.putString(getString(R.string.save_authentication_state), SignUpActivityView.authenticator.getServiceType().name());
+            editor.apply();
+        }
     }
 
     /**
@@ -287,6 +304,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapDisplay.onSaveInstanceState(outState);
     }
 
+    /**
+     * Retrieves the user information passed through the intent.
+     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
+     */
+    private void getUserInformation() {
+        Intent intent = getIntent();
+        userRegistered = intent.getParcelableExtra("userObtained");
+    }
+
+    /**
+     * Opens the styles menu by toggling its visibility.
+     *
+     * @param view The view that triggered the method.
+     */
     public void openStylesMenu(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
         LinearLayout lateralMenu = findViewById(R.id.lateralMenu);

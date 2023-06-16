@@ -18,6 +18,29 @@
     <string name="get_location_text">Get Location</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
+    <string name="delete_account_question_text">Are you sure you want to delete your account?</string>
+    <string name="edit_account_question_text">Are you sure you want to overwrite your account data?</string>
+    <string name="delete_account_warning_text">By accepting your data will be permanently deleted</string>
+    <string name="edit_account_warning_text">By accepting your data will be change</string>
+    <string name="im_sure_text">Im sure!</string>
+    <string name="Better_not_text">Better not</string>
+    <string name="account_title">Account Information</string>
+    <string name="action_save_info">saveAccountInformationAction</string>
+    <string name="action_edit_info">editAccountAction</string>
+    <string name="action_upload_info">uploadImageProfileAction</string>
+    <string name="action_delete_info">deleteAccountAction</string>
+    <string name="edit_information">Edit Information</string>
+    <string name="save_information">Save Information</string>
+    <string name="edit_profile">Upload Profile</string>
+    <string name="complete_name">Full Name</string>
+    <string name="delete_account">Delete Account</string>
+
+
+    <!--    Authentication Strings-->
+    <string name="google">GOOGLE</string>
+    <string name="save_authentication_state">authentication_state</string>
+
+
     <string name="incidents_uploaded">Incident uploaded successfully.</string>
     <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
     <string name="incidents_api_url">https://api-rest-hermes.onrender.com/incidents</string>
