@@ -45,6 +45,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:onClick="signUp"
+                android:tag="@string/google"
                 app:cornerRadius="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
