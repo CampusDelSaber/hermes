@@ -28,6 +28,13 @@ public class ImageUtil {
         return Bitmap.createBitmap(bitmap, x, y, size, size);
     }
 
+    /**
+     * Gets a Uri from a Bitmap object.
+     *
+     * @param context the current context.
+     * @param bitmap the Bitmap object to get the Uri from.
+     * @return the Uri corresponding to the Bitmap object, or null if an error occurs.
+     */
     public static Uri getUriFromBitmap(Context context, Bitmap bitmap) {
         Uri uri = null;
         try {

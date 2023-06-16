@@ -36,6 +36,13 @@ public class ApiHandler {
         );
     }
 
+    /**
+     * Posts a Future for collections to the specified API URL with the given parameters and object.
+     *
+     * @param params The parameters to be appended to the API URL.
+     * @param object The object to be converted to JSON and sent as the request payload.
+     * @return A Future representing the asynchronous operation of posting data to the API.
+     */
     public Future<?> postFutureCollections(String params, Object object) {
         String url = API_URL + params;
         Gson gson = new Gson();
