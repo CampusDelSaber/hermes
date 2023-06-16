@@ -2,18 +2,20 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-
+import android.widget.LinearLayout;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
-
 import android.widget.LinearLayout;
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
+        addIncidentGeneratorButton();
     }
 
     /**
@@ -121,9 +124,16 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method will init the current location controller to get the real time user location
      */
-    private void initCurrentLocationController() {
-        currentLocationController = new CurrentLocationController(this, mapDisplay);
+    private void initCurrentLocationController(){
+        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
         currentLocationController.initLocation();
+    }
+
+    /**
+     * This method adds the button for incident generation.
+     */
+    private void addIncidentGeneratorButton(){
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this );
     }
 
     /**
