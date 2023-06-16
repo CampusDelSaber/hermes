@@ -36,6 +36,14 @@ public class DijkstraAlgorithm {
         for (String key:routeAlternatives.keySet()){
             geoJsonRoutes.put(key, geoJsonUtils.generateGeoJson(routeAlternatives.get(key)));
         }
+
+        Map<String, String> r = new HashMap<>();
+        r.put("Route A", "{}");
+        r.put("Route B", "{}");
+        r.put("Route C", "{}");
+
+        String jsonA = r.get("Route A");
+
         return geoJsonRoutes;
     }
 
