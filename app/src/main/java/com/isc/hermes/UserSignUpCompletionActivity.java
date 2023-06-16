@@ -33,7 +33,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private Button buttonRegister;
     private ImageView imgUser;
     private User userRegistered;
-    //private AccountInfoManager accountInfoManager;
 
     /**
      * Assigns values to the components view.
@@ -48,8 +47,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         imgUser = findViewById(R.id.imgUser);
         comboBoxTextField = findViewById(R.id.comboBoxTextField);
     }
-
-
 
     /**
      * Charges information about the user in the text fields.

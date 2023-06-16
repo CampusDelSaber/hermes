@@ -138,9 +138,9 @@ public class User implements Parcelable {
     }
 
     /**
-     * Returns the typeUser of the user.
+     * Returns the type of the user.
      *
-     * @return The typeUser of the user.
+     * @return The type of the user.
      */
     public String getTypeUser() {
         return typeUser;
