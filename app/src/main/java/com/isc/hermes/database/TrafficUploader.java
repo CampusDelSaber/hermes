@@ -1,5 +1,7 @@
 package com.isc.hermes.database;
 
+import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.model.CurrentLocationModel;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.IOException;
@@ -51,8 +53,8 @@ public class TrafficUploader {
      * @param coordinates The coordinates of the incident location.
      * @return The JSON representation of the incident.
      */
-    public String generateJsonTraffic(String id, String type, String reason, String dateCreated, String deathDate, String coordinates, String coordinate2) {
-        return "{\"_id\": \"" + id + "\",\"level\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + coordinate2 + " + }}";
+    public String generateJsonTraffic(String id, String type, String reason, String dateCreated, String deathDate, String coordinates, String coordinates2) {
+        return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates +"}}";
     }
     /**
      * This method returns the last clicked point on the map.
@@ -78,9 +80,12 @@ public class TrafficUploader {
      * @return The coordinates of the last clicked point in the format "[latitude, longitude]".
      */
     public String getCoordinates(){
-        String[] parts = lastClickedPoint.toString().split("[=,]");
-        String latitude = parts[1].trim();
-        String longitude = parts[3].trim();
+        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null,null).getCurrentLocationModel();
+
+
+       // String[] parts = lastClickedPoint.toString().split("[=,]");
+        String latitude = String.valueOf(currentLocation.getLatitude());
+        String longitude = String.valueOf(currentLocation.getLongitude());
         System.out.println("ESto mas"+latitude);
         return "[" + latitude + ", " + longitude + "]";
     }
