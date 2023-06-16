@@ -133,14 +133,12 @@ public class IncidentFormController {
         if (incidentTypes.length == incidentTypeColors.length &&
                 incidentTypeIcons.length == incidentTypes.length) {
             for (int i = 0; i < incidentTypes.length; i++) {
-                IncidentTypeButton incidentTypeButton = new IncidentTypeButton();
-                Button button = incidentTypeButton.getIncidentTypeButton(
+                Button button = IncidentTypeButton.getIncidentTypeButton(
                         context,
                         incidentTypes[i].toLowerCase(),
                         Color.parseColor((String) incidentTypeColors[i]),
                         incidentTypeIcons[i]);
                 setIncidentButtonAction(button);
-
                 incidentTypesContainer.addView(button);
             }
         } else {
@@ -165,6 +163,13 @@ public class IncidentFormController {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             incidentTimePicker.setTextColor(Color.BLACK);
         }
+
+        setTimeSelectedItem(incidentEstimatedTime, adapterTime, incidentTimePicker);
+    }
+
+    private void setTimeSelectedItem(Spinner incidentEstimatedTime,
+                          ArrayAdapter<CharSequence> adapterTime,
+                          NumberPicker incidentTimePicker) {
         incidentEstimatedTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -174,18 +179,22 @@ public class IncidentFormController {
                     case "min" -> {
                         incidentTimePicker.setMinValue(1);
                         incidentTimePicker.setMaxValue(60);
+                        break;
                     }
                     case "hr" -> {
                         incidentTimePicker.setMinValue(1);
                         incidentTimePicker.setMaxValue(24);
+                        break;
                     }
                     case "day" -> {
                         incidentTimePicker.setMinValue(1);
                         incidentTimePicker.setMaxValue(31);
+                        break;
                     }
                     case "month" -> {
                         incidentTimePicker.setMinValue(1);
                         incidentTimePicker.setMaxValue(12);
+                        break;
                     }
                 }
             }
