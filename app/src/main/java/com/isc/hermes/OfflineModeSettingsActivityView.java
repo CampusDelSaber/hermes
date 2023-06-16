@@ -1,6 +1,9 @@
 package com.isc.hermes;
 
-import android.annotation.SuppressLint;
+import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LATITUDE;
+import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LONGITUDE;
+
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -10,19 +13,37 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.isc.hermes.model.RegionData;
+import com.isc.hermes.utils.OfflineMapManager;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
+import com.mapbox.mapboxsdk.offline.OfflineManager;
+import com.mapbox.mapboxsdk.offline.OfflineRegion;
+import com.mapbox.mapboxsdk.offline.OfflineRegionError;
+import com.mapbox.mapboxsdk.offline.OfflineRegionStatus;
+import com.mapbox.mapboxsdk.offline.OfflineTilePyramidRegionDefinition;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import timber.log.Timber;
 
 /**
  * This class represents the Offline Mode Settings UI.
  */
-public class OfflineModeSettingsActivityView extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class OfflineModeSettingsActivityView extends AppCompatActivity {
 
     private LinearLayout vBoxDownloadedMaps;
+    private OfflineMapManager offlineMapManager;
+    private Map<String, OfflineRegion> offlineRegionsNames;
+    private Map<String, CardView> cardViews;
+    private static final int REQUEST_CODE_OFFLINE = 231;
 
     /**
      * Method for creating the activity configuration.
@@ -35,6 +56,7 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.offline_mode_settings_view);
+        offlineMapManager = new OfflineMapManager(this);
         vBoxDownloadedMaps = findViewById(R.id.vBoxMapsDownloaded);
     }
 
@@ -54,7 +76,8 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
         textViewsVertical.addView(nameTextView);
         textViewsVertical.addView(sizeTextView);
 
-        CardView cardView = joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup());
+        CardView cardView = joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup(name));
+        cardViews.put(name, cardView);
         showCard(cardView);
     }
 
@@ -94,9 +117,9 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
     /**
      * Joins the components (check image, text views, and popup button) to create a CardView.
      *
-     * @param checkImage   The check image.
+     * @param checkImage    The check image.
      * @param vBoxTextViews A vertical LinearLayout containing the text views.
-     * @param popupMenu    The popup button.
+     * @param popupMenu     The popup button.
      * @return The created CardView.
      */
     protected CardView joinComponents(CircleImageView checkImage, LinearLayout vBoxTextViews, CircleImageView popupMenu) {
@@ -130,14 +153,14 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
      *
      * @return The created popup button.
      */
-    protected CircleImageView createButtonPopup() {
+    protected CircleImageView createButtonPopup(String nameItem) {
         CircleImageView popupButton = new CircleImageView(this);
         popupButton.setImageResource(R.drawable.img_tree_points_vertical);
         popupButton.setPadding(10, 10, 30, 0);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(100, 100);
         popupButton.setLayoutParams(params);
 
-        popupButton.setOnClickListener(this::showPopupMenu);
+        popupButton.setOnClickListener(v -> showPopupMenu(v, nameItem));
         return popupButton;
     }
 
@@ -157,38 +180,32 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
         return checkImageView;
     }
 
-    /**
-     * Handles the click event for the popup menu items.
-     *
-     * @param item The menu item that was clicked.
-     * @return True if the click event was handled, false otherwise.
-     */
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.rename:
-                renameDownloadedMap();
-                return true;
-            case R.id.navigateTo:
-                navigateToDownloadedMap();
-                return true;
-            case R.id.delete:
-                deleteDownloadedMap();
-                return true;
-            default:
-                return false;
-        }
-    }
 
     /**
      * Shows the popup menu.
      *
      * @param view The view that triggered the popup menu.
      */
-    public void showPopupMenu(View view) {
+    public void showPopupMenu(View view, String nameItem) {
         PopupMenu popupMenu = new PopupMenu(this, view);
-        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.rename:
+                        renameDownloadedMap();
+                        return true;
+                    case R.id.navigateTo:
+                        navigateToDownloadedMap(nameItem);
+                        return true;
+                    case R.id.delete:
+                        deleteRegion(nameItem);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
         popupMenu.inflate(R.menu.downloaded_maps_options);
         popupMenu.show();
     }
@@ -196,23 +213,25 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
     /**
      * Navigates to the selected downloaded map.
      */
-    protected void navigateToDownloadedMap() {
-        // Code to navigate to the selected downloaded map
+    protected void navigateToDownloadedMap(String regionName) {
+        OfflineRegion offlineRegion = offlineRegionsNames.get(regionName);
+        if (offlineRegion == null) return;
+        LatLngBounds bounds = offlineRegion.getDefinition().getBounds();
+        double regionZoom = offlineRegion.getDefinition().getMinZoom();
+        Intent intent = new Intent();
+        intent.putExtra("center", bounds.getCenter());
+        intent.putExtra("zoom", regionZoom);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     /**
      * Renames the selected downloaded map.
      */
     protected void renameDownloadedMap() {
-        // Code to rename the selected downloaded map
+        System.out.println("rename");
     }
 
-    /**
-     * Deletes the selected downloaded map.
-     */
-    protected void deleteDownloadedMap() {
-        // Code to delete the selected downloaded map
-    }
 
     /**
      * Handles the click event for the "Download New Map" button.
@@ -231,4 +250,169 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
     public void backToMap(View view) {
         finish();
     }
+    /**
+     * Selects a new region.
+     *
+     * @param view The view that triggered the event.
+     */
+    public void selectNewRegion(View view) {
+        Bundle bundle = getIntent().getExtras();
+        Intent intent = new Intent(this, ActivitySelectRegion.class);
+        intent.putExtra(MAP_CENTER_LATITUDE, bundle.getDouble("lat"));
+        intent.putExtra(MAP_CENTER_LONGITUDE, bundle.getDouble("long"));
+        intent.putExtra("zoom", bundle.getDouble("zoom"));
+
+        startActivityForResult(intent, REQUEST_CODE_OFFLINE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_OFFLINE && resultCode == RESULT_OK) {
+            System.out.println("DATA RECEIVED");
+            RegionData regionData = data.getExtras().getParcelable("REGION_DATA");
+            downloadRegion(regionData);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadRegions();
+    }
+
+    /**
+     * Loads the available regions.
+     */
+    private void loadRegions() {
+        cardViews = new HashMap<>();
+        offlineMapManager.listRegions(new OfflineManager.ListOfflineRegionsCallback() {
+            @Override
+            public void onList(OfflineRegion[] offlineRegions) {
+                if (offlineRegions == null || offlineRegions.length == 0) {
+                    Toast.makeText(getApplicationContext(), "THERE IS NO REGIONS DOWNLOADED YET", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                offlineRegionsNames = new HashMap<>();
+                vBoxDownloadedMaps.removeAllViews();
+                String regionName;
+                for (OfflineRegion offlineRegion : offlineRegions) {
+                    regionName = offlineMapManager.getRegionName(offlineRegion);
+                    offlineRegionsNames.put(regionName, offlineRegion);
+                    createNewCardMapDownloaded(regionName, "120MB");
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Timber.e("Error: %s", error);
+            }
+        });
+    }
+
+    /**
+     * Deletes a region.
+     *
+     * @param regionName The name of the region to delete.
+     */
+    private void deleteRegion(String regionName) {
+        OfflineRegion offlineRegion = offlineRegionsNames.get(regionName);
+        CardView cardView = cardViews.get(regionName);
+        if (offlineRegion == null) return;
+        offlineRegion.delete(new OfflineRegion.OfflineRegionDeleteCallback() {
+            @Override
+            public void onDelete() {
+                vBoxDownloadedMaps.removeView(cardView);
+                Toast.makeText(getApplicationContext(), "THE REGION HAS BEEN DELETED SUCCESSFULLY",
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(String error) {
+                Timber.e("Error: %s", error);
+            }
+        });
+    }
+
+    /**
+     * Retrieves the definition of a region.
+     *
+     * @param regionData The region data.
+     * @return The definition of the region.
+     */
+    public OfflineTilePyramidRegionDefinition getDefinition(RegionData regionData) {
+        return new OfflineTilePyramidRegionDefinition(
+                regionData.getStyleUrl(),
+                regionData.getLatLngBounds(),
+                regionData.getMinZoom(),
+                regionData.getMaxZoom(),
+                regionData.getPixelRatio());
+    }
+
+    /**
+     * Downloads a region.
+     *
+     * @param regionData The region data to download.
+     */
+    public void downloadRegion(RegionData regionData) {
+        Thread downloadThread = new Thread(() -> {
+            offlineMapManager.createOfflineRegion(regionData.getRegionName(), getDefinition(regionData),
+                    new OfflineManager.CreateOfflineRegionCallback() {
+                        @Override
+                        public void onCreate(OfflineRegion offlineRegion) {
+                            launchDownload(offlineRegion);
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            Timber.e("Error: %s", error);
+                        }
+                    });
+        });
+        downloadThread.start();
+    }
+
+    /**
+     * Launches the download of a region.
+     *
+     * @param offlineRegion The region to download.
+     */
+    private void launchDownload(OfflineRegion offlineRegion) {
+        offlineRegion.setObserver(new OfflineRegion.OfflineRegionObserver() {
+            @Override
+            public void onStatusChanged(OfflineRegionStatus status) {
+                if (status.isComplete()) {
+                    System.out.println("REGION DOWNLOADED");
+                    Toast.makeText(getApplicationContext(), "REGION DOWNLOADED",
+                            Toast.LENGTH_SHORT).show();
+                    loadRegions();
+                    return;
+                } else if (status.isRequiredResourceCountPrecise()) {
+                    // ...
+                }
+
+                Timber.d("%s/%s resources; %s bytes downloaded.",
+                        String.valueOf(status.getCompletedResourceCount()),
+                        String.valueOf(status.getRequiredResourceCount()),
+                        String.valueOf(status.getCompletedResourceSize()));
+            }
+
+            @Override
+            public void onError(OfflineRegionError error) {
+                System.out.println("The download was successful");
+                Timber.e("onError reason: %s", error.getReason());
+                Timber.e("onError message: %s", error.getMessage());
+            }
+
+            @Override
+            public void mapboxTileCountLimitExceeded(long limit) {
+                Timber.e("Mapbox tile count limit exceeded: %s", limit);
+            }
+        });
+
+        offlineRegion.setDownloadState(OfflineRegion.STATE_ACTIVE);
+    }
+
+
 }

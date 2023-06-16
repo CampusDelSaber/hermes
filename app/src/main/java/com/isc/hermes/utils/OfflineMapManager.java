@@ -1,6 +1,8 @@
 package com.isc.hermes.utils;
 import android.content.Context;
 
+import com.isc.hermes.R;
+import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.offline.OfflineManager;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
@@ -26,6 +28,7 @@ public class OfflineMapManager {
      * @param context The application context.
      */
     public OfflineMapManager(Context context) {
+        Mapbox.getInstance(context, context.getString(R.string.access_token));
         offlineManager = OfflineManager.getInstance(context);
     }
 

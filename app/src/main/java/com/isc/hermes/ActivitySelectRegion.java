@@ -47,8 +47,10 @@ public class ActivitySelectRegion extends AppCompatActivity {
         setContentView(R.layout.activity_select_region);
         MapView mapView = this.findViewById(R.id.mapViewRegion);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this::setStyle);
-        verifyDataReception(getIntent().getExtras());
+        mapView.getMapAsync(mapboxMap -> {
+            setStyle(mapboxMap);
+            verifyDataReception(getIntent().getExtras());
+        });
         createPopup();
     }
 
@@ -64,6 +66,9 @@ public class ActivitySelectRegion extends AppCompatActivity {
         if (bundle != null) {
             double centerLatitude = bundle.getDouble(MAP_CENTER_LATITUDE);
             double centerLongitude = bundle.getDouble(MAP_CENTER_LONGITUDE);
+            System.out.println("cheeee!!!!!!");
+            System.out.println(centerLongitude);
+            System.out.println(centerLatitude);
             configureMapView(centerLatitude, centerLongitude);
         }
     }
@@ -144,6 +149,9 @@ public class ActivitySelectRegion extends AppCompatActivity {
     private Intent createIntent(String regionName, String styleUrl, double minZoom, double maxZoom, float pixelRatio, LatLngBounds latLngBounds) {
         Intent intent = new Intent();
         RegionData regionData = new RegionData(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds);
+        System.out.println("Everithing is there");
+        System.out.println(latLngBounds.getCenter().getLatitude());
+        System.out.println(latLngBounds.getCenter().getLongitude());
         intent.putExtra("REGION_DATA", regionData);
         return intent;
     }

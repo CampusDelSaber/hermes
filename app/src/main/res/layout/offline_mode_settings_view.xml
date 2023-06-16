@@ -81,7 +81,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:onClick="download_new_map"
+                android:onClick="selectNewRegion"
                 mapbox:cardBackgroundColor="#D1D1D1">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -89,7 +89,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="@drawable/img_download_button"
-                    android:onClick="download_new_map"
+                    android:onClick="selectNewRegion"
                     android:translationX="30dp"
                     android:translationY="5dp"
                     mapbox:layout_constraintBottom_toBottomOf="parent"
