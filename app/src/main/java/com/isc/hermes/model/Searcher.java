@@ -20,30 +20,65 @@ import retrofit2.Response;
  * @see CarmenFeature a feature reresented with geojson properties
  */
 public class Searcher {
+
+    CurrentLocationModel currentLocationModel = new CurrentLocationModel();
+
     /**
-     * Method to get the the suggestions features carmen List to have access of all the properties to render the locations
+     * Retrieves a list of suggestion features for a given user location and query.
      *
-     * @param query the consult of the searcher field text
-     * @return the features list with the suggestions features
+     * @param userLocation The current user location as a CurrentLocationModel object.
+     * @param query        The search query for which suggestion features will be obtained.
+     * @return A list of CarmenFeature objects representing the found suggestion features.
+     * @throws IOException If an error occurs during the geocoding call execution.
      */
-    public List<CarmenFeature> getSuggestionsFeatures(String query) {
-        MapboxGeocoding client = MapboxGeocoding.builder()
+    public List<CarmenFeature> getSuggestionsFeatures(CurrentLocationModel userLocation, String query) {
+        MapboxGeocoding client = buildGeocodingClient(userLocation, query, "BO");
+        Response<GeocodingResponse> geocodingResponse = executeGeocodingCall(client);
+
+        if (!geocodingResponse.isSuccessful() || geocodingResponse.body() == null || geocodingResponse.body().features().isEmpty()) {
+            client = buildGeocodingClient(userLocation, query, null);
+            geocodingResponse = executeGeocodingCall(client);
+        }
+
+        return Objects.requireNonNull(geocodingResponse.body()).features();
+    }
+
+    /**
+     * Builds a Mapbox Geocoding client based on the provided user location, query, and country.
+     *
+     * @param userLocation The current user location as a CurrentLocationModel object.
+     * @param query        The search query to be used for geocoding.
+     * @param country      The country code to limit geocoding results (optional, can be null).
+     * @return A MapboxGeocoding object configured with the specified parameters.
+     */
+    private MapboxGeocoding buildGeocodingClient(CurrentLocationModel userLocation, String query, String country){
+        MapboxGeocoding.Builder builder = MapboxGeocoding.builder()
                 .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
                 .query(query)
-                .autocomplete(true)
-                .build();
+                .proximity(Point.fromLngLat(userLocation.getLongitude(), userLocation.getLatitude()))
+                .autocomplete(true);
 
-        Response<GeocodingResponse> geocodingResponseResponse;
+        if (country != null) {
+            builder.country(country);
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Executes a geocoding call using the provided MapboxGeocoding client.
+     *
+     * @param client The MapboxGeocoding client configured for the geocoding request.
+     * @return The Response object containing the geocoding response.
+     */
+    private Response<GeocodingResponse> executeGeocodingCall(MapboxGeocoding client) {
         try {
             StrictMode.ThreadPolicy gfgPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(gfgPolicy);
-            geocodingResponseResponse = client.executeCall();
+            return client.executeCall();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
-        return Objects.requireNonNull(geocodingResponseResponse.body()).features();
     }
 
     /**
@@ -57,7 +92,7 @@ public class Searcher {
             return new ArrayList<>();
         }
         List<WayPoint> featuresInfoList = new ArrayList<>();
-        List<CarmenFeature> suggestions = getSuggestionsFeatures(query);
+        List<CarmenFeature> suggestions = getSuggestionsFeatures(currentLocationModel, query);
         for (CarmenFeature feature : suggestions) {
             featuresInfoList.add(instanceWaypointFeature(feature));
         }
