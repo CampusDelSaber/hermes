@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -97,18 +98,6 @@
 
     </com.mapbox.mapboxsdk.maps.MapView>
 
-    <ImageButton
-        android:id="@+id/btn_change_style"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="right"
-        android:layout_margin="15dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/img_layer_icon"
-        android:translationY="250px"
-        tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,TouchTargetSizeCheck"
-        android:importantForAccessibility="no" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -131,10 +120,10 @@
             android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
+            android:importantForAccessibility="no"
             android:src="@drawable/img_current_location_icon"
             android:text="@string/get_location_text"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
-            android:importantForAccessibility="no" />
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     </LinearLayout>
 
@@ -147,6 +136,7 @@
         layout="@layout/incident_form_fragment"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
+
     <include
         layout="@layout/waypoint_options_fragment"
         mapbox:layout_anchor="@+id/mapView"
@@ -159,6 +149,11 @@
 
     <include
         layout="@layout/natural_disaster_form_fragment"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
+        layout="@layout/customization_menu"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 
@@ -175,6 +170,25 @@
         mapbox:layout_constraintBottom_toBottomOf="parent"
         mapbox:layout_constraintStart_toStartOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:cardCornerRadius="30dp"
+            app:cardBackgroundColor="@color/white">
+
+            <Button
+                android:id="@+id/styles_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:onClick="openStylesMenu"
+                android:text="@string/styles_menu"
+                android:textColor="@color/black"
+                android:background="@android:color/transparent"
+                mapbox:icon="@drawable/img_layer_icon" />
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:layout_width="match_parent"
