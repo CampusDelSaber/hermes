@@ -1,7 +1,5 @@
 package com.isc.hermes.model.graph;
 
-import androidx.annotation.NonNull;
-
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 
 import java.util.ArrayList;
@@ -134,6 +132,10 @@ public class Node {
         return false;
     }
 
+    /**
+     * Overrides toString method to show the node id
+     * @return the node id
+     */
     @Override
     public String toString() {
         return id;

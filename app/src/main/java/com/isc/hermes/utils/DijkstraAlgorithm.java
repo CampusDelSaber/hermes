@@ -23,7 +23,6 @@ public class DijkstraAlgorithm {
      */
     public Map<String, List<Node>> getPathAlternatives(Graph graph, Node source, Node destination) {
         Map<String, List<Node>> routeAlternatives = new HashMap<>();
-
         PriorityQueue<Route> routeQueue =
                 new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalDistance));
         routeQueue.add(new Route(getShortestPath(graph, source, destination)));
@@ -31,28 +30,55 @@ public class DijkstraAlgorithm {
 
         while (!routeQueue.isEmpty() && routeAlternatives.size() < MAX_ROUTE_ALTERNATIVES) {
             Route currentRoute = routeQueue.poll();
-            Node currentNode = currentRoute.getCurrentNode();
 
-            List<Node> currentRoutePath = currentRoute.getPath();
-            if (currentNode == destination &&
-                    !routeAlternatives.containsValue(currentRoutePath)) {
-                routeAlternatives.put(getRouteKey(routeAlternatives.size()), currentRoutePath);
+            if (isDestinationReached(destination, currentRoute, routeAlternatives)) {
+                routeAlternatives.put(getRouteKey(routeAlternatives.size()), currentRoute.getPath());
                 continue;
             }
-
-            for (Edge edge : currentNode.getEdges()) {
-                Node nextNode = edge.getDestination();
-                double edgeWeight = edge.getWeight();
-
-                if (!currentRoute.visitedNode(nextNode)) {
-                    Route newRoute = new Route(currentRoute);
-                    newRoute.addNode(nextNode, edgeWeight);
-                    routeQueue.add(newRoute);
-                }
-            }
+            exploreNeighbors(currentRoute, routeQueue);
         }
 
         return routeAlternatives;
+    }
+
+    /**
+     * Checks if the current route has reached the destination node and if the route is not already present in the
+     * routeAlternatives map.
+     *
+     * @param destination        The destination node.
+     * @param currentRoute       The current route being evaluated.
+     * @param routeAlternatives  The map of route alternatives.
+     * @return True if the destination is reached and the route is not already present, false otherwise.
+     */
+    private boolean isDestinationReached(
+            Node destination, Route currentRoute, Map<String, List<Node>> routeAlternatives
+    ) {
+        Node currentNode = currentRoute.getCurrentNode();
+        List<Node> currentRoutePath = currentRoute.getPath();
+        return currentNode == destination && !routeAlternatives.containsValue(currentRoutePath);
+    }
+
+    /**
+     * Explores the neighbors of the current node in the graph and adds new routes to the routeQueue.
+     *
+     * @param currentRoute  The current route being evaluated.
+     * @param routeQueue    The priority queue of routes.
+     */
+    private void exploreNeighbors(
+            Route currentRoute, PriorityQueue<Route> routeQueue
+    ) {
+        Node currentNode = currentRoute.getCurrentNode();
+
+        for (Edge edge : currentNode.getEdges()) {
+            Node nextNode = edge.getDestination();
+            double edgeWeight = edge.getWeight();
+
+            if (!currentRoute.visitedNode(nextNode)) {
+                Route newRoute = new Route(currentRoute);
+                newRoute.addNode(nextNode, edgeWeight);
+                routeQueue.add(newRoute);
+            }
+        }
     }
 
     /**
@@ -113,10 +139,7 @@ public class DijkstraAlgorithm {
     ) {
         while (!queue.isEmpty()) {
             Node current = queue.poll();
-
-            if (current == destination) {
-                break;
-            }
+            if (current == destination) break;
             assert current != null;
             for (Edge edge : current.getEdges()) {
                 Node adjacent = edge.getDestination();
