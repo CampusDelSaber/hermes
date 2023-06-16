@@ -1,6 +1,7 @@
 package com.isc.hermes.database;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,6 +43,54 @@ public class ApiRequestHandler {
         }
 
         return response.toString();
+    }
+
+    /**
+     * Sends a POST request to the specified API URL with the provided JSON data.
+     *
+     * @param apiUrl   The URL of the API to send the request to.
+     * @param jsonData The JSON data to be sent in the request body.
+     */
+    public void postDataFromApi(String apiUrl, String jsonData) {
+        try {
+           URL url = new URL(apiUrl);
+           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+            outputStream.writeBytes(jsonData);
+            outputStream.flush();
+            outputStream.close();
+            int responseCode = connection.getResponseCode();
+            connection.disconnect();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates data in the database through a PUT request to the specified API URL with the provided JSON data.
+     *
+     * @param apiUrl   The URL of the API to send the request to.
+     * @param jsonData The JSON data to be sent in the request body.
+     */
+    public void updateDataInDatabase(String apiUrl, String jsonData) {
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+            outputStream.writeBytes(jsonData);
+            outputStream.flush();
+            outputStream.close();
+            int responseCode = connection.getResponseCode();
+            connection.disconnect();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     /**
