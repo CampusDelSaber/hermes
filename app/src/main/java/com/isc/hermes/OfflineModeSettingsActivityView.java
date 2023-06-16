@@ -199,4 +199,5 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
     protected void delete(){
 
     }
+
 }

@@ -12,7 +12,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
@@ -89,7 +89,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="@drawable/img_download_button"
-                    android:onClick="closeActivity"
+                    android:onClick="download_new_map"
                     android:translationX="30dp"
                     android:translationY="5dp"
                     mapbox:layout_constraintBottom_toBottomOf="parent"
@@ -104,7 +104,7 @@
                     android:id="@+id/textView4"
                     android:layout_width="273dp"
                     android:layout_height="30dp"
-                    android:layout_marginLeft="100dp"
+                    android:layout_marginStart="100dp"
                     android:layout_marginTop="15dp"
                     android:elegantTextHeight="true"
                     android:foregroundGravity="center"
