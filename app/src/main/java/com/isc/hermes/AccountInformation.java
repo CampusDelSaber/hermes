@@ -72,6 +72,7 @@ public class AccountInformation extends AppCompatActivity {
         textFieldUserName.setText(userRegistered.getUserName());
         textFieldFullName.setText(userRegistered.getFullName());
         textFieldEmail.setText(userRegistered.getEmail());
+        comboBoxField.setText(userRegistered.getTypeUser());
     }
 
     /**

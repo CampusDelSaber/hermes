@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User;
 
 /**
@@ -103,8 +105,11 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * and navigates the user to the main activity.
      */
     private void generateActionToButtonSignUp() {
+        AccountInfoManager accountInfoManager = new AccountInfoManager();
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    accountInfoManager.addUser(userRegistered.getEmail(),userRegistered.getFullName(),userRegistered.getUserName(),userRegistered.getTypeUser());
                 sendUserBetweenActivities(userRegistered);
             } else comboBoxTextField.setHelperText("Required");
         });
