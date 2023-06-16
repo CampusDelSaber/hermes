@@ -1,11 +1,9 @@
 package com.isc.hermes.controller;
 
 import android.widget.SearchView;
-
 import com.isc.hermes.utils.SearcherAdapterUpdater;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.model.WayPoint;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

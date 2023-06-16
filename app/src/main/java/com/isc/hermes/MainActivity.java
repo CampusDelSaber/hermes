@@ -15,11 +15,20 @@ import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import android.widget.LinearLayout;
+import com.isc.hermes.controller.FilterController;
+import android.widget.LinearLayout;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.controller.SearcherController;
+import com.isc.hermes.controller.authentication.AuthenticationFactory;
+import com.isc.hermes.controller.authentication.AuthenticationServices;
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.CurrentLocationController;
 
 import com.isc.hermes.controller.GenerateRandomIncidentController;
+import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
@@ -31,12 +40,14 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private MapView mapView;
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
@@ -61,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay.onCreate(savedInstanceState);
         mapStyleListener();
         initCurrentLocationController();
+        mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
         changeSearchView();
         addIncidentGeneratorButton();
@@ -75,6 +87,16 @@ public class MainActivity extends AppCompatActivity {
         sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
         markerManager = MarkerManager.getInstance(this);
     }
+
+    /**
+     * Called when the map is ready to be used.
+     */
+    @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        FilterController filterController = new FilterController(mapboxMap, this);
+        mapboxMap.setStyle(new Style.Builder(), style -> filterController.initComponents());
+    }
+
 
     /**
      * This method is used to display a view where you can see the information about your account.
@@ -122,12 +144,7 @@ public class MainActivity extends AppCompatActivity {
      * @param enabled Boolean indicating whether to enable map scroll gestures.
      */
     private void setMapScrollGesturesEnabled(boolean enabled) {
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled);
-            }
-        });
+        mapView.getMapAsync(mapboxMap -> mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled));
     }
 
     /**
@@ -171,12 +188,6 @@ public class MainActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView);
     }
 
-    /**
-     * Method for initializing the MapDisplay object instance.
-     */
-    private void initMapDisplay() {
-        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
-    }
 
     /**
      * Method for starting the MapView object instance.
