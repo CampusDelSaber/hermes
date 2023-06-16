@@ -1,7 +1,5 @@
 package com.isc.hermes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.CurrentLocationController;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         initCurrentLocationController();
         searchView = findViewById(R.id.searchView);
         changeSearchView();
+        addIncidentGeneratorButton();
     }
 
     /**
@@ -80,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to change the search view.
+     */
     private void changeSearchView() {
         searchView.setOnClickListener(v -> {
             new Handler().post(() -> {
@@ -118,8 +123,15 @@ public class MainActivity extends AppCompatActivity {
      * This method will init the current location controller to get the real time user location
      */
     private void initCurrentLocationController(){
-        currentLocationController = new CurrentLocationController(this, mapDisplay);
+        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
         currentLocationController.initLocation();
+    }
+
+    /**
+     * This method adds the button for incident generation.
+     */
+    private void addIncidentGeneratorButton(){
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this );
     }
 
 
