@@ -14,9 +14,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.model.exceptions.CorruptedTokenException;
+import com.isc.hermes.model.signup.SignUpTransitionHandler;
 import com.isc.hermes.model.user.UserRoles;
-import com.isc.hermes.user.Repository;
-import com.isc.hermes.user.User;
+import com.isc.hermes.model.user.UsersRepository;
+import com.isc.hermes.model.user.User;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -34,7 +35,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private Button buttonRegister;
     private ImageView imgUser;
 
-    private SignUpTransition transition;
+    private SignUpTransitionHandler transition;
     private User userRegistered;
 
     /**
@@ -97,10 +98,8 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * and navigates the user to the main activity.
      */
     private void generateActionToButtonSignUp() {
-
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getRole() != null) {
-                //TODO: Save the registeredUser in dataBase
                 transition.transitionBasedOnRole(userRegistered.getRole(), this);
             } else comboBoxTextField.setHelperText("Required");
         });
@@ -127,7 +126,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
             throw new CorruptedTokenException("The token should not be less than 0");
         }
 
-        userRegistered = Repository.getInstance().get(registeredUserTokenValue);
+        userRegistered = UsersRepository.getInstance().get(registeredUserTokenValue);
     }
 
     /**
@@ -146,7 +145,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         generateActionToButtonSignUp();
         loadUserImageInView();
         loadInformationAboutUserInTextFields();
-
-        transition = new SignUpTransition();
+        transition = new SignUpTransitionHandler();
     }
 }

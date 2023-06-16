@@ -1,6 +1,4 @@
-package com.isc.hermes.user;
-
-import com.isc.hermes.model.user.UserRoles;
+package com.isc.hermes.model.user;
 
 public class User {
 

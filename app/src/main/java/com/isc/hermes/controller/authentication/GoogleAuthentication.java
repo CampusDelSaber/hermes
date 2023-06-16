@@ -4,18 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.isc.hermes.R;
-import com.isc.hermes.user.Payload;
-import com.isc.hermes.user.Repository;
+import com.isc.hermes.model.user.Payload;
+import com.isc.hermes.model.user.UsersRepository;
 
 import java.util.Objects;
 
@@ -24,7 +21,7 @@ import java.util.Objects;
  */
 public class GoogleAuthentication implements IAuthentication {
     private GoogleSignInClient googleSignInClient;
-    private Repository userRepository;
+    private UsersRepository userRepository;
 
 
     /**
@@ -37,7 +34,7 @@ public class GoogleAuthentication implements IAuthentication {
                 .build();
         this.googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions);
 
-        userRepository = Repository.getInstance();
+        userRepository = UsersRepository.getInstance();
     }
 
     /**
@@ -97,10 +94,9 @@ public class GoogleAuthentication implements IAuthentication {
      * Retrieves a User object based on a GoogleSignInAccount.
      *
      * @param account The GoogleSignInAccount used to create the User object.
-     * @return The User object created from the GoogleSignInAccount.
+     * @return The data from the API created from the GoogleSignInAccount.
      */
     private Payload getUserByAccount(GoogleSignInAccount account) {
-
         return new Payload(
                 account.getEmail(),
                 account.getId(),

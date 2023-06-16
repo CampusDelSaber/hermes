@@ -1,5 +1,9 @@
-package com.isc.hermes.user;
+package com.isc.hermes.model.user;
 
+/**
+ * The Payload Class holds a bunch of information about related to a
+ * person.
+ */
 public class Payload {
     private final String emailAddress;
     private final String id;
@@ -15,22 +19,38 @@ public class Payload {
         this.familyName = familyName;
     }
 
+    /**
+     * Retrieves the email address field.
+     *
+     * @return An email address.
+     */
     public String getEmailAddress() {
         return emailAddress;
     }
 
-    public String getId() {
-        return id;
-    }
-
+    /**
+     * Retrieves the photoURL field.
+     *
+     * @return A photoURL.
+     */
     public String getPhotoURL() {
         return photoURL;
     }
 
+    /**
+     * Retrieves the givenName field.
+     *
+     * @return A givenName.
+     */
     public String getGivenName() {
         return givenName;
     }
 
+    /**
+     * Retrieves the familyName field.
+     *
+     * @return A familyName.
+     */
     public String getFamilyName() {
         return familyName;
     }
