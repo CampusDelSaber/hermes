@@ -103,12 +103,6 @@ public class MapWayPointController implements MapClickConfigurationController {
                     waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
                 }
             }
-
-            if (waypointOptionsController.getTrafficFormController().gettrafficForm().getVisibility() == View.VISIBLE) {
-                waypointOptionsController.getTrafficFormController().gettrafficForm().startAnimation(Animations.exitAnimation);
-                waypointOptionsController.getTrafficFormController().gettrafficForm().setVisibility(View.GONE);
-
-            }
             isMarked = false;
         } else {
             MarkerOptions markerOptions = new MarkerOptions().position(point);

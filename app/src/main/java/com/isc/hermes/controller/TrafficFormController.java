@@ -25,7 +25,6 @@ import java.net.HttpURLConnection;
  */
 public class TrafficFormController {
     private final Context context;
-    private final RelativeLayout trafficForm;
 
     private final MapWayPointController mapController;
 
@@ -42,7 +41,6 @@ public class TrafficFormController {
     public TrafficFormController(Context context, MapWayPointController mapController) {
         this.context = context;
         this.mapController = mapController;
-        trafficForm = ((AppCompatActivity)context).findViewById(R.id.traffic_form);
 
 
     }
@@ -69,13 +67,8 @@ public class TrafficFormController {
             Toast.makeText(context, R.string.traffic_not_uploaded, Toast.LENGTH_SHORT).show();
         }
     }
-    /**
-     * This is a getter method to Incident form layout.
-     * @return Return a layout.
-     */
-    public RelativeLayout gettrafficForm() {
-        return trafficForm;
-    }
+
+
     /**
 
      This method etrieves the selected incident type from the incident spinner.

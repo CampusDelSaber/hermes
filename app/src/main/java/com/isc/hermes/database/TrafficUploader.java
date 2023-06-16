@@ -2,6 +2,9 @@ package com.isc.hermes.database;
 
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.model.CurrentLocationModel;
+import com.isc.hermes.model.graph.Graph;
+import com.isc.hermes.model.graph.Node;
+import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.IOException;
@@ -15,7 +18,9 @@ public class TrafficUploader {
     private static TrafficUploader instance;
     private LatLng lastClickedPoint;
     private final String URL_INCIDENTS_API= "https://api-rest-hermes.onrender.com/incidents";
-
+    DijkstraAlgorithm dijkstraAlgorithm;
+    Graph graph;
+    Node node;
     /**
      * This method uploads an incident in JSON format to the remote server.
      *
@@ -79,21 +84,28 @@ public class TrafficUploader {
      *
      * @return The coordinates of the last clicked point in the format "[latitude, longitude]".
      */
+
+
     public String getCoordinates(){
-        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null,null).getCurrentLocationModel();
 
-
-       // String[] parts = lastClickedPoint.toString().split("[=,]");
-        String latitude = String.valueOf(currentLocation.getLatitude());
-        String longitude = String.valueOf(currentLocation.getLongitude());
+        String latitude = String.valueOf(dijkstraAlgorithm.getGeoJsonRoutes(graph,node,node));
         System.out.println("ESto mas"+latitude);
-        return "[" + latitude + ", " + longitude + "]";
+        return "[" + latitude + "]";
     }
 
     public String getCoordinates2(){
         String[] parts = lastClickedPoint.toString().split("[=,]");
         String latitude = parts[1].trim();
         String longitude = parts[3].trim();
+        System.out.println("ESto mas"+latitude);
+        return "[" + latitude + ", " + longitude + "]";
+    }
+
+    public String getCoordinates3(){
+        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null,null).getCurrentLocationModel();
+        // String[] parts = lastClickedPoint.toString().split("[=,]");
+        String latitude = String.valueOf(currentLocation.getLatitude());
+        String longitude = String.valueOf(currentLocation.getLongitude());
         System.out.println("ESto mas"+latitude);
         return "[" + latitude + ", " + longitude + "]";
     }

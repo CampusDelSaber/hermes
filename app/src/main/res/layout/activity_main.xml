@@ -127,10 +127,7 @@
 
     </LinearLayout>
 
-    <include
-        layout="@layout/traffic_form"
-        mapbox:layout_anchor="@+id/mapView"
-        mapbox:layout_anchorGravity="center" />
+
 
     <include
         layout="@layout/incident_form_fragment"
