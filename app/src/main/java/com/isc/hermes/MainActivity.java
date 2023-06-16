@@ -1,6 +1,7 @@
 package com.isc.hermes;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
+
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.MapboxMapListener;
@@ -19,8 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.CurrentLocationController;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
@@ -29,6 +33,8 @@ import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -45,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
     private SearchView searchView;
-    private MarkerManager markerManager;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private MarkerManager markerManager;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -66,21 +72,22 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
         searchView = findViewById(R.id.searchView);
         changeSearchView();
         addIncidentGeneratorButton();
+        setCameraPosition();
+
     }
 
     /**
-<<<<<<< HEAD
+     * <<<<<<< HEAD
      * Method to add the searcher to the main scene above the map
      */
     private void addMapboxSearcher() {
-        markerManager = MarkerManager.getInstance(this);
         sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
-
+        markerManager = MarkerManager.getInstance(this);
     }
 
     /**
-=======
->>>>>>> feature/ID-198/ImplementationOfWaypointsWithTheSearcher
+     * =======
+     * >>>>>>> feature/ID-198/ImplementationOfWaypointsWithTheSearcher
      * This method is used to display a view where you can see the information about your account.
      *
      * @param view Helps build the view
@@ -90,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     }
 
     /**
-     *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
+     * This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
      *
      * @param view Helps build the view.
      */
@@ -139,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
      *
      * @param view The view of the button that has been clicked.
      */
-    public void logOut(View view){
+    public void logOut(View view) {
         SignUpActivityView.authenticator.signOut(this);
         Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
         startActivity(intent);
@@ -148,16 +155,16 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     /**
      * This method will init the current location controller to get the real time user location
      */
-    private void initCurrentLocationController(){
+    private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
-        currentLocationController.initLocation();
+        currentLocationController.initLocationButton();
     }
 
     /**
      * This method adds the button for incident generation.
      */
-    private void addIncidentGeneratorButton(){
-        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this );
+    private void addIncidentGeneratorButton() {
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this);
     }
 
 
@@ -198,22 +205,29 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     protected void onResume() {
         super.onResume();
         mapDisplay.onResume();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                this);
-        AuthenticationServices authenticationServices  = AuthenticationServices.getAuthentication(
-                sharedPreferences.getInt("cuenta",0));
-        if(authenticationServices != null)
-            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
-                    authenticationServices);
 
-        markerManager.addMarkerToMap(mapDisplay.getMapboxMap(),
-                sharedSearcherPreferencesManager.getPlaceName(),
-                sharedSearcherPreferencesManager.getLatitude(),
-                sharedSearcherPreferencesManager.getLongitude());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        AuthenticationServices authenticationServices = AuthenticationServices.getAuthentication(sharedPreferences.getInt("cuenta", 0));
+        if (authenticationServices != null)
+            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(authenticationServices);
 
+        addMarkers();
     }
 
-    /** Method for pausing the MapView object instance.*/
+    private void addMarkers() {
+        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName()
+                , sharedSearcherPreferencesManager.getLatitude(),
+                sharedSearcherPreferencesManager.getLongitude());
+        if (markerManager.getCurrentMarker() != null) {
+            markerManager.setCameraPosition(mapDisplay.getMapboxMap(),
+                    sharedSearcherPreferencesManager.getLatitude(),
+                    sharedSearcherPreferencesManager.getLongitude());
+        }
+    }
+
+    /**
+     * Method for pausing the MapView object instance.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -221,7 +235,8 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
         SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor miEditor = datos.edit();
         miEditor.putInt("cuenta", SignUpActivityView.authenticator.getServiceType().getID());
-        miEditor.apply();}
+        miEditor.apply();
+    }
 
     /**
      * Method for stopping the MapView object instance.
@@ -248,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     protected void onDestroy() {
         super.onDestroy();
         mapDisplay.onDestroy();
+        markerManager.removeSavedMarker();
     }
 
     /**
@@ -264,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     /**
      * Method for adding maps styles.xml listener
      */
-    private void mapStyleListener(){
+    private void mapStyleListener() {
         ImageButton styleButton = findViewById(R.id.btn_change_style);
         styleButton.setOnClickListener(styleMap -> {
             if (mapStyle.equals("default")) mapStyle = "satellite";
@@ -278,4 +294,33 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     public void addMarker(MarkerOptions markerOptions) {
         mapDisplay.getMapboxMap().addMarker(markerOptions);
     }
+
+/*    public void onPostResume() {
+        super.onPostResume();
+        if(markerManager.getCurrentMarker() != null ) {
+
+            markerManager.setCameraPosition(mapDisplay.getMapboxMap(),
+                    sharedSearcherPreferencesManager.getLatitude(),
+                    sharedSearcherPreferencesManager.getLongitude());
+        }
+    }*/
+    private void setCameraPosition() {
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                double latitude = sharedSearcherPreferencesManager.getLatitude();
+                double longitude = sharedSearcherPreferencesManager.getLongitude();
+                float zoomLevel = 12f; // Nivel de zoom deseado
+
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(latitude, longitude))
+                        .zoom(zoomLevel)
+                        .build();
+
+                mapboxMap.setCameraPosition(cameraPosition);
+            }
+        });
+    }
+
+
 }
