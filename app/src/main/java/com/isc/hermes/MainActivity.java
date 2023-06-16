@@ -1,19 +1,23 @@
 package com.isc.hermes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
-import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
         initCurrentLocationController();
+        addIncidentGeneratorButton();
     }
 
     /**
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private void addMapboxSearcher() {
         Searcher searcher = new Searcher();
         SearcherController searcherController = new SearcherController(searcher,
-                findViewById(R.id.searchResults),findViewById(R.id.searchView));
+                findViewById(R.id.searchResults), findViewById(R.id.searchView));
         searcherController.runSearcher();
     }
 
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
+     * This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
      *
      * @param view Helps build the view.
      */
@@ -106,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view The view of the button that has been clicked.
      */
-    public void logOut(View view){
+    public void logOut(View view) {
         SignUpActivityView.authenticator.signOut(this);
         Intent intent = new Intent(MainActivity.this, SignUpActivityView.class);
         startActivity(intent);
@@ -115,9 +120,16 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method will init the current location controller to get the real time user location
      */
-    private void initCurrentLocationController(){
-        currentLocationController = new CurrentLocationController(this, mapDisplay);
+    private void initCurrentLocationController() {
+        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
         currentLocationController.initLocation();
+    }
+
+    /**
+     * This method adds the button for incident generation.
+     */
+    private void addIncidentGeneratorButton() {
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this);
     }
 
 
@@ -160,15 +172,17 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay.onResume();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                 this);
-        AuthenticationServices authenticationServices  = AuthenticationServices.getAuthentication(
-                sharedPreferences.getInt("cuenta",0));
-        if(authenticationServices != null)
+        AuthenticationServices authenticationServices = AuthenticationServices.getAuthentication(
+                sharedPreferences.getInt("cuenta", 0));
+        if (authenticationServices != null)
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
                     authenticationServices);
 
     }
 
-    /** Method for pausing the MapView object instance.*/
+    /**
+     * Method for pausing the MapView object instance.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -176,7 +190,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor miEditor = datos.edit();
         miEditor.putInt("cuenta", SignUpActivityView.authenticator.getServiceType().getID());
-        miEditor.apply();}
+        miEditor.apply();
+    }
 
     /**
      * Method for stopping the MapView object instance.
@@ -217,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Method for adding maps styles.xml listener
      * Method to show/hide the map style menu options.
      *
      * @param view The view of the menu map styles button.
