@@ -91,8 +91,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/reason_text_field"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                app:helperText='"e.g. Two cars crash with the traffic light"'>
+                android:layout_height="65dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
