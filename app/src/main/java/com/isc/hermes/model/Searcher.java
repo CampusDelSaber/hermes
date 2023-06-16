@@ -21,8 +21,11 @@ import retrofit2.Response;
  */
 public class Searcher {
 
-    CurrentLocationModel currentLocationModel;
+    protected CurrentLocationModel currentLocationModel;
 
+    /**
+     * This method is the constructor of the class
+     */
     public Searcher() {
         currentLocationModel  = new CurrentLocationModel();
     }
