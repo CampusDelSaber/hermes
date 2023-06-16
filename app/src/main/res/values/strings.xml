@@ -20,6 +20,8 @@
     <string name="account_text">Account</string>
     <string name="incidents_uploaded">Incident uploaded successfully.</string>
     <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
+    <string name="traffic_uploaded">Traffic uploaded successfully.</string>
+    <string name="traffic_not_uploaded">Traffic could not be uploaded.</string>
     <string name="incidents_api_url">https://api-rest-hermes.onrender.com/incidents</string>
     <string-array name="incidents_type">
         <item>Traffic Incident</item>

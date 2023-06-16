@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Geometry;
@@ -63,6 +66,7 @@ public class MapWayPointController implements MapClickConfigurationController {
     public boolean onMapClick(@NonNull LatLng point) {
         doMarkOnMapAction(point);
         IncidentsUploader.getInstance().setLastClickedPoint(point);
+        TrafficUploader.getInstance().setLastClickedPoint(point);
         return true;
     }
 
@@ -103,19 +107,6 @@ public class MapWayPointController implements MapClickConfigurationController {
             if (waypointOptionsController.getTrafficFormController().gettrafficForm().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getTrafficFormController().gettrafficForm().startAnimation(Animations.exitAnimation);
                 waypointOptionsController.getTrafficFormController().gettrafficForm().setVisibility(View.GONE);
-                AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
-                    @Override
-                    protected Integer doInBackground(Void... voids) {
-
-                        return waypointOptionsController.getTrafficFormController().uploadtrafficDataBase();
-                    }
-                    @Override
-                    protected void onPostExecute(Integer responseCode) {
-                        waypointOptionsController.getTrafficFormController().handleUploadResponse(responseCode);
-                    }
-                };
-                task.execute();
-
 
             }
             isMarked = false;

@@ -27,7 +27,7 @@ public class TrafficFormController {
     private final Context context;
     private final RelativeLayout trafficForm;
 
-    private final MapController mapController;
+    private final MapWayPointController mapController;
 
     int timeEstimate = 10;
     String level = "Normal";
@@ -39,7 +39,7 @@ public class TrafficFormController {
      * @param context Is the context application.
      * @param mapController Is the controller of the map.
      */
-    public TrafficFormController(Context context, MapController mapController) {
+    public TrafficFormController(Context context, MapWayPointController mapController) {
         this.context = context;
         this.mapController = mapController;
         trafficForm = ((AppCompatActivity)context).findViewById(R.id.traffic_form);
@@ -47,7 +47,7 @@ public class TrafficFormController {
 
     }
 
-    public MapController getMapController() {
+    public MapWayPointController getMapController() {
         return mapController;
     }
 
@@ -64,9 +64,9 @@ public class TrafficFormController {
      */
     public void handleUploadResponse(Integer responseCode) {
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            Toast.makeText(context, R.string.incidents_uploaded, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.traffic_uploaded, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, R.string.incidents_not_uploaded, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.traffic_not_uploaded, Toast.LENGTH_SHORT).show();
         }
     }
     /**
@@ -110,9 +110,9 @@ public class TrafficFormController {
         String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(gettrafficTime());
-        String coordinates = IncidentsUploader.getInstance().getCoordinates();
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,gettrafficType(),"Reason",dateCreated, deathDate ,coordinates);
-        return IncidentsUploader.getInstance().uploadIncident(JsonString);
+        String coordinates = TrafficUploader.getInstance().getCoordinates();
+        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,gettrafficType(),"Reason",dateCreated, deathDate ,coordinates);
+        return TrafficUploader.getInstance().uploadTraffic(JsonString);
     }
 
 

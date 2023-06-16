@@ -20,7 +20,7 @@ public class TrafficUploader {
      * @param incidentJsonString The JSON representation of the incident.
      * @return The HTTP response code indicating the status of the upload.
      */
-    public int uploadIncident(String incidentJsonString){
+    public int uploadTraffic(String incidentJsonString){
         try {
             URL url = new URL(URL_INCIDENTS_API);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -51,8 +51,8 @@ public class TrafficUploader {
      * @param coordinates The coordinates of the incident location.
      * @return The JSON representation of the incident.
      */
-    public String generateJsonIncident(String id, String type, String reason, String dateCreated, String deathDate, String coordinates) {
-        return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + "}}";
+    public String generateJsonTraffic(String id, String type, String reason, String dateCreated, String deathDate, String coordinates) {
+        return "{\"_id\": \"" + id + "\",\"level\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + "}}";
     }
     /**
      * This method returns the last clicked point on the map.

@@ -44,8 +44,8 @@ public class IncidentFormController {
 
     }
 
-    public MapController getMapController() {
-        return mapController;
+    public MapWayPointController getMapController() {
+        return mapWayPointController;
     }
 
     /**
