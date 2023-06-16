@@ -71,10 +71,9 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity {
         textViewsVertical.setPadding(100, 0, 100, 0);
 
         TextView nameTextView = createTextView(name, 18, Typeface.BOLD);
-        TextView sizeTextView = createTextView(size, 16, Typeface.NORMAL);
+
 
         textViewsVertical.addView(nameTextView);
-        textViewsVertical.addView(sizeTextView);
 
         CardView cardView = joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup(name));
         cardViews.put(name, cardView);
@@ -379,6 +378,8 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity {
      * @param offlineRegion The region to download.
      */
     private void launchDownload(OfflineRegion offlineRegion) {
+        Toast.makeText(getApplicationContext(), "THE DOWNLOAD HAS STARTED",
+                Toast.LENGTH_SHORT).show();
         offlineRegion.setObserver(new OfflineRegion.OfflineRegionObserver() {
             @Override
             public void onStatusChanged(OfflineRegionStatus status) {

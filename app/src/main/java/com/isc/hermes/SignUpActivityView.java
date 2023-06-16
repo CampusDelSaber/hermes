@@ -75,6 +75,7 @@ public class SignUpActivityView extends AppCompatActivity {
         super.onStart();
         authenticationServices.forEach((key, authentication) -> {
             if (authentication.checkUserSignIn(this)) {
+                authenticator = authentication;
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             }

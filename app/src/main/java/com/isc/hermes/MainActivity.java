@@ -4,10 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.View;
 import android.view.View;
 import android.widget.ImageButton;
 import com.isc.hermes.controller.SearcherController;
@@ -162,13 +159,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mapDisplay.onResume();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                this);
-        AuthenticationServices authenticationServices  = AuthenticationServices.getAuthentication(
-                sharedPreferences.getInt("cuenta",0));
-        if(authenticationServices != null)
-            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
-                    authenticationServices);
+        SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.GOOGLE);
 
     }
 
@@ -177,10 +168,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mapDisplay.onPause();
-        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor miEditor = datos.edit();
-        miEditor.putInt("cuenta", SignUpActivityView.authenticator.getServiceType().getID());
-        miEditor.apply();}
+    }
 
     /**
      * Method for stopping the MapView object instance.
