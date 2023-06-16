@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.isc.hermes.R;
+import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.utils.LocationListeningCallback;
 import com.isc.hermes.view.MapDisplay;
@@ -33,7 +34,7 @@ public class CurrentLocationController {
     private AppCompatActivity activity;
     private final LocationPermissionsController locationPermissionsController;
     private final MapDisplay mapDisplay;
-    private CurrentLocationModel currentLocationModel;
+    private static CurrentLocationModel currentLocationModel;
 
     /**
      * Constructs a new CurrentLocationController with the specified activity and map display.
@@ -183,5 +184,14 @@ public class CurrentLocationController {
             );
         } else
             Toast.makeText(activity, "Location permission denied.", Toast.LENGTH_SHORT).show();
+    }
+    /**
+     * Retrieves the instance of the CurrentLocationModel class.
+     *
+     * @return The instance of the CurrentLocationModel class.
+     */
+    public static CurrentLocationModel getInstance() {
+        if (currentLocationModel == null) currentLocationModel = new CurrentLocationModel();
+        return currentLocationModel;
     }
 }
