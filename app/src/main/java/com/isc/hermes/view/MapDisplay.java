@@ -2,13 +2,6 @@ package com.isc.hermes.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.ImageButton;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.isc.hermes.R;
-import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;

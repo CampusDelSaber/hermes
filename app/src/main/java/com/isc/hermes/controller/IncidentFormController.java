@@ -1,6 +1,5 @@
 package com.isc.hermes.controller;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
@@ -10,22 +9,13 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.utils.Animations;
 
-import org.bson.types.ObjectId;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
@@ -35,17 +25,17 @@ public class IncidentFormController {
     private final RelativeLayout incidentForm;
     private final Button cancelButton;
     private final Button acceptButton;
-    private final MapController mapController;
+    private final MapWayPointController mapWayPointController;
 
     /**
      * This is the constructor method. Init all the necessary components.
      *
      * @param context Is the context application.
-     * @param mapController Is the controller of the map.
+     * @param mapWayPointController Is the controller of the map.
      */
-    public IncidentFormController(Context context, MapController mapController) {
+    public IncidentFormController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
-        this.mapController = mapController;
+        this.mapWayPointController = mapWayPointController;
         incidentForm = ((AppCompatActivity)context).findViewById(R.id.incident_form);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button);
         acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);
@@ -70,15 +60,17 @@ public class IncidentFormController {
             handleAcceptButtonClick();
         });
     }
+
     /**
      * This method handles the actions performed when the cancel button is clicked.
      */
     private void handleCancelButtonClick() {
-        mapController.setMarked(false);
+        mapWayPointController.setMarked(false);
         incidentForm.startAnimation(Animations.exitAnimation);
         incidentForm.setVisibility(View.GONE);
-        mapController.deleteMarks();
+        mapWayPointController.deleteMarks();
     }
+
     /**
      * This method handles the actions performed when the accept button is clicked.
      */
