@@ -6,6 +6,11 @@ import androidx.annotation.RequiresApi;
 
 import com.isc.hermes.model.VerificationCode;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class VerificationCodesManager {
@@ -23,7 +28,30 @@ public class VerificationCodesManager {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addVerificationCode(String userEmail) {
-        VerificationCode verificationCode = new VerificationCode(userEmail);
+        VerificationCode verificationCode = new VerificationCode("0", userEmail);
         apiHandler.postFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, verificationCode);
+    }
+
+    public JSONArray getSpecificVerificationCode(String email) throws ExecutionException, InterruptedException {
+        String params = VERIFICATION_CODES_COLLECTION_NAME + "/email/" + email;
+        Future<String> future = apiHandler.getFutureCollectionString(params);
+        String futureResponse = future.get();
+        return apiResponseParser.getJSONArrayOnResult(futureResponse);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public VerificationCode getLastVerificationCode(String email) throws ExecutionException, InterruptedException, JSONException {
+        JSONArray array = getSpecificVerificationCode(email);
+        int lastVerificationCodeIndex = array.length() - 1;
+        JSONObject verificationCodesArray = array.getJSONObject(lastVerificationCodeIndex);
+        String id = verificationCodesArray.getString("_id");
+        String userEmail = verificationCodesArray.getString("email");
+        String verificationCode = verificationCodesArray.getString("verificationCode");
+        Boolean valid = verificationCodesArray.getBoolean("isValid");
+        VerificationCode verificationCodeObject = new VerificationCode(id, userEmail);
+        verificationCodeObject.setVerificationCode(verificationCode);
+        verificationCodeObject.setValid(valid);
+
+        return verificationCodeObject;
     }
 }
