@@ -22,7 +22,6 @@ import timber.log.Timber;
  */
 public class SignUpActivityView extends AppCompatActivity {
     private static final int REQUEST_CODE = 7;
-
     private Map<AuthenticationServices, IAuthentication> authenticationServices;
     public static IAuthentication authenticator;
 
