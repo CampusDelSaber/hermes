@@ -18,145 +18,163 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
- * This class control the offline mode settings UI.
+ * This class represents the Offline Mode Settings UI.
  */
 public class OfflineModeSettingsActivityView extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
+    private LinearLayout vBoxDownloadedMaps;
+
     /**
-     * Method for creating a configuration of the activity.
+     * Method for creating the activity configuration.
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *                           previously being shut down then this Bundle contains the data it most
-     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *                           previously being shut down, then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}. Otherwise, it is null.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.offline_mode_settings_view);
-        createNewCardMapDownloaded("Prueba View","100 Mb");
+        vBoxDownloadedMaps = findViewById(R.id.vBoxMapsDownloaded);
     }
 
     /**
-     * This method create a card view of a downloaded map.
-     * @param name the name of the downloaded region
-     * @param size the size path of the downloaded region
+     * Creates a new card view for a downloaded map.
+     *
+     * @param name The name of the downloaded region.
+     * @param size The size of the downloaded region.
      */
-    protected void createNewCardMapDownloaded(String name, String size){
-        LinearLayout textViewsVertical = new LinearLayout(this);
-        textViewsVertical.setOrientation(LinearLayout.VERTICAL);
-        textViewsVertical.setPadding(100,0,100,0);
+    protected void createNewCardMapDownloaded(String name, String size) {
+        LinearLayout textViewsVertical = createVerticalLinearLayout();
+        textViewsVertical.setPadding(100, 0, 100, 0);
 
-        TextView name_downloaded_Map = new TextView(this);
-        name_downloaded_Map.setText(name);
-        name_downloaded_Map.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        name_downloaded_Map.setTypeface(null, Typeface.BOLD);;
-        name_downloaded_Map.setPadding(0,10,0,10);
+        TextView nameTextView = createTextView(name, 18, Typeface.BOLD);
+        TextView sizeTextView = createTextView(size, 16, Typeface.NORMAL);
 
-
-        TextView size_downloaded_Map = new TextView(this);
-        size_downloaded_Map.setText(size);
-        size_downloaded_Map.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        size_downloaded_Map.setPadding(0,0,10,0);
-
-        textViewsVertical.addView(size_downloaded_Map);
-        textViewsVertical.addView(name_downloaded_Map);
+        textViewsVertical.addView(nameTextView);
+        textViewsVertical.addView(sizeTextView);
 
         CardView cardView = joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup());
         showCard(cardView);
     }
 
     /**
-     * This method join all parts of the downloaded map card view.
-     * @param checkImage a check image
-     * @param vBoxTextViews A vbox containing the two text Views needed from the downloaded map.
-     * @param popupMenu is the view that will serve as the button to display the popup menu.
-     * @return a cardView of a downloaded map
+     * Creates a vertical LinearLayout.
+     *
+     * @return The created vertical LinearLayout.
      */
-    protected CardView joinComponents(CircleImageView checkImage,LinearLayout vBoxTextViews, CircleImageView popupMenu){
-        CardView cardView = new CardView(this);
-        cardView.setPadding(10,10,10,10);
+    protected LinearLayout createVerticalLinearLayout() {
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                0.6f
+        ));
+        return linearLayout;
+    }
 
-        cardView.addView(popupMenu);
-        cardView.addView(vBoxTextViews);
-        cardView.addView(checkImage);
+    /**
+     * Creates a TextView with the specified text, text size, and text style.
+     *
+     * @param text      The text to be displayed.
+     * @param textSize  The size of the text.
+     * @param textStyle The style of the text.
+     * @return The created TextView.
+     */
+    protected TextView createTextView(String text, int textSize, int textStyle) {
+        TextView textView = new TextView(this);
+        textView.setText(text);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+        textView.setTypeface(null, textStyle);
+        textView.setPadding(0, 10, 0, 10);
+        return textView;
+    }
+
+    /**
+     * Joins the components (check image, text views, and popup button) to create a CardView.
+     *
+     * @param checkImage   The check image.
+     * @param vBoxTextViews A vertical LinearLayout containing the text views.
+     * @param popupMenu    The popup button.
+     * @return The created CardView.
+     */
+    protected CardView joinComponents(CircleImageView checkImage, LinearLayout vBoxTextViews, CircleImageView popupMenu) {
+        CardView cardView = new CardView(this);
+        cardView.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
+        LinearLayout container = new LinearLayout(this);
+        container.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
+        container.setOrientation(LinearLayout.HORIZONTAL);
+        cardView.addView(container);
+
+        cardView.setPadding(10, 10, 10, 10);
+
+        container.addView(checkImage);
+        container.addView(vBoxTextViews);
+        container.addView(popupMenu);
 
         return cardView;
     }
 
     /**
-     * This method join the new card view to the UI of download maps.
-     * @param cardView the cardView with join to the downloads maps.
+     * Displays the created CardView.
+     *
+     * @param cardView The CardView to be displayed.
      */
-    protected void showCard(CardView cardView){
-        LinearLayout vBoxDownloadedMaps = findViewById(R.id.vBoxMapsDownloaded);
+    protected void showCard(CardView cardView) {
         vBoxDownloadedMaps.addView(cardView);
     }
 
     /**
-     * This method creates a view image with a check image.
-     * @return the button whith show popupButton
+     * Creates a popup button as a CircleImageView.
+     *
+     * @return The created popup button.
      */
-    protected CircleImageView createButtonPopup(){
+    protected CircleImageView createButtonPopup() {
         CircleImageView popupButton = new CircleImageView(this);
         popupButton.setImageResource(R.drawable.img_tree_points_vertical);
-        popupButton.setPadding(10,10,30,0);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(50,50);
+        popupButton.setPadding(10, 10, 30, 0);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(100, 100);
         popupButton.setLayoutParams(params);
 
-        View.OnClickListener miClickListener = this::showPopupMenu;
-
-        popupButton.setOnClickListener(miClickListener);
+        popupButton.setOnClickListener(this::showPopupMenu);
         return popupButton;
     }
 
     /**
-     * This method return a circleImageView.
-     * @return a circle image view with contains the check image.
-     */
-    protected CircleImageView createCheckImageView(){
-        CircleImageView check_image_View = new CircleImageView(this);
-        check_image_View.setImageResource(R.drawable.img_check);
-        check_image_View.setPadding(30,10,10,0);
-
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(50,50);
-        check_image_View.setLayoutParams(params);
-
-        return check_image_View;
-    }
-
-    /**
-     * @param view view
-     */
-    public void download_new_map(View view) {
-        // code to download new map
-    }
-
-    /**
-     * This method close the activity offline settings.
+     * Creates a check image as a CircleImageView.
      *
-     * @param view view
+     * @return The created check image.
      */
-    public void back_to_map(View view) {
-        finish();
+    protected CircleImageView createCheckImageView() {
+        CircleImageView checkImageView = new CircleImageView(this);
+        checkImageView.setImageResource(R.drawable.img_check);
+        checkImageView.setPadding(30, 10, 10, 0);
+
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(100, 100);
+        checkImageView.setLayoutParams(params);
+
+        return checkImageView;
     }
 
     /**
-     * This method assigns an action to the popup menu options.
-     * @param item the menu item that was clicked
-     * @return boolean
+     * Handles the click event for the popup menu items.
+     *
+     * @param item The menu item that was clicked.
+     * @return True if the click event was handled, false otherwise.
      */
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.rename:
-                //code
+                renameDownloadedMap();
                 return true;
             case R.id.navigateTo:
-                //code
+                navigateToDownloadedMap();
                 return true;
             case R.id.delete:
-                //code
+                deleteDownloadedMap();
                 return true;
             default:
                 return false;
@@ -164,26 +182,53 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
     }
 
     /**
-     * This method displays the options menu of the downloaded map.
-     * @param view view
+     * Shows the popup menu.
+     *
+     * @param view The view that triggered the popup menu.
      */
-    public void showPopupMenu(View view){
+    public void showPopupMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(this, view);
         popupMenu.setOnMenuItemClickListener(this);
         popupMenu.inflate(R.menu.downloaded_maps_options);
         popupMenu.show();
     }
 
-    protected void navigateToDownloadedMap(){
-
+    /**
+     * Navigates to the selected downloaded map.
+     */
+    protected void navigateToDownloadedMap() {
+        // Code to navigate to the selected downloaded map
     }
 
-    protected void renameDownloadedMap(){
-
+    /**
+     * Renames the selected downloaded map.
+     */
+    protected void renameDownloadedMap() {
+        // Code to rename the selected downloaded map
     }
 
-    protected void delete(){
-
+    /**
+     * Deletes the selected downloaded map.
+     */
+    protected void deleteDownloadedMap() {
+        // Code to delete the selected downloaded map
     }
 
+    /**
+     * Handles the click event for the "Download New Map" button.
+     *
+     * @param view The view that triggered the click event.
+     */
+    public void downloadNewMap(View view) {
+        // Code to download a new map
+    }
+
+    /**
+     * Closes the activity and returns to the map.
+     *
+     * @param view The view that triggered the click event.
+     */
+    public void backToMap(View view) {
+        finish();
+    }
 }
