@@ -1,37 +1,61 @@
 package com.isc.hermes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import com.isc.hermes.controller.SearcherController;
+import android.widget.LinearLayout;
+
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Handler;
+
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-import com.isc.hermes.model.Searcher;
-import android.widget.LinearLayout;
+
+import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.model.User;
+import android.widget.SearchView;
+import com.isc.hermes.controller.GenerateRandomIncidentController;
+import com.isc.hermes.model.Utils.MapPolyline;
+
 import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.utils.MarkerManager;
+import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+
+
+
+
+
+import java.util.HashMap;
+
+import java.util.Map;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private MapView mapView;
     private MapDisplay mapDisplay;
-    private String mapStyle = "default";
+    private String mapStyle;
     private CurrentLocationController currentLocationController;
     private User userRegistered;
     private boolean visibilityMenu = false;
+    private SearchView searchView;
+    private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private MarkerManager markerManager;
+    private boolean isStyleOptionsVisible = false;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -44,23 +68,60 @@ public class MainActivity extends AppCompatActivity {
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
+        this.mapStyle = "Default";
+        mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
         getUserInformation();
-        mapStyleListener();
         initCurrentLocationController();
+        mapView.getMapAsync(this);
+        searchView = findViewById(R.id.searchView);
+        changeSearchView();
+        addIncidentGeneratorButton();
+        MarkerManager.getInstance(this).removeSavedMarker();
+
+        testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+    }
+
+    public void testPolyline(){ // this is a test method that will be removed once the functionality has been verified.
+        Map<String, String> r = new HashMap<>();
+
+        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
+        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
+        r.put("Route C", "{}");
+
+        String jsonA = r.get("Route A");
+        String jsonB = r.get("Route B");
+        String jsonC = r.get("Route C");
+
+        MapPolyline mapPolyline = new MapPolyline(mapView);
+        mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
+        //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
+
     }
 
     /**
      * Method to add the searcher to the main scene above the map
      */
     private void addMapboxSearcher() {
-        Searcher searcher = new Searcher();
-        SearcherController searcherController = new SearcherController(searcher,
-                findViewById(R.id.searchResults), findViewById(R.id.searchView));
-        searcherController.runSearcher();
+        sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
+        markerManager = MarkerManager.getInstance(this);
     }
+
+    /**
+     * Called when the map is ready to be used.
+     */
+    @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        FilterController filterController = new FilterController(mapboxMap, this);
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                filterController.initComponents();
+            }
+        });
+    }
+
 
     /**
      * Sends a User object to another activity using an Intent.
@@ -101,17 +162,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * This method is used to change the search view.
+     */
+    private void changeSearchView() {
+        addMapboxSearcher();
+        searchView.setOnClickListener(v -> {
+            new Handler().post(() -> {
+                Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
+                startActivity(intent);
+            });
+        });
+    }
+
+    /**
      * Enables or disables map scroll gestures.
      *
      * @param enabled Boolean indicating whether to enable map scroll gestures.
      */
     private void setMapScrollGesturesEnabled(boolean enabled) {
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled);
-            }
-        });
+        mapView.getMapAsync(mapboxMap -> mapboxMap.getUiSettings().setScrollGesturesEnabled(enabled));
     }
 
     /**
@@ -125,15 +194,21 @@ public class MainActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
-
     }
 
     /**
      * This method will init the current location controller to get the real time user location
      */
     private void initCurrentLocationController() {
-        currentLocationController = new CurrentLocationController(this, mapDisplay);
-        currentLocationController.initLocation();
+        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
+        currentLocationController.initLocationButton();
+    }
+
+    /**
+     * This method adds the button for incident generation.
+     */
+    private void addIncidentGeneratorButton() {
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this);
     }
 
     /**
@@ -150,12 +225,6 @@ public class MainActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView);
     }
 
-    /**
-     * Method for initializing the MapDisplay object instance.
-     */
-    private void initMapDisplay() {
-        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
-    }
 
     /**
      * Method for starting the MapView object instance.
@@ -179,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
                 SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
         }
 
+        addMarkers();
     }
 
     /**
@@ -243,16 +313,42 @@ public class MainActivity extends AppCompatActivity {
         userRegistered = intent.getParcelableExtra("userObtained");
     }
 
+    public void openStylesMenu(View view) {
+        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
+        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
+        isStyleOptionsVisible = !isStyleOptionsVisible;
+
+        if (isStyleOptionsVisible) {
+            lateralMenu.setVisibility(View.GONE);
+            styleOptionsWindow.setVisibility(View.VISIBLE);
+            setMapScrollGesturesEnabled(true);
+            visibilityMenu = false;
+        } else {
+            styleOptionsWindow.setVisibility(View.GONE);
+        }
+    }
+
     /**
-     * Method for adding maps styles.xml listener
+     * Method to change the map style.
+     *
+     * @param view The button's view of the style that has been clicked.
      */
-    private void mapStyleListener() {
-        ImageButton styleButton = findViewById(R.id.btn_change_style);
-        styleButton.setOnClickListener(styleMap -> {
-            if (mapStyle.equals("default")) mapStyle = "satellite";
-            else if (mapStyle.equals("satellite")) mapStyle = "dark";
-            else mapStyle = "default";
-            mapDisplay.setMapStyle(mapStyle);
-        });
+    public void changeMapStyle(View view) {
+        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
+        styleOptionsWindow.setVisibility(View.GONE);
+
+        mapStyle = ((ImageButton) view).getTag().toString();
+        mapDisplay.setMapStyle(mapStyle);
+        isStyleOptionsVisible = false;
+    }
+
+    /**
+     * Adds markers to the map based on the shared searcher preferences.
+     * The markers are added using the MarkerManager instance.
+     */
+    private void addMarkers() {
+        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
+                sharedSearcherPreferencesManager.getLatitude(),
+                sharedSearcherPreferencesManager.getLongitude());
     }
 }

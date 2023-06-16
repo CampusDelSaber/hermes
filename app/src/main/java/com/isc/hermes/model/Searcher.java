@@ -1,6 +1,8 @@
 package com.isc.hermes.model;
 
+import android.content.Context;
 import android.os.StrictMode;
+import com.isc.hermes.R;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -20,30 +22,102 @@ import retrofit2.Response;
  * @see CarmenFeature a feature reresented with geojson properties
  */
 public class Searcher {
-    /**
-     * Method to get the the suggestions features carmen List to have access of all the properties to render the locations
-     *
-     * @param query the consult of the searcher field text
-     * @return the features list with the suggestions features
-     */
-    public List<CarmenFeature> getSuggestionsFeatures(String query) {
-        MapboxGeocoding client = MapboxGeocoding.builder()
-                .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
-                .query(query)
-                .autocomplete(true)
-                .build();
 
-        Response<GeocodingResponse> geocodingResponseResponse;
+    protected CurrentLocationModel currentLocationModel;
+    private Context context;
+
+    /**
+     * This method is the constructor of the class
+     */
+    public Searcher(){}
+
+    /**
+     * Overloading constructor of the class
+     */
+    public Searcher(Context applicationContext) {
+        currentLocationModel  = new CurrentLocationModel();
+        this.context = applicationContext;
+    }
+
+
+    /**
+     * Retrieves a list of suggestion features for a given user location and query.
+     *
+     * @param userLocation The current user location as a CurrentLocationModel object.
+     * @param query        The search query for which suggestion features will be obtained.
+     * @return A list of CarmenFeature objects representing the found suggestion features.
+     * @throws IOException If an error occurs during the geocoding call execution.
+     */
+    public List<CarmenFeature> getSuggestionsFeatures(CurrentLocationModel userLocation, String query) {
+        MapboxGeocoding client = buildGeocodingClient(userLocation, query, "BO");
+        Response<GeocodingResponse> geocodingResponse = executeGeocodingCall(client);
+
+        if (!isGeocodingResponseValid(geocodingResponse)) {
+            client = buildGeocodingClient(userLocation, query, null);
+            geocodingResponse = executeGeocodingCall(client);
+        }
+
+        return getFeaturesFromGeocodingResponse(geocodingResponse);
+    }
+
+    /**
+     * Builds a Mapbox Geocoding client based on the provided user location, query, and country.
+     *
+     * @param userLocation The current user location as a CurrentLocationModel object.
+     * @param query        The search query to be used for geocoding.
+     * @param country      The country code to limit geocoding results (optional, can be null).
+     * @return A MapboxGeocoding object configured with the specified parameters.
+     */
+    private MapboxGeocoding buildGeocodingClient(CurrentLocationModel userLocation, String query, String country) {
+        MapboxGeocoding.Builder builder = MapboxGeocoding.builder()
+                .accessToken(context.getString(R.string.access_token))
+                .query(query)
+                .proximity(Point.fromLngLat(userLocation.getLongitude(), userLocation.getLatitude()))
+                .autocomplete(true);
+
+        if (country != null) {
+            builder.country(country);
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Executes a geocoding call using the provided MapboxGeocoding client.
+     *
+     * @param client The MapboxGeocoding client configured for the geocoding request.
+     * @return The Response object containing the geocoding response.
+     */
+    private Response<GeocodingResponse> executeGeocodingCall(MapboxGeocoding client) {
         try {
             StrictMode.ThreadPolicy gfgPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(gfgPolicy);
-            geocodingResponseResponse = client.executeCall();
+            return client.executeCall();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    /**
+     * Checks if the geocoding response is valid.
+     *
+     * @param geocodingResponse The Response object containing the geocoding response.
+     * @return True if the response is valid, false otherwise.
+     */
+    private boolean isGeocodingResponseValid(Response<GeocodingResponse> geocodingResponse) {
+        return geocodingResponse.isSuccessful()
+                && geocodingResponse.body() != null
+                && !geocodingResponse.body().features().isEmpty();
+    }
 
-        return Objects.requireNonNull(geocodingResponseResponse.body()).features();
+    /**
+     * Retrieves the list of CarmenFeature objects from the geocoding response.
+     *
+     * @param geocodingResponse The Response object containing the geocoding response.
+     * @return A list of CarmenFeature objects representing the found features.
+     */
+    private List<CarmenFeature> getFeaturesFromGeocodingResponse(Response<GeocodingResponse> geocodingResponse) {
+        return Objects.requireNonNull(geocodingResponse.body()).features();
     }
 
     /**
@@ -53,8 +127,11 @@ public class Searcher {
      * @return the features list with the waypoint of the suggestions
      */
     public List<WayPoint> getSearcherSuggestionsPlacesInfo(String query) {
+        if (query.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
         List<WayPoint> featuresInfoList = new ArrayList<>();
-        List<CarmenFeature> suggestions = getSuggestionsFeatures(query);
+        List<CarmenFeature> suggestions = getSuggestionsFeatures(currentLocationModel, query);
         for (CarmenFeature feature : suggestions) {
             featuresInfoList.add(instanceWaypointFeature(feature));
         }
@@ -69,12 +146,12 @@ public class Searcher {
      */
     private WayPoint instanceWaypointFeature(CarmenFeature feature) {
         Point point = feature.center();
-        WayPoint wayPoint = new WayPoint(
+        assert point != null;
+        return new WayPoint(
                 feature.placeName(),
                 feature.properties(),
                 point.latitude(),
                 point.longitude());
-        return wayPoint;
     }
 
 }
