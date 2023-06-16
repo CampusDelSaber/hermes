@@ -18,9 +18,6 @@ public class MapboxEventManager {
     private MapboxMap mapboxMap;
     private List<WayPoint> wayPoints;
 
-    private MapboxEventManager() {
-    }
-
     public static MapboxEventManager getInstance() {
         if (instance == null) {
             instance = new MapboxEventManager();

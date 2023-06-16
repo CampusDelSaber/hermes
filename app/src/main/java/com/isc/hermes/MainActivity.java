@@ -2,6 +2,8 @@ package com.isc.hermes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,7 +23,9 @@ import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -189,7 +193,35 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
                     authenticationServices);
 
+        SharedPreferences sharedPreferences2 = getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
+        String placeName = sharedPreferences2.getString("placeName", null);
+        double latitude = sharedPreferences2.getFloat("latitude", 0);
+        double longitude = sharedPreferences2.getFloat("longitude", 0);
+
+        if (placeName != null) {
+            addMarkerToMap(placeName, latitude, longitude);
+        }
     }
+
+    private Marker currentMarker;
+    private void addMarkerToMap(String placeName, double latitude, double longitude) {
+        mapView.getMapAsync(mapboxMap -> {
+            if (currentMarker != null) {
+                mapboxMap.removeMarker(currentMarker);
+                SharedPreferences deleteCurrentMarker = getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = deleteCurrentMarker.edit();
+                editor.remove("placeName");
+                editor.remove("latitude");
+                editor.remove("longitude");
+                editor.apply();
+            }
+
+            MarkerOptions options = new MarkerOptions();
+            options.setTitle(placeName);
+            options.position(new LatLng(latitude, longitude));
+            currentMarker = mapboxMap.addMarker(options);});
+    }
+
 
     /** Method for pausing the MapView object instance.*/
     @Override

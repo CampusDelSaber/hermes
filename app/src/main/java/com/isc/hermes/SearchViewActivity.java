@@ -1,5 +1,7 @@
 package com.isc.hermes;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -93,13 +95,21 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     @Override
     public void onItemClick(WayPoint wayPoint) {
 //        Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
+        SharedPreferences sharedPreferences = getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("placeName", wayPoint.getPlaceName());
+        editor.putFloat("latitude", (float)wayPoint.getLatitude());
+        editor.putFloat("longitude", (float)wayPoint.getLongitude());
+        editor.apply();
 
-        MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
+        finish();
+
+       /* MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
         if(mapboxEventManager.addMarker(wayPoint)){
             Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
         }
         else Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-        onDestroy();
+        onDestroy();*/
     }
 
     /**
