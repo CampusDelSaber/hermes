@@ -28,7 +28,7 @@ public class Geocoding extends Geocoder {
      */
     private MapboxGeocoding builtGeocoding(String placeName) {
         return MapboxGeocoding.builder()
-                    .accessToken(Objects.requireNonNull(dotenv.get("MAPBOX_TOKEN")))
+                    .accessToken(MAPBOX_TOKEN)
                     .query(placeName)
                     .build();
 

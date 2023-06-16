@@ -73,7 +73,7 @@ public class ReverseGeocoding extends Geocoder{
      */
     private MapboxGeocoding builtReverseGeocoding(Point queryPoint, String geocodingCriteria) {
         return MapboxGeocoding.builder()
-                .accessToken(Objects.requireNonNull(dotenv.get("MAPBOX_TOKEN")))
+                .accessToken(MAPBOX_TOKEN)
                 .query(queryPoint)
                 .geocodingTypes(geocodingCriteria)
                 .build();
@@ -88,7 +88,7 @@ public class ReverseGeocoding extends Geocoder{
      */
     private MapboxGeocoding builtReverseGeocoding(String queryString, String geocodingCriteria) {
         return MapboxGeocoding.builder()
-                .accessToken(Objects.requireNonNull(dotenv.get("MAPBOX_TOKEN")))
+                .accessToken(MAPBOX_TOKEN)
                 .query(queryString)
                 .geocodingTypes(geocodingCriteria)
                 .build();
