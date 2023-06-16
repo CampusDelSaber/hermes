@@ -116,7 +116,7 @@ public class MapDisplay {
             mapView.getMapAsync(mapboxMap -> {
                 switch (mapStyle) {
                     case "Satellite" -> mapboxMap.setStyle(Style.SATELLITE_STREETS);
-                    case "Dark Mode" -> mapboxMap.setStyle(Style.DARK);
+                    case "Dark" -> mapboxMap.setStyle(Style.DARK);
                     case "Default" -> mapboxMap.setStyle(Style.MAPBOX_STREETS);
                 }
             });

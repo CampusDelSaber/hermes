@@ -1,13 +1,21 @@
 package com.isc.hermes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -239,14 +247,19 @@ public class MainActivity extends AppCompatActivity {
      */
     public void openStylesMenu(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
+        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
         isStyleOptionsVisible = !isStyleOptionsVisible;
 
         if (isStyleOptionsVisible) {
+            lateralMenu.setVisibility(View.GONE);
             styleOptionsWindow.setVisibility(View.VISIBLE);
+            setMapScrollGesturesEnabled(true);
+            visibilityMenu = false;
         } else {
             styleOptionsWindow.setVisibility(View.GONE);
         }
     }
+
 
     /**
      * Method to change the map style.
@@ -255,8 +268,10 @@ public class MainActivity extends AppCompatActivity {
      */
     public void changeMapStyle(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
-        mapStyle = ((Button) view).getText().toString();
-        mapDisplay.setMapStyle(mapStyle);
         styleOptionsWindow.setVisibility(View.GONE);
+
+        mapStyle = ((ImageButton) view).getTag().toString();
+        mapDisplay.setMapStyle(mapStyle);
+        isStyleOptionsVisible = false;
     }
 }
