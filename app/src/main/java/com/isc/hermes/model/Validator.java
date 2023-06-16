@@ -49,6 +49,7 @@ public class Validator extends AppCompatActivity {
 
         code = verificationCode.getVerificationCode();
         valid = verificationCode.getValid();
+        String id = verificationCode.getId();
 
         System.out.println("=======================\n" +
                 "CODE: " + code +
@@ -58,6 +59,7 @@ public class Validator extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 verifyCode();
+                verificationCodesManager.updateVerificationCode(id, false);
             }
         });
     }

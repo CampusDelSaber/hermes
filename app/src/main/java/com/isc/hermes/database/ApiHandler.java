@@ -6,6 +6,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -48,6 +49,18 @@ public class ApiHandler {
         String result = gson.toJson(object);
         System.out.println("RESULT: " + result);
         return executorService.submit(() -> requestHandler.postDataFromApi(url, result));
+    }
+
+    public Future<?> updateVerificationCodeValidity(String params, boolean isValid) {
+        String url = API_URL + params;
+        JSONObject updateData = new JSONObject();
+        try {
+            updateData.put("isValid", isValid);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return executorService.submit(() -> requestHandler.updateDataInDatabase(url, updateData.toString()));
     }
 
     /**

@@ -32,6 +32,11 @@ public class VerificationCodesManager {
         apiHandler.postFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, verificationCode);
     }
 
+    public void updateVerificationCode(String id, boolean isValid) {
+        String params = VERIFICATION_CODES_COLLECTION_NAME + "/" + id;
+        apiHandler.updateVerificationCodeValidity(params, isValid);
+    }
+
     public JSONArray getSpecificVerificationCode(String email) throws ExecutionException, InterruptedException {
         String params = VERIFICATION_CODES_COLLECTION_NAME + "/email/" + email;
         Future<String> future = apiHandler.getFutureCollectionString(params);
@@ -42,16 +47,20 @@ public class VerificationCodesManager {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public VerificationCode getLastVerificationCode(String email) throws ExecutionException, InterruptedException, JSONException {
         JSONArray array = getSpecificVerificationCode(email);
-        int lastVerificationCodeIndex = array.length() - 1;
-        JSONObject verificationCodesArray = array.getJSONObject(lastVerificationCodeIndex);
-        String id = verificationCodesArray.getString("_id");
-        String userEmail = verificationCodesArray.getString("email");
-        String verificationCode = verificationCodesArray.getString("verificationCode");
-        Boolean valid = verificationCodesArray.getBoolean("isValid");
-        VerificationCode verificationCodeObject = new VerificationCode(id, userEmail);
-        verificationCodeObject.setVerificationCode(verificationCode);
-        verificationCodeObject.setValid(valid);
-
+        VerificationCode verificationCodeObject = null;
+        for (int index = 0; index < array.length(); index++) {
+            JSONObject verificationCodesArray = array.getJSONObject(index);
+            String id = verificationCodesArray.getString("_id");
+            String userEmail = verificationCodesArray.getString("email");
+            String verificationCode = verificationCodesArray.getString("verificationCode");
+            boolean valid = verificationCodesArray.getBoolean("isValid");
+            if (valid) {
+                verificationCodeObject = new VerificationCode(id, userEmail);
+                verificationCodeObject.setVerificationCode(verificationCode);
+                verificationCodeObject.setValid(true);
+                index = array.length();
+            }
+        }
         return verificationCodeObject;
     }
 }

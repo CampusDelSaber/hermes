@@ -64,6 +64,28 @@ public class ApiRequestHandler {
         }
     }
 
+    public void updateDataInDatabase(String apiUrl, String jsonData) {
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+
+            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+            outputStream.writeBytes(jsonData);
+            outputStream.flush();
+            outputStream.close();
+
+            int responseCode = connection.getResponseCode();
+            System.out.println("RESPONSE CODE: " + responseCode);
+
+            connection.disconnect();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
     /**
      * Retrieves the singleton instance of ApiRequestHandler.
      *

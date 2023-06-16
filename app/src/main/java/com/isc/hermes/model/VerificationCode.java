@@ -45,4 +45,14 @@ public class VerificationCode {
     public void setValid(Boolean valid) {
         isValid = valid;
     }
+
+    @Override
+    public String toString() {
+        return "VerificationCode{" +
+                "id='" + id + '\'' +
+                ", email='" + email + '\'' +
+                ", verificationCode='" + verificationCode + '\'' +
+                ", isValid=" + isValid +
+                '}';
+    }
 }
