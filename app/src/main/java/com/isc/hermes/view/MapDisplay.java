@@ -1,11 +1,31 @@
 package com.isc.hermes.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+
+import com.isc.hermes.model.Utils.PolylineManager;
+import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.plugins.annotation.LineManager;
+import com.mapbox.mapboxsdk.plugins.annotation.LineOptions;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.mapboxsdk.style.sources.Source;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,6 +55,7 @@ public class MapDisplay {
         if (instance == null) instance = new MapDisplay(context, mapView, mapConfigure);
         return instance;
     }
+
 
 
     /**
@@ -119,12 +140,10 @@ public class MapDisplay {
     public void setMapStyle(String mapStyle) {
         if (mapView != null && mapStyle != null) {
             mapView.getMapAsync(mapboxMap -> {
-                if (mapStyle.equals("satellite")) {
-                    mapboxMap.setStyle(Style.SATELLITE_STREETS);
-                } else if (mapStyle.equals("dark")) {
-                    mapboxMap.setStyle(Style.DARK);
-                } else {
-                    mapboxMap.setStyle(Style.MAPBOX_STREETS);
+                switch (mapStyle) {
+                    case "Satellite" -> mapboxMap.setStyle(Style.SATELLITE_STREETS);
+                    case "Dark" -> mapboxMap.setStyle(Style.DARK);
+                    case "Default" -> mapboxMap.setStyle(Style.MAPBOX_STREETS);
                 }
             });
         }

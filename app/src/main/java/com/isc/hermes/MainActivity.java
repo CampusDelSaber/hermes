@@ -1,24 +1,28 @@
 package com.isc.hermes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Handler;
 
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 
-import android.widget.LinearLayout;
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.SearchView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
+import com.isc.hermes.model.Utils.MapPolyline;
+
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
@@ -30,6 +34,13 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 
+
+
+
+import java.util.HashMap;
+
+import java.util.Map;
+
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
@@ -37,12 +48,13 @@ import com.mapbox.mapboxsdk.maps.Style;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private MapView mapView;
     private MapDisplay mapDisplay;
-    private String mapStyle = "default";
+    private String mapStyle = "Default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
     private SearchView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
+    private boolean isStyleOptionsVisible = false;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -57,13 +69,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initMapView();
         mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
-        mapStyleListener();
+        addMapboxSearcher();
         initCurrentLocationController();
         mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
+
+        testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+    }
+
+    public void testPolyline(){ // this is a test method that will be removed once the functionality has been verified.
+        Map<String, String> r = new HashMap<>();
+
+        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
+        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
+        r.put("Route C", "{}");
+
+        String jsonA = r.get("Route A");
+        String jsonB = r.get("Route B");
+        String jsonC = r.get("Route C");
+
+        MapPolyline mapPolyline = new MapPolyline(mapView);
+        mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
+        //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
+
     }
 
     /**
@@ -251,17 +282,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapDisplay.onSaveInstanceState(outState);
     }
 
+    public void openStylesMenu(View view) {
+        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
+        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
+        isStyleOptionsVisible = !isStyleOptionsVisible;
+
+        if (isStyleOptionsVisible) {
+            lateralMenu.setVisibility(View.GONE);
+            styleOptionsWindow.setVisibility(View.VISIBLE);
+            setMapScrollGesturesEnabled(true);
+            visibilityMenu = false;
+        } else {
+            styleOptionsWindow.setVisibility(View.GONE);
+        }
+    }
+
     /**
-     * Method for adding maps styles.xml listener
+     * Method to change the map style.
+     *
+     * @param view The button's view of the style that has been clicked.
      */
-    private void mapStyleListener() {
-        ImageButton styleButton = findViewById(R.id.btn_change_style);
-        styleButton.setOnClickListener(styleMap -> {
-            if (mapStyle.equals("default")) mapStyle = "satellite";
-            else if (mapStyle.equals("satellite")) mapStyle = "dark";
-            else mapStyle = "default";
-            mapDisplay.setMapStyle(mapStyle);
-        });
+    public void changeMapStyle(View view) {
+        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
+        styleOptionsWindow.setVisibility(View.GONE);
+
+        mapStyle = ((ImageButton) view).getTag().toString();
+        mapDisplay.setMapStyle(mapStyle);
+        isStyleOptionsVisible = false;
     }
 
     /**

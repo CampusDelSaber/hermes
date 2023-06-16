@@ -1,6 +1,9 @@
 package com.isc.hermes.model;
 
 import android.os.StrictMode;
+
+import com.isc.hermes.MainActivity;
+import com.isc.hermes.R;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
