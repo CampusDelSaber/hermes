@@ -41,7 +41,7 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity {
 
     private LinearLayout vBoxDownloadedMaps;
     private OfflineMapManager offlineMapManager;
-    private Map<String, OfflineRegion> offlineRegionsNames;
+    public static Map<String, OfflineRegion> offlineRegionsNames;
     private Map<String, CardView> cardViews;
     private static final int REQUEST_CODE_OFFLINE = 231;
 
