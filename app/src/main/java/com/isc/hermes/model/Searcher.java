@@ -35,12 +35,12 @@ public class Searcher {
         MapboxGeocoding client = buildGeocodingClient(userLocation, query, "BO");
         Response<GeocodingResponse> geocodingResponse = executeGeocodingCall(client);
 
-        if (!geocodingResponse.isSuccessful() || geocodingResponse.body() == null || geocodingResponse.body().features().isEmpty()) {
+        if (!isGeocodingResponseValid(geocodingResponse)) {
             client = buildGeocodingClient(userLocation, query, null);
             geocodingResponse = executeGeocodingCall(client);
         }
 
-        return Objects.requireNonNull(geocodingResponse.body()).features();
+        return getFeaturesFromGeocodingResponse(geocodingResponse);
     }
 
     /**
@@ -51,7 +51,7 @@ public class Searcher {
      * @param country      The country code to limit geocoding results (optional, can be null).
      * @return A MapboxGeocoding object configured with the specified parameters.
      */
-    private MapboxGeocoding buildGeocodingClient(CurrentLocationModel userLocation, String query, String country){
+    private MapboxGeocoding buildGeocodingClient(CurrentLocationModel userLocation, String query, String country) {
         MapboxGeocoding.Builder builder = MapboxGeocoding.builder()
                 .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
                 .query(query)
@@ -79,6 +79,28 @@ public class Searcher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Checks if the geocoding response is valid.
+     *
+     * @param geocodingResponse The Response object containing the geocoding response.
+     * @return True if the response is valid, false otherwise.
+     */
+    private boolean isGeocodingResponseValid(Response<GeocodingResponse> geocodingResponse) {
+        return geocodingResponse.isSuccessful()
+                && geocodingResponse.body() != null
+                && !geocodingResponse.body().features().isEmpty();
+    }
+
+    /**
+     * Retrieves the list of CarmenFeature objects from the geocoding response.
+     *
+     * @param geocodingResponse The Response object containing the geocoding response.
+     * @return A list of CarmenFeature objects representing the found features.
+     */
+    private List<CarmenFeature> getFeaturesFromGeocodingResponse(Response<GeocodingResponse> geocodingResponse) {
+        return Objects.requireNonNull(geocodingResponse.body()).features();
     }
 
     /**
