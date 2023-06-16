@@ -119,8 +119,8 @@ public class FilterController {
         if (latCoordinateIsValid(Double.parseDouble(latEditText.getText().toString()))
                 && longCoordinateIsValid(Double.parseDouble(longEditText.getText().toString())))
             makeGeocodeSearch(new LatLng(Double.parseDouble(latEditText.getText().toString()),
-                    Double.parseDouble(longEditText.getText().toString()))); // Make a geocoding search with the values inputted into the EditTexts
-        else Toast.makeText(mainActivity, R.string.make_valid_lat, Toast.LENGTH_LONG).show();
+                    Double.parseDouble(longEditText.getText().toString())));
+        else Toast.makeText(mainActivity, mainActivity.getString(R.string.make_valid_lat), Toast.LENGTH_LONG).show();
 
     }
     /**
@@ -177,7 +177,7 @@ public class FilterController {
             public void onResponse(@NonNull Call<GeocodingResponse> call, @NonNull Response<GeocodingResponse> response) {
                 if (response.isSuccessful() && response.body() != null)
                     manageResponseFeatures(response);
-                else Timber.tag(TAG).d("onResponse: No result found");
+                else Timber.tag(TAG).d("onResponse: %s", mainActivity.getString(R.string.no_results));
             }
 
             @Override
@@ -197,11 +197,10 @@ public class FilterController {
         List<CarmenFeature> results = response.body().features();
         Timber.tag(TAG).d("onResponse: %s", searchInput.getText().toString());
         if (results.size() > 0) {
-            // Log the first results Point.
             Timber.tag(TAG).d("onResponse: %s", results.get(0).toString());
             updateFiltersComponentsToMap(results);
 
-        } else Timber.tag(TAG).d("onResponse: No result found");
+        } else Timber.tag(TAG).d("onResponse: %s", mainActivity.getString(R.string.no_results));
     }
 
     /**
@@ -275,7 +274,7 @@ public class FilterController {
         List<CarmenFeature> results = response.body().features();
         if (results.size() > 0) {
             animateCameraToNewPosition(latLng);
-        } else Toast.makeText(mainActivity, R.string.no_results,
+        } else Toast.makeText(mainActivity, mainActivity.getString(R.string.no_results),
                 Toast.LENGTH_SHORT).show();
     }
 
