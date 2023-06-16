@@ -38,6 +38,7 @@
             android:layout_height="31dp"
             android:layout_marginStart="-280dp"
             android:layout_weight="1"
+            android:stateListAnimator="@animator/click_animation"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

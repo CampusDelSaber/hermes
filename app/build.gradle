@@ -60,5 +60,6 @@ dependencies {
     testImplementation 'org.json:json:20180813'
     //Google Authentication Dependency
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
+    implementation 'org.locationtech.jts:jts-core:1.16.1'
 }
 

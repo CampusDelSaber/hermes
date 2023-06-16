@@ -11,6 +11,12 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 public class MarkerManager {
     private Marker currentMarker;
     private SharedPreferences sharedPreferences;
+    private static MarkerManager instance;
+
+    public static MarkerManager getInstance(Context context){
+        if(instance == null) instance = new MarkerManager(context);
+        return instance;
+    }
 
     public MarkerManager(Context context) {
         sharedPreferences = context.getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
@@ -21,7 +27,7 @@ public class MarkerManager {
             mapboxMap.removeMarker(currentMarker);
             removeSavedMarker();
         }
-        if(placeName != null){
+        if(placeName != null && mapboxMap!=null){
             MarkerOptions options = new MarkerOptions();
             options.setTitle(placeName);
             options.position(new LatLng(latitude, longitude));

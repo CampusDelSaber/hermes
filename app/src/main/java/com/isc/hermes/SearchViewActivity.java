@@ -94,7 +94,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
      */
     @Override
     public void onItemClick(WayPoint wayPoint) {
-//        Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
         SharedPreferences sharedPreferences = getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("placeName", wayPoint.getPlaceName());

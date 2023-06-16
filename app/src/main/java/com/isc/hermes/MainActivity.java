@@ -19,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.CurrentLocationController;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
         initCurrentLocationController();
         searchView = findViewById(R.id.searchView);
         changeSearchView();
+        addIncidentGeneratorButton();
     }
 
     /**
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
      * Method to add the searcher to the main scene above the map
      */
     private void addMapboxSearcher() {
-        markerManager = new MarkerManager(this);
+        markerManager = MarkerManager.getInstance(this);
         sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
 
     }
@@ -103,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
         }
     }
 
+    /**
+     * This method is used to change the search view.
+     */
     private void changeSearchView() {
         addMapboxSearcher();
         searchView.setOnClickListener(v -> {
@@ -142,8 +149,15 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
      * This method will init the current location controller to get the real time user location
      */
     private void initCurrentLocationController(){
-        currentLocationController = new CurrentLocationController(this, mapDisplay);
+        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
         currentLocationController.initLocation();
+    }
+
+    /**
+     * This method adds the button for incident generation.
+     */
+    private void addIncidentGeneratorButton(){
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this );
     }
 
 
@@ -198,26 +212,6 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
                 sharedSearcherPreferencesManager.getLongitude());
 
     }
-
-    private Marker currentMarker;
-    private void addMarkerToMap(String placeName, double latitude, double longitude) {
-        mapView.getMapAsync(mapboxMap -> {
-            if (currentMarker != null) {
-                mapboxMap.removeMarker(currentMarker);
-                SharedPreferences deleteCurrentMarker = getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = deleteCurrentMarker.edit();
-                editor.remove("placeName");
-                editor.remove("latitude");
-                editor.remove("longitude");
-                editor.apply();
-            }
-
-            MarkerOptions options = new MarkerOptions();
-            options.setTitle(placeName);
-            options.position(new LatLng(latitude, longitude));
-            currentMarker = mapboxMap.addMarker(options);});
-    }
-
 
     /** Method for pausing the MapView object instance.*/
     @Override
