@@ -2,11 +2,13 @@ package com.isc.hermes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,12 +19,30 @@ import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
+import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.Utils.PolylineManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
+import com.mapbox.geojson.BoundingBox;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.GeoJson;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.annotation.LineManager;
+import com.mapbox.mapboxsdk.plugins.annotation.LineOptions;
+
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -52,6 +72,25 @@ public class MainActivity extends AppCompatActivity {
         addMapboxSearcher();
         initCurrentLocationController();
         addIncidentGeneratorButton();
+
+        testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+    }
+
+    public void testPolyline(){ // this is a test method that will be removed once the functionality has been verified.
+        Map<String, String> r = new HashMap<>();
+
+        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
+        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
+        r.put("Route C", "{}");
+
+        String jsonA = r.get("Route A");
+        String jsonB = r.get("Route B");
+        String jsonC = r.get("Route C");
+
+        MapPolyline mapPolyline = new MapPolyline(mapView);
+        mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
+        //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
+
     }
 
     /**
