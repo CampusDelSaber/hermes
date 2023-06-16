@@ -1,6 +1,9 @@
 package com.isc.hermes.model.navigation;
 
+import androidx.annotation.Nullable;
+
 import com.isc.hermes.model.graph.Node;
+import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,10 @@ public class Route {
      */
     public Route(List<Node> path){
         this.path = path;
-        totalDistance = 0.0;
+        CoordinatesDistanceCalculator calculator = CoordinatesDistanceCalculator.getInstance();
+        for (int i = 0; i < path.size() - 1; i++){
+            totalDistance += calculator.calculateDistance(path.get(i), path.get(i + 1));
+        }
     }
 
     /**
@@ -82,6 +88,12 @@ public class Route {
      */
     public boolean visitedNode(Node node) {
         return path.contains(node);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof Route route)) return false;
+        return this.path.containsAll(route.path);
     }
 }
 

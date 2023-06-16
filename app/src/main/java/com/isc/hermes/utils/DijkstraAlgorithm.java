@@ -11,7 +11,33 @@ import java.util.*;
  */
 public class DijkstraAlgorithm {
     private static DijkstraAlgorithm instance;
+    private GeoJsonUtils geoJsonUtils;
     private static final int MAX_ROUTE_ALTERNATIVES = 3;
+
+    /**
+     * Initializes a new instance of the DijkstraAlgorithm class.
+     * Uses the GeoJsonUtils singleton instance for generating GeoJSON.
+     */
+    public DijkstraAlgorithm() {
+        geoJsonUtils = GeoJsonUtils.getInstance();
+    }
+
+    /**
+     * Retrieves the GeoJSON routes between a source and a destination node in a graph.
+     *
+     * @param graph       the graph containing the nodes and edges
+     * @param source      the source node
+     * @param destination the destination node
+     * @return a map of route names to their respective GeoJSON representations
+     */
+    public Map<String, String> getGeoJsonRoutes(Graph graph, Node source, Node destination){
+        Map<String, String> geoJsonRoutes = new HashMap<>();
+        Map<String, Route> routeAlternatives = getPathAlternatives(graph, source, destination);
+        for (String key:routeAlternatives.keySet()){
+            geoJsonRoutes.put(key, geoJsonUtils.generateGeoJson(routeAlternatives.get(key)));
+        }
+        return geoJsonRoutes;
+    }
 
     /**
      * Calculates the shortest path from the source node to the destination node in the given graph.
@@ -21,8 +47,8 @@ public class DijkstraAlgorithm {
      * @param destination The destination node.
      * @return A map with route alternatives as keys and their corresponding list of nodes as values.
      */
-    public Map<String, List<Node>> getPathAlternatives(Graph graph, Node source, Node destination) {
-        Map<String, List<Node>> routeAlternatives = new HashMap<>();
+    public Map<String, Route> getPathAlternatives(Graph graph, Node source, Node destination) {
+        Map<String, Route> routeAlternatives = new HashMap<>();
         PriorityQueue<Route> routeQueue =
                 new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalDistance));
         routeQueue.add(new Route(getShortestPath(graph, source, destination)));
@@ -30,9 +56,9 @@ public class DijkstraAlgorithm {
 
         while (!routeQueue.isEmpty() && routeAlternatives.size() < MAX_ROUTE_ALTERNATIVES) {
             Route currentRoute = routeQueue.poll();
-
+            assert currentRoute != null;
             if (isDestinationReached(destination, currentRoute, routeAlternatives)) {
-                routeAlternatives.put(getRouteKey(routeAlternatives.size()), currentRoute.getPath());
+                routeAlternatives.put(getRouteKey(routeAlternatives.size()), currentRoute);
                 continue;
             }
             exploreNeighbors(currentRoute, routeQueue);
@@ -51,11 +77,10 @@ public class DijkstraAlgorithm {
      * @return True if the destination is reached and the route is not already present, false otherwise.
      */
     private boolean isDestinationReached(
-            Node destination, Route currentRoute, Map<String, List<Node>> routeAlternatives
+            Node destination, Route currentRoute, Map<String, Route> routeAlternatives
     ) {
         Node currentNode = currentRoute.getCurrentNode();
-        List<Node> currentRoutePath = currentRoute.getPath();
-        return currentNode == destination && !routeAlternatives.containsValue(currentRoutePath);
+        return currentNode == destination && !routeAlternatives.containsValue(currentRoute);
     }
 
     /**

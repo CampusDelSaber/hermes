@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
+import com.isc.hermes.model.navigation.Route;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,10 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from nodeA to nodeD
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A");
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A")
+                        .getPath();
+
+        System.out.println(dijkstraAlgorithm.getGeoJsonRoutes(graph, nodeA, nodeD));
 
         assertNotNull(shortestPath);
         // The shortest path should be [nodeA, nodeC, nodeD]
@@ -68,7 +72,7 @@ public class DijkstraAlgorithmTest {
         Node nodeD = new Node("D", 0, 1);
         nodeA.addBidirectionalEdge(nodeB, 1.0);
         nodeA.addBidirectionalEdge(nodeC, 2.0);
-        nodeB.addBidirectionalEdge(nodeC, 1.0);
+        nodeB.addBidirectionalEdge(nodeC, 2.0);
         nodeB.addBidirectionalEdge(nodeD, 3.0);
         nodeC.addBidirectionalEdge(nodeD, 1.0);
         graph.addNode(nodeA);
@@ -78,8 +82,8 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from nodeA to nodeD
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeD, nodeA).get("Route A");
-        System.out.println(shortestPath);
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeD, nodeA).get("Route A")
+                        .getPath();
 
         assertNotNull(shortestPath);
         // The shortest path should be [nodeD, nodeC, nodeA]
@@ -109,7 +113,8 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from Plaza Principal to Plaza 14 de Septiembre
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A");
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A")
+                        .getPath();
 
         System.out.println(shortestPath);
         assertNotNull(shortestPath);
@@ -139,12 +144,12 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Calculate the routes
-        Map<String, List<Node>> routes = dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD);
+        Map<String, Route> routes = dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD);
 
         System.out.println(routes);
 
         // Check the fastest route
-        List<Node> fastestRoute = routes.get("Route A");
+        List<Node> fastestRoute = routes.get("Route A").getPath();
 
         // The fastest route should be [nodeA, nodeC, nodeD]
         assertNotNull(fastestRoute);
@@ -160,14 +165,14 @@ public class DijkstraAlgorithmTest {
         Node source = graph.getNode("A");
         Node destination = graph.getNode("F");
 
-        Map<String, List<Node>> shortestPathAlternatives =
+        Map<String, Route> shortestPathAlternatives =
                 dijkstraAlgorithm.getPathAlternatives(graph, source, destination);
         assertNotNull(shortestPathAlternatives);
         assertEquals(3, shortestPathAlternatives.size());
         System.out.println(shortestPathAlternatives);
 
         // Assert the shortest alternative paths
-        List<Node> alternative1 = shortestPathAlternatives.get("Route A");
+        List<Node> alternative1 = shortestPathAlternatives.get("Route A").getPath();
         assertNotNull(alternative1);
         assertEquals(4, alternative1.size());
         assertEquals(source, alternative1.get(0));
@@ -175,7 +180,7 @@ public class DijkstraAlgorithmTest {
         assertEquals(graph.getNode("D"), alternative1.get(2));
         assertEquals(destination, alternative1.get(3));
 
-        List<Node> alternative2 = shortestPathAlternatives.get("Route B");
+        List<Node> alternative2 = shortestPathAlternatives.get("Route B").getPath();
         assertNotNull(alternative2);
         assertEquals(4, alternative2.size());
         assertEquals(source, alternative2.get(0));
@@ -183,7 +188,7 @@ public class DijkstraAlgorithmTest {
         assertEquals(graph.getNode("D"), alternative2.get(2));
         assertEquals(destination, alternative2.get(3));
 
-        List<Node> alternative3 = shortestPathAlternatives.get("Route C");
+        List<Node> alternative3 = shortestPathAlternatives.get("Route C").getPath();
         assertNotNull(alternative3);
         assertEquals(5, alternative3.size());
         assertEquals(source, alternative3.get(0));
