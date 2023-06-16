@@ -2,12 +2,8 @@ package com.isc.hermes.view;
 
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
-
 import android.graphics.Color;
-
 import androidx.annotation.NonNull;
-
-
 import com.isc.hermes.utils.MapClickEventsManager;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.Polygon;

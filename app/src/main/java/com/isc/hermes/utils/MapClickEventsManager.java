@@ -2,8 +2,6 @@ package com.isc.hermes.utils;
 
 
 import android.content.Context;
-
-import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 

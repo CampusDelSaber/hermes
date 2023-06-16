@@ -1,25 +1,19 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
-
 import com.isc.hermes.generators.CoordinateParser;
 import com.isc.hermes.utils.Animations;
-
 import com.isc.hermes.view.MapPolygonStyle;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 

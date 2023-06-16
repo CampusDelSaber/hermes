@@ -2,9 +2,7 @@ package com.isc.hermes.controller;
 
 import android.content.Context;
 import android.view.View;
-
 import androidx.annotation.NonNull;
-
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.utils.Animations;
