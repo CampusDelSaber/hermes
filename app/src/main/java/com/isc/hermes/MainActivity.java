@@ -23,7 +23,9 @@ import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.Utils.PolylineManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
+import com.mapbox.geojson.BoundingBox;
 import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.GeoJson;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -38,7 +40,9 @@ import com.mapbox.mapboxsdk.plugins.annotation.LineOptions;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -73,14 +77,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void testPolyline(){ // this is a test method that will be removed once the functionality has been verified.
-        List<Point> pointList = new ArrayList<>();
-        pointList.add(Point.fromLngLat(-122.08530802399956, 37.42310572139881));
-        pointList.add(Point.fromLngLat(-122.09017088513937, 37.42368853165682));
-        pointList.add(Point.fromLngLat(-122.0933129947299, 37.419042832716755));
-        MapPolyline mapPolyline = new MapPolyline(mapView, pointList);
-        mapPolyline.drawPolyline();
-    }
+        Map<String, String> r = new HashMap<>();
 
+        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
+        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
+        r.put("Route C", "{}");
+
+        String jsonA = r.get("Route A");
+        String jsonB = r.get("Route B");
+        String jsonC = r.get("Route C");
+
+        MapPolyline mapPolyline = new MapPolyline(mapView);
+        mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
+        //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
+
+    }
 
     /**
      * Method to add the searcher to the main scene above the map
