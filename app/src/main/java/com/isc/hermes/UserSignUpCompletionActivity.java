@@ -57,6 +57,35 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     }
 
     /**
+     * Generates components for the combo box and returns the AutoCompleteTextView.
+     * Creates an array of items for the combo box, sets up an ArrayAdapter,
+     * and attaches it to the AutoCompleteTextView component to provide suggestions.
+     *
+     * @return The generated AutoCompleteTextView for the combo box.
+     */
+    private AutoCompleteTextView generateComponentsToComboBox() {
+        String[] items = {"Administrator", "General"};
+        AutoCompleteTextView autoCompleteText = findViewById(R.id.textFieldUserType);
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, items);
+        autoCompleteText.setAdapter(adapterItems);
+        return autoCompleteText;
+    }
+
+    /**
+     * Generates an action for the combo box.
+     * Sets an item click listener on the AutoCompleteTextView component of the combo box,
+     * which captures the selected item and updates the user's type accordingly.
+     */
+    private void generateActionToComboBox() {
+        generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
+            String item = parent.getItemAtPosition(position).toString();
+            userRegistered.setTypeUser(item);
+            Toast.makeText(getApplicationContext(), "Item: " + item,
+                    Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    /**
      * Generates an action for the sign-up button.
      * Sets a click listener on the "Register" button, which saves the user's information to the database
      * and navigates the user to the main activity.

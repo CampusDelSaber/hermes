@@ -1,16 +1,14 @@
-package com.isc.hermes.controller;
+package com.isc.hermes.controller.Utiils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import java.io.ByteArrayOutputStream;
-
 /**
  * Utility class containing helper methods for image manipulation.
  */
-public class Utils {
+public class ImageUtil {
 
     /**
      * Crops a bitmap to a square shape.

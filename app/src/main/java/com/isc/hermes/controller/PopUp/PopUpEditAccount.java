@@ -14,6 +14,7 @@ public class PopUpEditAccount extends PopUp{
     private Button button;
     private AutoCompleteTextView fullName;
     private AutoCompleteTextView username;
+    private AutoCompleteTextView comboBoxField;
 
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
@@ -35,6 +36,7 @@ public class PopUpEditAccount extends PopUp{
             button.setVisibility(View.INVISIBLE);
             fullName.setEnabled(false);
             username.setEnabled(false);
+            comboBoxField.setEnabled(false);
         } dismiss();
     }
 
@@ -44,10 +46,13 @@ public class PopUpEditAccount extends PopUp{
      * @param button    The button for account editing.
      * @param fullName  The text field for the full name.
      * @param username  The text field for the username.
+     * @param comboBoxField The text field fo combo-box.
      */
-    public void setInformationToAbelEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username) {
+    public void setInformationToAbelEdit(Button button, AutoCompleteTextView fullName,
+                                         AutoCompleteTextView username, AutoCompleteTextView comboBoxField) {
         this.button = button;
         this.fullName = fullName;
         this.username = username;
+        this.comboBoxField = comboBoxField;
     }
 }

@@ -7,14 +7,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpEditAccount;
-import com.isc.hermes.controller.Utils;
+import com.isc.hermes.controller.Utiils.ImageUtil;
 
 import java.io.IOException;
 
@@ -29,10 +30,39 @@ public class AccountInformation extends AppCompatActivity {
     private Button buttonSaveInformation;
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldFullName;
+    private AutoCompleteTextView comboBoxField;
     private ImageView imageView;
     private static final int PICK_IMAGE_REQUEST = 1;
     private PopUpEditAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
+
+    /**
+     * Generates components for the combo box and returns the AutoCompleteTextView.
+     * Creates an array of items for the combo box, sets up an ArrayAdapter,
+     * and attaches it to the AutoCompleteTextView component to provide suggestions.
+     *
+     * @return The generated AutoCompleteTextView for the combo box.
+     */
+    private AutoCompleteTextView generateComponentsToComboBox() {
+        String[] items = {"Administrator", "General"};
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, items);
+        comboBoxField.setAdapter(adapterItems);
+        return comboBoxField;
+    }
+
+    /**
+     * Generates an action for the combo box.
+     * Sets an item click listener on the AutoCompleteTextView component of the combo box,
+     * which captures the selected item and updates the user's type accordingly.
+     */
+    private void generateActionToComboBox() {
+        generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
+            String item = parent.getItemAtPosition(position).toString();
+            //update in DB
+            Toast.makeText(getApplicationContext(), "Item: " + item,
+                    Toast.LENGTH_SHORT).show();
+        });
+    }
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -44,6 +74,7 @@ public class AccountInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
         assignValuesToComponentsView();
+        generateActionToComboBox();
         initializePopups();
     }
 
@@ -95,7 +126,7 @@ public class AccountInformation extends AppCompatActivity {
             Uri selectedImageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                Bitmap croppedBitmap = Utils.cropToSquare(bitmap);
+                Bitmap croppedBitmap = ImageUtil.cropToSquare(bitmap);
 
                 imageView.setImageBitmap(croppedBitmap);
             } catch (IOException e) {e.printStackTrace();}
@@ -110,6 +141,7 @@ public class AccountInformation extends AppCompatActivity {
     public void editAccountAction(View view) {
         buttonSaveInformation.setVisibility(View.VISIBLE);
         textFieldFullName.setEnabled(true);
+        comboBoxField.setEnabled(true);
         textFieldUserName.setEnabled(true);
     }
 
@@ -119,7 +151,8 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void saveAccountInformationAction(View view) {
-        popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName, textFieldUserName);
+        popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName,
+                textFieldUserName, comboBoxField);
         popUpDialogEdit.show();
     }
 
@@ -139,9 +172,11 @@ public class AccountInformation extends AppCompatActivity {
     private void  assignValuesToComponentsView() {
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
         imageView = findViewById(R.id.imageUpload);
+        comboBoxField = findViewById(R.id.textFieldUserType);
         textFieldFullName = findViewById(R.id.textFieldFullName);
         textFieldUserName = findViewById(R.id.textFieldUserName);
         textFieldFullName.setEnabled(false);
         textFieldUserName.setEnabled(false);
+        comboBoxField.setEnabled(false);
     }
 }
