@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
@@ -33,6 +35,7 @@ public class IncidentFormController {
     private final Button acceptButton;
     private final LinearLayout incidentTypesContainer;
     private final TextView incidentText;
+    private final TextInputLayout reasonTextField;
     public static String incidentType;
     private final MapWayPointController mapWayPointController;
 
@@ -50,6 +53,7 @@ public class IncidentFormController {
         acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);
         incidentTypesContainer = ((AppCompatActivity) context).findViewById(R.id.incidentTypesContainer);
         incidentText = ((AppCompatActivity) context).findViewById(R.id.incident_text);
+        reasonTextField = ((AppCompatActivity) context).findViewById(R.id.reason_text_field);
 
         setButtonsOnClick();
         setIncidentComponents();
@@ -156,10 +160,18 @@ public class IncidentFormController {
         return incidentForm;
     }
 
+    /**
+     * This method change the title of the type incident, based in a string.
+     * @param title new title
+     */
     public void changeTypeTitle(String title) {
         incidentText.setText(title);
     }
 
+    /**
+     * This method set the event to the incident buttons.
+     * @param typeButton button to set the event.
+     */
     private void setIncidentButtonAction(Button typeButton) {
         typeButton.setOnClickListener(
                 v -> {
@@ -191,16 +203,25 @@ public class IncidentFormController {
     }
 
     /**
+     * This method is used to access to the text input for the user on the reason field.
+     * @return reasonText
+     */
+    private String getReason() {
+        return reasonTextField.getEditText().getText().toString();
+    }
+
+    /**
 
      This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
      @return The HTTP response code indicating the status of the upload.
      */
     private int uploadIncidentDataBase(){
         String id = IncidentsUtils.getInstance().generateObjectId();
+        String reason = getReason();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,coordinates);
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id, getIncidentType(), reason, dateCreated, deathDate ,coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 }

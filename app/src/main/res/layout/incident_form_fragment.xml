@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/incident_form"
         android:layout_width="wrap_content"
-        android:layout_height="320dp"
+        android:layout_height="335dp"
         android:animateLayoutChanges="true"
         android:background="@drawable/top_rounded_background"
         android:paddingLeft="20dp"
@@ -89,8 +89,9 @@
             </TextView>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/reason_text_field"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="70dp"
                 app:helperText='"e.g. Two cars crash with the traffic light"'>
 
                 <com.google.android.material.textfield.TextInputEditText
