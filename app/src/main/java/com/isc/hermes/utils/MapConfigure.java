@@ -13,7 +13,6 @@ import com.mapbox.mapboxsdk.maps.Style;
 public class MapConfigure {
 
     private MapClickEventsManager manager;
-
     private PlacesSearchedManager placesSearchedManager;
     private Context context;
     /**
