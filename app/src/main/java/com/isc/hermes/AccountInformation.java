@@ -67,6 +67,9 @@ public class AccountInformation extends AppCompatActivity {
         });
     }
 
+    /**
+     * Updates the text fields with user-provided data.
+     */
     private void updateTextFieldsByUser() {
         imageView.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
         textFieldUserName.setText(userRegistered.getUserName());
@@ -177,6 +180,9 @@ public class AccountInformation extends AppCompatActivity {
         textFieldUserName.setEnabled(true);
     }
 
+    /**
+     * Updates the user information based on the values entered in the UI fields.
+     */
     private  void updateInformationUser() {
         userRegistered.setTypeUser(String.valueOf(comboBoxField.getText()));
         userRegistered.setUserName(String.valueOf(textFieldUserName.getText()));

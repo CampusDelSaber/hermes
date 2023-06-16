@@ -44,6 +44,14 @@ public class User implements Parcelable {
         id = in.readString();
     }
 
+    /**
+     * Constructs a new User object with the specified email, full name, username, and type of user.
+     *
+     * @param email     The email address of the user.
+     * @param fullName  The full name of the user.
+     * @param userName  The username of the user.
+     * @param typeUser  The type of user.
+     */
     public User(String email, String fullName, String userName, String typeUser) {
         this.fullName = fullName;
         this.email = email;

@@ -313,6 +313,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         userRegistered = intent.getParcelableExtra("userObtained");
     }
 
+    /**
+     * Opens the styles menu by toggling its visibility.
+     *
+     * @param view The view that triggered the method.
+     */
     public void openStylesMenu(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
         LinearLayout lateralMenu = findViewById(R.id.lateralMenu);

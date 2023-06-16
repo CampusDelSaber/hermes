@@ -37,6 +37,11 @@ public abstract class PopUp extends Dialog implements View.OnClickListener {
         assignValuesToComponents(typePopUp);
     }
 
+    /**
+     * Assigns values to the components based on the provided TypePopUp.
+     *
+     * @param typePopUp The TypePopUp object containing the values to be assigned.
+     */
     public void assignValuesToComponents(TypePopUp typePopUp) {
         this.googleAuthentication = new GoogleAuthentication();
         this.warningText = findViewById(R.id.warningText);
