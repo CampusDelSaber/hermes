@@ -1,13 +1,13 @@
 package com.isc.hermes;
 
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +19,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * This class control the offline mode settings UI.
  */
-public class OfflineModeSettingsActivityView extends AppCompatActivity {
+public class OfflineModeSettingsActivityView extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+
     /**
      * Method for creating a configuration of the activity.
      *
@@ -67,24 +68,24 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity {
         textViewsVertical.addView(textViewsHorizontal);
         textViewsVertical.addView(name_downloaded_Map);
 
-        CardView cardView = joinComponents(createCircleImageView(), textViewsVertical, createHamburgerButton());
+        CardView cardView = joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup());
         showCard(cardView);
     }
 
     /**
      * @param checkImage
      * @param vBoxTextViews
-     * @param hamburgerButton
+     * @param popupMenu
      * @return a cardView of a downloaded map
      */
-    protected CardView joinComponents(CircleImageView checkImage,LinearLayout vBoxTextViews, Button hamburgerButton){
+    protected CardView joinComponents(CircleImageView checkImage,LinearLayout vBoxTextViews, CircleImageView popupMenu){
         CardView cardView = new CardView(this);
         cardView.setPadding(10,10,10,10);
 
         LinearLayout MainHorizontal = new LinearLayout(this);
         MainHorizontal.setOrientation(LinearLayout.HORIZONTAL);
 
-        MainHorizontal.addView(hamburgerButton);
+        MainHorizontal.addView(popupMenu);
         MainHorizontal.addView(vBoxTextViews);
         MainHorizontal.addView(checkImage);
 
@@ -102,18 +103,33 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity {
         vBoxDownloadedMaps.addView(cardView);
     }
 
-    protected Button createHamburgerButton(){
-        return new Button(this);
+    /**
+     * This method creates a view image with a check image.
+     * @return the button whith show popupButton
+     */
+    protected CircleImageView createButtonPopup(){
+        CircleImageView popupButton = new CircleImageView(this);
+        popupButton.setImageResource(R.drawable.img_tree_points_vertical);
+        popupButton.setPadding(10,10,300,0);
+        ViewGroup.LayoutParams params = popupButton.getLayoutParams();
+        params.width = 50;  // Ancho en píxeles
+        params.height = 50; // Largo en píxeles
+        popupButton.setLayoutParams(params);
+
+        View.OnClickListener miClickListener = this::showPopupMenu;
+
+        popupButton.setOnClickListener(miClickListener);
+        return popupButton;
     }
 
     /**
      * This method return a circleImageView.
      * @return a circle image view with contains the check image.
      */
-    protected CircleImageView createCircleImageView(){
+    protected CircleImageView createCheckImageView(){
         CircleImageView check_image_View = new CircleImageView(this);
-        check_image_View.setImageResource(R.drawable.img_back_button);
-        check_image_View.setPadding(30,10,0,0);
+        check_image_View.setImageResource(R.drawable.img_check);
+        check_image_View.setPadding(30,10,10,0);
 
         ViewGroup.LayoutParams params = check_image_View.getLayoutParams();
         params.width = 50;  // Ancho en píxeles
@@ -137,6 +153,39 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity {
      */
     public void back_to_map(View view) {
         finish();
+    }
+
+    /**
+     * This method assigns an action to the popup menu options.
+     * @param item the menu item that was clicked
+     * @return boolean
+     */
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.rename:
+                //code
+                return true;
+            case R.id.navigateTo:
+                //code
+                return true;
+            case R.id.delete:
+                //code
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * This method displays the options menu of the downloaded map.
+     * @param view view
+     */
+    public void showPopupMenu(View view){
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.inflate(R.menu.downloaded_maps_options);
+        popupMenu.show();
     }
 
     protected void navigateToDownloadedMap(){

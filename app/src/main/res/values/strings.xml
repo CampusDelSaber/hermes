@@ -20,6 +20,9 @@
     <string name="account_text">Account</string>
     <string name="Offline_Mode_text">Offline Mode</string>
     <string name="Offline_maps_text">Offline Maps</string>
+    <string name="navigate_to">Navigate to</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
     <string-array name="incidents_type">
         <item>Traffic Incident</item>
         <item>Natural Disaster</item>
