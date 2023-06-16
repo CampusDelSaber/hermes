@@ -11,9 +11,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.model.User;
+import com.isc.hermes.utils.SendEmail;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -50,7 +52,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * Charges information about the user in the text fields.
      * Sets the name, username, and email of the user to the respective TextView and AutoCompleteTextView components.
      */
-    private void loadInformationAboutUserInTextFields(){
+    private void loadInformationAboutUserInTextFields() {
         textNameComplete.setText(userRegistered.getFullName());
         textFieldUserName.setText(userRegistered.getUserName());
         textFieldEmail.setText(userRegistered.getEmail());
@@ -96,12 +98,27 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
                 //TODO: Save the registeredUser in dataBase
-                if(userRegistered.getTypeUser().equals("Administrator")){
+                if (userRegistered.getTypeUser().equals("Administrator")) {
+                    SendEmail sendEmail = null;
+                    try {
+                        sendEmail = new SendEmail();
+                        sendEmail.sendMail("A new cyctcttftftfmessage", """
+                                Dear reader,
+                                                
+                                Hello world.sdghjkljtretuiutreerhkjgfd
+                                                
+                                Best regards,
+                                myself
+                                """);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                     Intent intentEmailVerification = new Intent(this, EmailVerificationActivity.class);
                     startActivity(intentEmailVerification);
                 } else {
                     Intent intentMain = new Intent(this, MainActivity.class);
-                    startActivity(intentMain);}
+                    startActivity(intentMain);
+                }
             } else comboBoxTextField.setHelperText("Required");
         });
     }
@@ -110,9 +127,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * Charges the user's profile image into the ImageView if available.
      * If the user has a path to their profile image, it uses Glide to load the image into the ImageView.
      */
-    private void loadUserImageInView(){
+    private void loadUserImageInView() {
         if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
-                    userRegistered.getPathImageUser())).into(imgUser);
+                userRegistered.getPathImageUser())).into(imgUser);
     }
 
     /**
