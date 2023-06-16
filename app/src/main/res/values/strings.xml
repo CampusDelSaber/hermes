@@ -21,6 +21,10 @@
     <string name="incidents_uploaded">Incident uploaded successfully.</string>
     <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
     <string name="incidents_api_url">https://api-rest-hermes.onrender.com/incidents</string>
+    <string name="styles_menu">Customization</string>
+    <string name="satellite_style">Satellite</string>
+    <string name="default_style">Default</string>
+    <string name="dark_style">Dark</string>
     <string-array name="incidents_type">
         <item>Accident</item>
         <item>Obstruction</item>

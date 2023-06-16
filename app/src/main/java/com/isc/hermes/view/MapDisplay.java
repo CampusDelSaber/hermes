@@ -114,12 +114,10 @@ public class MapDisplay {
     public void setMapStyle(String mapStyle) {
         if (mapView != null && mapStyle != null) {
             mapView.getMapAsync(mapboxMap -> {
-                if (mapStyle.equals("satellite")) {
-                    mapboxMap.setStyle(Style.SATELLITE_STREETS);
-                } else if (mapStyle.equals("dark")) {
-                    mapboxMap.setStyle(Style.DARK);
-                } else {
-                    mapboxMap.setStyle(Style.MAPBOX_STREETS);
+                switch (mapStyle) {
+                    case "Satellite" -> mapboxMap.setStyle(Style.SATELLITE_STREETS);
+                    case "Dark" -> mapboxMap.setStyle(Style.DARK);
+                    case "Default" -> mapboxMap.setStyle(Style.MAPBOX_STREETS);
                 }
             });
         }
