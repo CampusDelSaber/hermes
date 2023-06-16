@@ -1,22 +1,34 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.view.IncidentTypeButton;
+
+import timber.log.Timber;
 
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
@@ -26,6 +38,10 @@ public class IncidentFormController {
     private final RelativeLayout incidentForm;
     private final Button cancelButton;
     private final Button acceptButton;
+    private final LinearLayout incidentTypesContainer;
+    private final TextView incidentText;
+    private final TextInputLayout reasonTextField;
+    public static String incidentType;
     private final MapWayPointController mapWayPointController;
 
     /**
@@ -40,6 +56,10 @@ public class IncidentFormController {
         incidentForm = ((AppCompatActivity)context).findViewById(R.id.incident_form);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button);
         acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button);
+        incidentTypesContainer = ((AppCompatActivity) context).findViewById(R.id.incidentTypesContainer);
+        incidentText = ((AppCompatActivity) context).findViewById(R.id.incident_text);
+        reasonTextField = ((AppCompatActivity) context).findViewById(R.id.reason_text_field);
+
         setButtonsOnClick();
         setIncidentComponents();
     }
@@ -93,6 +113,7 @@ public class IncidentFormController {
     private void handleUploadResponse(Integer responseCode) {
         if (responseCode == HttpURLConnection.HTTP_OK) {
             Toast.makeText(context, R.string.incidents_uploaded, Toast.LENGTH_SHORT).show();
+            clearForm();
         } else {
             Toast.makeText(context, R.string.incidents_not_uploaded, Toast.LENGTH_SHORT).show();
         }
@@ -106,19 +127,85 @@ public class IncidentFormController {
      * </p>
      */
     public void setIncidentComponents() {
-        Spinner incidentType = ((AppCompatActivity) context).findViewById(R.id.incident_spinner);
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(context, R.array.incidents_type, R.layout.incident_spinner_items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentType.setAdapter(adapter);
+        String[] incidentTypes = context.getResources().getStringArray(R.array.incidents_type);
+        String[] incidentTypeColors = context.getResources().getStringArray(R.array.incidents_type_colors);
+        String[] incidentTypeIcons = context.getResources().getStringArray(R.array.incidents_type_icons);
 
+        if (incidentTypes.length == incidentTypeColors.length &&
+                incidentTypeIcons.length == incidentTypes.length) {
+            for (int i = 0; i < incidentTypes.length; i++) {
+                Button button = IncidentTypeButton.getIncidentTypeButton(
+                        context,
+                        incidentTypes[i].toLowerCase(),
+                        Color.parseColor((String) incidentTypeColors[i]),
+                        incidentTypeIcons[i]);
+                setIncidentButtonAction(button);
+                incidentTypesContainer.addView(button);
+            }
+        } else {
+            Timber.i(String.valueOf(R.string.array_size_text_timber));
+        }
+
+        setEstimatedTimePicker();
+    }
+
+    /**
+     * This method set the content of the time picker,
+     * and set the number picker according the kind of time.
+     */
+    private void setEstimatedTimePicker() {
         Spinner incidentEstimatedTime = ((AppCompatActivity) context).findViewById(R.id.incident_time_spinner);
         ArrayAdapter<CharSequence> adapterTime=ArrayAdapter.createFromResource(context, R.array.incidents_estimated_time, R.layout.incident_spinner_items);
         adapterTime.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentEstimatedTime.setAdapter(adapterTime);
 
+        incidentEstimatedTime.setAdapter(adapterTime);
         NumberPicker incidentTimePicker = ((AppCompatActivity) context).findViewById(R.id.numberPicker);
-        incidentTimePicker.setMinValue(1);
-        incidentTimePicker.setMaxValue(10);
+        incidentTimePicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            incidentTimePicker.setTextColor(Color.BLACK);
+        }
+
+        setTimeSelectedItem(incidentEstimatedTime, adapterTime, incidentTimePicker);
+    }
+
+    private void setTimeSelectedItem(Spinner incidentEstimatedTime,
+                          ArrayAdapter<CharSequence> adapterTime,
+                          NumberPicker incidentTimePicker) {
+        incidentEstimatedTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedOption = adapterTime.getItem(position).toString();
+
+                switch (selectedOption) {
+                    case "min" -> {
+                        incidentTimePicker.setMinValue(1);
+                        incidentTimePicker.setMaxValue(60);
+                        break;
+                    }
+                    case "hr" -> {
+                        incidentTimePicker.setMinValue(1);
+                        incidentTimePicker.setMaxValue(24);
+                        break;
+                    }
+                    case "day" -> {
+                        incidentTimePicker.setMinValue(1);
+                        incidentTimePicker.setMaxValue(31);
+                        break;
+                    }
+                    case "month" -> {
+                        incidentTimePicker.setMinValue(1);
+                        incidentTimePicker.setMaxValue(12);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                incidentTimePicker.setMinValue(1);
+                incidentTimePicker.setMaxValue(10);
+            }
+        });
     }
 
     /**
@@ -128,15 +215,35 @@ public class IncidentFormController {
     public RelativeLayout getIncidentForm() {
         return incidentForm;
     }
+
+    /**
+     * This method change the title of the type incident, based in a string.
+     * @param title new title
+     */
+    public void changeTypeTitle(String title) {
+        incidentText.setText(title);
+    }
+
+    /**
+     * This method set the event to the incident buttons.
+     * @param typeButton button to set the event.
+     */
+    private void setIncidentButtonAction(Button typeButton) {
+        typeButton.setOnClickListener(
+                v -> {
+                    IncidentFormController.incidentType = typeButton.getText().toString();
+                    changeTypeTitle("Incident Type: " + typeButton.getText());
+                }
+        );
+    }
+
     /**
 
-     This method etrieves the selected incident type from the incident spinner.
+     This method etrieves the selected incident type from the buttons.
      @return The selected incident type as a string.
      */
     private String getIncidentType(){
-        Spinner incidentTypeSpinner = ((AppCompatActivity) context).findViewById(R.id.incident_spinner);
-        String selectedIncidentType = incidentTypeSpinner.getSelectedItem().toString();
-        return selectedIncidentType;
+        return incidentType;
     }
     /**
 
@@ -152,12 +259,21 @@ public class IncidentFormController {
     }
 
     /**
+     * This method is used to access to the text input for the user on the reason field.
+     * @return reasonText
+     */
+    private String getReason() {
+        return reasonTextField.getEditText().getText().toString();
+    }
+
+    /**
 
      This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
      @return The HTTP response code indicating the status of the upload.
      */
     private int uploadIncidentDataBase(){
         String id = IncidentsUtils.getInstance().generateObjectId();
+        String reason = getReason();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
@@ -165,5 +281,12 @@ public class IncidentFormController {
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 
-
+    /**
+     * This method clear the fields of the form.
+     */
+    private void clearForm() {
+        incidentType = null;
+        changeTypeTitle("Incident Type: ");
+        Objects.requireNonNull(reasonTextField.getEditText()).setText("");
+    }
 }

@@ -7,10 +7,12 @@
 
     <RelativeLayout
         android:id="@+id/incident_form"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_width="wrap_content"
+        android:layout_height="335dp"
         android:animateLayoutChanges="true"
         android:background="@drawable/top_rounded_background"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +22,10 @@
         <TextView
             android:id="@+id/top_border"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="2dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#333333" />
 
         <TextView
             android:id="@+id/incident_tablelayout"
@@ -48,63 +53,95 @@
                 android:id="@+id/incident_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:text="Incident Type"
+                android:text="Incident Type:"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold">
 
             </TextView>
 
-            <Spinner
-                android:id="@+id/incident_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:textSize="14sp">
+            <HorizontalScrollView
+                android:id="@+id/incidentTypesCarousel"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:scrollbars="none">
 
-            </Spinner>
+                <LinearLayout
+                    android:id="@+id/incidentTypesContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:scrollbarAlwaysDrawHorizontalTrack="false"
+                    android:scrollbars="none" />
+            </HorizontalScrollView>
 
             <TextView
-                android:id="@+id/incident_time"
-                android:layout_width="wrap_content"
+                android:id="@+id/reason_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="Estimated Time"
+                android:layout_marginTop="10dp"
+                android:text="Reason:"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold">
+
+            </TextView>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/reason_text_field"
+                android:layout_width="match_parent"
+                android:layout_height="65dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="e.g. Two cars crash with the traffic light"
+                    android:textColor="#000000" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/incident_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginRight="5dp"
+                    android:text="Estimated Time:"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <NumberPicker
                     android:id="@+id/numberPicker"
                     android:layout_width="wrap_content"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="10dp" />
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="5dp"/>
 
                 <Spinner
                     android:id="@+id/incident_time_spinner"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="24dp" />
+                    android:layout_height="30dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="5dp" />
             </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/accept_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="100dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:backgroundTint="@color/oxfordBlue"
                     android:text="Accept"
                     android:textColor="@color/white" />
@@ -113,12 +150,13 @@
                     android:id="@+id/cancel_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="100dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:backgroundTint="@color/oxfordBlue"
                     android:text="Cancel"
                     android:textColor="@color/white" />
-            </RelativeLayout>
+
+            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
 
