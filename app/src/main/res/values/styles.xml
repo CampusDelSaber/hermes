@@ -1,10 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="RoundButton" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/round_button_background</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="roudedImageViewRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">40%</item>
     </style>
-
 </resources>

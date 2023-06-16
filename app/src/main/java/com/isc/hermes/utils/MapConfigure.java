@@ -1,9 +1,8 @@
 package com.isc.hermes.utils;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
+import com.isc.hermes.controller.MapWayPointController;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 
@@ -15,6 +14,7 @@ public class MapConfigure {
     private MapClickEventsManager manager;
     private PlacesSearchedManager placesSearchedManager;
     private Context context;
+  
     /**
      * Configures a MapboxMap object with the MAPBOX_STREETS style.
      *
@@ -22,13 +22,12 @@ public class MapConfigure {
      */
     public void configure(@NonNull MapboxMap mapboxMap) {
         mapboxMap.setStyle(Style.MAPBOX_STREETS);
-        manager = new MapClickEventsManager(mapboxMap,context);
-        placesSearchedManager = new PlacesSearchedManager(mapboxMap,context);
+        MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
+        MapClickEventsManager.getInstance().setContext(context);
+        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(MapClickEventsManager.getInstance().getMapboxMap(),context));
     }
 
     public void setContext(Context context) {
         this.context = context;
     }
-
-
 }

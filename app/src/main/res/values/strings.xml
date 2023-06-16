@@ -41,11 +41,30 @@
     <string name="save_authentication_state">authentication_state</string>
 
 
+    <string name="incidents_uploaded">Incident uploaded successfully.</string>
+    <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
+    <string name="incidents_api_url">https://api-rest-hermes.onrender.com/incidents</string>
+    <string name="styles_menu">Customization</string>
+    <string name="satellite_style">Satellite</string>
+    <string name="default_style">Default</string>
+    <string name="dark_style">Dark</string>
     <string-array name="incidents_type">
-        <item>Traffic Incident</item>
-        <item>Natural Disaster</item>
-        <item>Social Incident</item>
-        <item>Danger Zone</item>
+        <item>Accident</item>
+        <item>Obstruction</item>
+        <item>Social Event</item>
+        <item>Street Fix</item>
+    </string-array>
+    <string-array name="incidents_type_colors">
+        <item>#002147</item>
+        <item>#0038E1</item>
+        <item>#333333</item>
+        <item>#CCCCCC</item>
+    </string-array>
+    <string-array name="incidents_type_icons">
+        <item>car_crash_car_accident_traffic_accident_traffic_collision_svgrepo_com</item>
+        <item>warning_sign_attention_svgrepo_com</item>
+        <item>protest_svgrepo_com</item>
+        <item>hammer_tool_settings_fix_repair_svgrepo_com</item>
     </string-array>
     <string-array name="incidents_estimated_time">
         <item>min</item>
@@ -53,4 +72,18 @@
         <item>day</item>
         <item>month</item>
     </string-array>
+
+    <!-- Geocoding -->
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
+    <string name="geocode">Start geocode</string>
+    <string name="map_center">Map center</string>
+    <string name="no_results">No results</string>
+    <string name="choose_city_spinner">Choose city</string>
+    <string name="fill_in_a_value">Fill in a value</string>
+    <string name="geocoding_results">Raw geocoding results:</string>
+    <string name="make_valid_lat">Latitude must be between -90 and 90.
+        Longitude must be between -180 and 180.</string>
+    <string name="search_a_city">Search a City</string>
+    <string name="array_size_text_timber">The arrays about colors, icons and the type buttons have a different size</string>
 </resources>
