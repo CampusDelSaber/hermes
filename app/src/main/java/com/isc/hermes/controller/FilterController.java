@@ -2,11 +2,13 @@ package com.isc.hermes.controller;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
@@ -21,6 +23,8 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,8 +48,23 @@ public class FilterController {
 
 
     public void initComponents() {
+        initFilterOptionsButton();
         initTextViews();
-        initButtons();
+        initFiltersButtons();
+    }
+
+    private void initFilterOptionsButton() {
+        CircleImageView filtersButton = mainActivity.findViewById(R.id.filtersButton);
+        CardView filtersContainer = mainActivity.findViewById(R.id.filtersContainer);
+        filtersContainer.setVisibility(View.INVISIBLE);
+        filtersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (filtersContainer.getVisibility() == View.INVISIBLE)
+                    filtersContainer.setVisibility(View.VISIBLE);
+                else filtersContainer.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void initTextViews() {
@@ -54,7 +73,7 @@ public class FilterController {
         searchInput = mainActivity.findViewById(R.id.searchInput);
     }
 
-    private void initButtons() {
+    private void initFiltersButtons() {
         Button startGeocodeButton = mainActivity.findViewById(R.id.start_geocode_button);
         Button chooseCityButton = mainActivity.findViewById(R.id.searchButton);
         manageFiltersButtonsBehaviour(startGeocodeButton);
