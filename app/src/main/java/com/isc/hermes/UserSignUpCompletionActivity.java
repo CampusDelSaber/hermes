@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User;
 
 /**
@@ -31,6 +33,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private Button buttonRegister;
     private ImageView imgUser;
     private User userRegistered;
+    //private AccountInfoManager accountInfoManager;
 
     /**
      * Assigns values to the components view.
@@ -45,6 +48,8 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         imgUser = findViewById(R.id.imgUser);
         comboBoxTextField = findViewById(R.id.comboBoxTextField);
     }
+
+
 
     /**
      * Charges information about the user in the text fields.
@@ -91,9 +96,16 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * and navigates the user to the main activity.
      */
     private void generateActionToButtonSignUp() {
+        AccountInfoManager accountInfoManager = new AccountInfoManager();
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
-                //TODO: Save the registeredUser in dataBase
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    System.out.println(userRegistered.getEmail());
+                    System.out.println(userRegistered.getFullName());
+                    System.out.println(userRegistered.getUserName());
+                    System.out.println(userRegistered.getTypeUser());
+                    accountInfoManager.addUser(userRegistered.getEmail(),userRegistered.getFullName(),userRegistered.getUserName(),userRegistered.getTypeUser());
+                }
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             } else comboBoxTextField.setHelperText("Required");

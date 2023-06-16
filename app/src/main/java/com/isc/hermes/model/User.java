@@ -44,7 +44,7 @@ public class User implements Parcelable {
         id = in.readString();
     }
 
-    public User(String fullName, String email, String userName, String typeUser) {
+    public User(String email, String fullName, String userName, String typeUser) {
         this.fullName = fullName;
         this.email = email;
         this.userName = userName;
@@ -138,18 +138,18 @@ public class User implements Parcelable {
     }
 
     /**
-     * Returns the type of the user.
+     * Returns the typeUser of the user.
      *
-     * @return The type of the user.
+     * @return The typeUser of the user.
      */
     public String getTypeUser() {
         return typeUser;
     }
 
     /**
-     * Sets the type of the user.
+     * Sets the typeUser of the user.
      *
-     * @param typeUser The type of the user.
+     * @param typeUser The typeUser of the user.
      */
     public void setTypeUser(String typeUser) {
         this.typeUser = typeUser;
