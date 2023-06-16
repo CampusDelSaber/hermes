@@ -2,9 +2,7 @@ package com.isc.hermes.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -14,7 +12,6 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The MarkerManager class is responsible for managing markers on a MapView.
@@ -22,14 +19,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MarkerManager {
     private Marker currentMarker;
     private SharedPreferences sharedPreferences;
-    private static MarkerManager instance;
+    private static volatile MarkerManager instance;
 
     /**
      * Constructs a new MarkerManager instance.
      *
      * @param context The context used to access SharedPreferences.
      */
-    public MarkerManager(Context context) {
+    private MarkerManager(Context context) {
         sharedPreferences = context.getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
     }
 
@@ -41,7 +38,11 @@ public class MarkerManager {
      */
     public static MarkerManager getInstance(Context context) {
         if (instance == null) {
-            instance = new MarkerManager(context);
+            synchronized (MarkerManager.class) {
+                if (instance == null) {
+                    instance = new MarkerManager(context);
+                }
+            }
         }
         return instance;
     }
@@ -55,8 +56,7 @@ public class MarkerManager {
      * @param latitude  The latitude of the marker's position.
      * @param longitude The longitude of the marker's position.
      */
-    public boolean addMarkerToMap(MapView mapView, String placeName, double latitude, double longitude) {
-        AtomicBoolean added = new AtomicBoolean(false);
+    public void addMarkerToMap(MapView mapView, String placeName, double latitude, double longitude) {
         mapView.getMapAsync(mapboxMap -> {
             if (currentMarker != null) {
                 mapboxMap.removeMarker(currentMarker);
@@ -68,10 +68,9 @@ public class MarkerManager {
                 options.setTitle(placeName);
                 options.position(new LatLng(latitude, longitude));
                 currentMarker = mapboxMap.addMarker(options);
-                added.set(true);
+                setCameraPosition(mapboxMap, latitude, longitude);
             }
         });
-        return added.get();
     }
 
     /**

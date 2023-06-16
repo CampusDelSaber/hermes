@@ -16,27 +16,14 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import android.widget.LinearLayout;
 import com.isc.hermes.controller.FilterController;
-import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.SearcherController;
-import com.isc.hermes.controller.authentication.AuthenticationFactory;
-import com.isc.hermes.controller.authentication.AuthenticationServices;
 import android.widget.SearchView;
-
-import com.isc.hermes.controller.CurrentLocationController;
-
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -76,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchView = findViewById(R.id.searchView);
         changeSearchView();
         addIncidentGeneratorButton();
-        setCameraPosition();
-
+        MarkerManager.getInstance(this).removeSavedMarker();
     }
 
     /**
@@ -252,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onDestroy() {
         super.onDestroy();
         mapDisplay.onDestroy();
-        markerManager.removeSavedMarker();
     }
 
     /**
@@ -288,26 +273,4 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
     }
-
-
-    /**
-     * Sets the camera position of the map based on the shared searcher preferences.
-     * The camera position is set asynchronously using the MapboxMap instance.
-     * It utilizes the MarkerManager instance to retrieve the latitude and longitude.
-     */
-    private void setCameraPosition() {
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                if (markerManager != null) {
-
-                    markerManager.setCameraPosition(mapboxMap,
-                            sharedSearcherPreferencesManager.getLatitude(),
-                            sharedSearcherPreferencesManager.getLongitude());
-                }
-            }
-        });
-    }
-
-
 }
