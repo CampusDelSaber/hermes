@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 
+import com.isc.hermes.controller.DeleteAccountWarningDialog;
+
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
  */
@@ -36,6 +38,8 @@ public class AccountInformation extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
+
+    private DeleteAccountWarningDialog dialog;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -72,8 +76,13 @@ public class AccountInformation extends AppCompatActivity {
     /**
      * This method is used to delete an account using on click action.
      */
-    public void deleteAccountAction(View view) {
-        System.out.println("the action for delete account will be here");
+    public void deleteAccountAction() {
+        findViewById(R.id.buttonDeleteAccount).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.show();
+            }
+        });
     }
 
     /**
@@ -136,5 +145,12 @@ public class AccountInformation extends AppCompatActivity {
         buttonSaveInformation.setVisibility(View.INVISIBLE);
         textFieldFullName.setEnabled(true);
         System.out.println(textFieldFullName.getText());
+    }
+
+    /**
+     * This method initialize the popup warning when we pressed on the delete account button
+     */
+    private void initializeWarningPopup(){
+        this.dialog = new DeleteAccountWarningDialog(this);
     }
 }

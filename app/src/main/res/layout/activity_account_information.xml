@@ -62,8 +62,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageUpload"
-            android:layout_width="209dp"
-            android:layout_height="187dp"
+            android:layout_width="229dp"
+            android:layout_height="185dp"
             android:importantForAccessibility="no"
             app:layout_constraintBottom_toTopOf="@+id/buttonUploadImage"
             app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +116,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:helperTextTextColor="@color/blueLogo"
                 android:hint="@string/complete_name"
                 app:startIconDrawable="@drawable/baseline_contacts_24">
 
@@ -136,7 +135,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/userName"
-                app:helperTextTextColor="@color/blueLogo"
                 app:startIconDrawable="@drawable/baseline_perm_identity_24">
 
                 <AutoCompleteTextView

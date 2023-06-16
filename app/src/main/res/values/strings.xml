@@ -18,6 +18,10 @@
     <string name="get_location_text">Get Location</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
+    <string name="delete_account_question_text">Are you sure you want to delete your account?</string>
+    <string name="delete_account_warning_text">By accepting your data will be permanently deleted</string>
+    <string name="im_sure_text">Im sure!</string>
+    <string name="Better_not_text">Better not</string>
     <string name="account_title">Account Information</string>
     <string name="action_save_info">saveAccountInformationAction</string>
     <string name="action_edit_info">editAccountAction</string>
