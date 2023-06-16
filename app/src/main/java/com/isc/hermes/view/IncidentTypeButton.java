@@ -1,29 +1,13 @@
 package com.isc.hermes.view;
 
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
-import android.animation.StateListAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.view.PointerIcon;
-import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.res.ResourcesCompat;
-
-import com.isc.hermes.R;
-import com.isc.hermes.controller.IncidentFormController;
-
-import java.util.Locale;
 
 public class IncidentTypeButton {
     private static Button buttonSelected;
