@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
+import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.Animations;
 
 import java.net.HttpURLConnection;
@@ -160,7 +161,7 @@ public class IncidentFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,coordinates);
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,GeometryType.POINT.getName(),coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 

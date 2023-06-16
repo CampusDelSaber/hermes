@@ -1,15 +1,16 @@
 package com.isc.hermes.model.incidents;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents the geometry of a coordinate.
  */
 public class Geometry {
     private String type;
-    private ArrayList<double[]> coordinates;
+    private List<Double[]> coordinates;
 
-    public Geometry(String type, ArrayList<double[]> coordinates) {
+    public Geometry(String type, List<Double[]> coordinates) {
         this.type = type;
         this.coordinates = coordinates;
     }
@@ -35,7 +36,7 @@ public class Geometry {
     /**
      * Returns an arrayList of arrays containing coordinate points.
      */
-    public ArrayList<double[]> getCoordinates() {
+    public List<Double[]> getCoordinates() {
         return coordinates;
     }
 
@@ -44,7 +45,26 @@ public class Geometry {
      *
      * @param coordinates receives a new coordinates.
      */
-    public void setCoordinates(ArrayList<double[]> coordinates) {
+    public void setCoordinates(ArrayList<Double[]> coordinates) {
         this.coordinates = coordinates;
+    }
+
+    /**
+     * This method generate a string with the coordinates list.
+     *
+     * @return String with the coordinates.
+     */
+    public String getStringCoordinates(){
+        StringBuilder stringBuilder = new StringBuilder("[");
+        if(coordinates.size() > 1){
+            for (Double[] currentCoordinate : coordinates){
+                stringBuilder.append("["+currentCoordinate[0]+", "+currentCoordinate[1]+"],");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.toString().length()-1);
+            stringBuilder.append("]");
+        }else {
+            stringBuilder.append(coordinates.get(0)[0]+", "+coordinates.get(0)[1]+"]");
+        }
+        return stringBuilder.toString();
     }
 }
