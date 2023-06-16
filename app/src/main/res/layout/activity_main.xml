@@ -137,6 +137,16 @@
         android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/generateIncidentButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            mapbox:srcCompat="@drawable/img_icon_incident_generate"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+            android:importantForAccessibility="no" />
+
+        <ImageButton
             android:id="@+id/locationButton"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -155,6 +165,16 @@
         mapbox:layout_anchorGravity="center" />
     <include
         layout="@layout/waypoint_options_fragment"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
+        layout="@layout/incident_generate_view"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
+        layout="@layout/natural_disaster_form_fragment"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 
