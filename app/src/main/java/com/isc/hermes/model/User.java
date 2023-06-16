@@ -170,4 +170,13 @@ public class User implements Parcelable {
         if (lastName != null) str.append(" ").append(Utils.getFirstWord(lastName));
         this.fullName = str.toString();
     }
+
+    /**
+     * Sets the full name of the user.
+     *
+     * @param fullName The full name of the user.
+     */
+    public void setFullName(String fullName){
+        this.fullName = fullName;
+    }
 }

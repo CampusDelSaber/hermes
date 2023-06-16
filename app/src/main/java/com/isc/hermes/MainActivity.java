@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
      * @param user The User object to be sent to the other activity.
      */
     private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, AccountInformation.class);
         intent.putExtra("userObtained", user);
         startActivity(intent);
     }
