@@ -82,16 +82,18 @@ public class IncidentFormController {
     /**
      * This method handles the actions performed when the accept button is clicked.
      */
-    private void handleAcceptButtonClick() {
+    public void handleAcceptButtonClick() {
         handleCancelButtonClick();
         AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... voids) {
+
                 return uploadIncidentDataBase();
             }
 
             @Override
             protected void onPostExecute(Integer responseCode) {
+
                 handleUploadResponse(responseCode);
             }
         };
@@ -102,7 +104,7 @@ public class IncidentFormController {
      *
      * @param responseCode the response code received after uploading the incident
      */
-    private void handleUploadResponse(Integer responseCode) {
+    public void handleUploadResponse(Integer responseCode) {
         if (responseCode == HttpURLConnection.HTTP_OK) {
             Toast.makeText(context, R.string.incidents_uploaded, Toast.LENGTH_SHORT).show();
         } else {
@@ -168,7 +170,7 @@ public class IncidentFormController {
      This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
      @return The HTTP response code indicating the status of the upload.
      */
-    private int uploadIncidentDataBase(){
+    public int uploadIncidentDataBase(){
         String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());

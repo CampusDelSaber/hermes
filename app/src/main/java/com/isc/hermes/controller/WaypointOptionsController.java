@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -74,8 +75,21 @@ public class WaypointOptionsController {
         reportTrafficButton.setOnClickListener(v -> {
 
             waypointOptions.startAnimation(Animations.exitAnimation);
-            trafficFormController.getTrafficForm().startAnimation(Animations.entryAnimation);
-            trafficFormController.getTrafficForm().setVisibility(View.VISIBLE);
+
+
+            AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
+                @Override
+                protected Integer doInBackground(Void... voids) {
+
+                    return trafficFormController.uploadtrafficDataBase();
+                }
+                @Override
+                protected void onPostExecute(Integer responseCode) {
+                    trafficFormController.handleUploadResponse(responseCode);
+                }
+            };
+
+            task.execute();
             waypointOptions.setVisibility(View.GONE);
             incidentFormController.getMapController().deleteMarks();
 

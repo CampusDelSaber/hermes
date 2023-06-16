@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,109 +18,102 @@ import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.utils.Animations;
 
+import java.net.HttpURLConnection;
+
 /**
  * This is the controller class for "waypoints_options_fragment" view.
  */
 public class TrafficFormController {
     private final Context context;
-    private final RelativeLayout incidentForm;
-    private final Button cancelButton;
-    private final Button acceptButton;
+    private final RelativeLayout trafficForm;
+
     private final MapController mapController;
 
-    int numberEstimate = 123;
-    String timeMunutes = "minutes";
-    String levelTraffic = "Normal";
-
-
-
-
+    int timeEstimate = 10;
+    String level = "Normal";
+    String time = "Minute";
 
     /**
      * This is the constructor method. Init all the necessary components.
      *
-     * @param context       Is the context application.
+     * @param context Is the context application.
      * @param mapController Is the controller of the map.
      */
     public TrafficFormController(Context context, MapController mapController) {
         this.context = context;
         this.mapController = mapController;
-        incidentForm = ((AppCompatActivity) context).findViewById(R.id.traffic_form);
-        cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_button_traffic);
-        acceptButton = ((AppCompatActivity) context).findViewById(R.id.accept_button_traffic);
-        setButtonsOnClick();
-        setTrafficComponents();
+        trafficForm = ((AppCompatActivity)context).findViewById(R.id.traffic_form);
+
+
+    }
+
+    public MapController getMapController() {
+        return mapController;
     }
 
 
     /**
-     * Method to assign functionality to the buttons of the view.
+     * This method handles the actions performed when the cancel button is clicked.
      */
-    private void setButtonsOnClick() {
-        cancelButton.setOnClickListener(v -> {
-            mapController.setMarked(false);
-            incidentForm.startAnimation(Animations.exitAnimation);
-            incidentForm.setVisibility(View.GONE);
-            mapController.deleteMarks();
-        });
 
-        acceptButton.setOnClickListener(v -> {
-            mapController.setMarked(false);
-            incidentForm.startAnimation(Animations.exitAnimation);
-            incidentForm.setVisibility(View.GONE);
-            mapController.deleteMarks();
-            Toast.makeText(context, "Traffic Saved Correctly.", Toast.LENGTH_SHORT).show();
-        });
-    }
 
     /**
-     * Method assign values to the incident components.
+     * This method handles the response received after uploading the traffic to the database.
      *
-     * <p>
-     * This method assign values and views to the incident components such as the incident type
-     * spinner, incident estimated time spinner and incident estimated time number picker.
-     * </p>
+     * @param responseCode the response code received after uploading the traffic
      */
-    public void setTrafficComponents() {
-        Spinner incidentType = ((AppCompatActivity) context).findViewById(R.id.traffic_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.traffic_level, R.layout.incident_spinner_items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentType.setAdapter(adapter);
-
-        Spinner incidentEstimatedTime = ((AppCompatActivity) context).findViewById(R.id.incident_time_spinner);
-        ArrayAdapter<CharSequence> adapterTime = ArrayAdapter.createFromResource(context, R.array.traffic_estimated_time, R.layout.incident_spinner_items);
-        adapterTime.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentEstimatedTime.setAdapter(adapterTime);
-
-        NumberPicker incidentTimePicker = ((AppCompatActivity) context).findViewById(R.id.numberPicker);
-        incidentTimePicker.setMinValue(1);
-        incidentTimePicker.setMaxValue(100);
+    public void handleUploadResponse(Integer responseCode) {
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            Toast.makeText(context, R.string.incidents_uploaded, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, R.string.incidents_not_uploaded, Toast.LENGTH_SHORT).show();
+        }
     }
-
     /**
      * This is a getter method to Incident form layout.
-     *
      * @return Return a layout.
      */
-    public RelativeLayout getTrafficForm() {
-        return incidentForm;
+    public RelativeLayout gettrafficForm() {
+        return trafficForm;
     }
-    private String getIncidentType(){
-        String selectedIncidentType = levelTraffic;
+    /**
+
+     This method etrieves the selected incident type from the incident spinner.
+     @return The selected incident type as a string.
+     */
+    public String gettrafficType(){
+
+        String selectedIncidentType = level;
+        System.out.println("ESto" + selectedIncidentType);
         return selectedIncidentType;
     }
-    private String getIncidentTime(){
-        int selectedIncidentTime = numberEstimate;
-        String selectedIncidentTimeOption = timeMunutes;
+    /**
+
+     This method retrieves the selected incident time from the number picker and time spinner.
+     @return The selected incident time as a  string.
+     */
+    public String gettrafficTime(){
+
+        int selectedIncidentTime = timeEstimate;
+
+        String selectedIncidentTimeOption = time;
+        System.out.println("ESto" + selectedIncidentTime);
         return selectedIncidentTime+ " " + selectedIncidentTimeOption;
     }
 
-    public int uploadIncidentDataBase(){
+    /**
+
+     This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
+     @return The HTTP response code indicating the status of the upload.
+     */
+    public int uploadtrafficDataBase(){
         String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
-        String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
-        String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,coordinates);
-        return TrafficUploader.getInstance().uploadIncident(JsonString);
+        String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(gettrafficTime());
+        String coordinates = IncidentsUploader.getInstance().getCoordinates();
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,gettrafficType(),"Reason",dateCreated, deathDate ,coordinates);
+        return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
+
+
 }
