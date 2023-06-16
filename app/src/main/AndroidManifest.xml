@@ -21,6 +21,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
         <activity
             android:name=".AccountInformation"
             android:exported="true" >
@@ -29,9 +30,6 @@
             android:name=".UserSignUpCompletionActivity"
             android:exported="true" >
         </activity>
-        <activity
-            android:name=".UserSignUpCompletionActivity"
-            android:exported="true"></activity>
         <activity
             android:name=".SignUpActivityView"
             android:exported="true">
@@ -52,7 +50,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            android:exported="true" >
         </activity>
         <activity
             android:name=".EmailVerificationActivity"

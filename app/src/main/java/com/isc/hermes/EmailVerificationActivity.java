@@ -1,11 +1,19 @@
 package com.isc.hermes;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.isc.hermes.database.VerificationCodesManager;
+import com.isc.hermes.model.Validator;
 
 /**
  * This class manages the email verification when the user declares themself as a Administrator.
@@ -13,21 +21,27 @@ import androidx.appcompat.app.AppCompatActivity;
 public class EmailVerificationActivity extends AppCompatActivity {
 
     private EditText[] codeEditTexts;
+    private Button continueButton;
+    private Validator validator;
 
     /**
      * This method initiates the window whe its called.
      * @param savedInstanceState The saved instance.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_verification);
+        validator = Validator.getValidator();
+        validator.obtainVerificationCode();
         initComponents();
     }
 
     /**
      * This method calls the codeTextFields and groups those in a Array.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initComponents(){
         codeEditTexts = new EditText[]{
                 findViewById(R.id.codeTextField1),
@@ -37,6 +51,25 @@ public class EmailVerificationActivity extends AppCompatActivity {
                 findViewById(R.id.codeTextField5),
                 findViewById(R.id.codeTextField6)
         };
+
+        continueButton = findViewById(R.id.continueButton);
+        System.out.println(validator.getCode() + "---------------------");
+        continueButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
+                String code = getCodeUser();
+                System.out.println("CODE FINAL: " + code + "++++++++++++++++++++++++");
+                if (validator.isCorrect(code)) {
+                    VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
+                    verificationCodesManager.updateVerificationCode(validator.getId(), false);
+                    startActivity(intent);
+                } else {
+                    changeColorCodeUser();
+                }
+            }
+        });
 
         configureEditTexts();
     }
@@ -103,5 +136,19 @@ public class EmailVerificationActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    private String getCodeUser() {
+        String code = "";
+        for (int i = 0; i < codeEditTexts.length; i++) {
+            code += codeEditTexts[i].getText();
+        }
+        return code;
+    }
+
+    private void changeColorCodeUser() {
+        for (int i = 0; i < codeEditTexts.length; i++) {
+            codeEditTexts[i].setTextColor(getResources().getColor(R.color.redOriginal));
+        }
     }
 }
