@@ -18,6 +18,7 @@ public class MapDisplay {
     private final MapConfigure mapConfigure;
     private MapboxMap mapboxMap;
     private IncidentsGetterController incidentsGetterController;
+    private Context context;
 
     /**
      * Constructor to create a MapDisplay object.
@@ -28,6 +29,7 @@ public class MapDisplay {
     public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
+        this.context = context;
         mapConfigure.setContext(context);
         incidentsGetterController = IncidentsGetterController.getInstance();
     }
@@ -44,7 +46,7 @@ public class MapDisplay {
             mapConfigure.configure(mapboxMap);
 
             mapboxMap.addOnCameraIdleListener(
-                    () -> incidentsGetterController.getNearIncidentsWithinRadius(mapboxMap)
+                    () -> incidentsGetterController.getNearIncidentsWithinRadius(mapboxMap, context)
             );
         });
     }
