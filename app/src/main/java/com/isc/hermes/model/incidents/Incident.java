@@ -83,7 +83,4 @@ public class Incident {
         return new LatLng(lat, lng);
     }
 
-    public String getType() {
-        return type;
-    }
 }

@@ -1,32 +1,28 @@
 package com.isc.hermes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
-import com.isc.hermes.controller.IncidentDialogController;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
-import android.widget.LinearLayout;
-import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -55,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
+        addIncidentGeneratorButton();
     }
 
     /**
@@ -123,8 +120,15 @@ public class MainActivity extends AppCompatActivity {
      * This method will init the current location controller to get the real time user location
      */
     private void initCurrentLocationController(){
-        currentLocationController = new CurrentLocationController(this, mapDisplay);
+        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
         currentLocationController.initLocation();
+    }
+
+    /**
+     * This method adds the button for incident generation.
+     */
+    private void addIncidentGeneratorButton(){
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this );
     }
 
 
@@ -235,9 +239,4 @@ public class MainActivity extends AppCompatActivity {
             mapDisplay.setMapStyle(mapStyle);
         });
     }
-    public void openIncidentsDialog(View view) throws JSONException, IOException, ParseException {
-        IncidentDialogController incidentDialogController = new IncidentDialogController(this);
-        incidentDialogController.show();
-    }
-
 }
