@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +17,7 @@ import com.isc.hermes.utils.SearcherAdapterUpdater;
 import com.isc.hermes.utils.WayPointClickListener;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * This activity is used for handling the search view operation.
@@ -55,7 +55,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         searchView = findViewById(R.id.searcher_view);
         imageView = findViewById(R.id.back_arrow_main);
 
-        searcher = new Searcher();
+        searcher = new Searcher(this.getApplicationContext());
         List<WayPoint> wayPoints = new ArrayList<>();
         adapter = new SearcherAdapter(wayPoints, this);
         adapterUpdater = new SearcherAdapterUpdater(this, adapter);
@@ -96,9 +96,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         editor.putFloat("latitude", (float)wayPoint.getLatitude());
         editor.putFloat("longitude", (float)wayPoint.getLongitude());
         editor.apply();
-
         finish();
-
     }
 
     /**

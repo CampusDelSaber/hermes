@@ -1,8 +1,7 @@
 package com.isc.hermes.model;
 
+import android.content.Context;
 import android.os.StrictMode;
-
-import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
@@ -25,12 +24,19 @@ import retrofit2.Response;
 public class Searcher {
 
     protected CurrentLocationModel currentLocationModel;
+    private Context context;
 
     /**
      * This method is the constructor of the class
      */
-    public Searcher() {
+    public Searcher(){}
+
+    /**
+     * Overloading constructor of the class
+     */
+    public Searcher(Context applicationContext) {
         currentLocationModel  = new CurrentLocationModel();
+        this.context = applicationContext;
     }
 
 
@@ -64,7 +70,7 @@ public class Searcher {
      */
     private MapboxGeocoding buildGeocodingClient(CurrentLocationModel userLocation, String query, String country) {
         MapboxGeocoding.Builder builder = MapboxGeocoding.builder()
-                .accessToken("sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA")
+                .accessToken(context.getString(R.string.access_token))
                 .query(query)
                 .proximity(Point.fromLngLat(userLocation.getLongitude(), userLocation.getLatitude()))
                 .autocomplete(true);
