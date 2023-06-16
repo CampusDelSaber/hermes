@@ -44,6 +44,13 @@ public class User implements Parcelable {
         id = in.readString();
     }
 
+    public User(String fullName, String email, String userName, String typeUser) {
+        this.fullName = fullName;
+        this.email = email;
+        this.userName = userName;
+        this.typeUser = typeUser;
+    }
+
     /**
      * Writes the User object to a Parcel.
      *
