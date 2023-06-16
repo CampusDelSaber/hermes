@@ -10,13 +10,13 @@ import java.util.Random;
 /**
  * This class handles incident generators to randomly generate incidents.
  */
-public class GeneratorManager {
+public class IncidentGeneratorManage {
     private IGeometryGenerator[] generators;
 
     /**
      * Constructor, initializes the generator types in an array.
      */
-    public GeneratorManager(){
+    public IncidentGeneratorManage(){
         generators = new IGeometryGenerator[3];
         generators[0] = new PointGenerator();
         generators[1] = new PolygonGenerator();
@@ -42,7 +42,7 @@ public class GeneratorManager {
             numberPoints = 1;
             randomPosition = random.nextInt((generators.length-1) - 0 + 1) + 0;
             generatorSelected = generators[randomPosition];
-            if(generatorSelected.getTypeGeometry().equals(GeometryType.LINESTRING)){
+            if(generatorSelected.getTypeGeometry().equals(GeometryType.LINE_STRING)){
                 numberPoints = random.nextInt(5 - 2 + 1) + 2;
             }
             pointsGenerated = generatorSelected.generate(referencePoint, radium, numberPoints);

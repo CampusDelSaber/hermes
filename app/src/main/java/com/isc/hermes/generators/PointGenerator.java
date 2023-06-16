@@ -10,11 +10,13 @@ import java.util.List;
  */
 public class PointGenerator extends CoordinateGen implements IGeometryGenerator {
 
-    private final int MAXATTEMPTS = 500;
+    private final int MAX_ATTEMPTS = 500;
 
     /**
      * This method generate a point coordinate within a habitable zone.
      *
+     * @param referencePoint Receive a reference point to generate a point around this point.
+     * @param radium Receives the radius in which the point will be generated.
      * @return point coordinate.
      */
     public Double[] getStreetPoint(Double[] referencePoint, Radium radium) {
@@ -27,7 +29,7 @@ public class PointGenerator extends CoordinateGen implements IGeometryGenerator 
             if( streetValidator.isPointStreet(randomPoint[1], randomPoint[0])){
                 found = true;
             }
-        } while (!found && indexAttemps < MAXATTEMPTS);
+        } while (!found && indexAttemps < MAX_ATTEMPTS);
         return randomPoint;
     }
 

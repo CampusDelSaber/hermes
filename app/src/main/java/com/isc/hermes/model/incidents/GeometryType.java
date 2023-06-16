@@ -4,8 +4,8 @@ package com.isc.hermes.model.incidents;
  * This Enum represents the types of geometry that.
  */
 public enum GeometryType {
-    LINESTRING("LineString"), POINT("Point"), POLYGON("Polygon");
-    private String name;
+    LINE_STRING("LineString"), POINT("Point"), POLYGON("Polygon");
+    private final String name;
 
     /**
      * Constructor, inicializa las valores para identificar los tipos de geometria.

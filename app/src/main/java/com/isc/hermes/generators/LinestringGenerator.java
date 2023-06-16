@@ -50,7 +50,7 @@ public class LinestringGenerator extends CoordinateGen implements IGeometryGener
      */
     @Override
     public GeometryType getTypeGeometry() {
-        return GeometryType.LINESTRING;
+        return GeometryType.LINE_STRING;
     }
 
 }
