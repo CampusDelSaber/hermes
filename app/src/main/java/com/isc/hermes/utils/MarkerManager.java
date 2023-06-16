@@ -33,18 +33,27 @@ public class MarkerManager {
         sharedPreferences = context.getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
     }
 
+    /**
+     * Returns the unique instance of MarkerManager.
+     *
+     * @param context The context used to create the instance.
+     * @return The unique instance of MarkerManager.
+     */
     public static MarkerManager getInstance(Context context) {
-        if(instance == null) instance = new MarkerManager(context);
+        if (instance == null) {
+            instance = new MarkerManager(context);
+        }
         return instance;
     }
+
 
     /**
      * Adds a marker to the map at the specified location.
      *
-     * @param mapView    The MapView instance.
-     * @param placeName  The name of the place associated with the marker.
-     * @param latitude   The latitude of the marker's position.
-     * @param longitude  The longitude of the marker's position.
+     * @param mapView   The MapView instance.
+     * @param placeName The name of the place associated with the marker.
+     * @param latitude  The latitude of the marker's position.
+     * @param longitude The longitude of the marker's position.
      */
     public boolean addMarkerToMap(MapView mapView, String placeName, double latitude, double longitude) {
         AtomicBoolean added = new AtomicBoolean(false);
@@ -68,7 +77,7 @@ public class MarkerManager {
     /**
      * Sets the camera position to the specified latitude and longitude.
      *
-     * @param mapboxMap   The MapboxMap instance.
+     * @param mapboxMap The MapboxMap instance.
      * @param latitude  The latitude of the camera's position.
      * @param longitude The longitude of the camera's position.
      */
@@ -91,10 +100,5 @@ public class MarkerManager {
         editor.remove("longitude");
         editor.apply();
     }
-
-    public Marker getCurrentMarker() {
-        return currentMarker;
-    }
-
 
 }

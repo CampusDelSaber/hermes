@@ -12,14 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.isc.hermes.controller.SearcherController;
-import com.isc.hermes.model.MapboxEventManager;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.SearcherAdapter;
 import com.isc.hermes.utils.SearcherAdapterUpdater;
 import com.isc.hermes.utils.WayPointClickListener;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,12 +101,6 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
 
         finish();
 
-       /* MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
-        if(mapboxEventManager.addMarker(wayPoint)){
-            Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
-        }
-        else Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-        onDestroy();*/
     }
 
     /**

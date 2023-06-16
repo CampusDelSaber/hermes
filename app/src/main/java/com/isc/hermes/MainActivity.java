@@ -1,10 +1,8 @@
 package com.isc.hermes;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,15 +13,11 @@ import android.widget.ImageButton;
 
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-import com.isc.hermes.model.MapboxMapListener;
 
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.CurrentLocationController;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.utils.MapConfigure;
@@ -31,10 +25,8 @@ import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -44,7 +36,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements MapboxMapListener {
+public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
@@ -77,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     }
 
     /**
-     * <<<<<<< HEAD
      * Method to add the searcher to the main scene above the map
      */
     private void addMapboxSearcher() {
@@ -86,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     }
 
     /**
-     * =======
-     * >>>>>>> feature/ID-198/ImplementationOfWaypointsWithTheSearcher
      * This method is used to display a view where you can see the information about your account.
      *
      * @param view Helps build the view
@@ -214,17 +203,6 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
         addMarkers();
     }
 
-    private void addMarkers() {
-        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName()
-                , sharedSearcherPreferencesManager.getLatitude(),
-                sharedSearcherPreferencesManager.getLongitude());
-        if (markerManager.getCurrentMarker() != null) {
-            markerManager.setCameraPosition(mapDisplay.getMapboxMap(),
-                    sharedSearcherPreferencesManager.getLatitude(),
-                    sharedSearcherPreferencesManager.getLongitude());
-        }
-    }
-
     /**
      * Method for pausing the MapView object instance.
      */
@@ -290,34 +268,32 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
         });
     }
 
-    @Override
-    public void addMarker(MarkerOptions markerOptions) {
-        mapDisplay.getMapboxMap().addMarker(markerOptions);
+    /**
+     * Adds markers to the map based on the shared searcher preferences.
+     * The markers are added using the MarkerManager instance.
+     */
+    private void addMarkers() {
+        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
+                sharedSearcherPreferencesManager.getLatitude(),
+                sharedSearcherPreferencesManager.getLongitude());
     }
 
-/*    public void onPostResume() {
-        super.onPostResume();
-        if(markerManager.getCurrentMarker() != null ) {
 
-            markerManager.setCameraPosition(mapDisplay.getMapboxMap(),
-                    sharedSearcherPreferencesManager.getLatitude(),
-                    sharedSearcherPreferencesManager.getLongitude());
-        }
-    }*/
+    /**
+     * Sets the camera position of the map based on the shared searcher preferences.
+     * The camera position is set asynchronously using the MapboxMap instance.
+     * It utilizes the MarkerManager instance to retrieve the latitude and longitude.
+     */
     private void setCameraPosition() {
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                double latitude = sharedSearcherPreferencesManager.getLatitude();
-                double longitude = sharedSearcherPreferencesManager.getLongitude();
-                float zoomLevel = 12f; // Nivel de zoom deseado
+                if (markerManager != null) {
 
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(latitude, longitude))
-                        .zoom(zoomLevel)
-                        .build();
-
-                mapboxMap.setCameraPosition(cameraPosition);
+                    markerManager.setCameraPosition(mapboxMap,
+                            sharedSearcherPreferencesManager.getLatitude(),
+                            sharedSearcherPreferencesManager.getLongitude());
+                }
             }
         });
     }
