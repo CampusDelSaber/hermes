@@ -85,6 +85,18 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Sends a User object to another activity using an Intent.
+     *
+     * @param user The User object to be sent to the other activity.
+     */
+    private void sendUserBetweenActivities(User user) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("userObtained", user);
+        startActivity(intent);
+    }
+
     /**
      * Generates an action for the sign-up button.
      * Sets a click listener on the "Register" button, which saves the user's information to the database
@@ -93,9 +105,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
-                //TODO: Save the registeredUser in dataBase
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                sendUserBetweenActivities(userRegistered);
             } else comboBoxTextField.setHelperText("Required");
         });
     }

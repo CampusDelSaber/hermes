@@ -13,6 +13,7 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.model.Searcher;
 import android.widget.LinearLayout;
 import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.model.User;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private MapDisplay mapDisplay;
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
+    private User userRegistered;
     private boolean visibilityMenu = false;
 
     /**
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
+        getUserInformation();
         mapStyleListener();
         initCurrentLocationController();
     }
@@ -60,13 +63,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Sends a User object to another activity using an Intent.
+     *
+     * @param user The User object to be sent to the other activity.
+     */
+    private void sendUserBetweenActivities(User user) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("userObtained", user);
+        startActivity(intent);
+    }
+
+    /**
      * This method is used to display a view where you can see the information about your account.
      *
      * @param view Helps build the view
      */
     public void goToAccountInformation(View view) {
-        Intent intent = new Intent(this, AccountInformation.class);
-        startActivity(intent);
+        sendUserBetweenActivities(userRegistered);
     }
 
     /**
@@ -219,6 +232,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapDisplay.onSaveInstanceState(outState);
+    }
+
+    /**
+     * Retrieves the user information passed through the intent.
+     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
+     */
+    private void getUserInformation() {
+        Intent intent = getIntent();
+        userRegistered = intent.getParcelableExtra("userObtained");
     }
 
     /**

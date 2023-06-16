@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.isc.hermes.controller.DeleteAccountWarningDialog;
+import com.isc.hermes.model.User;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
@@ -13,6 +14,7 @@ import com.isc.hermes.controller.DeleteAccountWarningDialog;
 public class AccountInformation extends AppCompatActivity {
 
     private DeleteAccountWarningDialog dialog;
+    private User userRegistered;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -49,6 +51,15 @@ public class AccountInformation extends AppCompatActivity {
                 dialog.show();
             }
         });
+    }
+
+    /**
+     * Retrieves the user information passed through the intent.
+     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
+     */
+    private void getUserInformation() {
+        Intent intent = getIntent();
+        userRegistered = intent.getParcelableExtra("userObtained");
     }
 
     /**
