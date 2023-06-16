@@ -70,7 +70,7 @@ public class IncidentsDataProcessor {
     private String buildApiUrlNearIncidents(LatLng latLng, double radius) {
         String latitude = Double.toString(latLng.getLatitude());
         String longitude = Double.toString(latLng.getLongitude());
-        String radiusString = Double.toString(radius / 100.0);
+        String radiusString = Double.toString(radius / 10.0);
 
         return String.format(
                 "%s?longitude=%s&latitude=%s&radius=%s",

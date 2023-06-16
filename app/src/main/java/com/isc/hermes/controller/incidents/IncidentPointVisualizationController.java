@@ -4,92 +4,127 @@ import android.content.Context;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.incidents.Incident;
-import com.mapbox.mapboxsdk.annotations.Icon;
-import com.mapbox.mapboxsdk.annotations.IconFactory;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
 import com.isc.hermes.model.incidents.IncidentGetterModel;
-
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import android.os.Handler;
+import android.os.Looper;
 
 
+/**
+ * The controller class for visualizing incident points on the map.
+ */
 public class IncidentPointVisualizationController {
-
+    private static IncidentPointVisualizationController instance;
     private final MapboxMap mapboxMap;
     private final Context context;
-    IncidentGetterModel pointList = new IncidentGetterModel();
+    private IncidentGetterModel pointList = new IncidentGetterModel();
 
-    public IncidentPointVisualizationController(MapboxMap mapboxMap, Context context) {
+    /**
+     * Private constructor to create an instance of the controller.
+     * @param mapboxMap the MapboxMap object representing the map
+     * @param context the context of the application
+     */
+    private IncidentPointVisualizationController(MapboxMap mapboxMap, Context context) {
         this.mapboxMap = mapboxMap;
         this.context = context;
+
         try {
             displayPoint(pointList);
-        } catch (JSONException e){
+        } catch (JSONException e) {
             Toast.makeText(context, R.string.incidents_uploaded, Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
      * This method creates and displays waypoints on the map.
-     * @param pointList list of places that will be marked on the map.
+     * @param pointList the list of incidents to be marked on the map
+     * @throws JSONException if there is an error in JSON parsing
      */
     public void displayPoint(IncidentGetterModel pointList) throws JSONException {
-        IconFactory iconFactory = IconFactory.getInstance(context);
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < pointList.getIncidentList().size(); i++) {
+                    LatLng pointCoordinates = null;
+                    try {
+                        pointCoordinates = getPointCoordinates(pointList.getIncidentList(), i);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    MarkerOptions waypoint = createMarkerOptions(pointCoordinates);
 
-        for (Incident incident : pointList.getIncidentList()) {
-            LatLng pointCoordinates = incident.getPointCoordinates();
-            Icon icon = createIcon();
+                    Set<String> desiredTypes = getDesiredTypes();
+                    addMarkersToMap(waypoint, pointList.getIncidentList(), desiredTypes);
+                }
+            }
+        });
+    }
 
-            MarkerOptions waypoint = createMarkerOptions(pointCoordinates, icon);
+    /**
+     * Retrieves the point coordinates of an incident from the list.
+     * @param pointList the list of incidents
+     * @param index the index of the incident
+     * @return the LatLng object representing the point coordinates
+     * @throws JSONException if there is an error in JSON parsing
+     */
+    private LatLng getPointCoordinates(List<Incident> pointList, int index) throws JSONException {
+        return pointList.get(index).getPointCoordinates();
+    }
 
-            if (isDesiredIncidentType(incident.getType())) {
+    /**
+     * Creates a MarkerOptions object for the given point coordinates.
+     * @param pointCoordinates the LatLng object representing the point coordinates
+     * @return the MarkerOptions object
+     */
+    private MarkerOptions createMarkerOptions(LatLng pointCoordinates) {
+        return new MarkerOptions().position(pointCoordinates);
+    }
+
+    /**
+     * Retrieves the desired types of incidents to be displayed.
+     * @return a Set of Strings containing the desired types
+     */
+    private Set<String> getDesiredTypes() {
+        return new HashSet<>(Arrays.asList("Accident", "Social-Event", "Street obstruction"));
+    }
+
+    /**
+     * Adds markers to the map for the incidents that match the desired types.
+     * @param waypoint the MarkerOptions object representing the waypoint
+     * @param pointList the list of incidents
+     * @param desiredTypes the Set of desired incident types
+     */
+    private void addMarkersToMap(MarkerOptions waypoint, List<Incident> pointList, Set<String> desiredTypes) {
+        for (Incident incident : pointList) {
+            String incidentType = incident.getType();
+            if (desiredTypes.contains(incidentType)) {
                 mapboxMap.addMarker(waypoint);
             }
         }
     }
 
-    private Icon createIcon() {
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.mapbox_marker_icon_default);
-        drawable.setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
-
-        Bitmap bitmap = createBitmapFromDrawable(drawable);
-        return IconFactory.getInstance(context).fromBitmap(bitmap);
+    /**
+     * Retrieves the singleton instance of the controller.
+     * @param mapboxMap the MapboxMap object representing the map
+     * @param context the context of the application
+     * @return the singleton instance of the controller
+     */
+    public static IncidentPointVisualizationController getInstance(MapboxMap mapboxMap, Context context) {
+        if (instance == null) {
+            instance = new IncidentPointVisualizationController(mapboxMap, context);
+        }
+        return instance;
     }
-
-    private Bitmap createBitmapFromDrawable(Drawable drawable) {
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-    private MarkerOptions createMarkerOptions(LatLng position, Icon icon) {
-        return new MarkerOptions()
-                .position(position)
-                .icon(icon);
-    }
-
-    private boolean isDesiredIncidentType(String incidentType) {
-        Set<String> desiredTypes = new HashSet<>(Arrays.asList("Accident", "Social-Event", "Street obstruction"));
-        return desiredTypes.contains(incidentType);
-    }
-
 }
