@@ -51,8 +51,8 @@ public class TrafficUploader {
      * @param coordinates The coordinates of the incident location.
      * @return The JSON representation of the incident.
      */
-    public String generateJsonTraffic(String id, String type, String reason, String dateCreated, String deathDate, String coordinates) {
-        return "{\"_id\": \"" + id + "\",\"level\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + "}}";
+    public String generateJsonTraffic(String id, String type, String reason, String dateCreated, String deathDate, String coordinates, String coordinate2) {
+        return "{\"_id\": \"" + id + "\",\"level\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + coordinate2 + " + }}";
     }
     /**
      * This method returns the last clicked point on the map.
@@ -81,6 +81,15 @@ public class TrafficUploader {
         String[] parts = lastClickedPoint.toString().split("[=,]");
         String latitude = parts[1].trim();
         String longitude = parts[3].trim();
+        System.out.println("ESto mas"+latitude);
+        return "[" + latitude + ", " + longitude + "]";
+    }
+
+    public String getCoordinates2(){
+        String[] parts = lastClickedPoint.toString().split("[=,]");
+        String latitude = parts[1].trim();
+        String longitude = parts[3].trim();
+        System.out.println("ESto mas"+latitude);
         return "[" + latitude + ", " + longitude + "]";
     }
     /**

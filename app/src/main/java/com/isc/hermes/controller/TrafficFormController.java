@@ -111,7 +111,8 @@ public class TrafficFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(gettrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,gettrafficType(),"Reason",dateCreated, deathDate ,coordinates);
+        String coordinates2 = TrafficUploader.getInstance().getCoordinates2();
+        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,gettrafficType(),"Reason",dateCreated, deathDate ,coordinates,coordinates2);
         return TrafficUploader.getInstance().uploadTraffic(JsonString);
     }
 
