@@ -1,7 +1,6 @@
 package com.isc.hermes.controller;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
@@ -40,6 +39,11 @@ public class GenerateRandomIncidentController  {
 
     /**
      * This method initiates the incident generation process.
+     * <p>
+     * Gets the current location and input parameters received from the UI to generate the
+     * incidents, uses the generatorManager to generate incidents and builds a string with
+     * the structure of a json to upload the data to the database.
+     * </p>
      */
     private void initGeneration(){
         CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null,null).getCurrentLocationModel();
@@ -61,14 +65,17 @@ public class GenerateRandomIncidentController  {
                         currentIncident.getGeometry().getType(),
                         currentIncident.getGeometry().getStringCoordinates()
                         );
-                Log.i("MAU",jsonString);
                 uploadToDataBase(jsonString);
-
             }
         }
     }
 
-    public void uploadToDataBase(String jsonString){
+    /**
+     * This method creates a thread and calls the database to upload the generated incidents.
+     *
+     * @param jsonString Json structure to upload.
+     */
+    private void uploadToDataBase(String jsonString){
         AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... voids) {
