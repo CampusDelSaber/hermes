@@ -182,9 +182,6 @@ public class ActivitySelectRegion extends AppCompatActivity {
         } else if (text.length() > 15) {
             editText.setError("Max 15 characters allowed");
             editText.setText("");
-        } else if (OfflineModeSettingsActivityView.offlineRegionsNames.containsKey(text)){
-            editText.setError("The name already exists");
-            editText.setText("");
         } else  {
             sendData(text);
         }
