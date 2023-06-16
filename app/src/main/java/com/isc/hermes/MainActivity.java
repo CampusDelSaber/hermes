@@ -3,6 +3,7 @@ package com.isc.hermes;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
@@ -11,10 +12,15 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.controller.SearcherController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
+import android.widget.SearchView;
+
+import com.isc.hermes.controller.CurrentLocationController;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.view.MapDisplay;
@@ -35,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String mapStyle = "default";
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
+    private SearchView searchView;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -49,10 +56,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initMapView();
         mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
-        addMapboxSearcher();
         mapStyleListener();
         initCurrentLocationController();
         mapView.getMapAsync(this);
+        searchView = findViewById(R.id.searchView);
+        changeSearchView();
         addIncidentGeneratorButton();
     }
 
@@ -65,15 +73,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapboxMap.setStyle(new Style.Builder(), style -> filterController.initComponents());
     }
 
-    /**
-     * Method to add the searcher to the main scene above the map
-     */
-    private void addMapboxSearcher() {
-        Searcher searcher = new Searcher();
-        SearcherController searcherController = new SearcherController(searcher,
-                findViewById(R.id.searchResults), findViewById(R.id.searchView));
-        searcherController.runSearcher();
-    }
 
     /**
      * This method is used to display a view where you can see the information about your account.
@@ -100,6 +99,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             visibilityMenu = false;
             setMapScrollGesturesEnabled(true);
         }
+    }
+
+    /**
+     * This method is used to change the search view.
+     */
+    private void changeSearchView() {
+        searchView.setOnClickListener(v -> {
+            new Handler().post(() -> {
+                Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
+                startActivity(intent);
+            });
+        });
     }
 
     /**
