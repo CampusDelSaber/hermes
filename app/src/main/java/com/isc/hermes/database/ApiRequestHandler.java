@@ -45,6 +45,12 @@ public class ApiRequestHandler {
         return response.toString();
     }
 
+    /**
+     * Sends a POST request to the specified API URL with the provided JSON data.
+     *
+     * @param apiUrl   The URL of the API to send the request to.
+     * @param jsonData The JSON data to be sent in the request body.
+     */
     public void postDataFromApi(String apiUrl, String jsonData) {
         try {
            URL url = new URL(apiUrl);
@@ -57,13 +63,18 @@ public class ApiRequestHandler {
             outputStream.flush();
             outputStream.close();
             int responseCode = connection.getResponseCode();
-            System.out.println("CODE RESPONSE: " + responseCode);
             connection.disconnect();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
+    /**
+     * Updates data in the database through a PUT request to the specified API URL with the provided JSON data.
+     *
+     * @param apiUrl   The URL of the API to send the request to.
+     * @param jsonData The JSON data to be sent in the request body.
+     */
     public void updateDataInDatabase(String apiUrl, String jsonData) {
         try {
             URL url = new URL(apiUrl);
@@ -71,15 +82,11 @@ public class ApiRequestHandler {
             connection.setRequestMethod("PUT");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
-
             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(jsonData);
             outputStream.flush();
             outputStream.close();
-
             int responseCode = connection.getResponseCode();
-            System.out.println("RESPONSE CODE: " + responseCode);
-
             connection.disconnect();
         } catch (Exception exception) {
             exception.printStackTrace();

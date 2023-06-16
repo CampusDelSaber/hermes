@@ -12,13 +12,10 @@ import android.widget.TextView;
 
 import com.isc.hermes.R;
 import com.isc.hermes.database.VerificationCodesManager;
-import com.isc.hermes.utils.CreateVerificationCode;
-import com.isc.hermes.utils.ValidationPeriod;
 
-import org.json.JSONException;
-
-import java.util.concurrent.ExecutionException;
-
+/**
+ * The Validator class is responsible for validating a verification code entered by the user.
+ */
 public class Validator extends AppCompatActivity {
 
     private EditText codeInput;
@@ -29,20 +26,25 @@ public class Validator extends AppCompatActivity {
     private VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
 
+    /**
+     * Called when the activity is created.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_validate);
+        setContentView(R.layout.activity_validator);
 
         result = findViewById(R.id.resultMessage);
         codeInput = findViewById(R.id.codeInput);
         submit = findViewById(R.id.submitCode);
 
         verificationCodesManager = new VerificationCodesManager();
-        verificationCodesManager.addVerificationCode("gandarillas.delgado.denis@gmail.com");
+        verificationCodesManager.addVerificationCode("hermes.map.app@gmail.com");
         try {
-            verificationCode = verificationCodesManager.getLastVerificationCode("gandarillas.delgado.denis@gmail.com");
+            verificationCode = verificationCodesManager.getLastVerificationCode("hermes.map.app@gmail.com");
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
@@ -64,14 +66,24 @@ public class Validator extends AppCompatActivity {
         });
     }
 
-    public boolean isCorrect(String code, String usercode) {
-        return code.equals(usercode);
+    /**
+     * Checks if the entered code matches the actual code.
+     *
+     * @param code     The actual verification code.
+     * @param userCode The code entered by the user.
+     * @return True if the codes match, false otherwise.
+     */
+    public boolean isCorrect(String code, String userCode) {
+        return code.equals(userCode);
     }
 
+    /**
+     * Verifies the entered verification code.
+     */
     public void verifyCode() {
-        String codeuser = String.valueOf(codeInput.getText());
+        String userCode = String.valueOf(codeInput.getText());
 
-        if (isCorrect(code, codeuser) && valid) {
+        if (isCorrect(code, userCode) && valid) {
             result.setText("CORRECT");
             result.setTextColor(getResources().getColor(R.color.green));
         } else {
@@ -79,5 +91,4 @@ public class Validator extends AppCompatActivity {
             result.setTextColor(getResources().getColor(R.color.redOriginal));
         }
     }
-
 }

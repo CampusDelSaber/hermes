@@ -2,13 +2,8 @@ package com.isc.hermes.database;
 
 import com.google.gson.Gson;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -43,6 +38,13 @@ public class ApiHandler {
         );
     }
 
+    /**
+     * Posts future collections to the specified API URL with the given parameters and object.
+     *
+     * @param params  The parameters to append to the API URL.
+     * @param object  The object to be posted as JSON data.
+     * @return A Future representing the result of the asynchronous operation.
+     */
     public Future<?> postFutureCollections(String params, Object object) {
         String url = API_URL + params;
         Gson gson = new Gson();
@@ -51,6 +53,13 @@ public class ApiHandler {
         return executorService.submit(() -> requestHandler.postDataFromApi(url, result));
     }
 
+    /**
+     * Updates the validity of a verification code through the specified API URL and boolean value.
+     *
+     * @param params    The parameters to append to the API URL.
+     * @param isValid   The boolean value indicating the validity of the verification code.
+     * @return A Future representing the result of the asynchronous operation.
+     */
     public Future<?> updateVerificationCodeValidity(String params, boolean isValid) {
         String url = API_URL + params;
         JSONObject updateData = new JSONObject();
