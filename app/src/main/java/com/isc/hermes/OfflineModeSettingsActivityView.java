@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import java.sql.SQLOutput;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -32,15 +34,15 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.offline_mode_settings_view);
+        createNewCardMapDownloaded("COCHABAMBA","100MB");
     }
 
     /**
      * This method create a card view of a downloaded map.
      * @param name the name of the downloaded region
      * @param size the size path of the downloaded region
-     * @param ExpireTime the time whith the region expire
      */
-    protected void createNewCardMapDownloaded(String name, String size, String ExpireTime){
+    protected void createNewCardMapDownloaded(String name, String size){
         LinearLayout textViewsVertical = new LinearLayout(this);
         textViewsVertical.setOrientation(LinearLayout.VERTICAL);
 
@@ -58,11 +60,6 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
         size_downloaded_Map.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         size_downloaded_Map.setPadding(0,0,10,0);
 
-        TextView time_expire_downloaded_Map = new TextView(this);
-        time_expire_downloaded_Map.setText(ExpireTime);
-        time_expire_downloaded_Map.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-
-        textViewsHorizontal.addView(time_expire_downloaded_Map);
         textViewsHorizontal.addView(size_downloaded_Map);
 
         textViewsVertical.addView(textViewsHorizontal);
@@ -111,9 +108,7 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
         CircleImageView popupButton = new CircleImageView(this);
         popupButton.setImageResource(R.drawable.img_tree_points_vertical);
         popupButton.setPadding(10,10,300,0);
-        ViewGroup.LayoutParams params = popupButton.getLayoutParams();
-        params.width = 50;  // Ancho en píxeles
-        params.height = 50; // Largo en píxeles
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(50, 50);  // Crea nuevos parámetros con el ancho y largo deseados
         popupButton.setLayoutParams(params);
 
         View.OnClickListener miClickListener = this::showPopupMenu;
@@ -131,9 +126,7 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
         check_image_View.setImageResource(R.drawable.img_check);
         check_image_View.setPadding(30,10,10,0);
 
-        ViewGroup.LayoutParams params = check_image_View.getLayoutParams();
-        params.width = 50;  // Ancho en píxeles
-        params.height = 50; // Largo en píxeles
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(50, 50);  // Crea nuevos parámetros con el ancho y largo deseados
         check_image_View.setLayoutParams(params);
 
         return check_image_View;
