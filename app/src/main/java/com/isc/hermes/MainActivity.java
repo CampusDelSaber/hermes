@@ -13,14 +13,15 @@ import android.view.View;
 import android.widget.ImageButton;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-import com.isc.hermes.model.MapboxEventManager;
 import com.isc.hermes.model.MapboxMapListener;
-import com.isc.hermes.model.Searcher;
+
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.utils.MarkerManager;
+import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
     private SearchView searchView;
+    private MarkerManager markerManager;
+    private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -66,12 +69,8 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
      * Method to add the searcher to the main scene above the map
      */
     private void addMapboxSearcher() {
-        Searcher searcher = new Searcher();
-        /*SearcherController searcherController = new SearcherController(searcher,
-                findViewById(R.id.searchResults),findViewById(R.id.searchView));
-        searcherController.runSearcher();*/
-        MapboxEventManager mapboxEventManager = MapboxEventManager.getInstance();
-        mapboxEventManager.setMapboxMap(mapDisplay.getMapboxMap());
+        markerManager = new MarkerManager(this);
+        sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
 
     }
 
@@ -105,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
     }
 
     private void changeSearchView() {
+        addMapboxSearcher();
         searchView.setOnClickListener(v -> {
-            addMapboxSearcher();
             new Handler().post(() -> {
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
                 startActivity(intent);
@@ -193,14 +192,11 @@ public class MainActivity extends AppCompatActivity implements MapboxMapListener
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
                     authenticationServices);
 
-        SharedPreferences sharedPreferences2 = getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
-        String placeName = sharedPreferences2.getString("placeName", null);
-        double latitude = sharedPreferences2.getFloat("latitude", 0);
-        double longitude = sharedPreferences2.getFloat("longitude", 0);
+        markerManager.addMarkerToMap(mapDisplay.getMapboxMap(),
+                sharedSearcherPreferencesManager.getPlaceName(),
+                sharedSearcherPreferencesManager.getLatitude(),
+                sharedSearcherPreferencesManager.getLongitude());
 
-        if (placeName != null) {
-            addMarkerToMap(placeName, latitude, longitude);
-        }
     }
 
     private Marker currentMarker;
