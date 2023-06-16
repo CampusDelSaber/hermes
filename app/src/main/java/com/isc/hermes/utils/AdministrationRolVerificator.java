@@ -13,6 +13,9 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
+import com.isc.hermes.model.signup.Suscribable;
+import com.isc.hermes.model.user.User;
+
 import org.apache.commons.codec.binary.Base64;
 
 import javax.mail.Session;
@@ -21,14 +24,12 @@ import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.util.Properties;
 import java.util.Set;
 
 import static com.google.api.services.gmail.GmailScopes.GMAIL_SEND;
 
-public class SendEmail {
+public class AdministrationRolVerificator implements Suscribable{
 
     private static final String TEST_EMAIL_m = "wmauchess@gmail.com";
     private static final String TEST_EMAIL_G = "garcia.villalobos.gabriela.4d@gmail.com";
@@ -36,7 +37,8 @@ public class SendEmail {
     private final Gmail service;
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
-    public SendEmail()  {
+    public AdministrationRolVerificator()  {
+
         NetHttpTransport httpTransport = null;
         try {
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -53,7 +55,7 @@ public class SendEmail {
             throws IOException {
         System.out.println("55555555555555555555555555555555555555555555555555555555555555555555");
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory,
-                new InputStreamReader(SendEmail.class.getResourceAsStream("/client_secret_288184681138-86dhcr4s5t1afm1v1m88a8ve55jbetr9.apps.googleusercontent.com (2).json")));
+                new InputStreamReader(AdministrationRolVerificator.class.getResourceAsStream("/client_secret_288184681138-86dhcr4s5t1afm1v1m88a8ve55jbetr9.apps.googleusercontent.com (2).json")));
 
         System.out.println("8888888888888888888888888888888888888");
 
@@ -98,5 +100,13 @@ public class SendEmail {
         }
     }
 
+    @Override
+    public void notify(User user) {
+        try {
+            sendMail("Hola Mundo", "Denis uwu");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 

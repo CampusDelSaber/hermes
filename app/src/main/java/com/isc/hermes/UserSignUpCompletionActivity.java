@@ -100,7 +100,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getRole() != null) {
-                transition.transitionBasedOnRole(userRegistered.getRole(), this);
+                transition.transitionBasedOnRole(userRegistered, this);
             } else comboBoxTextField.setHelperText("Required");
         });
     }
