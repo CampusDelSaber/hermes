@@ -1,8 +1,12 @@
 package com.isc.hermes;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -85,7 +89,16 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
      */
     @Override
     public void onItemClick(WayPoint wayPoint) {
-        // Add listener
+        Toast.makeText(this, wayPoint.getPlaceName(), Toast.LENGTH_SHORT).show();
+        SharedPreferences sharedPreferences = getSharedPreferences("com.isc.hermes", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("placeName", wayPoint.getPlaceName());
+        editor.putFloat("latitude", (float)wayPoint.getLatitude());
+        editor.putFloat("longitude", (float)wayPoint.getLongitude());
+        editor.apply();
+
+        finish();
+
     }
 
     /**

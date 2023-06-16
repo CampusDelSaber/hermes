@@ -1,5 +1,8 @@
 package com.isc.hermes;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +10,11 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
+
+import com.isc.hermes.controller.authentication.AuthenticationFactory;
+import com.isc.hermes.controller.authentication.AuthenticationServices;
+
+import android.widget.LinearLayout;
 import com.isc.hermes.controller.FilterController;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
@@ -18,13 +26,17 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.CurrentLocationController;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.utils.MarkerManager;
+import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -42,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
     private SearchView searchView;
+    private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private MarkerManager markerManager;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -54,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        mapDisplay = new MapDisplay(this, mapView, new MapConfigure());
+        mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         mapStyleListener();
         initCurrentLocationController();
@@ -62,6 +76,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchView = findViewById(R.id.searchView);
         changeSearchView();
         addIncidentGeneratorButton();
+        setCameraPosition();
+
+    }
+
+    /**
+     * Method to add the searcher to the main scene above the map
+     */
+    private void addMapboxSearcher() {
+        sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
+        markerManager = MarkerManager.getInstance(this);
     }
 
     /**
@@ -105,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * This method is used to change the search view.
      */
     private void changeSearchView() {
+        addMapboxSearcher();
         searchView.setOnClickListener(v -> {
             new Handler().post(() -> {
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
@@ -136,16 +161,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * This method will init the current location controller to get the real time user location
      */
-    private void initCurrentLocationController(){
+    private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
-        currentLocationController.initLocation();
+        currentLocationController.initLocationButton();
     }
 
     /**
      * This method adds the button for incident generation.
      */
-    private void addIncidentGeneratorButton(){
-        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this );
+    private void addIncidentGeneratorButton() {
+        GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this);
     }
 
 
@@ -180,14 +205,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onResume() {
         super.onResume();
         mapDisplay.onResume();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                this);
-        AuthenticationServices authenticationServices = AuthenticationServices.getAuthentication(
-                sharedPreferences.getInt("cuenta", 0));
-        if (authenticationServices != null)
-            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(
-                    authenticationServices);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        AuthenticationServices authenticationServices = AuthenticationServices.getAuthentication(sharedPreferences.getInt("cuenta", 0));
+        if (authenticationServices != null)
+            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(authenticationServices);
+
+        addMarkers();
     }
 
     /**
@@ -228,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onDestroy() {
         super.onDestroy();
         mapDisplay.onDestroy();
+        markerManager.removeSavedMarker();
     }
 
     /**
@@ -253,4 +278,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapDisplay.setMapStyle(mapStyle);
         });
     }
+
+    /**
+     * Adds markers to the map based on the shared searcher preferences.
+     * The markers are added using the MarkerManager instance.
+     */
+    private void addMarkers() {
+        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
+                sharedSearcherPreferencesManager.getLatitude(),
+                sharedSearcherPreferencesManager.getLongitude());
+    }
+
+
+    /**
+     * Sets the camera position of the map based on the shared searcher preferences.
+     * The camera position is set asynchronously using the MapboxMap instance.
+     * It utilizes the MarkerManager instance to retrieve the latitude and longitude.
+     */
+    private void setCameraPosition() {
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                if (markerManager != null) {
+
+                    markerManager.setCameraPosition(mapboxMap,
+                            sharedSearcherPreferencesManager.getLatitude(),
+                            sharedSearcherPreferencesManager.getLongitude());
+                }
+            }
+        });
+    }
+
+
 }

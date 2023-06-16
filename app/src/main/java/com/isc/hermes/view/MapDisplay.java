@@ -16,12 +16,13 @@ public class MapDisplay {
     private final MapConfigure mapConfigure;
     private final Context context;
     private MapboxMap mapboxMap;
+    private static MapDisplay instance;
 
     /**
      * Constructor to create a MapDisplay object.
      *
-     * @param mapView       the MapView object to display the map
-     * @param mapConfigure  the MapConfigure object to configure the map
+     * @param mapView      the MapView object to display the map
+     * @param mapConfigure the MapConfigure object to configure the map
      */
     public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
@@ -30,6 +31,10 @@ public class MapDisplay {
         mapConfigure.setContext(context);
     }
 
+    public static MapDisplay getInstance(Context context, MapView mapView, MapConfigure mapConfigure) {
+        if (instance == null) instance = new MapDisplay(context, mapView, mapConfigure);
+        return instance;
+    }
 
 
     /**
@@ -44,7 +49,6 @@ public class MapDisplay {
             mapConfigure.configure(mapboxMap);
         });
     }
-
 
 
     /**
@@ -98,7 +102,8 @@ public class MapDisplay {
         mapView.onSaveInstanceState(outState);
     }
 
-    /** Getter for the MapboxMap object.
+    /**
+     * Getter for the MapboxMap object.
      *
      * @return the MapboxMap object
      */
