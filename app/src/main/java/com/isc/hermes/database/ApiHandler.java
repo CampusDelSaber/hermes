@@ -1,5 +1,7 @@
 package com.isc.hermes.database;
 
+import com.google.gson.Gson;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -32,6 +34,14 @@ public class ApiHandler {
         return executorService.submit(
                 () -> requestHandler.getDataFromApi(API_URL + params)
         );
+    }
+
+    public Future<?> postFutureCollections(String params, Object object) {
+        String url = API_URL + params;
+        Gson gson = new Gson();
+        String result = gson.toJson(object);
+        System.out.println("RESULT: " + result);
+        return executorService.submit(() -> requestHandler.postDataFromApi(url, result));
     }
 
     /**
