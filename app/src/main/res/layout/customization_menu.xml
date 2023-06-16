@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <LinearLayout
         android:id="@+id/styleOptionsWindow"
         android:layout_width="360dp"
@@ -35,7 +34,6 @@
                 android:tag="@string/default_style"
                 android:src="@drawable/default_style"
                 android:onClick="changeMapStyle">
-
             </ImageButton>
 
             <TextView
@@ -45,6 +43,7 @@
                 android:textColor="@color/white"
                 android:textSize="18sp">
             </TextView>
+
         </LinearLayout>
 
         <LinearLayout
@@ -63,7 +62,6 @@
                 android:tag="@string/satellite_style"
                 android:src="@drawable/satellite_style"
                 android:onClick="changeMapStyle">
-
             </ImageButton>
 
             <TextView
@@ -73,6 +71,7 @@
                 android:textColor="@color/white"
                 android:textSize="18sp">
             </TextView>
+
         </LinearLayout>
 
         <LinearLayout
@@ -91,7 +90,6 @@
                 android:src="@drawable/dark_style"
                 android:tag="@string/dark_style"
                 android:onClick="changeMapStyle">
-
             </ImageButton>
 
             <TextView
@@ -101,6 +99,7 @@
                 android:textColor="@color/white"
                 android:textSize="18sp">
             </TextView>
+
         </LinearLayout>
 
     </LinearLayout>

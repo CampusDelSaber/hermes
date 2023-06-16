@@ -114,7 +114,6 @@
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
             android:importantForAccessibility="no" />
 
-
         <ImageButton
             android:id="@+id/locationButton"
             android:layout_width="30dp"

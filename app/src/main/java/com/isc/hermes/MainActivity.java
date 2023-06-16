@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method for adding maps styles.xml listener
      * Method to show/hide the map style menu options.
      *
      * @param view The view of the menu map styles button.
