@@ -3,7 +3,9 @@ package com.isc.hermes.controller;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -12,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -24,6 +27,7 @@ import com.isc.hermes.view.IncidentTypeButton;
 import timber.log.Timber;
 
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
@@ -108,6 +112,7 @@ public class IncidentFormController {
     private void handleUploadResponse(Integer responseCode) {
         if (responseCode == HttpURLConnection.HTTP_OK) {
             Toast.makeText(context, R.string.incidents_uploaded, Toast.LENGTH_SHORT).show();
+            clearForm();
         } else {
             Toast.makeText(context, R.string.incidents_not_uploaded, Toast.LENGTH_SHORT).show();
         }
@@ -142,14 +147,50 @@ public class IncidentFormController {
             Timber.i("The arrays about colors, icons and the type buttons have a different size");
         }
 
+        setEstimatedTimePicker();
+    }
+
+    /**
+     * This method set the content of the time picker,
+     * and set the number picker according the kind of time.
+     */
+    private void setEstimatedTimePicker() {
         Spinner incidentEstimatedTime = ((AppCompatActivity) context).findViewById(R.id.incident_time_spinner);
         ArrayAdapter<CharSequence> adapterTime=ArrayAdapter.createFromResource(context, R.array.incidents_estimated_time, R.layout.incident_spinner_items);
         adapterTime.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        incidentEstimatedTime.setAdapter(adapterTime);
 
+        incidentEstimatedTime.setAdapter(adapterTime);
         NumberPicker incidentTimePicker = ((AppCompatActivity) context).findViewById(R.id.numberPicker);
-        incidentTimePicker.setMinValue(1);
-        incidentTimePicker.setMaxValue(10);
+        incidentTimePicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            incidentTimePicker.setTextColor(Color.BLACK);
+        }
+        incidentEstimatedTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedOption = adapterTime.getItem(position).toString();
+
+                if (selectedOption.equals("min")) {
+                    incidentTimePicker.setMinValue(1);
+                    incidentTimePicker.setMaxValue(60);
+                } else if (selectedOption.equals("hr")) {
+                    incidentTimePicker.setMinValue(1);
+                    incidentTimePicker.setMaxValue(24);
+                } else if (selectedOption.equals("day")) {
+                    incidentTimePicker.setMinValue(1);
+                    incidentTimePicker.setMaxValue(31);
+                } else if (selectedOption.equals("month")) {
+                    incidentTimePicker.setMinValue(1);
+                    incidentTimePicker.setMaxValue(12);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                incidentTimePicker.setMinValue(1);
+                incidentTimePicker.setMaxValue(10);
+            }
+        });
     }
 
     /**
@@ -223,5 +264,14 @@ public class IncidentFormController {
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
         String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id, getIncidentType(), reason, dateCreated, deathDate ,coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
+    }
+
+    /**
+     * This method clear the fields of the form.
+     */
+    private void clearForm() {
+        incidentType = null;
+        changeTypeTitle("Incident Type: ");
+        Objects.requireNonNull(reasonTextField.getEditText()).setText("");
     }
 }
