@@ -1,4 +1,4 @@
-package com.isc.hermes.utils;
+package com.isc.hermes.utils.offline;
 import android.content.Context;
 
 import com.isc.hermes.R;

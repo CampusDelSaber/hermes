@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Handler;
 
@@ -28,6 +29,8 @@ import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -355,5 +358,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
+    }
+
+    /**
+     * This method used for open a new activity, offline settings.
+     * @param view view
+     */
+    public void OfflineModeSettings(View view) {
+        Intent intent = new Intent(MainActivity.this, OfflineModeSettingsActivityView.class);
+        intent.putExtra("lat",mapDisplay.getMapboxMap().getCameraPosition().target.getLatitude());
+        intent.putExtra("long",mapDisplay.getMapboxMap().getCameraPosition().target.getLongitude());
+        intent.putExtra("zoom",mapDisplay.getMapboxMap().getCameraPosition().zoom);
+        startActivityForResult(intent, 177);
+    }
+    /**
+     *This Callback method is called when an activity launched with startActivityForResult() returns a result.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
+     * @param resultCode  The integer result code returned by the child activity through its setResult().
+     * @param data        An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 177 && resultCode == RESULT_OK && data.getExtras()!=null){
+            Bundle b = data.getExtras();
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(b.getParcelable("center"))
+                    .zoom(b.getDouble("zoom"))
+                    .build();
+            mapDisplay.getMapboxMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),1500);
+        }
     }
 }

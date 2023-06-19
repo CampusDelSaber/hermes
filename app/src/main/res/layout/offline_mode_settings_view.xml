@@ -31,7 +31,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/img_back_button"
                 android:elevation="20dp"
-                android:onClick="back_to_map"
+                android:onClick="backToMap"
                 android:translationX="10dp"
                 android:translationY="10dp"
                 mapbox:layout_constraintBottom_toBottomOf="parent"
