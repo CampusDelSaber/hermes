@@ -50,6 +50,14 @@ public class PointGenerator extends CoordinateGen implements CoordinatesGenerabl
         return coordinate;
     }
 
+    /**
+     * Method to generate a point close to another using an angle for displacement.
+     *
+     * @param referencePoint to found others points.
+     * @param radium the size radium valid to found a coordinates.
+     * @param angle for horizontal and vertical displacement.
+     * @return near point.
+     */
     public Double[] getNearPoint(Double[] referencePoint, Radium radium, double angle) {
         double distance = radium.getValue();
         Double[] coordinate = new Double[2];

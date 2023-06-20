@@ -145,16 +145,32 @@ public class IncidentGenerator {
         return RADII.get(randomIndex);
     }
 
+    /**
+     * Checks if the incident generation process can be performed without a timeout.
+     *
+     * @return if there is no timeout set or the seconds between timeouts is
+     * less than or equal to zero, otherwise.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean withoutTimeout() {
         return timeout == null || getSecondsBetweenTimeout() <= 0;
     }
 
+    /**
+     * This method calculate the time between the current with the timeout.
+     *
+     * @return difference between the current with the timeout in minutes.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public long getMinutesBetweenTimeout() {
         return timeout == null ? 0 : ChronoUnit.MINUTES.between(LocalDateTime.now(), timeout);
     }
 
+    /**
+     * This method calculate the time between the current with the timeout.
+     *
+     * @return difference between the current with the timeout in seconds.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public long getSecondsBetweenTimeout() {
         return timeout == null ? 0 : ChronoUnit.SECONDS.between(LocalDateTime.now(), timeout);

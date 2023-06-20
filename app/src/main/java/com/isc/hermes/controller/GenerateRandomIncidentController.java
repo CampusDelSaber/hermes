@@ -65,6 +65,13 @@ public class GenerateRandomIncidentController {
         generateRandomIncidentView.hideOptions();
     }
 
+    /**
+     * This method starts generating incidents within a specified radius around a reference point.
+     *
+     * @param referencePoint The reference point around which incidents will be generated.
+     * @param radium The radius in which the incidents will be generated.
+     * @param quantity The number of incidents to generate.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void startGeneratingIncidents(Double[] referencePoint, Radium radium, int quantity) {
         String message;
@@ -84,6 +91,11 @@ public class GenerateRandomIncidentController {
         showShortNotification(message);
     }
 
+    /**
+     * This method show a short notification on the mobile window.
+     *
+     * @param message is the message to show.
+     */
     private void showShortNotification(String message) {
         Toast.makeText(MainActivity.context, message, Toast.LENGTH_SHORT).show();
     }

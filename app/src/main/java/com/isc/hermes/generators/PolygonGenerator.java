@@ -53,6 +53,14 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
         return coordinateParser.parseToDoubles(polygon);
     }
 
+    /**
+     * This method generate coordinates to represent a symmetric polygon.
+     *
+     * @param referencePoint to get the main point reference of limited range.
+     * @param radium to get the radium using the reference point.
+     * @param vertexAmount to define the number of vertices of the polygon.
+     * @return symmetric polygon coordinates generated.
+     */
     public List<Coordinate> genSymmetricPolygon(Double[] referencePoint, Radium radium, int vertexAmount) {
         vertexAmount *= 4;
         double currentAngle;
