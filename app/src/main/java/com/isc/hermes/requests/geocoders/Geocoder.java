@@ -12,14 +12,7 @@ import retrofit2.Response;
  */
 public class Geocoder {
 
-    protected Dotenv dotenv;
-
-    /**
-     * This is a constructor method to initialize dotenv getter.
-     */
-    public Geocoder() {
-        this.dotenv = Dotenv.load();
-    }
+    protected final  String MAPBOX_TOKEN ="sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA";
 
     /**
      * This method get response using a mapbox geocoding created.

@@ -86,8 +86,15 @@ public class GoogleAuthentication implements IAuthentication {
      * which removes all user information within the app
      * </p>
      */
-    public void revokeAccess(){
-        googleSignInClient.revokeAccess();
+    public void revokeAccess(Context context){
+        configureAccess(context);
+        googleSignInClient.revokeAccess().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(context, "Your account was deleted successfully",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
