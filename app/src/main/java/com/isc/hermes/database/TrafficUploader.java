@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 public class TrafficUploader {
 
@@ -94,19 +95,20 @@ public class TrafficUploader {
             graph = new Graph();
         }
 
-
         Node node1 = new Node("Point 2", lastClickedPoint.getLatitude(), lastClickedPoint.getLongitude());
 
         CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null, null).getCurrentLocationModel();
 
         Node node2 = new Node("Point 1", currentLocation.getLatitude(), currentLocation.getLongitude());
-
+        graph.addNode(node1);
+        graph.addNode(node2);
         System.out.println("Nodo 1 "+ node1.getLongitude());
         System.out.println("Nodo 2 " + node2.getLongitude());
 
         String trafficLine = String.valueOf(dijkstraAlgorithm.getGeoJsonRoutes(graph, node1, node2));
         System.out.println("ESto mas" + trafficLine);
         return "[" + trafficLine + "]";
+
     }
     /**
      * This method retrieves the instance of the TrafficUploader class.
