@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapClickEventsManager;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
@@ -16,7 +15,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 public class WaypointOptionsController {
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
-    private final TestController navigationOptionsFormController;
+    private final NavigationOptionsController navigationOptionsFormController;
     private final Button navigateButton;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
@@ -33,7 +32,7 @@ public class WaypointOptionsController {
         this.context = context;
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = new IncidentFormController(context, mapWayPointController);
-        navigationOptionsFormController = new TestController(context, mapWayPointController);
+        navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
@@ -91,7 +90,7 @@ public class WaypointOptionsController {
      * This is the getter method to get the navigation options controller instance.
      * @return Return the navigation options controller form view.
      */
-    public TestController getNavOptionsFormController() {
+    public NavigationOptionsController getNavOptionsFormController() {
         return navigationOptionsFormController;
     }
 }

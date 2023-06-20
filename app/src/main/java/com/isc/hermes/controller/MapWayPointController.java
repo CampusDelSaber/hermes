@@ -18,7 +18,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 public class MapWayPointController implements MapClickConfigurationController {
     private final MapboxMap mapboxMap;
     private final WaypointOptionsController waypointOptionsController;
-    private boolean isMarked;
+    private boolean isMarked, isActivated;
 
     /**
      * This is the constructor method.
@@ -30,6 +30,7 @@ public class MapWayPointController implements MapClickConfigurationController {
         this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
+        isActivated = false;
         Animations.loadAnimations();
     }
 
@@ -40,17 +41,13 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
-/*
-        if (waypointOptionsController.getNavOptionsFormController().isStartPointFromMapSelected()) {
+        if (NavigationOptionsController.isActive) {
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
-            waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().startAnimation(Animations.entryAnimation);
-            waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().setVisibility(View.VISIBLE);
-        } else {
+           } else {
             doMarkOnMapAction(point);
             waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
+
         }
-*/
-        doMarkOnMapAction(point);
         IncidentsUploader.getInstance().setLastClickedPoint(point);
         return true;
     }
@@ -114,5 +111,9 @@ public class MapWayPointController implements MapClickConfigurationController {
 
     public WaypointOptionsController getWaypointOptionsController() {
         return waypointOptionsController;
+    }
+
+    public void setActivated(boolean activated) {
+        isActivated = activated;
     }
 }

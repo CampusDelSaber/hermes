@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
-import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -18,8 +17,8 @@ import java.text.DecimalFormat;
 import timber.log.Timber;
 
 
-public class TestController {
-    private boolean isActive, isLocationStartChosen;
+public class NavigationOptionsController {
+    static boolean isActive, isLocationStartChosen;
     private final Context context;
     private final RelativeLayout navOptionsForm;
     private final Button cancelButton, startButton, chooseStartPointButton,
@@ -36,7 +35,7 @@ public class TestController {
      * @param context Is the context application.
      * @param mapWayPointController Is the controller of the map.
      */
-    public TestController(Context context, MapWayPointController mapWayPointController) {
+    public NavigationOptionsController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
         isActive = false;
         isLocationStartChosen = true;
@@ -54,6 +53,9 @@ public class TestController {
         setButtons();
     }
 
+    /**
+     * Sets the buttons and their click listeners.
+     */
     private void setButtons() {
         chooseStartPointButton.setOnClickListener(v -> handleChooseStartPointButton());
         currentLocationButton.setOnClickListener(v -> handleCurrentLocationChosen());
@@ -66,13 +68,18 @@ public class TestController {
         });
     }
 
+    /**
+     * Handles the action when the current location button is chosen.
+     */
     @SuppressLint("SetTextI18n")
     private void handleCurrentLocationChosen() {
         isLocationStartChosen = true;
         startPointButton.setText("Your Location");
-
     }
 
+    /**
+     * Handles the action when the choose start point button is clicked.
+     */
     private void handleChooseStartPointButton() {
         isActive = true;
         isLocationStartChosen = false;
@@ -115,50 +122,73 @@ public class TestController {
         }
     }
 
-
-    public boolean isStartPointFromMapSelected() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
+    /**
+     * Sets the start point of the navigation.
+     *
+     * @param point The latitude and longitude coordinates of the start point.
+     */
     public void setStartPoint(LatLng point) {
         isLocationStartChosen = false;
-        isActive = true;
         startPoint = point;
         updateUiPointsComponents();
     }
 
+    /**
+     * Updates the UI components related to the navigation points.
+     * This method is called internally after setting the start or final point.
+     * It animates and shows the navigation options form and updates the text on the buttons.
+     */
     private void updateUiPointsComponents() {
+        if (isActive) {
+            navOptionsForm.startAnimation(Animations.entryAnimation);
+            navOptionsForm.setVisibility(View.VISIBLE);
+        }
         setPointsButtonShownTexts();
     }
 
+    /**
+     * Formats the latitude and longitude values into a string.
+     *
+     * @param latitude  The latitude value.
+     * @param longitude The longitude value.
+     * @return The formatted string in the format "Lt: {latitude}\nLg: {longitude}".
+     */
     private String formatLatLng(double latitude, double longitude) {
         DecimalFormat decimalFormat = new DecimalFormat("#.######");
         String formattedLatitude = decimalFormat.format(latitude);
         String formattedLongitude = decimalFormat.format(longitude);
-        return "Lt: "+formattedLatitude + "\n" + "Lg: "+formattedLongitude;
+        return "Lt: " + formattedLatitude + "\n" + "Lg: " + formattedLongitude;
     }
 
     /**
-     * This is a getter method to Incident form layout.
-     * @return Return a layout.
+     * Returns the navigation options form layout.
+     *
+     * @return The RelativeLayout representing the navigation options form.
      */
     public RelativeLayout getNavOptionsForm() {
         return navOptionsForm;
     }
+
+    /**
+     * Sets the final navigation point.
+     *
+     * @param point The latitude and longitude coordinates of the final point.
+     */
+    public void setFinalNavigationPoint(LatLng point) {
+        this.finalPoint = point;
+        updateUiPointsComponents();
+    }
+
+    /**
+     * Sets the text for the start and final point buttons based on the current selected points.
+     * If the start point is not chosen, it displays the latitude and longitude of the start point.
+     * If the final point is not null, it displays the latitude and longitude of the final point.
+     * Otherwise, it displays a default text indicating that the final point is not selected.
+     */
     private void setPointsButtonShownTexts() {
         startPointButton.setText((!isLocationStartChosen)?
                 formatLatLng(startPoint.getLatitude(),startPoint.getLongitude()):"Your Location");
         finalPointButton.setText((finalPoint != null)?
                 formatLatLng(finalPoint.getLatitude(),finalPoint.getLongitude()):"Not selected");
-    }
-
-    public void setFinalNavigationPoint(LatLng point) {
-        isActive = true;
-        this.finalPoint = point;
-        updateUiPointsComponents();
     }
 }
