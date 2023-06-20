@@ -2,22 +2,18 @@ package com.isc.hermes.controller;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
+import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import java.net.HttpURLConnection;
 import java.text.DecimalFormat;
-import java.util.Objects;
 import timber.log.Timber;
 
 
@@ -25,11 +21,9 @@ public class NavigationOptionsFormController {
     private final Context context;
     private final RelativeLayout navOptionsForm;
     private final Button cancelButton, startButton, chooseStartPointButton,
-            startPointButton, finalPointButton;
+            startPointButton, finalPointButton, currentLocationButton;
     private final LinearLayout transportationTypesContainer;
     private final TextView navOptionsText;
-    private final TextInputLayout chooseTextField;
-    public static String incidentType;
     private final MapWayPointController mapWayPointController;
     private boolean isStartPointFromMapSelected;
     private LatLng startPoint, finalPoint;
@@ -48,11 +42,11 @@ public class NavigationOptionsFormController {
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button);
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
+        currentLocationButton = ((AppCompatActivity) context).findViewById(R.id.current_location_button);
         startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);;
         finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);;
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
         navOptionsText = ((AppCompatActivity) context).findViewById(R.id.navOptions_Text);
-        chooseTextField = ((AppCompatActivity) context).findViewById(R.id.choose_text_field);
         setButtonsOnClick();
         setNavOptionsUiComponents();
     }
@@ -61,9 +55,20 @@ public class NavigationOptionsFormController {
      * This method assigns functionality to the buttons of the view.
      */
     private void setButtonsOnClick() {
-        cancelButton.setOnClickListener(v -> handleHiddeItemsView());
+        cancelButton.setOnClickListener(v -> {
+            startPoint = null;
+            finalPoint = null;
+            isStartPointFromMapSelected = false;
+            handleHiddeItemsView();
+        });
         startButton.setOnClickListener(v -> handleAcceptButtonClick());
         chooseStartPointButton.setOnClickListener(v -> handleChooseStartPointButton());
+        currentLocationButton.setOnClickListener(v -> handleOnCurrentLocationOption());
+        setPointsButtonShownTexts();
+    }
+
+    private void handleOnCurrentLocationOption() {
+        startPoint = null;
         setPointsButtonShownTexts();
     }
 
@@ -102,6 +107,12 @@ public class NavigationOptionsFormController {
     private void handleAcceptButtonClick() {
         handleHiddeItemsView();
         isStartPointFromMapSelected = false;
+        Node startPointNode = (startPoint != null) ? new Node("01",startPoint.getLatitude(),
+                startPoint.getLatitude()): null;
+        Node finalPointNode = new Node("02",finalPoint.getLatitude(), finalPoint.getLatitude());
+        // TODO: Navigation Route between these two nodes
+        startPoint = null;
+        finalPoint = null;
     }
 
     /**
@@ -120,19 +131,14 @@ public class NavigationOptionsFormController {
         if (navOptionsTypes.length == navOptionTypeColors.length &&
                 navOptionTypeIcons.length == navOptionsTypes.length) {
             for (int i = 0; i < navOptionsTypes.length; i++) {
-                Button button = IncidentTypeButton.getIncidentTypeButton(
-                        context,
-                        navOptionsTypes[i].toLowerCase(),
-                        Color.parseColor((String) navOptionTypeColors[i]),
-                        navOptionTypeIcons[i]);
-                setTransportButtonAction(button);
+                Button button = IncidentTypeButton.getIncidentTypeButton(context, navOptionsTypes[i].toLowerCase(),
+                        Color.parseColor((String) navOptionTypeColors[i]), navOptionTypeIcons[i]);
                 transportationTypesContainer.addView(button);
             }
         } else {
             Timber.i(String.valueOf(R.string.array_size_text_timber));
         }
     }
-
 
     /**
      * This is a getter method to Incident form layout.
@@ -141,28 +147,6 @@ public class NavigationOptionsFormController {
     public RelativeLayout getNavOptionsForm() {
         return navOptionsForm;
     }
-
-    /**
-     * This method change the title of the type incident, based in a string.
-     * @param title new title
-     */
-    public void changeTypeTitle(String title) {
-        navOptionsText.setText(title);
-    }
-
-    /**
-     * This method set the event to the incident buttons.
-     * @param typeButton button to set the event.
-     */
-    private void setTransportButtonAction(Button typeButton) {
-        typeButton.setOnClickListener(
-                v -> {
-                    IncidentFormController.incidentType = typeButton.getText().toString();
-                    changeTypeTitle("Transportation Type: " + typeButton.getText());
-                }
-        );
-    }
-
 
     public boolean isStartPointFromMapSelected() {
         return isStartPointFromMapSelected;
