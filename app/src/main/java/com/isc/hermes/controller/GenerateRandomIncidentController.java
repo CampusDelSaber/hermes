@@ -60,9 +60,18 @@ public class GenerateRandomIncidentController {
         Radium radium = generateRandomIncidentView.getRadiumSelected();
         int quantity = generateRandomIncidentView.getNumberIncidentsSelected();
         if (radium != null && quantity != 0) {
-            List<Incident> incidents = incidentGeneratorManage.getIncidentsRandomly(referencePoint, radium, quantity);
-            uploadToDataBase(incidents);
-            Toast.makeText(MainActivity.context, quantity + " Incidents Successfully Generated", Toast.LENGTH_SHORT).show();
+            if (!incidentGeneratorManage.withoutTimeout()) {
+                Long timeout = incidentGeneratorManage.getRemainingTimeTimeoutMin();
+                Toast.makeText(MainActivity.context, "You have to wait " +
+                         ((timeout == 0) ? (incidentGeneratorManage.getRemainingTimeTimeoutSeg() + " seg") : (timeout + " min")) +
+                        " to generate incidents", Toast.LENGTH_SHORT).show();
+            } else if (quantity < 2 || quantity > 30) {
+                Toast.makeText(MainActivity.context, "Invalid number of incidents to generate", Toast.LENGTH_SHORT).show();
+            } else {
+                List<Incident> incidents = incidentGeneratorManage.getIncidentsRandomly(referencePoint, radium, quantity);
+                uploadToDataBase(incidents);
+                Toast.makeText(MainActivity.context, quantity + " Incidents Successfully Generated", Toast.LENGTH_SHORT).show();
+            }
         }
         generateRandomIncidentView.hideOptions();
     }

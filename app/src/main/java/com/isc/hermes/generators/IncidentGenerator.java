@@ -10,6 +10,7 @@ import com.isc.hermes.model.incidents.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,13 +22,14 @@ import java.util.Random;
 public class IncidentGenerator {
 
     private Random random;
+    private LocalDateTime timeout;
     private PointGenerator pointGenerator;
     private IncidentType incidentType;
     private List<Incident> incidents;
-    private final List<IncidentType> incidentTypes = (List.of(
+    private final List<IncidentType> INCIDENT_TYPES = (List.of(
             IncidentType.TRAFFIC_INCIDENT, IncidentType.SOCIAL_INCIDENT,
             IncidentType.DANGER_ZONE, IncidentType.NATURAL_DISASTER));
-    private final List<Radium> radii = List.of(Radium.FIVE_METERS, Radium.TEN_METERS,
+    private final List<Radium> RADII = List.of(Radium.FIVE_METERS, Radium.TEN_METERS,
             Radium.TWENTY_FIVE_METERS, Radium.FIFTY_METERS);
     ;
 
@@ -62,20 +64,23 @@ public class IncidentGenerator {
     /**
      * Generates a list of incidents randomly based on the incident generators you have.
      *
-     * @param radium Radius in which the incidents were generated.
+     * @param radium         Radius in which the incidents were generated.
      * @param referencePoint Reference coordinate that is taken to generate incidents in a range based on this point.
-     * @param amount Number of points to be generated.
+     * @param amount         Number of points to be generated.
      * @return List of incidents generated.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public List<Incident> getIncidentsRandomly(Double[] referencePoint, Radium radium, int amount) {
         incidents.clear();
-        pointGenerator
-                .getMultiPoint(referencePoint, radium, amount)
-                .forEach(reference -> {
-                    incidentType = getIncidentTypeRandomly();
-                    incidents.add(buildIncident(incidentType, referencePoint));
-                });
+        if (withoutTimeout()) {
+            pointGenerator
+                    .getMultiPoint(referencePoint, radium, amount)
+                    .forEach(reference -> {
+                        incidentType = getIncidentTypeRandomly();
+                        incidents.add(buildIncident(incidentType, referencePoint));
+                    });
+            timeout = LocalDateTime.now().plus(5, ChronoUnit.MINUTES);
+        }
 
         return incidents;
     }
@@ -83,7 +88,7 @@ public class IncidentGenerator {
     /**
      * This method build a random incident using a context like their parameters.
      *
-     * @param incidentType is the incident type of the incident that will created.
+     * @param incidentType   is the incident type of the incident that will created.
      * @param referencePoint is the reference coordinate to generate the incident coordinates.
      * @return random incident built.
      */
@@ -127,8 +132,8 @@ public class IncidentGenerator {
      * @return random incident type.
      */
     public IncidentType getIncidentTypeRandomly() {
-        int randomIndex = getIntegerRandomly(0, incidentTypes.size());
-        return incidentTypes.get(randomIndex);
+        int randomIndex = getIntegerRandomly(0, INCIDENT_TYPES.size());
+        return INCIDENT_TYPES.get(randomIndex);
     }
 
     /**
@@ -137,7 +142,22 @@ public class IncidentGenerator {
      * @return random radium.
      */
     public Radium getRadiumRandomly() {
-        int randomIndex = getIntegerRandomly(0, radii.size());
-        return radii.get(randomIndex);
+        int randomIndex = getIntegerRandomly(0, RADII.size());
+        return RADII.get(randomIndex);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public boolean withoutTimeout() {
+        return timeout == null || getRemainingTimeTimeoutSeg() <= 0;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public long getRemainingTimeTimeoutMin() {
+        return timeout == null ? 0 : ChronoUnit.MINUTES.between(LocalDateTime.now(), timeout);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public long getRemainingTimeTimeoutSeg() {
+        return timeout == null ? 0 : ChronoUnit.SECONDS.between(LocalDateTime.now(), timeout);
     }
 }
