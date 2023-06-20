@@ -5,6 +5,7 @@ import android.widget.Toast;
 import com.isc.hermes.R;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
+import com.isc.hermes.model.incidents.GeometryType;
 
 import java.net.HttpURLConnection;
 
@@ -62,7 +63,7 @@ public class TrafficFormController {
      This method etrieves the selected incident type from the incident spinner.
      @return The selected incident type as a string.
      */
-    public String gettrafficType(){
+    public String getTrafficType(){
         String selectedIncidentType = level;
         return selectedIncidentType;
     }
@@ -71,23 +72,24 @@ public class TrafficFormController {
      This method retrieves the selected incident time from the number picker and time spinner.
      @return The selected incident time as a  string.
      */
-    public String gettrafficTime(){
+    public String getTrafficTime(){
         int selectedIncidentTime = timeEstimate;
         String selectedIncidentTimeOption = time;
         return selectedIncidentTime+ " " + selectedIncidentTimeOption;
     }
 
     /**
-
-     This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
-     @return The HTTP response code indicating the status of the upload.
+     * This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
+     *
+     * @return The HTTP response code indicating the status of the upload.
+     *
      */
-    public int uploadtrafficDataBase(){
+    public int uploadTrafficDataBase(){
         String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
-        String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(gettrafficTime());
+        String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getTrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonIncident(id,"Traffic","Test Traffic",dateCreated, deathDate ,coordinates);
+        String JsonString = TrafficUploader.getInstance().generateJsonIncident(id,"Traffic","Test Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(), coordinates);
         return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
 
