@@ -10,6 +10,7 @@ import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+import org.json.JSONException;
 
 
 /**
@@ -18,7 +19,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 public class MapWayPointController implements MapClickConfigurationController {
     private final MapboxMap mapboxMap;
     private final WaypointOptionsController waypointOptionsController;
-    private boolean isMarked, isActivated;
+    private boolean isMarked;
+    private Context context;
 
     /**
      * This is the constructor method.
@@ -26,11 +28,11 @@ public class MapWayPointController implements MapClickConfigurationController {
      * @param mapboxMap Is the map.
      * @param context Is the context application.
      */
-    public MapWayPointController(MapboxMap mapboxMap, Context context) {
+    public MapWayPointController(MapboxMap mapboxMap, Context context ) {
+        this.context = context;
         this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
-        isActivated = false;
         Animations.loadAnimations();
     }
 
@@ -49,9 +51,17 @@ public class MapWayPointController implements MapClickConfigurationController {
 
         }
         IncidentsUploader.getInstance().setLastClickedPoint(point);
+        try {
+            IncidentDialogController.getInstance(context).showDialogCorrect(point);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 
+    /**
+     * Method to handle the visibility of the layouts on screen
+     */
     private void handleVisibilityPropertiesForLayouts() {
         if(waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.exitAnimation);
@@ -108,12 +118,4 @@ public class MapWayPointController implements MapClickConfigurationController {
      * @param mapboxMap is map witch will disable this controller
      */
     public void discardFromMap(MapboxMap mapboxMap) {mapboxMap.removeOnMapClickListener(this);}
-
-    public WaypointOptionsController getWaypointOptionsController() {
-        return waypointOptionsController;
-    }
-
-    public void setActivated(boolean activated) {
-        isActivated = activated;
-    }
 }

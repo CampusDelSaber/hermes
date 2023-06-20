@@ -9,6 +9,7 @@ import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapClickEventsManager;
 
+
 /**
  * This is the controller class for "waypoints_options_fragment" view.
  */

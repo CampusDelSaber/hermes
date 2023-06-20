@@ -16,6 +16,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import java.text.DecimalFormat;
 import timber.log.Timber;
 
+
 /**
  * Class to represent the navigation controller options' class for the view
  * Setting methods to render and manage the different ui component's behaviour
