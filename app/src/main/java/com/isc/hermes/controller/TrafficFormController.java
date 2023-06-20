@@ -17,6 +17,7 @@ import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.utils.DijkstraAlgorithm;
 
 import java.net.HttpURLConnection;
 
@@ -25,11 +26,11 @@ import java.net.HttpURLConnection;
  */
 public class TrafficFormController {
     private final Context context;
-
+    private static DijkstraAlgorithm instance;
     private final MapWayPointController mapController;
 
-    int timeEstimate = 10;
-    String level = "Normal";
+    int timeEstimate ;
+    String trafficLevel ;
     String time = "Minute";
 
     /**
@@ -41,9 +42,8 @@ public class TrafficFormController {
     public TrafficFormController(Context context, MapWayPointController mapController) {
         this.context = context;
         this.mapController = mapController;
-
-
     }
+
 
     public MapWayPointController getMapController() {
         return mapController;
@@ -68,27 +68,44 @@ public class TrafficFormController {
         }
     }
 
+    public int calculateEstimateTime(Integer time,Integer waitingTime ) {
+        timeEstimate = 0;
+        if (time > waitingTime) {
+            timeEstimate = time ;
+        }
+        else if(time < waitingTime){
+            timeEstimate = time + waitingTime;
+        }
+        return timeEstimate;
+    }
+
 
     /**
 
      This method etrieves the selected incident type from the incident spinner.
      @return The selected incident type as a string.
      */
-    public String gettrafficType(){
+    public String getTrafficType(Integer time, Integer waitingTime) {
 
-        String selectedIncidentType = level;
-        System.out.println("ESto" + selectedIncidentType);
-        return selectedIncidentType;
+        if (time > waitingTime) {
+            timeEstimate = time;
+            trafficLevel = "Tráfico alto";
+        } else if (time < waitingTime) {
+            timeEstimate = time - waitingTime;
+            trafficLevel = "Tráfico Normal";
+        }
+        return trafficLevel;
     }
+
+
+
     /**
 
      This method retrieves the selected incident time from the number picker and time spinner.
      @return The selected incident time as a  string.
      */
     public String gettrafficTime(){
-
-        int selectedIncidentTime = timeEstimate;
-
+        int selectedIncidentTime = calculateEstimateTime(20,50);
         String selectedIncidentTimeOption = time;
         System.out.println("ESto" + selectedIncidentTime);
         return selectedIncidentTime+ " " + selectedIncidentTimeOption;
@@ -105,7 +122,7 @@ public class TrafficFormController {
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(gettrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
 
-        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,gettrafficType(),"Reason",dateCreated, deathDate ,coordinates);
+        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,getTrafficType(20,50),"Reason",dateCreated, deathDate ,coordinates);
         return TrafficUploader.getInstance().uploadTraffic(JsonString);
     }
 
