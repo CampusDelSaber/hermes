@@ -89,7 +89,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="5dp"
                         android:backgroundTint="@color/oxfordBlue"
-                        android:text="Choose From the map"
+                        android:text="Choose on map"
                         android:textColor="@color/white" />
 
                 </LinearLayout>
@@ -126,6 +126,40 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/startPoint_button"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:backgroundTint="@color/oxfordBlue"
+                    android:text="Ubi"
+                    android:textColor="@color/white" />
+
+                <Button
+                    android:id="@+id/arrow_navOption_button"
+                    android:layout_width="55dp"
+                    android:layout_height="38dp"
+                    android:backgroundTint="@color/oxfordBlue"
+                    android:text=">"
+                    android:textColor="@color/white" />
+
+                <Button
+                    android:id="@+id/finalPoint_Button"
+                    android:layout_width="136dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:backgroundTint="@color/oxfordBlue"
+                    android:text="Chosen Ubi"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -136,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:backgroundTint="@color/oxfordBlue"
+                    android:backgroundTint="@color/blueLogo"
                     android:text="Start"
                     android:textColor="@color/white" />
 
