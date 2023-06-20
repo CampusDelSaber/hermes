@@ -5,63 +5,85 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.cardview.widget.CardView;
+import com.isc.hermes.R;
+import com.isc.hermes.utils.KeyBoardManager;
 import de.hdodenhof.circleimageview.CircleImageView;
-import com.isc.hermes.databinding.ActivityMainBinding;
 
 public class FiltersView {
     private final Activity activity;
-    private final ActivityMainBinding binding;
+    private EditText latEditText;
+    private EditText longEditText;
+    private EditText searchInput;
+    private CardView filtersContainer;
+    private CircleImageView filtersButton;
+    private Button startGeocodeButton;
+    private Button chooseCityButton;
 
     public FiltersView(Activity activity) {
         this.activity = activity;
-        this.binding = ActivityMainBinding.inflate(activity.getLayoutInflater());
         initComponents();
     }
 
     private void initComponents() {
         initFilterOptionsButton();
         filtersButtonListener();
+        initTextViews();
+        initFiltersButtons();
     }
 
     private void initFilterOptionsButton() {
-        binding.filtersContainer.setVisibility(View.INVISIBLE);
+        filtersButton = activity.findViewById(R.id.filtersButton);
+        filtersContainer = activity.findViewById(R.id.filtersContainer);
+        filtersContainer.setVisibility(View.INVISIBLE);
     }
 
     private void filtersButtonListener() {
-        binding.filtersButton.setOnClickListener(v -> {
-            if (binding.filtersContainer.getVisibility() == View.INVISIBLE)
-                binding.filtersContainer.setVisibility(View.VISIBLE);
+        filtersButton.setOnClickListener(v -> {
+            if (filtersContainer.getVisibility() == View.INVISIBLE)
+                filtersContainer.setVisibility(View.VISIBLE);
             else {
-                binding.filtersContainer.setVisibility(View.GONE);
+                filtersContainer.setVisibility(View.INVISIBLE);
+                KeyBoardManager.getInstance().closeKeyBoard(v, activity);
             }
         });
     }
 
+    private void initTextViews() {
+        latEditText = activity.findViewById(R.id.geocode_latitude_editText);
+        longEditText = activity.findViewById(R.id.geocode_longitude_editText);
+        searchInput = activity.findViewById(R.id.searchInput);
+    }
+
+    private void initFiltersButtons() {
+        startGeocodeButton = activity.findViewById(R.id.start_geocode_button);
+        chooseCityButton = activity.findViewById(R.id.searchButton);
+    }
+
     public EditText getLatEditText() {
-        return binding.geocodeLatitudeEditText;
+        return latEditText;
     }
 
     public EditText getLongEditText() {
-        return binding.geocodeLongitudeEditText;
+        return longEditText;
     }
 
     public EditText getSearchInput() {
-        return binding.searchInput;
+        return searchInput;
     }
 
     public CardView getFiltersContainer() {
-        return binding.filtersContainer;
+        return filtersContainer;
     }
 
     public CircleImageView getFiltersButton() {
-        return binding.filtersButton;
+        return filtersButton;
     }
 
     public Button getStartGeocodeButton() {
-        return binding.startGeocodeButton;
+        return startGeocodeButton;
     }
 
     public Button getChooseCityButton() {
-        return binding.searchButton;
+        return chooseCityButton;
     }
 }

@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.utils.KeyBoardManager;
+import com.isc.hermes.view.FiltersView;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
@@ -36,9 +38,7 @@ import timber.log.Timber;
 public class FilterController {
     private final MainActivity mainActivity;
     private final MapboxMap mapboxMap;
-    private EditText latEditText;
-    private EditText longEditText;
-    private EditText searchInput;
+    private FiltersView filtersView;
 
 
     /**
@@ -49,41 +49,14 @@ public class FilterController {
     public FilterController(MapboxMap mapBox, MainActivity mainActivity) {
         this.mapboxMap = mapBox;
         this.mainActivity = mainActivity;
+        this.filtersView = new FiltersView(mainActivity);
     }
 
     /**
      * Method to init all Filters component manager's behaviours
      */
     public void initComponents() {
-        initFilterOptionsButton();
-        initTextViews();
         initFiltersButtons();
-    }
-
-    /**
-     * Method to manage the behaviour of the button that is displayed on header to set the filters container
-     */
-    private void initFilterOptionsButton() {
-        CircleImageView filtersButton = mainActivity.findViewById(R.id.filtersButton);
-        CardView filtersContainer = mainActivity.findViewById(R.id.filtersContainer);
-        filtersContainer.setVisibility(View.INVISIBLE);
-        filtersButton.setOnClickListener(v -> {
-            if (filtersContainer.getVisibility() == View.INVISIBLE)
-                filtersContainer.setVisibility(View.VISIBLE);
-            else {
-                filtersContainer.setVisibility(View.INVISIBLE);
-                closeKeyBoard(v);
-            }
-        });
-    }
-
-    /**
-     * Method to init the text labels views in ui for the filters
-     */
-    private void initTextViews() {
-        latEditText = mainActivity.findViewById(R.id.geocode_latitude_editText);
-        longEditText = mainActivity.findViewById(R.id.geocode_longitude_editText);
-        searchInput = mainActivity.findViewById(R.id.searchInput);
     }
 
     /**
@@ -94,7 +67,7 @@ public class FilterController {
         Button chooseCityButton = mainActivity.findViewById(R.id.searchButton);
         manageFiltersButtonsBehaviour(startGeocodeButton);
         chooseCityButton.setOnClickListener(view -> {
-            closeKeyBoard(view);
+            KeyBoardManager.getInstance().closeKeyBoard(view, mainActivity);
             showCityListMenu();
         });
     }
@@ -105,9 +78,9 @@ public class FilterController {
      */
     private void manageFiltersButtonsBehaviour(Button startGeocodeButton) {
         startGeocodeButton.setOnClickListener(view -> {
-            closeKeyBoard(view);
-            if (TextUtils.isEmpty(latEditText.getText().toString())) latEditText.setError(mainActivity.getString(R.string.fill_in_a_value));
-            else if (TextUtils.isEmpty(longEditText.getText().toString())) longEditText.setError(mainActivity.getString(R.string.fill_in_a_value));
+            KeyBoardManager.getInstance().closeKeyBoard(view, mainActivity);
+            if (TextUtils.isEmpty(filtersView.getLatEditText().getText().toString())) filtersView.getLatEditText().setError(mainActivity.getString(R.string.fill_in_a_value));
+            else if (TextUtils.isEmpty(filtersView.getLongEditText().getText().toString())) filtersView.getLongEditText().setError(mainActivity.getString(R.string.fill_in_a_value));
             else manageResponseForLocationDataInserted();
         });
     }
@@ -116,10 +89,10 @@ public class FilterController {
      * Method to manage the response of the query sent to render on ui creating a geocoding search with the values inputted into the EditTexts
      */
     private void manageResponseForLocationDataInserted() {
-        if (latCoordinateIsValid(Double.parseDouble(latEditText.getText().toString()))
-                && longCoordinateIsValid(Double.parseDouble(longEditText.getText().toString())))
-            makeGeocodeSearch(new LatLng(Double.parseDouble(latEditText.getText().toString()),
-                    Double.parseDouble(longEditText.getText().toString()))); // Make a geocoding search with the values inputted into the EditTexts
+        if (latCoordinateIsValid(Double.parseDouble(filtersView.getLatEditText().getText().toString()))
+                && longCoordinateIsValid(Double.parseDouble(filtersView.getLongEditText().getText().toString())))
+            makeGeocodeSearch(new LatLng(Double.parseDouble(filtersView.getLatEditText().getText().toString()),
+                    Double.parseDouble(filtersView.getLongEditText().getText().toString()))); // Make a geocoding search with the values inputted into the EditTexts
         else Toast.makeText(mainActivity, R.string.make_valid_lat, Toast.LENGTH_LONG).show();
 
     }
@@ -149,8 +122,8 @@ public class FilterController {
      * @param latLng The LatLng object containing the latitude and longitude values.
      */
     private void setCoordinateEditTexts(LatLng latLng) {
-        latEditText.setText(String.valueOf(latLng.getLatitude()));
-        longEditText.setText(String.valueOf(latLng.getLongitude()));
+        filtersView.getLatEditText().setText(String.valueOf(latLng.getLatitude()));
+        filtersView.getLongEditText().setText(String.valueOf(latLng.getLongitude()));
     }
 
     /**
@@ -160,7 +133,7 @@ public class FilterController {
     private void showCityListMenu() {
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken(mainActivity.getString(R.string.access_token))
-                .query(searchInput.getText().toString())
+                .query(filtersView.getSearchInput().getText().toString())
                 .build();
         manageGeoCodingResponse(mapboxGeocoding);
     }
@@ -195,7 +168,7 @@ public class FilterController {
     private void manageResponseFeatures(Response<GeocodingResponse> response) {
         assert response.body() != null;
         List<CarmenFeature> results = response.body().features();
-        Timber.tag(TAG).d("onResponse: %s", searchInput.getText().toString());
+        Timber.tag(TAG).d("onResponse: %s", filtersView.getSearchInput().getText().toString());
         if (results.size() > 0) {
             // Log the first results Point.
             Timber.tag(TAG).d("onResponse: %s", results.get(0).toString());
@@ -277,16 +250,6 @@ public class FilterController {
             animateCameraToNewPosition(latLng);
         } else Toast.makeText(mainActivity, R.string.no_results,
                 Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Closes the keyboard for the specified view.
-     *
-     * @param view The view associated with the keyboard to be closed.
-     */
-    private void closeKeyBoard(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     /**
