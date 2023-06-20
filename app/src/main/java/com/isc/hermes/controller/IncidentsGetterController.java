@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * The controller responsible for getting incidents near a specific location within a radius.
+ * The controller responsible for getting incidentsPointView near a specific location within a radius.
  */
 public class IncidentsGetterController {
     private final ISO8601Converter iso8601Converter;
@@ -29,7 +29,7 @@ public class IncidentsGetterController {
     private static IncidentsGetterController instance;
     private IncidentGetterModel incidentGetterModel;
     private final ExecutorService executorService;
-    private IncidentPointVisualizationController incidents;
+    private IncidentPointVisualizationController incidentsPointView;
 
     /**
      * Constructs an instance of IncidentsGetterController.
@@ -42,12 +42,12 @@ public class IncidentsGetterController {
     }
 
     /**
-     * Retrieves incidents near the specified location within a radius.
+     * Retrieves incidentsPointView near the specified location within a radius.
      *
      * @param mapboxMap The Mapbox map instance.
      */
     public void getNearIncidentsWithinRadius(MapboxMap mapboxMap, Context context) {
-        incidents = IncidentPointVisualizationController.getInstance(mapboxMap, context);
+        incidentsPointView = IncidentPointVisualizationController.getInstance(mapboxMap, context);
         executorService.execute(() -> {
             LatLng cameraFocus = mapboxMap.getCameraPosition().target;
             int cameraZoom = (int) mapboxMap.getCameraPosition().zoom;
@@ -57,7 +57,7 @@ public class IncidentsGetterController {
 
             incidentGetterModel.setIncidentList(parseIncidentResponse(incidentsArray));
             try {
-                incidents.displayPoint(incidentGetterModel.getIncidentList());
+                incidentsPointView.displayPoint(incidentGetterModel.getIncidentList());
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -65,13 +65,13 @@ public class IncidentsGetterController {
     }
 
     /**
-     * Parses the JSON array of incidents and converts them into a list of PointIncidet objects.
+     * Parses the JSON array of incidentsPointView and converts them into a list of PointIncidet objects.
      *
-     * @param incidentsArray The JSON array of incidents.
+     * @param incidentsArray The JSON array of incidentsPointView.
      * @return The list of PointIncidet objects.
      */
     private List<PointIncident> parseIncidentResponse(JSONArray incidentsArray) {
-        List<PointIncident> pointIncidets = new ArrayList<>();
+        List<PointIncident> pointIncidents = new ArrayList<>();
         try{
             for (int i = 0; i < incidentsArray.length(); i++) {
                 JSONObject incidentObj = incidentsArray.getJSONObject(i);
@@ -83,16 +83,17 @@ public class IncidentsGetterController {
                 Date deathDate =
                         iso8601Converter.convertISO8601ToDate(incidentObj.getString("deathDate"));
                 JSONObject geometry = incidentObj.getJSONObject("geometry");
-
-                PointIncident pointIncidet =
-                        new PointIncident(id, type, reason, dateCreated, deathDate, geometry);
-                pointIncidets.add(pointIncidet);
+                if (geometry.getString("type").equalsIgnoreCase("point")) {
+                    PointIncident pointIncident =
+                            new PointIncident(id, type, reason, dateCreated, deathDate, geometry);
+                    pointIncidents.add(pointIncident);
+                }
             }
         } catch (JSONException e){
             e.printStackTrace();
         }
 
-        return pointIncidets;
+        return pointIncidents;
     }
     public IncidentGetterModel getIncidentGetterModel(){
         return incidentGetterModel;

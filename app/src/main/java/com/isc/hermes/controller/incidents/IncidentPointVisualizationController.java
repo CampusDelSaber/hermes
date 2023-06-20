@@ -59,31 +59,20 @@ public class IncidentPointVisualizationController {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < pointList.size(); i++) {
-                    LatLng pointCoordinates = null;
-                    try {
-                        pointCoordinates = getPointCoordinates(pointList, i);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    MarkerOptions waypoint = createMarkerOptions(pointCoordinates);
+                for (PointIncident pointIncident:pointList) {
+                        LatLng pointCoordinates = null;
+                        try {
+                            pointCoordinates = pointIncident.getPointCoordinates();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        MarkerOptions waypoint = createMarkerOptions(pointCoordinates);
 
-                    Set<String> desiredTypes = getDesiredTypes();
-                    addMarkersToMap(waypoint, pointList, desiredTypes);
+                        Set<String> desiredTypes = getDesiredTypes();
+                        addMarkersToMap(waypoint, pointList, desiredTypes);
                 }
             }
         });
-    }
-
-    /**
-     * Retrieves the point coordinates of an incident from the list.
-     * @param pointList the list of incidents
-     * @param index the index of the incident
-     * @return the LatLng object representing the point coordinates
-     * @throws JSONException if there is an error in JSON parsing
-     */
-    private LatLng getPointCoordinates(List<PointIncident> pointList, int index) throws JSONException {
-        return pointList.get(index).getPointCoordinates();
     }
 
     /**
@@ -110,18 +99,18 @@ public class IncidentPointVisualizationController {
      * @param desiredTypes the Set of desired incident types
      */
     private void addMarkersToMap(MarkerOptions waypoint, List<PointIncident> pointList, Set<String> desiredTypes) {
-        for (PointIncident pointIncidet : pointList) {
-            String incidentType = pointIncidet.getType();
+        for (PointIncident pointIncident : pointList) {
+            String incidentType = pointIncident.getType();
             Marker marker = null;
             if (desiredTypes.contains(incidentType)) {
                 marker = mapboxMap.addMarker(waypoint);
             }
             if (marker != null) {
                 DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
-                String strDate = dateFormat.format(pointIncidet.getDeathDate());
+                String strDate = dateFormat.format(pointIncident.getDeathDate());
 
                 marker.setTitle(incidentType);
-                marker.setSnippet(pointIncidet.getReason() + "" +
+                marker.setSnippet(pointIncident.getReason() + "" +
                         "\nEstimated duration until: " +
                         strDate);
             }
