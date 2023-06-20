@@ -27,12 +27,23 @@ public class GraphUtils {
     }
 
     public Graph createBidirectionalGraph(Graph originalGraph) {
+        Graph newGraph = copyNodes(originalGraph);
+        addBidirectionalEdges(newGraph, originalGraph);
+        return newGraph;
+    }
+
+    private Graph copyNodes(Graph originalGraph) {
         Graph newGraph = new Graph();
         Map<String, Node> originalNodes = originalGraph.getNodes();
         for (Node originalNode : originalNodes.values()) {
             Node newNode = new Node(originalNode.getId(), originalNode.getLatitude(), originalNode.getLongitude());
             newGraph.addNode(newNode);
         }
+        return newGraph;
+    }
+
+    private void addBidirectionalEdges(Graph newGraph, Graph originalGraph) {
+        Map<String, Node> originalNodes = originalGraph.getNodes();
         for (Node originalNode : originalNodes.values()) {
             Node newNode = newGraph.getNode(originalNode.getId());
             List<Edge> originalEdges = originalNode.getEdges();
@@ -43,8 +54,6 @@ public class GraphUtils {
                 newNode.addBidirectionalEdge(newDestination, originalWeight);
             }
         }
-
-        return newGraph;
     }
 
     public static GraphUtils getInstance(){
