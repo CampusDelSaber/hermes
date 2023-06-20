@@ -26,7 +26,7 @@ public class MapWayPointController implements MapClickConfigurationController {
      * @param mapboxMap Is the map.
      * @param context Is the context application.
      */
-    public MapWayPointController(MapboxMap mapboxMap, Context context ) {
+    public MapWayPointController(MapboxMap mapboxMap, Context context) {
         this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
@@ -40,14 +40,17 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
+/*
         if (waypointOptionsController.getNavOptionsFormController().isStartPointFromMapSelected()) {
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
+            waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().startAnimation(Animations.entryAnimation);
+            waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().setVisibility(View.VISIBLE);
         } else {
-            waypointOptionsController.getNavOptionsFormController().setCurrentLocationSelected(true);
-            waypointOptionsController.getNavOptionsFormController().handleHiddeItemsView();
             doMarkOnMapAction(point);
             waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
         }
+*/
+        doMarkOnMapAction(point);
         IncidentsUploader.getInstance().setLastClickedPoint(point);
         return true;
     }
@@ -108,4 +111,8 @@ public class MapWayPointController implements MapClickConfigurationController {
      * @param mapboxMap is map witch will disable this controller
      */
     public void discardFromMap(MapboxMap mapboxMap) {mapboxMap.removeOnMapClickListener(this);}
+
+    public WaypointOptionsController getWaypointOptionsController() {
+        return waypointOptionsController;
+    }
 }

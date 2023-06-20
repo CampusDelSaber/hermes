@@ -28,7 +28,7 @@
             android:background="#333333" />
 
         <TextView
-            android:id="@+id/incident_tablelayout"
+            android:id="@+id/navOption_tablelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/top_border"
@@ -40,10 +40,10 @@
             android:textStyle="bold" />
 
         <LinearLayout
-            android:id="@+id/incident_layout"
+            android:id="@+id/navOption_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/incident_tablelayout"
+            android:layout_below="@id/navOption_tablelayout"
             android:layout_gravity="bottom"
             android:background="@color/white"
             android:foregroundGravity="bottom"
@@ -163,7 +163,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/start_button"
+                    android:id="@+id/start_button_nav"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
