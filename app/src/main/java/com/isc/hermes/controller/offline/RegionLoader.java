@@ -3,7 +3,7 @@ package com.isc.hermes.controller.offline;
 import android.app.Activity;
 import android.widget.Toast;
 
-import com.isc.hermes.utils.offline.OfflineMapManager;
+import com.isc.hermes.utils.offline.MapboxOfflineManager;
 import com.isc.hermes.utils.offline.OfflineUtils;
 import com.mapbox.mapboxsdk.offline.OfflineManager;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
@@ -41,7 +41,7 @@ public class RegionLoader implements OfflineManager.ListOfflineRegionsCallback {
         String regionName;
         for (OfflineRegion offlineRegion : offlineRegions) {
             regionName = OfflineUtils.getRegionName(offlineRegion);
-            OfflineMapManager.getInstance(activity).addOfflineRegion(regionName, offlineRegion);
+            MapboxOfflineManager.getInstance(activity).addOfflineRegion(regionName, offlineRegion);
         }
         CardViewHandler.getInstance().notifyObservers();
     }

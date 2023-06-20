@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/mapboxBlue"
+        android:background="@color/oxfordBlue"
         android:elevation="8dp"
         android:orientation="horizontal"
         android:paddingTop="8dp">

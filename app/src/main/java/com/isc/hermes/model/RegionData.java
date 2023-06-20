@@ -44,30 +44,12 @@ public class RegionData {
     }
 
     /**
-     * Sets the name of the region.
-     *
-     * @param regionName The region name to set.
-     */
-    public void setRegionName(String regionName) {
-        this.regionName = regionName;
-    }
-
-    /**
      * Returns the URL of the map style for the region.
      *
      * @return The style URL.
      */
     public String getStyleUrl() {
         return styleUrl;
-    }
-
-    /**
-     * Sets the URL of the map style for the region.
-     *
-     * @param styleUrl The style URL to set.
-     */
-    public void setStyleUrl(String styleUrl) {
-        this.styleUrl = styleUrl;
     }
 
     /**
@@ -80,30 +62,12 @@ public class RegionData {
     }
 
     /**
-     * Sets the minimum zoom level for the region.
-     *
-     * @param minZoom The minimum zoom level to set.
-     */
-    public void setMinZoom(double minZoom) {
-        this.minZoom = minZoom;
-    }
-
-    /**
      * Returns the maximum zoom level for the region.
      *
      * @return The maximum zoom level.
      */
     public double getMaxZoom() {
         return maxZoom;
-    }
-
-    /**
-     * Sets the maximum zoom level for the region.
-     *
-     * @param maxZoom The maximum zoom level to set.
-     */
-    public void setMaxZoom(double maxZoom) {
-        this.maxZoom = maxZoom;
     }
 
     /**
@@ -116,30 +80,12 @@ public class RegionData {
     }
 
     /**
-     * Sets the pixel ratio of the device screen.
-     *
-     * @param pixelRatio The pixel ratio to set.
-     */
-    public void setPixelRatio(float pixelRatio) {
-        this.pixelRatio = pixelRatio;
-    }
-
-    /**
      * Returns the bounding box of the region.
      *
      * @return The LatLngBounds of the region.
      */
     public LatLngBounds getLatLngBounds() {
         return latLngBounds;
-    }
-
-    /**
-     * Sets the bounding box of the region.
-     *
-     * @param latLngBounds The LatLngBounds to set.
-     */
-    public void setLatLngBounds(LatLngBounds latLngBounds) {
-        this.latLngBounds = latLngBounds;
     }
 
 }

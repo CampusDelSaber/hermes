@@ -3,6 +3,8 @@ package com.isc.hermes.controller.offline;
 import android.app.Activity;
 import android.widget.Toast;
 
+import com.isc.hermes.utils.offline.MapboxOfflineManager;
+import com.isc.hermes.utils.offline.OfflineUtils;
 import com.mapbox.mapboxsdk.offline.OfflineManager;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
 import com.mapbox.mapboxsdk.offline.OfflineRegionError;
@@ -57,8 +59,12 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
             @Override
             public void onStatusChanged(OfflineRegionStatus status) {
                 if (status.isComplete()) {
-                    Toast.makeText(activity, "REGION DOWNLOADED", Toast.LENGTH_SHORT).show();
+                    MapboxOfflineManager.getInstance(activity).addOfflineRegion(
+                            OfflineUtils.getRegionName(offlineRegion),
+                            offlineRegion
+                    );
                     CardViewHandler.getInstance().notifyObservers();
+                    Toast.makeText(activity, "REGION DOWNLOADED", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (status.isRequiredResourceCountPrecise()) {
                     // download status
@@ -78,6 +84,7 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
 
             @Override
             public void mapboxTileCountLimitExceeded(long limit) {
+                Toast.makeText(activity, "The region is too large please select a smaller one.", Toast.LENGTH_SHORT).show();
                 Timber.e("Mapbox tile count limit exceeded: %s", limit);
             }
         });

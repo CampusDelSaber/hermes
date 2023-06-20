@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +22,8 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.controller.offline.OfflineDataRepository;
+import com.isc.hermes.model.RegionData;
 import com.isc.hermes.model.User;
 
 import android.widget.SearchView;
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
-    private static final int REQUEST_MAP_CODE = 177;
+    private ActivityResultLauncher<Intent> launcher;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
-
+        launcher = createActivityResult();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
     }
 
@@ -372,27 +376,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         intent.putExtra("lat", mapDisplay.getMapboxMap().getCameraPosition().target.getLatitude());
         intent.putExtra("long", mapDisplay.getMapboxMap().getCameraPosition().target.getLongitude());
         intent.putExtra("zoom", mapDisplay.getMapboxMap().getCameraPosition().zoom);
-        startActivityForResult(intent, REQUEST_MAP_CODE);
-    }
 
+        launcher.launch(intent);
+    }
     /**
-     * This Callback method is called when an activity launched with startActivityForResult() returns a result.
+     * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
      *
-     * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
-     * @param resultCode  The integer result code returned by the child activity through its setResult().
-     * @param data        An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     * @return The created {@link ActivityResultLauncher} object.
      */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_MAP_CODE && resultCode == RESULT_OK && Objects.requireNonNull(data).getExtras() != null) {
-            Bundle b = data.getExtras();
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(b.getParcelable("center"))
-                    .zoom(b.getDouble("zoom"))
-                    .build();
-            mapDisplay.getMapboxMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1500);
-            openSideMenu(null);
-        }
+    private ActivityResultLauncher<Intent> createActivityResult() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Bundle b = data.getExtras();
+                            mapDisplay.animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
+                            openSideMenu(null);
+                        }
+                    }
+
+                });
     }
 }

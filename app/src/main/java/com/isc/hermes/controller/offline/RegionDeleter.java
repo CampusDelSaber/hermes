@@ -3,7 +3,7 @@ package com.isc.hermes.controller.offline;
 import android.app.Activity;
 import android.widget.Toast;
 
-import com.isc.hermes.utils.offline.OfflineMapManager;
+import com.isc.hermes.utils.offline.MapboxOfflineManager;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
 
 import timber.log.Timber;
@@ -34,7 +34,7 @@ public class RegionDeleter implements OfflineRegion.OfflineRegionDeleteCallback 
      */
     @Override
     public void onDelete() {
-        OfflineMapManager.getInstance(activity).getOfflineRegions().remove(regionName);
+        MapboxOfflineManager.getInstance(activity).getOfflineRegions().remove(regionName);
         CardViewHandler.getInstance().notifyObservers();
         Toast.makeText(activity, "THE REGION HAS BEEN DELETED SUCCESSFULLY",
                 Toast.LENGTH_LONG).show();

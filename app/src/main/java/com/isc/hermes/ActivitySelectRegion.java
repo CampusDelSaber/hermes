@@ -8,6 +8,8 @@ import android.view.View;
 import com.isc.hermes.controller.PopUp.DialogListener;
 import com.isc.hermes.controller.PopUp.TextInputPopup;
 import com.isc.hermes.controller.offline.OfflineDataRepository;
+import com.isc.hermes.model.RegionData;
+import com.isc.hermes.utils.offline.MapboxOfflineManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -15,6 +17,8 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
+
+import timber.log.Timber;
 
 
 /**
@@ -40,7 +44,7 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this, getString(R.string.access_token));
-        setContentView(R.layout.activity_select_region);
+        setContentView(R.layout.offline_select_region);
         mapView = this.findViewById(R.id.mapViewRegion);
         mapView.onCreate(savedInstanceState);
         initializeMapBoxMap();
@@ -77,7 +81,7 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
             double centerLatitude = bundle.getDouble(MAP_CENTER_LATITUDE);
             double centerLongitude = bundle.getDouble(MAP_CENTER_LONGITUDE);
             double zoom = bundle.getDouble(ZOOM_LEVEL);
-            configureMapView(centerLatitude, centerLongitude, zoom);
+            setMapCameraPosition(centerLatitude, centerLongitude, zoom);
         }
     }
 
@@ -88,12 +92,14 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
      * @param centerLongitude The longitude value for the center of the map.
      * @param zoom            The zoom value for the map visualization.
      */
-    private void configureMapView(double centerLatitude, double centerLongitude, double zoom) {
+    private void setMapCameraPosition(double centerLatitude, double centerLongitude, double zoom) {
         if (mapboxMap != null) {
             mapboxMap.setCameraPosition(new CameraPosition.Builder()
                     .target(new LatLng(centerLatitude, centerLongitude))
                     .zoom(zoom)
                     .build());
+        } else {
+            Timber.i("MapBoxMap object doesn't exist in the class");
         }
     }
 
@@ -130,9 +136,11 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
             double maxZoom = mapboxMap.getMaxZoomLevel();
             float pixelRatio = getResources().getDisplayMetrics().density;
             LatLngBounds latLngBounds = mapboxMap.getProjection().getVisibleRegion().latLngBounds;
-            OfflineDataRepository.getInstance().saveData(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds);
+            OfflineDataRepository.getInstance().saveData(OfflineDataRepository.DATA_TRANSACTION, new RegionData(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds));
             setResult(RESULT_OK);
             finish();
+        } else {
+            Timber.i("MapBoxMap object doesn't exist in the class");
         }
     }
 
@@ -148,7 +156,11 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
 
     @Override
     public void dialogClosed(String text) {
-        textInputPopup.closePopup();
-        sendData(text);
+        if(MapboxOfflineManager.getInstance(this).getOfflineRegions().containsKey(text)){
+            textInputPopup.setErrorMessage("That name already exists");
+        }else{
+            textInputPopup.closePopup();
+            sendData(text);
+        }
     }
 }

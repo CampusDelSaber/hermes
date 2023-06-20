@@ -11,7 +11,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -19,7 +20,7 @@ import com.isc.hermes.controller.offline.OfflineDataRepository;
 import com.isc.hermes.model.RegionData;
 import com.isc.hermes.controller.offline.CardViewHandler;
 import com.isc.hermes.view.OfflineCardView;
-import com.isc.hermes.utils.offline.OfflineMapManager;
+import com.isc.hermes.utils.offline.MapboxOfflineManager;
 import com.isc.hermes.controller.offline.RegionDeleter;
 import com.isc.hermes.controller.offline.RegionDownloader;
 import com.isc.hermes.controller.offline.RegionLoader;
@@ -32,10 +33,10 @@ import com.mapbox.mapboxsdk.offline.OfflineRegion;
  * This class represents the Offline Mode Settings UI.
  */
 public class OfflineMapsActivity extends AppCompatActivity implements RegionObserver {
-    private static final int REQUEST_CODE_OFFLINE = 231;
     private static final int RENAME = R.id.rename, NAVIGATE_TO = R.id.navigateTo, DELETE = R.id.delete;
     private LinearLayout vBoxDownloadedMaps;
     private OfflineCardView offlineCardView;
+    private ActivityResultLauncher<Intent> launcher;
 
     /**
      * Method for creating the activity configuration.
@@ -51,6 +52,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         offlineCardView = new OfflineCardView(this);
         vBoxDownloadedMaps = findViewById(R.id.vBoxMapsDownloaded);
         CardViewHandler.getInstance().addObserver(this);
+        launcher = createActivityResult();
     }
 
 
@@ -75,18 +77,26 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         intent.putExtra(MAP_CENTER_LONGITUDE, bundle.getDouble("long"));
         intent.putExtra(ZOOM_LEVEL, bundle.getDouble("zoom"));
 
-        startActivityForResult(intent, REQUEST_CODE_OFFLINE);
+        launcher.launch(intent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_OFFLINE && resultCode == RESULT_OK) {
-            RegionData regionData = OfflineDataRepository.getInstance().getRegionData();
-            if (regionData != null)
-                downloadRegion(regionData);
-        }
+    /**
+     * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
+     *
+     * @return The created {@link ActivityResultLauncher} object.
+     */
+    private ActivityResultLauncher<Intent> createActivityResult() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        RegionData regionData = OfflineDataRepository.getInstance().getRegionData(OfflineDataRepository.DATA_TRANSACTION);
+                        if (regionData != null)
+                            downloadRegion(regionData);
+                    }
+
+                });
     }
+
 
     @Override
     protected void onStart() {
@@ -99,7 +109,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
      */
     protected void navigateToDownloadedMap(String regionName) {
         try {
-            OfflineRegion offlineRegion = OfflineMapManager.getInstance(this).getOfflineRegion(regionName);
+            OfflineRegion offlineRegion = MapboxOfflineManager.getInstance(this).getOfflineRegion(regionName);
             if (offlineRegion == null) throw new NullPointerException();
             LatLngBounds bounds = offlineRegion.getDefinition().getBounds();
             double regionZoom = offlineRegion.getDefinition().getMinZoom();
@@ -124,7 +134,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
      * Loads the available regions.
      */
     public void loadRegions() {
-        OfflineMapManager.getInstance(this).listRegions(new RegionLoader(this));
+        MapboxOfflineManager.getInstance(this).listRegions(new RegionLoader(this));
     }
 
     /**
@@ -133,7 +143,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
      * @param regionName The name of the region to delete.
      */
     private void deleteRegion(String regionName) {
-        OfflineMapManager.getInstance(this)
+        MapboxOfflineManager.getInstance(this)
                 .deleteRegion(
                         regionName,
                         new RegionDeleter(this, regionName)
@@ -146,7 +156,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
      * @param regionData The region data to download.
      */
     public void downloadRegion(RegionData regionData) {
-        OfflineMapManager.getInstance(this)
+        MapboxOfflineManager.getInstance(this)
                 .createOfflineRegion(
                         regionData,
                         new RegionDownloader(this)
@@ -192,7 +202,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
     @Override
     public void update() {
         vBoxDownloadedMaps.removeAllViews();
-        OfflineMapManager.getInstance(this)
+        MapboxOfflineManager.getInstance(this)
                 .getOfflineRegions()
                 .forEach((key, value) -> uploadRegionsDownloaded(key));
     }

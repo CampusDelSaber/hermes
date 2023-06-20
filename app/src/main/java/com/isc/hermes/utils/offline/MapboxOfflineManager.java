@@ -17,11 +17,11 @@ import java.util.Map;
 /**
  * This class is responsible for managing offline maps.
  */
-public class OfflineMapManager {
+public class MapboxOfflineManager {
     private final OfflineManager offlineManager;
     private Map<String, OfflineRegion> offlineRegions;
 
-    private static OfflineMapManager offlineMapManager;
+    private static MapboxOfflineManager offlineMapManager;
 
     /**
      * Returns the singleton instance of OfflineMapManager.
@@ -29,9 +29,9 @@ public class OfflineMapManager {
      * @param context The application context.
      * @return The instance of OfflineMapManager.
      */
-    public static OfflineMapManager getInstance(Context context) {
+    public static MapboxOfflineManager getInstance(Context context) {
         if (offlineMapManager == null) {
-            offlineMapManager = new OfflineMapManager(context);
+            offlineMapManager = new MapboxOfflineManager(context);
         }
         return offlineMapManager;
     }
@@ -41,7 +41,7 @@ public class OfflineMapManager {
      *
      * @param context The application context.
      */
-    public OfflineMapManager(Context context) {
+    public MapboxOfflineManager(Context context) {
         Mapbox.getInstance(context, context.getString(R.string.access_token));
         offlineManager = OfflineManager.getInstance(context);
     }
@@ -105,6 +105,7 @@ public class OfflineMapManager {
      * @return The map of offline regions.
      */
     public Map<String, OfflineRegion> getOfflineRegions() {
+        if (offlineRegions == null) offlineRegions = new HashMap<>();
         return offlineRegions;
     }
 
