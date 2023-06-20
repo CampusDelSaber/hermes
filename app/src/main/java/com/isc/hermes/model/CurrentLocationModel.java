@@ -9,6 +9,16 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class CurrentLocationModel {
     private double latitude;
     private double longitude;
+    private static CurrentLocationModel currentLocationModel;
+
+    /**
+     * Single ton to obtain the current location from the user
+     * @return user's current location
+     */
+    public static CurrentLocationModel getCurrentLocationModel() {
+        if (currentLocationModel == null) currentLocationModel = new CurrentLocationModel();
+        return currentLocationModel;
+    }
 
     /**
      * Returns the latitude coordinate of the current location.
