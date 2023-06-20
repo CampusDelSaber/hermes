@@ -100,8 +100,10 @@ public class TrafficUploader {
         CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null, null).getCurrentLocationModel();
 
         Node node2 = new Node("Point 1", currentLocation.getLatitude(), currentLocation.getLongitude());
+
         graph.addNode(node1);
         graph.addNode(node2);
+
         System.out.println("Nodo 1 "+ node1.getLongitude());
         System.out.println("Nodo 2 " + node2.getLongitude());
 
