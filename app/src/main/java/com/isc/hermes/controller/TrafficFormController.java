@@ -1,24 +1,11 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.isc.hermes.R;
-import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
-import com.isc.hermes.utils.Animations;
-import com.isc.hermes.utils.DijkstraAlgorithm;
-
+import com.isc.hermes.model.incidents.GeometryType;
 import java.net.HttpURLConnection;
 
 /**
@@ -102,25 +89,23 @@ public class TrafficFormController {
      This method retrieves the selected Traffic time from the number picker and time spinner.
      @return The selected Traffic time as a  string.
      */
-    public String gettrafficTime(){
+    public String getTrafficTime(){
         int selectedTrafficTime = calculateEstimateTime(20,50);
-
-        System.out.println("ESto" + selectedTrafficTime);
         return selectedTrafficTime+ " " + "Minutes";
     }
 
     /**
-
-     This method uploads an Traffic to the database by generating the necessary data and invoking the appropriate methods.
-     @return The HTTP response code indicating the status of the upload.
+     * This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
+     *
+     * @return The HTTP response code indicating the status of the upload.
      */
-    public int uploadtrafficDataBase(){
+    public int uploadTrafficDataBase(){
         String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
-        String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(gettrafficTime());
+        String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getTrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,getTrafficType(20,50),"Reason",dateCreated, deathDate ,coordinates);
-        return TrafficUploader.getInstance().uploadTraffic(JsonString);
+        String JsonString = TrafficUploader.getInstance().generateJsonIncident(id,getTrafficType(20,50),"Traffic Test",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
+        return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
 
 

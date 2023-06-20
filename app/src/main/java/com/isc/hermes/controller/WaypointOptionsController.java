@@ -69,7 +69,7 @@ public class WaypointOptionsController {
                 @Override
                 protected Integer doInBackground(Void... voids) {
 
-                    return trafficFormController.uploadtrafficDataBase();
+                    return trafficFormController.uploadTrafficDataBase();
                 }
                 @Override
                 protected void onPostExecute(Integer responseCode) {
