@@ -38,7 +38,7 @@ public class CurrentLocationController {
      */
     private CurrentLocationController(AppCompatActivity activity, MapDisplay mapDisplay) {
         locationEngine = LocationEngineProvider.getBestLocationEngine(activity);
-        currentLocationModel = CurrentLocationModel.getCurrentLocationModel();
+        currentLocationModel = new CurrentLocationModel();
         locationListeningCallback = new LocationListeningCallback(activity, currentLocationModel);
         this.activity = activity;
         locationPermissionsController = new LocationPermissionsController(activity);
