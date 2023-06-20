@@ -1,5 +1,6 @@
 package com.isc.hermes.generators;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.GeometryType;
 
 import org.locationtech.jts.geom.*;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * This method has the responsibility to generate polygon coordinates data.
  */
-public class PolygonGenerator extends CoordinateGen implements IGeometryGenerator{
+public class PolygonGenerator extends CoordinateGen implements CoordinatesGenerable {
 
     private Geometry polygon;
     private PointGenerator pointGenerator;

@@ -1,5 +1,6 @@
 package com.isc.hermes.generators;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.GeometryType;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * This method has the responsibility to generate point coordinates data.
  */
-public class PointGenerator extends CoordinateGen implements IGeometryGenerator {
+public class PointGenerator extends CoordinateGen implements CoordinatesGenerable {
 
     private final int MAX_ATTEMPTS = 500;
 
@@ -57,8 +58,7 @@ public class PointGenerator extends CoordinateGen implements IGeometryGenerator 
      * @param amountPoints are the amount the points to found.
      * @return multi points coordinates.
      */
-    @Override
-    public List<Double[]> generate(
+    public List<Double[]> getMultiPoint(
             Double[] referencePoint,
             Radium radium,
             int amountPoints
@@ -76,6 +76,17 @@ public class PointGenerator extends CoordinateGen implements IGeometryGenerator 
             }
         }
         return coordinatesGenerated;
+    }
+
+    @Override
+    public List<Double[]> generate(
+            Double[] referencePoint,
+            Radium radium,
+            int amountPoints
+    ) {
+        List<Double[]> points = new ArrayList<>();
+        points.add(getNearPoint(referencePoint, radium));
+        return points;
     }
 
     /**
