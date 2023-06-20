@@ -3,13 +3,10 @@ package com.isc.hermes.controller;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,18 +14,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
-import com.mapbox.api.geocoding.v5.MapboxGeocoding;
-import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-
 import java.net.HttpURLConnection;
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Objects;
 import timber.log.Timber;
 
@@ -41,7 +29,7 @@ public class NavigationOptionsFormController {
     private final LinearLayout transportationTypesContainer;
     private final TextView navOptionsText;
     private final TextInputLayout chooseTextField;
-    public static String incidentType, startPointName, finalPointName;
+    public static String incidentType;
     private final MapWayPointController mapWayPointController;
     private boolean isStartPointFromMapSelected;
     private LatLng startPoint, finalPoint;
@@ -83,7 +71,7 @@ public class NavigationOptionsFormController {
         startPointButton.setText((startPoint != null)?
                 formatLatLng(startPoint.getLatitude(),startPoint.getLongitude()):"Your Location");
         finalPointButton.setText((finalPoint != null)?
-                formatLatLng(finalPoint.getLatitude(),finalPoint.getLongitude()):"not selected");
+                formatLatLng(finalPoint.getLatitude(),finalPoint.getLongitude()):"Not selected");
     }
 
     private String formatLatLng(double latitude, double longitude) {
@@ -113,32 +101,9 @@ public class NavigationOptionsFormController {
      */
     private void handleAcceptButtonClick() {
         handleHiddeItemsView();
-        AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... voids) {
-                return null;
-            }
+        isStartPointFromMapSelected = false;
+    }
 
-            @Override
-            protected void onPostExecute(Integer responseCode) {
-                handleUploadResponse(responseCode);
-            }
-        };
-        task.execute();
-    }
-    /**
-     * This method handles the response received after uploading the incident to the database.
-     *
-     * @param responseCode the response code received after uploading the incident
-     */
-    private void handleUploadResponse(Integer responseCode) {
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            Toast.makeText(context, R.string.incidents_uploaded, Toast.LENGTH_SHORT).show();
-            clearForm();
-        } else {
-            Toast.makeText(context, R.string.incidents_not_uploaded, Toast.LENGTH_SHORT).show();
-        }
-    }
     /**
      * This method assigns values to the incident components.
      *
@@ -198,20 +163,9 @@ public class NavigationOptionsFormController {
         );
     }
 
-    /**
-     * This method clear the fields of the form.
-     */
-    private void clearForm() {
-        incidentType = null;
-        Objects.requireNonNull(chooseTextField.getEditText()).setText("");
-    }
 
     public boolean isStartPointFromMapSelected() {
         return isStartPointFromMapSelected;
-    }
-
-    public void setStartPointFromMapSelected(boolean startPointFromMapSelected) {
-        isStartPointFromMapSelected = startPointFromMapSelected;
     }
 
     public void setStartPoint(LatLng point) {
@@ -220,7 +174,10 @@ public class NavigationOptionsFormController {
     }
 
     private void updateUiPointsComponents() {
-        //isStartPointFromMapSelected = false;
+        if (isStartPointFromMapSelected) {
+            navOptionsForm.startAnimation(Animations.entryAnimation);
+            navOptionsForm.setVisibility(View.VISIBLE);
+        }
         setPointsButtonShownTexts();
     }
 

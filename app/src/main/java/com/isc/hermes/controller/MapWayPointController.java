@@ -45,9 +45,11 @@ public class MapWayPointController implements MapClickConfigurationController {
     public boolean onMapClick(@NonNull LatLng point) {
         if (waypointOptionsController.getNavOptionsFormController().isStartPointFromMapSelected()) {
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
-        } else doMarkOnMapAction(point);
+        } else {
+            doMarkOnMapAction(point);
+            waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
+        }
         IncidentsUploader.getInstance().setLastClickedPoint(point);
-        waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
         return true;
     }
 
