@@ -15,6 +15,9 @@ import com.isc.hermes.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * This class is responsible for creating CardViews.
+ */
 public class OfflineCardView {
 
     private Context context;
@@ -34,6 +37,13 @@ public class OfflineCardView {
         textViewsVertical.addView(createTextView(name, 18, Typeface.BOLD));
         return joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup(onClickListener));
     }
+
+    /**
+     * This method shows a menu popup
+     *
+     * @param view            parent view
+     * @param onClickListener listener hears when a button is clicked
+     */
 
     public void showPopupMenu(View view, PopupMenu.OnMenuItemClickListener onClickListener) {
         PopupMenu popupMenu = new PopupMenu(context, view);
