@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
@@ -22,7 +21,6 @@ public class WaypointOptionsController {
     private final Button reportTrafficButton;
     private final Button reportNaturalDisasterButton;
     private final Context context;
-    private TextView placeName;
 
     /**
      * This is the constructor method. Init all the components of UI.
@@ -39,7 +37,6 @@ public class WaypointOptionsController {
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);
-        placeName = ((AppCompatActivity) context).findViewById(R.id.place_name);
         setButtonsOnClick();
     }
 
@@ -87,5 +84,13 @@ public class WaypointOptionsController {
      */
     public IncidentFormController getIncidentFormController() {
         return incidentFormController;
+    }
+
+    /**
+     * This is the getter method to get the navigation options controller instance.
+     * @return Return the navigation options controller form view.
+     */
+    public NavigationOptionsFormController getNavOptionsFormController() {
+        return navigationOptionsFormController;
     }
 }

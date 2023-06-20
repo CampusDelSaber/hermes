@@ -39,9 +39,27 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
-        doMarkOnMapAction(point);
+        if (waypointOptionsController.getNavOptionsFormController().isStartPointFromMapSelected()) {
+            waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
+        } else doMarkOnMapAction(point);
         IncidentsUploader.getInstance().setLastClickedPoint(point);
         return true;
+    }
+
+    private void handleVisibilityPropertiesForLayouts() {
+        if(waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
+            waypointOptionsController.getWaypointOptions().startAnimation(Animations.exitAnimation);
+            waypointOptionsController.getWaypointOptions().setVisibility(View.GONE);
+        }
+        if(waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
+            waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
+            waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
+        }
+
+        if(waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().getVisibility() == View.VISIBLE) {
+            waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().startAnimation(Animations.exitAnimation);
+            waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -51,20 +69,14 @@ public class MapWayPointController implements MapClickConfigurationController {
     private void doMarkOnMapAction(LatLng point){
         if (isMarked){
             deleteMarks();
-            if(waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
-                waypointOptionsController.getWaypointOptions().startAnimation(Animations.exitAnimation);
-                waypointOptionsController.getWaypointOptions().setVisibility(View.GONE);
-            }
-            if(waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
-                waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
-                waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
-            }
+            handleVisibilityPropertiesForLayouts();
             isMarked = false;
         } else {
             MarkerOptions markerOptions = new MarkerOptions().position(point);
             mapboxMap.addMarker(markerOptions);
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
+            waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
             isMarked = true;
         }
     }
