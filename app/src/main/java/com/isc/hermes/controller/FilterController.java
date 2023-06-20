@@ -105,6 +105,7 @@ public class FilterController {
      */
     private void updateFiltersComponentsToMap(List<CarmenFeature> results) {
         Point point = results.get(0).center();
+        assert point != null;
         currentLatLng = new LatLng(point.latitude(), point.longitude());
         setCoordinateEditTexts(currentLatLng);
         cameraAnimator.animateCameraToNewPosition(currentLatLng,11, 1500);

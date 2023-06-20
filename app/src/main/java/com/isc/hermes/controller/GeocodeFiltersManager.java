@@ -20,13 +20,27 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+/**
+ * Class to represent the geocode filters manager to manage the ui components and perform the filters correctly
+ */
 public class GeocodeFiltersManager {
-    private Activity activity;
+    private final Activity activity;
 
+    /**
+     * Constructor method to initialize the main Activity attribute
+     * @param activity the actual window set on the emulator
+     */
     public GeocodeFiltersManager(Activity activity) {
         this.activity = activity;
     }
 
+    /**
+     * Shows the city list menu by performing a geocoding search using the search input text.
+     * Uses the MapboxGeocoding API for geocoding.
+     *
+     * @param query The text string to geocode.
+     * @param callback A functional Consumer interface to be used to process the geocoding results.
+     */
     public void showCityListMenu(String query, Consumer<List<CarmenFeature>> callback) {
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken(activity.getString(R.string.access_token))
@@ -36,6 +50,11 @@ public class GeocodeFiltersManager {
         manageGeoCodingResponse(mapboxGeocoding, callback);
     }
 
+    /**
+     * Sends a reverse geocoding request to Mapbox to get the place information at the given location.
+     * @param latLng The coordinates of the location to geocode.
+     * @param callback A functional Consumer interface to be used to process the geocoding results.
+     */
     public void makeGeocodeSearch(LatLng latLng, Consumer<List<CarmenFeature>> callback) {
         try {
             MapboxGeocoding client = MapboxGeocoding.builder()
@@ -53,6 +72,12 @@ public class GeocodeFiltersManager {
         }
     }
 
+    /**
+     * Handles the response of the Mapbox geocoding request, passing the results to the provided Consumer functional interface.
+     *
+     * @param mapboxGeocoding The Mapbox geocoding request that was sent.
+     * @param callback A functional Consumer interface to be used to process the geocoding results.
+     */
     private void manageGeoCodingResponse(MapboxGeocoding mapboxGeocoding, Consumer<List<CarmenFeature>> callback) {
         mapboxGeocoding.enqueueCall(new Callback<>() {
             @Override
