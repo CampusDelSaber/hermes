@@ -9,6 +9,10 @@ android {
     namespace 'com.isc.hermes'
     compileSdk 33
 
+    viewBinding {
+        enabled = true
+    }
+
     defaultConfig {
         applicationId "com.isc.hermes"
         minSdk 24
