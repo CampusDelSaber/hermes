@@ -11,7 +11,7 @@ import java.net.HttpURLConnection;
 /**
  * This is the controller class for "waypoints_options_fragment" view.
  */
-public class TrafficFormController {
+public class TrafficAutomaticFormController {
     private final Context context;
     private final MapWayPointController mapController;
 
@@ -21,7 +21,7 @@ public class TrafficFormController {
      * @param context Is the context application.
      * @param mapController Is the controller of the map.
      */
-    public TrafficFormController(Context context, MapWayPointController mapController) {
+    public TrafficAutomaticFormController(Context context, MapWayPointController mapController) {
         this.context = context;
         this.mapController = mapController;
     }
