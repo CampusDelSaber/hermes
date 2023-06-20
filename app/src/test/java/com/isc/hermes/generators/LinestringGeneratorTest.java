@@ -28,7 +28,7 @@ public class LinestringGeneratorTest {
     @Before
     public void linestringSize() {
         int amountPoints = 5;
-        linestring = generator.getLinestring(referencePoint, Radium.FIFTY_METERS, amountPoints);
+        linestring = generator.generate(referencePoint, Radium.FIFTY_METERS, amountPoints);
 
         assertEquals(amountPoints, linestring.size());
     }

@@ -34,8 +34,7 @@ public class StreetValidator {
      * @return boolean to know if the point coordinate is a street.
      */
     public boolean isPointStreet(double longitude, double latitude) {
-        return itIsContinentalLimits(longitude, latitude) &&
-                hasStreetContext(reverseGeocoding.getPointInfo(
+        return hasStreetContext(reverseGeocoding.getPointInfo(
                         longitude, latitude, GeocodingCriteria.TYPE_ADDRESS));
     }
 

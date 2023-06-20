@@ -78,4 +78,16 @@ public class Incident {
     public Geometry getGeometry() {
         return geometry;
     }
+
+    @Override
+    public String toString() {
+        return "Incident{"+
+                 "\n_id = " + _id +
+                ",\ntype = " + type + '\'' +
+                ",\nreason = " + reason + '\'' +
+                ",\ndateCreated = " + dateCreated +
+                ",\ndeadthDate = " + deadthDate +
+                ",\ngeometry = " + geometry +
+                '}';
+    }
 }

@@ -41,7 +41,7 @@ public interface IAuthentication {
     /**
      * This method deletes the user information within the app
      */
-    void revokeAccess();
+    void revokeAccess(Context context);
 
     /**
      * This method checks the user's sign-in status.
