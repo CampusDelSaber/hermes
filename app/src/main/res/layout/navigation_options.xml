@@ -50,7 +50,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/reason_text"
+                android:id="@+id/choose_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -62,13 +62,41 @@
             </TextView>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/reason_text_field"
+                android:id="@+id/choose_text_field"
                 android:layout_width="match_parent"
                 android:layout_height="65dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/current_location_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:backgroundTint="@color/oxfordBlue"
+                        android:text="Current Location"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/choose_startPoint_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:backgroundTint="@color/oxfordBlue"
+                        android:text="Choose From the map"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/incident_text"
+                android:id="@+id/navOptions_Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -80,49 +108,21 @@
             </TextView>
 
             <HorizontalScrollView
-                android:id="@+id/incidentTypesCarousel"
+                android:id="@+id/transportationTypesCarousel"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:scrollbars="none">
 
                 <LinearLayout
-                    android:id="@+id/incidentTypesContainer"
+                    android:id="@+id/transportationTypesContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:scrollbarAlwaysDrawHorizontalTrack="false"
                     android:scrollbars="none" />
+
             </HorizontalScrollView>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:id="@+id/incident_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginRight="5dp"
-                    android:text="Estimated Time:"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <NumberPicker
-                    android:id="@+id/numberPicker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="5dp"/>
-
-                <Spinner
-                    android:id="@+id/incident_time_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="5dp" />
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -131,17 +131,17 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/accept_button"
+                    android:id="@+id/start_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:backgroundTint="@color/oxfordBlue"
-                    android:text="Accept"
+                    android:text="Start"
                     android:textColor="@color/white" />
 
                 <Button
-                    android:id="@+id/cancel_button"
+                    android:id="@+id/cancel_navOptions_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
