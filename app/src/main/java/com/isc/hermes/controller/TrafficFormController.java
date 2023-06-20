@@ -17,6 +17,7 @@ import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.utils.DijkstraAlgorithm;
 
 import java.net.HttpURLConnection;
 
@@ -25,12 +26,7 @@ import java.net.HttpURLConnection;
  */
 public class TrafficFormController {
     private final Context context;
-
     private final MapWayPointController mapController;
-
-    int timeEstimate = 10;
-    String level = "Normal";
-    String time = "Minute";
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -41,18 +37,16 @@ public class TrafficFormController {
     public TrafficFormController(Context context, MapWayPointController mapController) {
         this.context = context;
         this.mapController = mapController;
-
-
     }
 
+    /**
+
+     the point on the map selected by the user
+     @return mapController.
+     */
     public MapWayPointController getMapController() {
         return mapController;
     }
-
-
-    /**
-     * This method handles the actions performed when the cancel button is clicked.
-     */
 
 
     /**
@@ -68,35 +62,58 @@ public class TrafficFormController {
         }
     }
 
+    /**
+
+     This method calculateEstimateTime: the selected estimate time from the Time on the navigation.
+     @param time the estimated time of arrival at the destination set when displaying the navigation
+     @param waitingTime Time in which the user is in the on the navigation
+     @return The selected Traffic type as a string.
+     */
+    public int calculateEstimateTime(Integer time,Integer waitingTime ) {
+        int timeEstimate;
+        if (waitingTime <=time) {
+            timeEstimate = waitingTime  ;
+        }
+        else {
+            timeEstimate = time + waitingTime ;
+        }
+        return timeEstimate;
+    }
+
 
     /**
 
-     This method etrieves the selected incident type from the incident spinner.
-     @return The selected incident type as a string.
+     This method getTrafficType: the selected Traffic type from the Time on the navigation.
+     @param time the estimated time of arrival at the destination set when displaying the navigation
+     @param waitingTime Time in which the user is in the on the navigation
+     @return The selected Traffic type as a string.
      */
-    public String gettrafficType(){
-
-        String selectedIncidentType = level;
-        System.out.println("ESto" + selectedIncidentType);
-        return selectedIncidentType;
+    public String getTrafficType(Integer time, Integer waitingTime) {
+        String trafficLevel;
+        if (waitingTime > time) {
+            trafficLevel = "High Traffic";
+        } else if (waitingTime < time ) {
+            trafficLevel = "Low Traffic";
+        }
+        else{
+            trafficLevel = "Normal Traffic";
+        }
+        return trafficLevel;
     }
     /**
-
-     This method retrieves the selected incident time from the number picker and time spinner.
-     @return The selected incident time as a  string.
+     This method retrieves the selected Traffic time from the number picker and time spinner.
+     @return The selected Traffic time as a  string.
      */
     public String gettrafficTime(){
+        int selectedTrafficTime = calculateEstimateTime(20,50);
 
-        int selectedIncidentTime = timeEstimate;
-
-        String selectedIncidentTimeOption = time;
-        System.out.println("ESto" + selectedIncidentTime);
-        return selectedIncidentTime+ " " + selectedIncidentTimeOption;
+        System.out.println("ESto" + selectedTrafficTime);
+        return selectedTrafficTime+ " " + "Minutes";
     }
 
     /**
 
-     This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
+     This method uploads an Traffic to the database by generating the necessary data and invoking the appropriate methods.
      @return The HTTP response code indicating the status of the upload.
      */
     public int uploadtrafficDataBase(){
@@ -104,8 +121,7 @@ public class TrafficFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(gettrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-
-        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,gettrafficType(),"Reason",dateCreated, deathDate ,coordinates);
+        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,getTrafficType(20,50),"Reason",dateCreated, deathDate ,coordinates);
         return TrafficUploader.getInstance().uploadTraffic(JsonString);
     }
 
