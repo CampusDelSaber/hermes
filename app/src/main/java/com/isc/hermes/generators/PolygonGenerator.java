@@ -38,6 +38,7 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
      *
      * @param referencePoint to get the main point reference of limited range.
      * @param radium to get the radium using the reference point.
+     * @param vertexAmount to define the number of vertices of the polygon.
      * @return the polygon coordinates generated.
      */
     @Override
@@ -45,22 +46,25 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
         polygonCoordinates.clear();
         if (isValidReferencePoint(referencePoint)) {
             polygonCoordinates.add(coordinateParser.doubleToCoordinate(referencePoint));
-
-            vertexAmount *= 5;
-            double angle;
-            double angleIncrement = 2 * Math.PI / vertexAmount;
-            double distance = radium.getValue();
-
-            for (int i = 0; i < vertexAmount; i++) {
-                angle = i * angleIncrement;
-                coordinate = pointGenerator.getNearPoint(referencePoint, distance, angle);
-                polygonCoordinates.add(coordinateParser.doubleToCoordinate(coordinate));
-            }
-
+            polygonCoordinates = genSymmetricPolygon(referencePoint, radium, vertexAmount);
             polygon = buildTriangulation(polygonCoordinates);
         }
 
         return coordinateParser.parseToDoubles(polygon);
+    }
+
+    public List<Coordinate> genSymmetricPolygon(Double[] referencePoint, Radium radium, int vertexAmount) {
+        vertexAmount *= 4;
+        double currentAngle;
+        double angleIncrement = 2 * Math.PI / vertexAmount;
+
+        for (int i = 0; i < vertexAmount; i++) {
+            currentAngle = i * angleIncrement;
+            coordinate = pointGenerator.getNearPoint(referencePoint, radium, currentAngle);
+            polygonCoordinates.add(coordinateParser.doubleToCoordinate(coordinate));
+        }
+
+        return polygonCoordinates;
     }
 
     /**

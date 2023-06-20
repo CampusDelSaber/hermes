@@ -50,7 +50,8 @@ public class PointGenerator extends CoordinateGen implements CoordinatesGenerabl
         return coordinate;
     }
 
-    public Double[] getNearPoint(Double[] referencePoint, double distance, double angle) {
+    public Double[] getNearPoint(Double[] referencePoint, Radium radium, double angle) {
+        double distance = radium.getValue();
         Double[] coordinate = new Double[2];
         coordinate[0] = referencePoint[0] + distance * Math.cos(angle);
         coordinate[1] = referencePoint[1] + distance * Math.sin(angle);

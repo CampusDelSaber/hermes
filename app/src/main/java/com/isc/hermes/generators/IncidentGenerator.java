@@ -27,8 +27,7 @@ public class IncidentGenerator {
     private IncidentType incidentType;
     private List<Incident> incidents;
     private final List<IncidentType> INCIDENT_TYPES = (List.of(
-            IncidentType.TRAFFIC_INCIDENT, IncidentType.SOCIAL_INCIDENT,
-            IncidentType.DANGER_ZONE, IncidentType.NATURAL_DISASTER));
+            IncidentType.SOCIAL_INCIDENT, IncidentType.DANGER_ZONE, IncidentType.NATURAL_DISASTER));
     private final List<Radium> RADII = List.of(Radium.FIVE_METERS, Radium.TEN_METERS,
             Radium.TWENTY_FIVE_METERS, Radium.FIFTY_METERS);
     ;
@@ -148,16 +147,16 @@ public class IncidentGenerator {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean withoutTimeout() {
-        return timeout == null || getRemainingTimeTimeoutSeg() <= 0;
+        return timeout == null || getSecondsBetweenTimeout() <= 0;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public long getRemainingTimeTimeoutMin() {
+    public long getMinutesBetweenTimeout() {
         return timeout == null ? 0 : ChronoUnit.MINUTES.between(LocalDateTime.now(), timeout);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public long getRemainingTimeTimeoutSeg() {
+    public long getSecondsBetweenTimeout() {
         return timeout == null ? 0 : ChronoUnit.SECONDS.between(LocalDateTime.now(), timeout);
     }
 }
