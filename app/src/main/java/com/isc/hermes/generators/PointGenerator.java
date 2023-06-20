@@ -78,6 +78,13 @@ public class PointGenerator extends CoordinateGen implements CoordinatesGenerabl
         return coordinatesGenerated;
     }
 
+    /**
+     * This method generates coordinates that form geometric objects.
+     *
+     * @param referencePoint to get the main point reference of limited range.
+     * @param radium to get the radium using the reference point.
+     * @param amountPoints It is used depending on the type of implementation and type of figure to be built.
+     */
     @Override
     public List<Double[]> generate(
             Double[] referencePoint,

@@ -15,6 +15,15 @@ public class Incident {
     private Date deathDate;
     private Geometry geometry;
 
+    /**
+     * This is the constructor method to initialize all variables for the incident.
+     *
+     * @param type incident type.
+     * @param reason incident reason.
+     * @param dateCreated incident date created.
+     * @param deathDate incident death date.
+     * @param geometry incident GeoJSON
+     */
     public Incident(String type, String reason, Date dateCreated, Date deathDate, Geometry geometry) {
         this.type = type;
         this.reason = reason;

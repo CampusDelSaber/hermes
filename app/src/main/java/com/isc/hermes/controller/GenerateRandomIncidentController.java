@@ -20,7 +20,6 @@ import com.isc.hermes.model.incidents.Incident;
 import com.isc.hermes.view.GenerateRandomIncidentView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

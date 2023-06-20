@@ -65,6 +65,11 @@ public enum IncidentType {
         return generator;
     }
 
+    /**
+     * This is a getter method to return the incident reason list.
+     *
+     * @return incident reason list.
+     */
     public List<String> getReasons() {
         return reasons;
     }

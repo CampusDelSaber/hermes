@@ -40,8 +40,13 @@ public class IncidentGenerator {
         this.incidents = new ArrayList<>();
     }
 
+    /**
+     * This method generate a death date randomly.
+     *
+     * @return valid death date.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Date generateDateRandomly() {
+    public Date generateDeathDateRandomly() {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         LocalDate fourteenDaysLater = tomorrow.plusDays(14);
         LocalDateTime startDateTime = tomorrow.atStartOfDay();
@@ -57,9 +62,9 @@ public class IncidentGenerator {
     /**
      * Generates a list of incidents randomly based on the incident generators you have.
      *
-     * @param radium         Radius in which the incidents were generated.
+     * @param radium Radius in which the incidents were generated.
      * @param referencePoint Reference coordinate that is taken to generate incidents in a range based on this point.
-     * @param amount         Number of points to be generated.
+     * @param amount Number of points to be generated.
      * @return List of incidents generated.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -75,6 +80,13 @@ public class IncidentGenerator {
         return incidents;
     }
 
+    /**
+     * This method build a random incident using a context like their parameters.
+     *
+     * @param incidentType is the incident type of the incident that will created.
+     * @param referencePoint is the reference coordinate to generate the incident coordinates.
+     * @return random incident built.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private Incident buildIncident(IncidentType incidentType, Double[] referencePoint) {
         List<Double[]> incidentCoordinates = incidentType.getGenerator().generate(referencePoint,
@@ -84,23 +96,46 @@ public class IncidentGenerator {
 
         return new Incident(incidentType.getType(),
                 getReasonRandomly(incidentType), new Date(),
-                generateDateRandomly(), geometry);
+                generateDeathDateRandomly(), geometry);
     }
 
+    /**
+     * This method generate a random integer using a range.
+     *
+     * @param min is the min value of the range.
+     * @param max is the max value of the range.
+     * @return random integer generated.
+     */
     private int getIntegerRandomly(int min, int max) {
         return random.nextInt((max - 1) - min + 1) + min;
     }
 
+    /**
+     * This method generate a random reason using the reason list of a incident type,
+     *
+     * @param incidentType to get the reason type list.
+     * @return random reason of the list of reason.
+     */
     private String getReasonRandomly(IncidentType incidentType) {
         int randomIndex = getIntegerRandomly(0, incidentType.getReasons().size());
         return incidentType.getReasons().get(randomIndex);
     }
 
+    /**
+     * This method generate a random incident type.
+     *
+     * @return random incident type.
+     */
     public IncidentType getIncidentTypeRandomly() {
         int randomIndex = getIntegerRandomly(0, incidentTypes.size());
         return incidentTypes.get(randomIndex);
     }
 
+    /**
+     * This method generate a random radium.
+     *
+     * @return random radium.
+     */
     public Radium getRadiumRandomly() {
         int randomIndex = getIntegerRandomly(0, radii.size());
         return radii.get(randomIndex);

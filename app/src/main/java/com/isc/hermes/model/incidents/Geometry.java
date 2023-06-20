@@ -68,10 +68,15 @@ public class Geometry {
         return stringBuilder.toString();
     }
 
+    /**
+     * This is the toString method to get a geometry like string.
+     *
+     * @return geometry string.
+     */
     @Override
     public String toString() {
         return "{" +
-                "type:" + type +"\n" +
+                "type:" + type +",\n" +
                 "coordinates: " + getStringCoordinates() + "\n" +
                 "}";
     }
