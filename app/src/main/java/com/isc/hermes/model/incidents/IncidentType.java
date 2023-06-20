@@ -8,7 +8,7 @@ import java.util.Random;
  * This class represents the types of existing incidents
  */
 public enum IncidentType {
-    TRAFFIC_INCIDENT("Traffic Incident", GeometryType.LINE_STRING), SOCIAL_INCIDENT("Social Incident", GeometryType.POINT),
+    TRAFFIC_INCIDENT("Traffic PointIncidet", GeometryType.LINE_STRING), SOCIAL_INCIDENT("Social PointIncidet", GeometryType.POINT),
     DANGER_ZONE("Danger Zone", GeometryType.POLYGON), NATURAL_DISASTER("Natural_Disaster", GeometryType.POLYGON);
     private final String name;
     private final GeometryType geometryType;

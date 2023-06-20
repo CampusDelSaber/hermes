@@ -59,13 +59,14 @@ public class GenerateRandomIncidentController {
     }
 
     /**
-     * This method creates a thread and calls the database to upload the generated incidents.
+     * This method creates a thread and calls the database to upload the generated pointIncidets.
      *
-     * @param incidents list incidents to upload to the data base.
+     * @param pointIncidets list pointIncidets to upload to the data base.
      */
-    private void uploadToDataBase(List<Incident> incidents) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        for (Incident currentIncident : incidents) {
+    private void uploadToDataBase(List<Incident> pointIncidets) {
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        for (Incident currentIncident : pointIncidets) {
             String dateCreated = simpleDateFormat.format(currentIncident.getDateCreated());
             String dateDeath = simpleDateFormat.format(currentIncident.getDeathDate());
             String jsonString = incidentsUploader.generateJsonIncident(IncidentsUtils.getInstance().generateObjectId(),
@@ -73,8 +74,8 @@ public class GenerateRandomIncidentController {
                     currentIncident.getReason(),
                     dateCreated,
                     dateDeath,
-                    currentIncident.getGeometry().getType(),
-                    currentIncident.getGeometry().getStringCoordinates()
+                    "currentPointIncidet.getGeometry().getType()",
+                   " currentPointIncidet.getGeometry().getStringCoordinates()"
             );
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
                 @Override
