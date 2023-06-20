@@ -36,6 +36,10 @@
     <string name="delete_account">Delete Account</string>
 
 
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="close">Close</string>
+
     <!--    Authentication Strings-->
     <string name="google">GOOGLE</string>
     <string name="save_authentication_state">authentication_state</string>
@@ -86,4 +90,20 @@
         Longitude must be between -180 and 180.</string>
     <string name="search_a_city">Search a City</string>
     <string name="array_size_text_timber">The arrays about colors, icons and the type buttons have a different size</string>
+
+
+
+    <!--  Offline Maps Settings  -->
+    <string name="downloaded_maps">Downloaded Maps</string>
+    <string name="from_your_location_history">From your Location History</string>
+    <string name="select_new_map">SELECT NEW MAP</string>
+    <string name="navigate_to">Navigate to</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+    <string name="Offline_Mode_text">Offline Mode</string>
+    <string name="Offline_maps_text">Offline Maps</string>
+    <string name="list_button_text">List</string>
+    <string name="download_button_text">Download\n</string>
+    <string name="tittle_region_popup">Give a name to your map</string>
+    <string name="your_name_map">Your name map</string>
 </resources>
