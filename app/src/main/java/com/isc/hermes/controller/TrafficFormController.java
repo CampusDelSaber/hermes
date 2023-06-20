@@ -1,22 +1,10 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.isc.hermes.R;
-import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
-import com.isc.hermes.utils.Animations;
 
 import java.net.HttpURLConnection;
 
@@ -75,9 +63,7 @@ public class TrafficFormController {
      @return The selected incident type as a string.
      */
     public String gettrafficType(){
-
         String selectedIncidentType = level;
-        System.out.println("ESto" + selectedIncidentType);
         return selectedIncidentType;
     }
     /**
@@ -86,11 +72,8 @@ public class TrafficFormController {
      @return The selected incident time as a  string.
      */
     public String gettrafficTime(){
-
         int selectedIncidentTime = timeEstimate;
-
         String selectedIncidentTimeOption = time;
-        System.out.println("ESto" + selectedIncidentTime);
         return selectedIncidentTime+ " " + selectedIncidentTimeOption;
     }
 
@@ -104,9 +87,8 @@ public class TrafficFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(gettrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-
-        String JsonString = TrafficUploader.getInstance().generateJsonTraffic(id,gettrafficType(),"Reason",dateCreated, deathDate ,coordinates);
-        return TrafficUploader.getInstance().uploadTraffic(JsonString);
+        String JsonString = TrafficUploader.getInstance().generateJsonIncident(id,"Traffic","Test Traffic",dateCreated, deathDate ,coordinates);
+        return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
 
 

@@ -12,8 +12,8 @@ import java.net.URL;
  */
 public class IncidentsUploader {
     private static IncidentsUploader instance;
-    private LatLng lastClickedPoint;
-    private final String URL_INCIDENTS_API= "https://api-rest-hermes.onrender.com/incidents";
+    protected LatLng lastClickedPoint;
+    protected final String URL_INCIDENTS_API= "https://api-rest-hermes.onrender.com/incidents";
 
     /**
      * This method uploads an incident in JSON format to the remote server.
