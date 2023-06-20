@@ -107,7 +107,4 @@ public class WaypointOptionsController {
         return incidentFormController;
     }
 
-    public TrafficFormController getTrafficFormController() {
-        return trafficFormController;
-    }
 }
