@@ -42,25 +42,6 @@ public class IncidentGenerator {
     }
 
     /**
-     * This method generate a death date randomly.
-     *
-     * @return valid death date.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public Date generateDeathDateRandomly() {
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
-        LocalDate fourteenDaysLater = tomorrow.plusDays(14);
-        LocalDateTime startDateTime = tomorrow.atStartOfDay();
-        LocalDateTime endDateTime = fourteenDaysLater.atStartOfDay();
-
-        long startMillis = startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        long endMillis = endDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        long randomMillis = startMillis + (long) (random.nextDouble() * (endMillis - startMillis));
-
-        return new Date(randomMillis);
-    }
-
-    /**
      * Generates a list of incidents randomly based on the incident generators you have.
      *
      * @param radium         Radius in which the incidents were generated.
@@ -104,45 +85,22 @@ public class IncidentGenerator {
     }
 
     /**
-     * This method generate a random integer using a range.
+     * This method generate a death date randomly.
      *
-     * @param min is the min value of the range.
-     * @param max is the max value of the range.
-     * @return random integer generated.
+     * @return valid death date.
      */
-    private int getIntegerRandomly(int min, int max) {
-        return random.nextInt((max - 1) - min + 1) + min;
-    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private Date generateDeathDateRandomly() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        LocalDate fourteenDaysLater = tomorrow.plusDays(14);
+        LocalDateTime startDateTime = tomorrow.atStartOfDay();
+        LocalDateTime endDateTime = fourteenDaysLater.atStartOfDay();
 
-    /**
-     * This method generate a random reason using the reason list of a incident type,
-     *
-     * @param incidentType to get the reason type list.
-     * @return random reason of the list of reason.
-     */
-    private String getReasonRandomly(IncidentType incidentType) {
-        int randomIndex = getIntegerRandomly(0, incidentType.getReasons().size());
-        return incidentType.getReasons().get(randomIndex);
-    }
+        long startMillis = startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long endMillis = endDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long randomMillis = startMillis + (long) (random.nextDouble() * (endMillis - startMillis));
 
-    /**
-     * This method generate a random incident type.
-     *
-     * @return random incident type.
-     */
-    public IncidentType getIncidentTypeRandomly() {
-        int randomIndex = getIntegerRandomly(0, INCIDENT_TYPES.size());
-        return INCIDENT_TYPES.get(randomIndex);
-    }
-
-    /**
-     * This method generate a random radium.
-     *
-     * @return random radium.
-     */
-    public Radium getRadiumRandomly() {
-        int randomIndex = getIntegerRandomly(0, RADII.size());
-        return RADII.get(randomIndex);
+        return new Date(randomMillis);
     }
 
     /**
@@ -174,5 +132,47 @@ public class IncidentGenerator {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public long getSecondsBetweenTimeout() {
         return timeout == null ? 0 : ChronoUnit.SECONDS.between(LocalDateTime.now(), timeout);
+    }
+
+    /**
+     * This method generate a random reason using the reason list of a incident type,
+     *
+     * @param incidentType to get the reason type list.
+     * @return random reason of the list of reason.
+     */
+    private String getReasonRandomly(IncidentType incidentType) {
+        int randomIndex = getIntegerRandomly(0, incidentType.getReasons().size());
+        return incidentType.getReasons().get(randomIndex);
+    }
+
+    /**
+     * This method generate a random incident type.
+     *
+     * @return random incident type.
+     */
+    private IncidentType getIncidentTypeRandomly() {
+        int randomIndex = getIntegerRandomly(0, INCIDENT_TYPES.size());
+        return INCIDENT_TYPES.get(randomIndex);
+    }
+
+    /**
+     * This method generate a random radium.
+     *
+     * @return random radium.
+     */
+    private Radium getRadiumRandomly() {
+        int randomIndex = getIntegerRandomly(0, RADII.size());
+        return RADII.get(randomIndex);
+    }
+
+    /**
+     * This method generate a random integer using a range.
+     *
+     * @param min is the min value of the range.
+     * @param max is the max value of the range.
+     * @return random integer generated.
+     */
+    private int getIntegerRandomly(int min, int max) {
+        return random.nextInt((max - 1) - min + 1) + min;
     }
 }
