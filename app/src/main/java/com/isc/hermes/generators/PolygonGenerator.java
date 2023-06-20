@@ -41,14 +41,22 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
      * @return the polygon coordinates generated.
      */
     @Override
-    public List<Double[]> generate(Double[] referencePoint, Radium radium, int amount) {
+    public List<Double[]> generate(Double[] referencePoint, Radium radium, int vertexAmount) {
         polygonCoordinates.clear();
         if (isValidReferencePoint(referencePoint)) {
             polygonCoordinates.add(coordinateParser.doubleToCoordinate(referencePoint));
-            for (int i = 0; i < 15; i++) {
-                coordinate = pointGenerator.getNearPoint(referencePoint, radium);
+
+            vertexAmount *= 5;
+            double angle;
+            double angleIncrement = 2 * Math.PI / vertexAmount;
+            double distance = radium.getValue();
+
+            for (int i = 0; i < vertexAmount; i++) {
+                angle = i * angleIncrement;
+                coordinate = pointGenerator.getNearPoint(referencePoint, distance, angle);
                 polygonCoordinates.add(coordinateParser.doubleToCoordinate(coordinate));
             }
+
             polygon = buildTriangulation(polygonCoordinates);
         }
 

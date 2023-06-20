@@ -50,6 +50,14 @@ public class PointGenerator extends CoordinateGen implements CoordinatesGenerabl
         return coordinate;
     }
 
+    public Double[] getNearPoint(Double[] referencePoint, double distance, double angle) {
+        Double[] coordinate = new Double[2];
+        coordinate[0] = referencePoint[0] + distance * Math.cos(angle);
+        coordinate[1] = referencePoint[1] + distance * Math.sin(angle);
+        return coordinate;
+    }
+
+
     /**
      * This method generate a multi points coordinates list on a limit area.
      *
