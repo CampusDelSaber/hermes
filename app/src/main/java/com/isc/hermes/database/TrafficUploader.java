@@ -18,9 +18,9 @@ public class TrafficUploader {
     private static TrafficUploader instance;
     private LatLng lastClickedPoint;
     private final String URL_INCIDENTS_API= "https://api-rest-hermes.onrender.com/incidents";
-    DijkstraAlgorithm dijkstraAlgorithm;
-    Graph graph;
-    Node node;
+    private DijkstraAlgorithm dijkstraAlgorithm;
+    private Graph graph;
+
     /**
      * This method uploads an incident in JSON format to the remote server.
      *
@@ -58,8 +58,8 @@ public class TrafficUploader {
      * @param coordinates The coordinates of the incident location.
      * @return The JSON representation of the incident.
      */
-    public String generateJsonTraffic(String id, String type, String reason, String dateCreated, String deathDate, String coordinates, String coordinates2) {
-        return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates +"}}";
+    public String generateJsonTraffic(String id, String type, String reason, String dateCreated, String deathDate, String coordinates ) {
+        return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + "}}";
     }
     /**
      * This method returns the last clicked point on the map.
@@ -86,28 +86,27 @@ public class TrafficUploader {
      */
 
 
-    public String getCoordinates(){
+    public String getCoordinates() {
+        if (dijkstraAlgorithm == null) {
+            dijkstraAlgorithm = new DijkstraAlgorithm();
+        }
+        if (graph == null) {
+            graph = new Graph();
+        }
 
-        String latitude = String.valueOf(dijkstraAlgorithm.getGeoJsonRoutes(graph,node,node));
-        System.out.println("ESto mas"+latitude);
-        return "[" + latitude + "]";
-    }
 
-    public String getCoordinates2(){
-        String[] parts = lastClickedPoint.toString().split("[=,]");
-        String latitude = parts[1].trim();
-        String longitude = parts[3].trim();
-        System.out.println("ESto mas"+latitude);
-        return "[" + latitude + ", " + longitude + "]";
-    }
+        Node node1 = new Node("Point 2", lastClickedPoint.getLatitude(), lastClickedPoint.getLongitude());
 
-    public String getCoordinates3(){
-        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null,null).getCurrentLocationModel();
-        // String[] parts = lastClickedPoint.toString().split("[=,]");
-        String latitude = String.valueOf(currentLocation.getLatitude());
-        String longitude = String.valueOf(currentLocation.getLongitude());
-        System.out.println("ESto mas"+latitude);
-        return "[" + latitude + ", " + longitude + "]";
+        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null, null).getCurrentLocationModel();
+
+        Node node2 = new Node("Point 1", currentLocation.getLatitude(), currentLocation.getLongitude());
+
+        System.out.println("Nodo 1 "+ node1.getLongitude());
+        System.out.println("Nodo 2 " + node2.getLongitude());
+
+        String trafficLine = String.valueOf(dijkstraAlgorithm.getGeoJsonRoutes(graph, node1, node2));
+        System.out.println("ESto mas" + trafficLine);
+        return "[" + trafficLine + "]";
     }
     /**
      * This method retrieves the instance of the TrafficUploader class.
