@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.isc.hermes.R;
 import com.isc.hermes.controller.authentication.GoogleAuthentication;
@@ -20,6 +22,7 @@ public abstract class PopUp extends Dialog implements View.OnClickListener {
     protected Button confirmButton;
     protected TextView deleteAccountText;
     protected TextView warningText;
+    protected ImageView iconMessagePopUp;
     protected final Activity activity;
     protected GoogleAuthentication googleAuthentication;
 
@@ -45,7 +48,9 @@ public abstract class PopUp extends Dialog implements View.OnClickListener {
     public void assignValuesToComponents(TypePopUp typePopUp) {
         this.googleAuthentication = new GoogleAuthentication();
         this.warningText = findViewById(R.id.warningText);
+        this.iconMessagePopUp = findViewById(R.id.iconMessagePopUp);
         this.deleteAccountText = findViewById(R.id.deleteAccountText);
+        this.iconMessagePopUp.setImageURI(Uri.parse(typePopUp.getIconImagePopUp()));
         this.warningText.setText(typePopUp.getWarningPopUp());
         this.deleteAccountText.setText(typePopUp.getTittlePopUP());
     }
