@@ -6,9 +6,18 @@ import com.isc.hermes.model.graph.Node;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * This is a utility class for working with graphs.
+ */
 public class GraphUtils {
     private static GraphUtils instance;
+    /**
+     * This method traverses the given graph
+     * and returns it as a string
+     *
+     * @param graph The graph to traverse
+     * @return A string representation of the graph
+     */
     public String traverseGraph(Graph graph) {
         Map<String, Node> nodes = graph.getNodes();
         StringBuilder stringBuilder = new StringBuilder();
@@ -26,12 +35,25 @@ public class GraphUtils {
         return stringBuilder.toString();
     }
 
+    /**
+     * This method creates a new bidirectional
+     * graph based on the original graph
+     *
+     * @param originalGraph The original graph
+     * @return A new graph with bidirectional edges
+     */
     public Graph createBidirectionalGraph(Graph originalGraph) {
         Graph newGraph = copyNodes(originalGraph);
         addBidirectionalEdges(newGraph, originalGraph);
         return newGraph;
     }
-
+    /**
+     * This method copies the nodes from the original
+     * graph to a new graph
+     *
+     *@param originalGraph The original graph
+     * @return A new graph with copied nodes
+     */
     private Graph copyNodes(Graph originalGraph) {
         Graph newGraph = new Graph();
         Map<String, Node> originalNodes = originalGraph.getNodes();
@@ -41,7 +63,13 @@ public class GraphUtils {
         }
         return newGraph;
     }
-
+    /**
+     * This method adds bidirectional edges to the new
+     * graph based on the original graph's edges
+     *
+     * @param newGraph      The new graph to add bidirectional edges to
+     * @param originalGraph The original graph to get edges from
+     */
     private void addBidirectionalEdges(Graph newGraph, Graph originalGraph) {
         Map<String, Node> originalNodes = originalGraph.getNodes();
         for (Node originalNode : originalNodes.values()) {
@@ -55,7 +83,11 @@ public class GraphUtils {
             }
         }
     }
-
+    /**
+     * This method retrieves the singleton instance of GraphUtils.
+     *
+     * @return The singleton instance of GraphUtils.
+     */
     public static GraphUtils getInstance(){
         if (instance == null){
             instance = new GraphUtils();
