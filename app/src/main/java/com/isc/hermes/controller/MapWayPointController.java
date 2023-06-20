@@ -40,8 +40,6 @@ public class MapWayPointController implements MapClickConfigurationController {
     private int markerCount = 0;
     private final Context context;
 
-    private LatLng previousPoint;
-    private Polyline drawnLine;
 
     /**
      * This is the constructor method.

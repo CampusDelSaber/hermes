@@ -19,6 +19,7 @@ import com.isc.hermes.utils.DijkstraAlgorithm;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Map;
@@ -64,26 +65,36 @@ public class TrafficAutomaticTest {
         graph.addNode(sucre_Lanza);
         graph.addNode(lanza_jordan);
 
-        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null, null).getCurrentLocationModel();
+    }
+    @Test
+    public void testEstimateTimeHigh(){
+        int stimate = trafficFormController.calculateEstimateTime(10,20);
+        assertEquals(30,stimate);
+    }
+    @Test
+    public void testEstimateTimeLow(){
+        int stimate = trafficFormController.calculateEstimateTime(10,5);
+        assertEquals(5,stimate);
+    }
+    @Test
+    public void testEstimateTimeSame(){
+        int stimate = trafficFormController.calculateEstimateTime(50,50);
+        assertEquals(50,stimate);
+    }
 
-        Node node2 = new Node("Point 1", currentLocation.getLatitude(), currentLocation.getLongitude());
-
-
-
-        System.out.println(
-                dijkstraAlgorithm.getGeoJsonRoutes(graph, estebanArze_Sucre, jordan_sanMartin));
-
-        System.out.println(
-                dijkstraAlgorithm.getGeoJsonRoutes(graph, sucre_sanMartin, jordan_sanMartin));
-
-        String type = trafficFormController.getTrafficType(20,50);
-        int stimate = trafficFormController.calculateEstimateTime(20,50);
-        trafficUploader.getCoordinates();
-
-        assertEquals("Tráfico Normal",type);
-        assertEquals(70,stimate);
-
-        System.out.println(
-                dijkstraAlgorithm.getGeoJsonRoutes(graph, estebanArze_Sucre, jordan_sanMartin));
+    @Test
+    public void testTypeTrafficHigh(){
+        String type = trafficFormController.getTrafficType(10,20);
+        assertEquals("High Traffic",type);
+    }
+    @Test
+    public void testTypeTrafficLow(){
+        String type = trafficFormController.getTrafficType(20,5);
+        assertEquals("Low Traffic",type);
+    }
+    @Test
+    public void testTypeTrafficNormal(){
+        String type = trafficFormController.getTrafficType(10,10);
+        assertEquals("Normal Traffic",type);
     }
 }
