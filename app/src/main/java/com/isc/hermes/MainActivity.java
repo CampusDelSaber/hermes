@@ -392,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .zoom(b.getDouble("zoom"))
                     .build();
             mapDisplay.getMapboxMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1500);
+            openSideMenu(null);
         }
     }
 }
