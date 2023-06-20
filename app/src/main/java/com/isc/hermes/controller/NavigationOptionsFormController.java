@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.graph.Node;
@@ -17,13 +16,16 @@ import java.text.DecimalFormat;
 import timber.log.Timber;
 
 
+/**
+ * Class to represent the navigation controller options' class for the view
+ * Setting methods to render and manage the different ui component's behaviour
+ */
 public class NavigationOptionsFormController {
     private final Context context;
     private final RelativeLayout navOptionsForm;
     private final Button cancelButton, startButton, chooseStartPointButton,
             startPointButton, finalPointButton, currentLocationButton;
     private final LinearLayout transportationTypesContainer;
-    private final TextView navOptionsText;
     private final MapWayPointController mapWayPointController;
     private boolean isStartPointFromMapSelected;
     private LatLng startPoint, finalPoint;
@@ -31,7 +33,7 @@ public class NavigationOptionsFormController {
     /**
      * This is the constructor method. Init all the necessary components.
      *
-     * @param context Is the context application.
+     * @param context               Is the context application.
      * @param mapWayPointController Is the controller of the map.
      */
     public NavigationOptionsFormController(Context context, MapWayPointController mapWayPointController) {
@@ -43,10 +45,9 @@ public class NavigationOptionsFormController {
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button);
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
         currentLocationButton = ((AppCompatActivity) context).findViewById(R.id.current_location_button);
-        startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);;
-        finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);;
+        startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);
+        finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
-        navOptionsText = ((AppCompatActivity) context).findViewById(R.id.navOptions_Text);
         setButtonsOnClick();
         setNavOptionsUiComponents();
     }
@@ -67,25 +68,42 @@ public class NavigationOptionsFormController {
         setPointsButtonShownTexts();
     }
 
+    /**
+     * Clears the current start point and updates the button text accordingly.
+     */
     private void handleOnCurrentLocationOption() {
         startPoint = null;
         setPointsButtonShownTexts();
     }
 
+    /**
+     * Updates the button texts for the start and final points based on their values.
+     */
     private void setPointsButtonShownTexts() {
-        startPointButton.setText((startPoint != null)?
-                formatLatLng(startPoint.getLatitude(),startPoint.getLongitude()):"Your Location");
-        finalPointButton.setText((finalPoint != null)?
-                formatLatLng(finalPoint.getLatitude(),finalPoint.getLongitude()):"Not selected");
+        startPointButton.setText((startPoint != null) ?
+                formatLatLng(startPoint.getLatitude(), startPoint.getLongitude()) : "Your Location");
+        finalPointButton.setText((finalPoint != null) ?
+                formatLatLng(finalPoint.getLatitude(), finalPoint.getLongitude()) : "Not selected");
     }
 
+    /**
+     * Formats the given latitude and longitude values into a string representation.
+     *
+     * @param latitude  The latitude value.
+     * @param longitude The longitude value.
+     * @return The formatted string with latitude and longitude.
+     */
     private String formatLatLng(double latitude, double longitude) {
         DecimalFormat decimalFormat = new DecimalFormat("#.######");
         String formattedLatitude = decimalFormat.format(latitude);
         String formattedLongitude = decimalFormat.format(longitude);
-        return "Lt: "+formattedLatitude + "\n" + "Lg: "+formattedLongitude;
+        return "Lt: " + formattedLatitude + "\n" + "Lg: " + formattedLongitude;
     }
 
+    /**
+     * Handles the action when the choose start point button is clicked.
+     * Sets a flag indicating that the start point is selected from the map and hides items view.
+     */
     private void handleChooseStartPointButton() {
         isStartPointFromMapSelected = true;
         handleHiddeItemsView();
@@ -148,15 +166,29 @@ public class NavigationOptionsFormController {
         return navOptionsForm;
     }
 
+    /**
+     * Method to receive if the choose point from map option is selected or not
+     * @return true if the choose start point option from map is active
+     */
     public boolean isStartPointFromMapSelected() {
         return isStartPointFromMapSelected;
     }
 
+    /**
+     * Method to set the start point from the button pressed
+     * @param point the latLng point to set with
+     */
     public void setStartPoint(LatLng point) {
         startPoint = point;
         updateUiPointsComponents();
     }
 
+
+    /**
+     * Updates the UI components related to the points based on the state of the start point selection.
+     * If the start point is selected from the map, it animates the entry and makes the navigation options form visible.
+     * It also updates the button texts for the start and final points.
+     */
     private void updateUiPointsComponents() {
         if (isStartPointFromMapSelected) {
             navOptionsForm.startAnimation(Animations.entryAnimation);
@@ -165,6 +197,11 @@ public class NavigationOptionsFormController {
         setPointsButtonShownTexts();
     }
 
+    /**
+     * Sets the final navigation point.
+     *
+     * @param point The LatLng object representing the final navigation point.
+     */
     public void setFinalNavigationPoint(LatLng point) {
         this.finalPoint = point;
         updateUiPointsComponents();
