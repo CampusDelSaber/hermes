@@ -1,38 +1,19 @@
 package com.isc.hermes.controller;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-import android.content.Context;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.CameraAnimator;
 import com.isc.hermes.utils.KeyBoardManager;
 import com.isc.hermes.view.FiltersView;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
-import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.core.exceptions.ServicesException;
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import java.util.List;
-import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import timber.log.Timber;
-
 
 /**
  * Class to represent the filters controller to manage the ui components and perform the filters correctly
@@ -43,6 +24,8 @@ public class FilterController {
     private FiltersView filtersView;
     private CameraAnimator cameraAnimator;
     private StreetValidator streetValidator;
+    private GeocodeFiltersManager geocodingManager;
+    private LatLng currentLatLng;
 
 
     /**
@@ -56,6 +39,7 @@ public class FilterController {
         this.filtersView = new FiltersView(mainActivity);
         this.cameraAnimator = new CameraAnimator(mapboxMap);
         this.streetValidator = new StreetValidator();
+        this.geocodingManager = new GeocodeFiltersManager(mainActivity);
     }
 
     /**
@@ -69,12 +53,10 @@ public class FilterController {
      * Method tu init filters' buttons inside the filters' container
      */
     private void initFiltersButtons() {
-        Button startGeocodeButton = mainActivity.findViewById(R.id.start_geocode_button);
-        Button chooseCityButton = mainActivity.findViewById(R.id.searchButton);
-        manageFiltersButtonsBehaviour(startGeocodeButton);
-        chooseCityButton.setOnClickListener(view -> {
+        manageFiltersButtonsBehaviour(filtersView.getStartGeocodeButton());
+        filtersView.getChooseCityButton().setOnClickListener(view -> {
             KeyBoardManager.getInstance().closeKeyBoard(view, mainActivity);
-            showCityListMenu();
+            geocodingManager.showCityListMenu(filtersView.getSearchInput().getText().toString(), this::updateFiltersComponentsToMap);
         });
     }
 
@@ -99,8 +81,8 @@ public class FilterController {
         double longitude = Double.parseDouble(filtersView.getLongEditText().getText().toString());
 
         if (streetValidator.isPointStreet(latitude, longitude)) {
-            makeGeocodeSearch(new LatLng(Double.parseDouble(filtersView.getLatEditText().getText().toString()),
-                    Double.parseDouble(filtersView.getLongEditText().getText().toString())));
+            LatLng latLng = new LatLng(latitude, longitude);
+            geocodingManager.makeGeocodeSearch(latLng, this::setCameraToResponsePosition);
         } // Make a geocoding search with the values inputted into the EditTexts
         else Toast.makeText(mainActivity, R.string.make_valid_lat, Toast.LENGTH_LONG).show();
 
@@ -117,128 +99,26 @@ public class FilterController {
     }
 
     /**
-     * Shows the city list menu by performing a geocoding search using the search input text.
-     * Uses the MapboxGeocoding API for geocoding.
-     */
-    private void showCityListMenu() {
-        MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
-                .accessToken(mainActivity.getString(R.string.access_token))
-                .query(filtersView.getSearchInput().getText().toString())
-                .build();
-        manageGeoCodingResponse(mapboxGeocoding);
-    }
-
-    /**
-     * Manages the response from the MapboxGeocoding API.
-     * Handles the success and failure cases of the API call.
-     *
-     * @param mapboxGeocoding The MapboxGeocoding object representing the geocoding API call.
-     */
-    private void manageGeoCodingResponse(MapboxGeocoding mapboxGeocoding) {
-        mapboxGeocoding.enqueueCall(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<GeocodingResponse> call, @NonNull Response<GeocodingResponse> response) {
-                if (response.isSuccessful() && response.body() != null)
-                    manageResponseFeatures(response);
-                else Timber.tag(TAG).d("onResponse: No result found");
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<GeocodingResponse> call, @NonNull Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
-    }
-
-    /**
-     * Processes the features in the geocoding response.
-     *
-     * @param response The response from the geocoding API call.
-     */
-    private void manageResponseFeatures(Response<GeocodingResponse> response) {
-        assert response.body() != null;
-        List<CarmenFeature> results = response.body().features();
-        Timber.tag(TAG).d("onResponse: %s", filtersView.getSearchInput().getText().toString());
-        if (results.size() > 0) {
-            // Log the first results Point.
-            Timber.tag(TAG).d("onResponse: %s", results.get(0).toString());
-            updateFiltersComponentsToMap(results);
-
-        } else Timber.tag(TAG).d("onResponse: No result found");
-    }
-
-    /**
      * Updates the filter components on the map based on the given list of CarmenFeature results.
      *
      * @param results The list of CarmenFeature results.
      */
     private void updateFiltersComponentsToMap(List<CarmenFeature> results) {
         Point point = results.get(0).center();
-        assert point != null;
-        LatLng cityLatLng = new LatLng(point.latitude(), point.longitude());
-        setCoordinateEditTexts(cityLatLng);
-        cameraAnimator.animateCameraToNewPosition(cityLatLng, 11, 1500);
-        makeGeocodeSearch(cityLatLng);
-        Timber.tag(TAG).d("onResponse: %s", point.toString());
-    }
-
-    /**
-     * Performs a geocoding search using the given LatLng object.
-     * Uses the MapboxGeocoding API for geocoding.
-     *
-     * @param latLng The LatLng object representing the location to search.
-     */
-    private void makeGeocodeSearch(final LatLng latLng) {
-        try {
-            MapboxGeocoding client = MapboxGeocoding.builder()
-                    .accessToken(mainActivity.getString(R.string.access_token))
-                    .query(Point.fromLngLat(latLng.getLongitude(), latLng.getLatitude()))
-                    .geocodingTypes(GeocodingCriteria.TYPE_PLACE)
-                    .mode(GeocodingCriteria.MODE_PLACES)
-                    .build();
-            sendQueryCall(client, latLng);
-
-        } catch (ServicesException servicesException) {
-            Timber.e("Error geocoding: %s", servicesException.toString());
-            servicesException.printStackTrace();
-        }
-    }
-
-    /**
-     * Sends the geocoding query call to the MapboxGeocoding API.
-     * Handles the success and failure cases of the API call.
-     *
-     * @param client The MapboxGeocoding object representing the geocoding API call.
-     * @param latLng The LatLng object representing the location used for the geocoding search.
-     */
-    private void sendQueryCall(MapboxGeocoding client, LatLng latLng) {
-        client.enqueueCall(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<GeocodingResponse> call,
-                                   @NonNull Response<GeocodingResponse> response) {
-                if (response.body() != null) setCameraToResponsePosition(response, latLng);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<GeocodingResponse> call, @NonNull Throwable throwable) {
-                Timber.e("Geocoding Failure: %s", throwable.getMessage());
-            }
-        });
+        currentLatLng = new LatLng(point.latitude(), point.longitude());
+        setCoordinateEditTexts(currentLatLng);
+        cameraAnimator.animateCameraToNewPosition(currentLatLng,11, 1500);
+        geocodingManager.makeGeocodeSearch(currentLatLng, this::setCameraToResponsePosition);
     }
 
     /**
      * Sets the camera position to the response position obtained from the geocoding API call.
      * If there are no results, displays a toast message indicating no results were found.
-     *
-     * @param response The response from the geocoding API call.
-     * @param latLng   The LatLng object representing the location used for the geocoding search.
+     * @param results The list of CarmenFeature results.
      */
-    private void setCameraToResponsePosition(Response<GeocodingResponse> response, LatLng latLng) {
-        assert response.body() != null;
-        List<CarmenFeature> results = response.body().features();
+    private void setCameraToResponsePosition(List<CarmenFeature> results) {
         if (results.size() > 0) {
-            cameraAnimator.animateCameraToNewPosition(latLng, 11, 1500);
-        } else Toast.makeText(mainActivity, R.string.no_results,
-                Toast.LENGTH_SHORT).show();
+            cameraAnimator.animateCameraToNewPosition(currentLatLng,11, 1500);
+        } else Toast.makeText(mainActivity, R.string.no_results, Toast.LENGTH_SHORT).show();
     }
 }
