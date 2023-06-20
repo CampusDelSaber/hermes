@@ -3,6 +3,7 @@ package com.isc.hermes.controller;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -14,14 +15,20 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
-import com.isc.hermes.database.IncidentsUploader;
-import com.isc.hermes.model.Utils.IncidentsUtils;
-import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
+import com.mapbox.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import java.net.HttpURLConnection;
+import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Objects;
 import timber.log.Timber;
 
@@ -29,11 +36,12 @@ import timber.log.Timber;
 public class NavigationOptionsFormController {
     private final Context context;
     private final RelativeLayout navOptionsForm;
-    private final Button cancelButton, startButton, chooseStartPointButton;
+    private final Button cancelButton, startButton, chooseStartPointButton,
+            startPointButton, finalPointButton;
     private final LinearLayout transportationTypesContainer;
     private final TextView navOptionsText;
     private final TextInputLayout chooseTextField;
-    public static String incidentType;
+    public static String incidentType, startPointName, finalPointName;
     private final MapWayPointController mapWayPointController;
     private boolean isStartPointFromMapSelected;
     private LatLng startPoint, finalPoint;
@@ -52,6 +60,8 @@ public class NavigationOptionsFormController {
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button);
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
+        startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);;
+        finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);;
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
         navOptionsText = ((AppCompatActivity) context).findViewById(R.id.navOptions_Text);
         chooseTextField = ((AppCompatActivity) context).findViewById(R.id.choose_text_field);
@@ -66,6 +76,21 @@ public class NavigationOptionsFormController {
         cancelButton.setOnClickListener(v -> handleHiddeItemsView());
         startButton.setOnClickListener(v -> handleAcceptButtonClick());
         chooseStartPointButton.setOnClickListener(v -> handleChooseStartPointButton());
+        setPointsButtonShownTexts();
+    }
+
+    private void setPointsButtonShownTexts() {
+        startPointButton.setText((startPoint != null)?
+                formatLatLng(startPoint.getLatitude(),startPoint.getLongitude()):"Your Location");
+        finalPointButton.setText((finalPoint != null)?
+                formatLatLng(finalPoint.getLatitude(),finalPoint.getLongitude()):"not selected");
+    }
+
+    private String formatLatLng(double latitude, double longitude) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.######");
+        String formattedLatitude = decimalFormat.format(latitude);
+        String formattedLongitude = decimalFormat.format(longitude);
+        return "Lt: "+formattedLatitude + "\n" + "Lg: "+formattedLongitude;
     }
 
     private void handleChooseStartPointButton() {
@@ -173,8 +198,6 @@ public class NavigationOptionsFormController {
         );
     }
 
-
-
     /**
      * This method clear the fields of the form.
      */
@@ -192,14 +215,17 @@ public class NavigationOptionsFormController {
     }
 
     public void setStartPoint(LatLng point) {
+        startPoint = point;
         updateUiPointsComponents();
     }
 
     private void updateUiPointsComponents() {
-        isStartPointFromMapSelected = false;
+        //isStartPointFromMapSelected = false;
+        setPointsButtonShownTexts();
     }
 
     public void setFinalNavigationPoint(LatLng point) {
         this.finalPoint = point;
+        updateUiPointsComponents();
     }
 }

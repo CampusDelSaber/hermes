@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.text.Layout;
 import android.view.View;
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
@@ -10,6 +11,9 @@ import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
 
 /**
  * Class to configure the event of do click on a map
@@ -43,6 +47,7 @@ public class MapWayPointController implements MapClickConfigurationController {
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
         } else doMarkOnMapAction(point);
         IncidentsUploader.getInstance().setLastClickedPoint(point);
+        waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
         return true;
     }
 
@@ -76,7 +81,6 @@ public class MapWayPointController implements MapClickConfigurationController {
             mapboxMap.addMarker(markerOptions);
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
-            waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
             isMarked = true;
         }
     }
