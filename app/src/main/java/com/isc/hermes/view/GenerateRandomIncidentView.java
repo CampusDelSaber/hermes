@@ -84,7 +84,7 @@ public class GenerateRandomIncidentView {
             case "1Km":
                 radiumSelected = Radium.ONE_KILOMETER;
                 break;
-            case "5km":
+            case "5Km":
                 radiumSelected = Radium.FIVE_KILOMETERS;
                 break;
             case "10Km":

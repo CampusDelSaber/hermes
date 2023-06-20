@@ -68,9 +68,12 @@ public class CurrentLocationController {
      * Method for initializing the location button and setting its click listener.
      */
     @SuppressLint("WrongViewCast")
-    private void initLocationButton() {
+    public void initLocationButton() {
         ImageButton locationButton = activity.findViewById(R.id.locationButton);
-        locationButton.setOnClickListener(v -> enableLocationComponent());
+        locationButton.setOnClickListener(v -> {
+            enableLocationComponent();
+//            initLocation();
+        });
     }
 
     /**

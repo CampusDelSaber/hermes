@@ -1,11 +1,13 @@
 package com.isc.hermes.generators;
 
+import com.isc.hermes.model.incidents.GeometryType;
+
 import java.util.List;
 
 /**
  * This method has the responsibility to generate linestring coordinates data.
  */
-public class LinestringGenerator extends CoordinateGen {
+public class LinestringGenerator extends CoordinateGen implements IGeometryGenerator {
 
     private PointGenerator pointGenerator;
 
@@ -22,7 +24,8 @@ public class LinestringGenerator extends CoordinateGen {
      * @param amountPoints that has the lineString.
      * @return lineString coordinates generated.
      */
-    public List<Double[]> getLinestring(
+    @Override
+    public List<Double[]> generate(
             Double[] referencePoint,
             Radium radium,
             int amountPoints
@@ -38,6 +41,16 @@ public class LinestringGenerator extends CoordinateGen {
         }
 
         return coordinates;
+    }
+
+    /**
+     * This method returns the type of geometric object that is generated.
+     *
+     * @return TypeGeometry type.
+     */
+    @Override
+    public GeometryType getTypeGeometry() {
+        return GeometryType.LINE_STRING;
     }
 
 }

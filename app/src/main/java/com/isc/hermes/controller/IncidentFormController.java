@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
+import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
 
@@ -133,6 +134,7 @@ public class IncidentFormController {
      * </p>
      */
     public void setIncidentComponents() {
+        incidentTypesContainer.removeAllViews();
         String[] incidentTypes = context.getResources().getStringArray(R.array.incidents_type);
         String[] incidentTypeColors = context.getResources().getStringArray(R.array.incidents_type_colors);
         String[] incidentTypeIcons = context.getResources().getStringArray(R.array.incidents_type_icons);
@@ -283,7 +285,7 @@ public class IncidentFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id, getIncidentType(), reason, dateCreated, deathDate ,coordinates);
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,GeometryType.POINT.getName(),coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 

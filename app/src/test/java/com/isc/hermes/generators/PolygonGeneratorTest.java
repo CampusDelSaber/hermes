@@ -18,6 +18,6 @@ public class PolygonGeneratorTest {
 
     @Test
     public void generatePolygon() {
-        assertNotNull(generator.getPolygon(referencePoint, Radium.ONE_KILOMETER));
+        assertNotNull(generator.generate(referencePoint, Radium.ONE_KILOMETER, 0));
     }
 }

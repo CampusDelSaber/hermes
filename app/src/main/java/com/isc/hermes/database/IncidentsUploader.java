@@ -49,11 +49,12 @@ public class IncidentsUploader {
      * @param reason      The reason for the incident.
      * @param dateCreated The creation date of the incident.
      * @param deathDate   The death date of the incident.
+     * @param typeFigure        The type of geometry figure.
      * @param coordinates The coordinates of the incident location.
      * @return The JSON representation of the incident.
      */
-    public String generateJsonIncident(String id, String type, String reason, String dateCreated, String deathDate, String coordinates) {
-        return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \"Point\",\"coordinates\": " + coordinates + "}}";
+    public String generateJsonIncident(String id, String type, String reason, String dateCreated, String deathDate, String typeFigure, String coordinates) {
+        return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \""+typeFigure+"\",\"coordinates\": " + coordinates + "}}";
     }
     /**
      * This method returns the last clicked point on the map.
