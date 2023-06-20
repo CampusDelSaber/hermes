@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Handler;
 
+import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 
@@ -24,6 +25,7 @@ import android.widget.SearchView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Utils.MapPolyline;
 
+import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
@@ -123,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 filterController.initComponents();
             }
         });
+        MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
+        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap,this));
     }
 
 
