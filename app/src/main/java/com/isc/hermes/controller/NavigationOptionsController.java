@@ -7,16 +7,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import java.text.DecimalFormat;
 import timber.log.Timber;
 
-
+/**
+ * Class to represent the navigation controller options' class for the view
+ * Setting methods to render and manage the different ui component's behaviour
+ */
 public class NavigationOptionsController {
     static boolean isActive, isLocationStartChosen;
     private final Context context;
@@ -24,7 +27,6 @@ public class NavigationOptionsController {
     private final Button cancelButton, startButton, chooseStartPointButton,
             startPointButton, finalPointButton, currentLocationButton;
     private final LinearLayout transportationTypesContainer;
-    private final TextView navOptionsText;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
 
@@ -48,7 +50,6 @@ public class NavigationOptionsController {
         startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);;
         finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);;
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
-        navOptionsText = ((AppCompatActivity) context).findViewById(R.id.navOptions_Text);
         setNavOptionsUiComponents();
         setButtons();
     }
@@ -60,12 +61,11 @@ public class NavigationOptionsController {
         chooseStartPointButton.setOnClickListener(v -> handleChooseStartPointButton());
         currentLocationButton.setOnClickListener(v -> handleCurrentLocationChosen());
         cancelButton.setOnClickListener(v -> {
-            isLocationStartChosen = false;
+            isLocationStartChosen = true;
             handleHiddeItemsView();
-            startPoint = null;
-            finalPoint = null;
             isActive = false;
         });
+        startButton.setOnClickListener(v -> handleAcceptButtonClick());
     }
 
     /**
@@ -190,5 +190,18 @@ public class NavigationOptionsController {
                 formatLatLng(startPoint.getLatitude(),startPoint.getLongitude()):"Your Location");
         finalPointButton.setText((finalPoint != null)?
                 formatLatLng(finalPoint.getLatitude(),finalPoint.getLongitude()):"Not selected");
+    }
+
+    /**
+     * This method handles the actions performed when the accept button is clicked.
+     */
+    private void handleAcceptButtonClick() {
+        handleHiddeItemsView();
+        isActive = false;
+        Node startPointNode = (startPoint != null) ? new Node("01",startPoint.getLatitude(),
+                startPoint.getLatitude()): null;
+        Node finalPointNode = (startPoint != null) ? new Node("02",finalPoint.getLatitude(),
+                finalPoint.getLatitude()): null;
+        // TODO: Navigation Route between these two nodes
     }
 }
