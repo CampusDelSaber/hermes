@@ -80,9 +80,7 @@ public class TrafficFormController {
         return timeEstimate;
     }
 
-
     /**
-
      This method getTrafficType: the selected Traffic type from the Time on the navigation.
      @param time the estimated time of arrival at the destination set when displaying the navigation
      @param waitingTime Time in which the user is in the on the navigation
