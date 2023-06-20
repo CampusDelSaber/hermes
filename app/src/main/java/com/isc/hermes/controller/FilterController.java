@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.requests.geocoders.StreetValidator;
+import com.isc.hermes.utils.CameraAnimator;
 import com.isc.hermes.utils.KeyBoardManager;
 import com.isc.hermes.view.FiltersView;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
@@ -39,6 +41,8 @@ public class FilterController {
     private final MainActivity mainActivity;
     private final MapboxMap mapboxMap;
     private FiltersView filtersView;
+    private CameraAnimator cameraAnimator;
+    private StreetValidator streetValidator;
 
 
     /**
@@ -50,6 +54,8 @@ public class FilterController {
         this.mapboxMap = mapBox;
         this.mainActivity = mainActivity;
         this.filtersView = new FiltersView(mainActivity);
+        this.cameraAnimator = new CameraAnimator(mapboxMap);
+        this.streetValidator = new StreetValidator();
     }
 
     /**
@@ -89,31 +95,15 @@ public class FilterController {
      * Method to manage the response of the query sent to render on ui creating a geocoding search with the values inputted into the EditTexts
      */
     private void manageResponseForLocationDataInserted() {
-        if (latCoordinateIsValid(Double.parseDouble(filtersView.getLatEditText().getText().toString()))
-                && longCoordinateIsValid(Double.parseDouble(filtersView.getLongEditText().getText().toString())))
+        double latitude = Double.parseDouble(filtersView.getLatEditText().getText().toString());
+        double longitude = Double.parseDouble(filtersView.getLongEditText().getText().toString());
+
+        if (streetValidator.isPointStreet(latitude, longitude)) {
             makeGeocodeSearch(new LatLng(Double.parseDouble(filtersView.getLatEditText().getText().toString()),
-                    Double.parseDouble(filtersView.getLongEditText().getText().toString()))); // Make a geocoding search with the values inputted into the EditTexts
+                    Double.parseDouble(filtersView.getLongEditText().getText().toString())));
+        } // Make a geocoding search with the values inputted into the EditTexts
         else Toast.makeText(mainActivity, R.string.make_valid_lat, Toast.LENGTH_LONG).show();
 
-    }
-    /**
-     * Checks if the latitude coordinate value is within the valid range.
-     *
-     * @param value The latitude coordinate value to check.
-     * @return {@code true} if the latitude coordinate value is within the valid range of -90 to 90, {@code false} otherwise.
-     */
-    private boolean latCoordinateIsValid(double value) {
-        return value >= -90 && value <= 90;
-    }
-
-    /**
-     * Checks if the longitude coordinate value is within the valid range.
-     *
-     * @param value The longitude coordinate value to check.
-     * @return {@code true} if the longitude coordinate value is within the valid range of -180 to 180, {@code false} otherwise.
-     */
-    private boolean longCoordinateIsValid(double value) {
-        return value >= -180 && value <= 180;
     }
 
     /**
@@ -187,7 +177,7 @@ public class FilterController {
         assert point != null;
         LatLng cityLatLng = new LatLng(point.latitude(), point.longitude());
         setCoordinateEditTexts(cityLatLng);
-        animateCameraToNewPosition(cityLatLng);
+        cameraAnimator.animateCameraToNewPosition(cityLatLng, 11, 1500);
         makeGeocodeSearch(cityLatLng);
         Timber.tag(TAG).d("onResponse: %s", point.toString());
     }
@@ -247,21 +237,8 @@ public class FilterController {
         assert response.body() != null;
         List<CarmenFeature> results = response.body().features();
         if (results.size() > 0) {
-            animateCameraToNewPosition(latLng);
+            cameraAnimator.animateCameraToNewPosition(latLng, 11, 1500);
         } else Toast.makeText(mainActivity, R.string.no_results,
                 Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Animates the camera to the new position represented by the given LatLng object.
-     *
-     * @param latLng The LatLng object representing the new camera position.
-     */
-    private void animateCameraToNewPosition(LatLng latLng) {
-        mapboxMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(new CameraPosition.Builder()
-                        .target(latLng)
-                        .zoom(11)
-                        .build()), 1500);
     }
 }
