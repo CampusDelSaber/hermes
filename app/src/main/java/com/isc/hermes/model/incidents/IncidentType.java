@@ -1,27 +1,49 @@
 package com.isc.hermes.model.incidents;
 
-import java.util.ArrayList;
+import com.isc.hermes.generators.CoordinatesGenerable;
+import com.isc.hermes.generators.LinestringGenerator;
+import com.isc.hermes.generators.PointGenerator;
+import com.isc.hermes.generators.PolygonGenerator;
+
 import java.util.List;
-import java.util.Random;
 
 /**
  * This class represents the types of existing incidents
  */
 public enum IncidentType {
-    TRAFFIC_INCIDENT("Traffic Incident", GeometryType.LINE_STRING), SOCIAL_INCIDENT("Social Incident", GeometryType.POINT),
-    DANGER_ZONE("Danger Zone", GeometryType.POLYGON), NATURAL_DISASTER("Natural_Disaster", GeometryType.POLYGON);
-    private final String name;
-    private final GeometryType geometryType;
+
+    TRAFFIC_INCIDENT (
+            "Traffic",
+            List.of("Vehicle crashes", "Road construction", "Peak hours", "Heavy truck traffic"),
+            new LinestringGenerator()
+    ), SOCIAL_INCIDENT (
+            "Social Incident",
+            List.of("Protests", "Festivals", "Sports races", "Rallies"),
+            new PointGenerator()
+    ), DANGER_ZONE (
+            "Danger Zone",
+            List.of("Protesters fight", "Military control"),
+            new PolygonGenerator()
+    ), NATURAL_DISASTER(
+            "Natural Disaster",
+            List.of("Flooding", "Earthquakes", "Wildfires", "Severe storms"),
+            new PolygonGenerator()
+    );
+
+    private final String type;
+    private final List<String> reasons;
+    private final CoordinatesGenerable generator;
 
     /**
      * Builder, enter the values necessary to better identify the type of incident.
      *
-     * @param name String name, represent the name of incident
-     * @param geometryType GeometryType, represent the geometry type that represent the incident.
+     * @param name      String name, represent the name of incident
+     * @param generator GeometryType, represent the geometry type that represent the incident.
      */
-    IncidentType(String name, GeometryType geometryType) {
-        this.name = name;
-        this.geometryType = geometryType;
+    IncidentType(String name, List<String> reasons, CoordinatesGenerable generator) {
+        this.type = name;
+        this.reasons = reasons;
+        this.generator = generator;
     }
 
     /**
@@ -29,8 +51,8 @@ public enum IncidentType {
      *
      * @return String type, name incident.
      */
-    public String getName(){
-        return name;
+    public String getType() {
+        return type;
     }
 
 
@@ -39,28 +61,11 @@ public enum IncidentType {
      *
      * @return GeometryType type.
      */
-    public GeometryType getGeometryType(){
-        return geometryType;
+    public CoordinatesGenerable getGenerator() {
+        return generator;
     }
 
-    /**
-     * Returns a random incident type depending on the type of geometry passed to it.
-     * <p>
-     *  An incident type is obtained that matches the type of geometry passed.
-     * </p>
-     *
-     * @param geometryType GeometryType to analyze in the generation of incident type.
-     * @return IncidentType, incident got.
-     */
-    public static IncidentType getRandomIncidentByGeometry(GeometryType geometryType){
-        List<IncidentType> incidentList = new ArrayList<>(List.of(TRAFFIC_INCIDENT, SOCIAL_INCIDENT, DANGER_ZONE, NATURAL_DISASTER));
-        Random random = new Random();
-        IncidentType incidentReturned = null;
-        int numRandom;
-        do{
-            numRandom = random.nextInt(3 - 0 + 1) + 0;
-            incidentReturned = incidentList.get(numRandom);
-        }while (!incidentReturned.geometryType.equals(geometryType));
-        return incidentReturned;
+    public List<String> getReasons() {
+        return reasons;
     }
 }
