@@ -43,6 +43,7 @@
             android:name=".SearchViewActivity"
             android:exported="true" >
         </activity>
+        <!--    Offline Mode Activities   -->
         <activity
             android:name=".OfflineModeSettingsActivityView"
             android:exported="true">

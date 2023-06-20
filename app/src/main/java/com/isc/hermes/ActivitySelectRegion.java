@@ -1,16 +1,13 @@
 package com.isc.hermes;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 
+import com.isc.hermes.controller.PopUp.DialogListener;
+import com.isc.hermes.controller.PopUp.TextInputPopup;
 import com.isc.hermes.model.RegionData;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -25,12 +22,13 @@ import java.util.Objects;
 /**
  * This activity allows the user to select a region on a MapView.
  */
-public class ActivitySelectRegion extends AppCompatActivity {
+public class ActivitySelectRegion extends AppCompatActivity implements DialogListener {
 
     private MapboxMap mapboxMap;
-    private AlertDialog alertDialog;
+    private TextInputPopup textInputPopup;
     public static final String MAP_CENTER_LATITUDE = "mapCenterLatitude";
     public static final String MAP_CENTER_LONGITUDE = "mapCenterLongitude";
+    private MapView mapView;
 
     /**
      * This method is called when the activity is starting. This is where most initialization should go.
@@ -44,13 +42,27 @@ public class ActivitySelectRegion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this, getString(R.string.access_token));
         setContentView(R.layout.activity_select_region);
-        MapView mapView = this.findViewById(R.id.mapViewRegion);
+        mapView = this.findViewById(R.id.mapViewRegion);
         mapView.onCreate(savedInstanceState);
+        initializeMapBoxMap();
+        initializePopup();
+    }
+
+    /**
+     * Initializes the Mapbox map and performs necessary setup.
+     */
+    private void initializeMapBoxMap() {
         mapView.getMapAsync(mapboxMap -> {
             setStyle(mapboxMap);
             verifyDataReception(getIntent().getExtras());
         });
-        createPopup();
+    }
+
+    /**
+     * Initializes the popup for text input.
+     */
+    private void initializePopup() {
+        textInputPopup = new TextInputPopup(this, this);
     }
 
     /**
@@ -76,10 +88,12 @@ public class ActivitySelectRegion extends AppCompatActivity {
      * @param centerLongitude The longitude value for the center of the map.
      */
     private void configureMapView(double centerLatitude, double centerLongitude) {
-        mapboxMap.setCameraPosition(new CameraPosition.Builder()
-                .target(new LatLng(centerLatitude, centerLongitude))
-                .zoom(12)
-                .build());
+        if (mapboxMap != null && mapboxMap.getStyle() != null) {
+            mapboxMap.setCameraPosition(new CameraPosition.Builder()
+                    .target(new LatLng(centerLatitude, centerLongitude))
+                    .zoom(12)
+                    .build());
+        }
     }
 
     /**
@@ -109,13 +123,12 @@ public class ActivitySelectRegion extends AppCompatActivity {
      */
     public void sendData(String regionName) {
         if (mapboxMap != null) {
-            Style mapStyle = Objects.requireNonNull(mapboxMap.getStyle(), "Default");
-            String styleUrl = mapStyle.getUri();
+            Style mapStyle = mapboxMap.getStyle();
+            String styleUrl = mapStyle != null ? mapStyle.getUri() : Style.MAPBOX_STREETS;
             double minZoom = mapboxMap.getCameraPosition().zoom;
             double maxZoom = mapboxMap.getMaxZoomLevel();
             float pixelRatio = getResources().getDisplayMetrics().density;
             LatLngBounds latLngBounds = mapboxMap.getProjection().getVisibleRegion().latLngBounds;
-            alertDialog.dismiss();
             Intent intent = createIntent(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds);
             setResult(RESULT_OK, intent);
             finish();
@@ -128,7 +141,7 @@ public class ActivitySelectRegion extends AppCompatActivity {
      * @param view the button to select the region to be downloaded
      */
     public void selectRegion(View view) {
-        alertDialog.show();
+        textInputPopup.showPopup();
     }
 
     /**
@@ -149,42 +162,9 @@ public class ActivitySelectRegion extends AppCompatActivity {
         return intent;
     }
 
-    /**
-     * This method creates the pop-up window for the user to name the region to download.
-     */
-    private void createPopup() {
-        LinearLayout popupDialog = findViewById(R.id.region_dialog);
-        View view = LayoutInflater.from(ActivitySelectRegion.this).inflate(R.layout.name_a_region_popup, popupDialog);
-        EditText inputName = view.findViewById(R.id.inputName);
-        AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySelectRegion.this);
-        builder.setView(view);
-        alertDialog = builder.create();
-        view.findViewById(R.id.cancel_name_region_popup).setOnClickListener(v -> closePopup());
-        view.findViewById(R.id.ok_name_region_popup).setOnClickListener(v -> validateInput(inputName));
+    @Override
+    public void dialogClosed(String text) {
+        textInputPopup.closePopup();
+        sendData(text);
     }
-
-    /**
-     * This method validates the input in the EditText field.
-     *
-     * @param editText The EditText field to validate.
-     */
-    private void validateInput(EditText editText) {
-        String text = editText.getText().toString();
-        if (TextUtils.isEmpty(text)) {
-            editText.setError("This field is required");
-        } else if (text.length() > 15) {
-            editText.setError("Max 15 characters allowed");
-            editText.setText("");
-        } else  {
-            sendData(text);
-        }
-    }
-
-    /**
-     * This method closes the popup to select the region to download.
-     */
-    private void closePopup() {
-        alertDialog.dismiss();
-    }
-
 }

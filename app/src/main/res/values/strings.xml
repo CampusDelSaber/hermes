@@ -35,12 +35,9 @@
     <string name="complete_name">Full Name</string>
     <string name="delete_account">Delete Account</string>
 
-    <string name="list_button_text">List</string>
-    <string name="download_button_text">Download\n</string>
+
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="tittle_region_popup">Give a name to your map</string>
-    <string name="your_name_map">Your name map</string>
     <string name="close">Close</string>
 
     <!--    Authentication Strings-->
@@ -105,5 +102,8 @@
     <string name="delete">Delete</string>
     <string name="Offline_Mode_text">Offline Mode</string>
     <string name="Offline_maps_text">Offline Maps</string>
-
+    <string name="list_button_text">List</string>
+    <string name="download_button_text">Download\n</string>
+    <string name="tittle_region_popup">Give a name to your map</string>
+    <string name="your_name_map">Your name map</string>
 </resources>

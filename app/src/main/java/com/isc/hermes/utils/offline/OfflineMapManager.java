@@ -1,29 +1,43 @@
 package com.isc.hermes.utils.offline;
+
 import android.content.Context;
 
 import com.isc.hermes.R;
+import com.isc.hermes.model.RegionData;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.offline.OfflineManager;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
 import com.mapbox.mapboxsdk.offline.OfflineTilePyramidRegionDefinition;
 
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
-import timber.log.Timber;
+
 
 /**
- * This class is in charged for managing offline maps.
+ * This class is responsible for managing offline maps.
  */
 public class OfflineMapManager {
-    private OfflineManager offlineManager;
-    private OfflineRegion offlineRegion;
+    private final OfflineManager offlineManager;
+    private Map<String, OfflineRegion> offlineRegions;
 
-    public static final String JSON_CHARSET = "UTF-8";
-    public static final String JSON_FIELD_REGION_NAME = "FIELD_REGION_NAME";
+    private static OfflineMapManager offlineMapManager;
 
     /**
-     * This is a constructor method for OfflineMapManager.
+     * Returns the singleton instance of OfflineMapManager.
+     *
+     * @param context The application context.
+     * @return The instance of OfflineMapManager.
+     */
+    public static OfflineMapManager getInstance(Context context) {
+        if (offlineMapManager == null) {
+            offlineMapManager = new OfflineMapManager(context);
+        }
+        return offlineMapManager;
+    }
+
+    /**
+     * Constructs a new OfflineMapManager.
      *
      * @param context The application context.
      */
@@ -32,79 +46,39 @@ public class OfflineMapManager {
         offlineManager = OfflineManager.getInstance(context);
     }
 
-    /**
-     * This method defines the offline region definition for a specific map.
-     *
-     * @param styleUrl       The style URL of the map.
-     * @param bounds         The bounds of the region.
-     * @param minZoom        The minimum zoom level.
-     * @param maxZoom        The maximum zoom level.
-     * @param pixelRatio     The pixel ratio.
-     * @return The offline tile pyramid region definition.
-     */
-    public OfflineTilePyramidRegionDefinition defineOfflineRegion(String styleUrl, LatLngBounds bounds,
-                                                                  double minZoom, double maxZoom, float pixelRatio) {
-        return new OfflineTilePyramidRegionDefinition(styleUrl, bounds, minZoom, maxZoom, pixelRatio);
-    }
 
     /**
-     * This method creates the metadata for the offline region.
+     * Creates an offline region using the provided region data and metadata.
      *
-     * @param regionName The name of the region.
-     * @return The metadata as a byte array.
+     * @param regionData              The region data.
+     * @param offlineRegionCallback   The callback for creating the offline region.
      */
-    public byte[] createMetadata(String regionName) {
-        byte[] metadata;
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(JSON_FIELD_REGION_NAME, regionName);
-            String json = jsonObject.toString();
-            metadata = json.getBytes(JSON_CHARSET);
-        } catch (Exception exception) {
-            Timber.e("Failed to encode metadata: %s", exception.getMessage());
-            metadata = null;
-        }
-        return metadata;
-    }
-
-    /**
-     * This method creates the offline region.
-     *
-     * @param regionName                      The name of the region.
-     * @param offlineTilePyramidRegionDefinition The offline tile pyramid region definition.
-     * @param offlineRegionCallback           The callback for creating the offline region.
-     */
-    public void createOfflineRegion(String regionName, OfflineTilePyramidRegionDefinition offlineTilePyramidRegionDefinition,
-                                    OfflineManager.CreateOfflineRegionCallback offlineRegionCallback) {
+    public void createOfflineRegion(RegionData regionData, OfflineManager.CreateOfflineRegionCallback offlineRegionCallback) {
         offlineManager.createOfflineRegion(
-                offlineTilePyramidRegionDefinition
-                , createMetadata(regionName)
-                , offlineRegionCallback);
+                getDefinition(regionData),
+                OfflineUtils.createMetadata(regionData.getRegionName()),
+                offlineRegionCallback);
     }
 
     /**
-     * This method gets the name of the offline region.
+     * Retrieves the definition of a region.
      *
-     * @param offlineRegion The offline region.
-     * @return The name of the region.
+     * @param regionData The region data.
+     * @return The definition of the region.
      */
-    public String getRegionName(OfflineRegion offlineRegion) {
-        String regionName;
-
-        try {
-            byte[] metadata = offlineRegion.getMetadata();
-            String json = new String(metadata, JSON_CHARSET);
-            JSONObject jsonObject = new JSONObject(json);
-            regionName = jsonObject.getString(JSON_FIELD_REGION_NAME);
-        } catch (Exception exception) {
-            Timber.e("Failed to decode metadata: %s", exception.getMessage());
-            regionName = String.format("", offlineRegion.getID());
-        }
-        return regionName;
+    public OfflineTilePyramidRegionDefinition getDefinition(RegionData regionData) {
+        return new OfflineTilePyramidRegionDefinition(
+                regionData.getStyleUrl(),
+                regionData.getLatLngBounds(),
+                regionData.getMinZoom(),
+                regionData.getMaxZoom(),
+                regionData.getPixelRatio());
     }
 
+
+
     /**
-     * This method lists all the offline regions.
+     * Lists all the offline regions.
      *
      * @param listOfflineRegionsCallback The callback for listing the offline regions.
      */
@@ -113,48 +87,47 @@ public class OfflineMapManager {
     }
 
     /**
-     * This method deletes the offline region.
+     * Deletes an offline region.
      *
-     * @param offlineRegion                The offline region to delete.
-     * @param offlineRegionDeleteCallback The callback for deleting the offline region.
+     * @param regionName                   The name of the region to delete.
+     * @param offlineRegionDeleteCallback  The callback for deleting the offline region.
      */
-    public void deleteRegion(OfflineRegion offlineRegion, OfflineRegion.OfflineRegionDeleteCallback offlineRegionDeleteCallback) {
-        offlineRegion.delete(offlineRegionDeleteCallback);
+    public void deleteRegion(String regionName, OfflineRegion.OfflineRegionDeleteCallback offlineRegionDeleteCallback) {
+        OfflineRegion offlineRegion = getOfflineRegion(regionName);
+        if (offlineRegion != null) {
+            offlineRegion.delete(offlineRegionDeleteCallback);
+        }
     }
 
     /**
-     * This method gets the offline manager.
+     * Gets the map of offline regions.
      *
-     * @return The offline manager.
+     * @return The map of offline regions.
      */
-    public OfflineManager getOfflineManager() {
-        return offlineManager;
+    public Map<String, OfflineRegion> getOfflineRegions() {
+        return offlineRegions;
     }
 
     /**
-     * This method sets the offline manager.
+     * Adds an offline region to the map of offline regions.
      *
-     * @param offlineManager The offline manager.
+     * @param name           The name of the region.
+     * @param offlineRegion  The offline region object.
      */
-    public void setOfflineManager(OfflineManager offlineManager) {
-        this.offlineManager = offlineManager;
+    public void addOfflineRegion(String name, OfflineRegion offlineRegion) {
+        if (offlineRegions == null) offlineRegions = new HashMap<>();
+        offlineRegions.put(name, offlineRegion);
     }
 
     /**
-     * This method gets the offline region.
+     * Gets an offline region by its name.
      *
-     * @return The offline region.
+     * @param name The name of the offline region.
+     * @return The offline region object, or null if not found.
      */
-    public OfflineRegion getOfflineRegion() {
+    public OfflineRegion getOfflineRegion(String name) {
+        OfflineRegion offlineRegion = null;
+        if (offlineRegions != null) offlineRegion = offlineRegions.get(name);
         return offlineRegion;
-    }
-
-    /**
-     * This method sets the offline region.
-     *
-     * @param offlineRegion The offline region.
-     */
-    public void setOfflineRegion(OfflineRegion offlineRegion) {
-        this.offlineRegion = offlineRegion;
     }
 }

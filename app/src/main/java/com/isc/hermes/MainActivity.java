@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Handler;
 
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
@@ -20,7 +21,9 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.model.User;
+
 import android.widget.SearchView;
+
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Utils.MapPolyline;
 
@@ -37,12 +40,10 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 
-
-
-
 import java.util.HashMap;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
+    private static final int REQUEST_MAP_CODE = 177;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
     }
 
-    public void testPolyline(){ // this is a test method that will be removed once the functionality has been verified.
+    public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
         Map<String, String> r = new HashMap<>();
 
         r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
@@ -248,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
         if (!nameServiceUsed.equals("default")) {
-                SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
+            SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
         }
 
         addMarkers();
@@ -263,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapDisplay.onPause();
         SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        if(SignUpActivityView.authenticator!= null){
+        if (SignUpActivityView.authenticator != null) {
             editor.putString(getString(R.string.save_authentication_state), SignUpActivityView.authenticator.getServiceType().name());
             editor.apply();
         }
@@ -362,17 +364,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * This method used for open a new activity, offline settings.
+     *
      * @param view view
      */
-    public void OfflineModeSettings(View view) {
+    public void goOfflineMaps(View view) {
         Intent intent = new Intent(MainActivity.this, OfflineModeSettingsActivityView.class);
-        intent.putExtra("lat",mapDisplay.getMapboxMap().getCameraPosition().target.getLatitude());
-        intent.putExtra("long",mapDisplay.getMapboxMap().getCameraPosition().target.getLongitude());
-        intent.putExtra("zoom",mapDisplay.getMapboxMap().getCameraPosition().zoom);
-        startActivityForResult(intent, 177);
+        intent.putExtra("lat", mapDisplay.getMapboxMap().getCameraPosition().target.getLatitude());
+        intent.putExtra("long", mapDisplay.getMapboxMap().getCameraPosition().target.getLongitude());
+        intent.putExtra("zoom", mapDisplay.getMapboxMap().getCameraPosition().zoom);
+        startActivityForResult(intent, REQUEST_MAP_CODE);
     }
+
     /**
-     *This Callback method is called when an activity launched with startActivityForResult() returns a result.
+     * This Callback method is called when an activity launched with startActivityForResult() returns a result.
      *
      * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
      * @param resultCode  The integer result code returned by the child activity through its setResult().
@@ -381,13 +385,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 177 && resultCode == RESULT_OK && data.getExtras()!=null){
+        if (requestCode == REQUEST_MAP_CODE && resultCode == RESULT_OK && Objects.requireNonNull(data).getExtras() != null) {
             Bundle b = data.getExtras();
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(b.getParcelable("center"))
                     .zoom(b.getDouble("zoom"))
                     .build();
-            mapDisplay.getMapboxMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),1500);
+            mapDisplay.getMapboxMap().animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1500);
         }
     }
 }

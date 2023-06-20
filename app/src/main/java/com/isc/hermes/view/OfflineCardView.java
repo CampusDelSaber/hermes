@@ -1,4 +1,4 @@
-package com.isc.hermes.utils.offline;
+package com.isc.hermes.view;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -27,13 +27,11 @@ public class OfflineCardView {
      * Creates a new card view for a downloaded map.
      *
      * @param name The name of the downloaded region.
-     * @param size The size of the downloaded region.
      */
-    public CardView createNewCardMapDownloaded(String name, String size, PopupMenu.OnMenuItemClickListener onClickListener) {
+    public CardView createNewCardMapDownloaded(String name, PopupMenu.OnMenuItemClickListener onClickListener) {
         LinearLayout textViewsVertical = createVerticalLinearLayout();
         textViewsVertical.setPadding(100, 0, 100, 0);
         textViewsVertical.addView(createTextView(name, 18, Typeface.BOLD));
-        textViewsVertical.addView(createTextView(size, 15, Typeface.BOLD));
         return joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup(onClickListener));
     }
 
