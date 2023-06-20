@@ -1,5 +1,6 @@
 package com.isc.hermes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -46,6 +47,8 @@ import java.util.Map;
  * Handles current user location functionality.
  */
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    public static Context context;
     private MapView mapView;
     private MapDisplay mapDisplay;
     private String mapStyle;
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
@@ -79,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
-
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
     }
 

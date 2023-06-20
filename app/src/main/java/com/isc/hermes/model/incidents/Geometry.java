@@ -67,4 +67,12 @@ public class Geometry {
         }
         return stringBuilder.toString();
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "type:" + type +"\n" +
+                "coordinates: " + getStringCoordinates() + "\n" +
+                "}";
+    }
 }

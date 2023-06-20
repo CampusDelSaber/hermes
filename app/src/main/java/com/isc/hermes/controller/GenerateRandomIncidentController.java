@@ -1,12 +1,19 @@
 package com.isc.hermes.controller;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsUploader;
-import com.isc.hermes.generators.IncidentGeneratorManage;
-import com.isc.hermes.generators.Radium;
+import com.isc.hermes.generators.IncidentGenerator;
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.model.incidents.Incident;
@@ -22,7 +29,7 @@ import java.util.List;
 public class GenerateRandomIncidentController {
 
     private GenerateRandomIncidentView generateRandomIncidentView;
-    private IncidentGeneratorManage incidentGeneratorManage;
+    private IncidentGenerator incidentGeneratorManage;
     private IncidentsUploader incidentsUploader;
 
     /**
@@ -30,11 +37,12 @@ public class GenerateRandomIncidentController {
      *
      * @param activity Receives an AppCompacActivity to get the xml elements and initialize it.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public GenerateRandomIncidentController(AppCompatActivity activity) {
         generateRandomIncidentView = new GenerateRandomIncidentView(activity);
         Button generateButton = activity.findViewById(R.id.startGenerateIncidentButton);
         generateButton.setOnClickListener(v -> initGeneration());
-        incidentGeneratorManage = new IncidentGeneratorManage();
+        incidentGeneratorManage = new IncidentGenerator();
         incidentsUploader = IncidentsUploader.getInstance();
     }
 
@@ -46,14 +54,16 @@ public class GenerateRandomIncidentController {
      * the structure of a json to upload the data to the database.
      * </p>
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initGeneration() {
         CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null, null).getCurrentLocationModel();
-        Double[] referencePoint = {currentLocation.getLatitude(), currentLocation.getLongitude()};
+        Double[] referencePoint = {currentLocation.getLongitude(), currentLocation.getLatitude()};
         Radium radium = generateRandomIncidentView.getRadiumSelected();
         int quantity = generateRandomIncidentView.getNumberIncidentsSelected();
         if (radium != null && quantity != 0) {
-            ArrayList<Incident> incidents = incidentGeneratorManage.generateRandomIncidents(radium, referencePoint, quantity);
+            List<Incident> incidents = incidentGeneratorManage.getIncidentsRandomly(referencePoint, radium, quantity);
             uploadToDataBase(incidents);
+            Toast.makeText(MainActivity.context, quantity + " Incidents Successfully Generated", Toast.LENGTH_SHORT).show();
         }
         generateRandomIncidentView.hideOptions();
     }
@@ -77,6 +87,7 @@ public class GenerateRandomIncidentController {
                     currentIncident.getGeometry().getStringCoordinates()
             );
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
+                @SuppressLint("StaticFieldLeak")
                 @Override
                 protected Integer doInBackground(Void... voids) {
                     return incidentsUploader.uploadIncident(jsonString);

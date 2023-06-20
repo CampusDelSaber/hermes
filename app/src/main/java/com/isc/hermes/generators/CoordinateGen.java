@@ -5,6 +5,7 @@ import static com.mapbox.geojson.constants.GeoJsonConstants.MAX_LONGITUDE;
 import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LATITUDE;
 import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LONGITUDE;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 
 import java.util.ArrayList;
