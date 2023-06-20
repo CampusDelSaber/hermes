@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param view view
      */
     public void goOfflineMaps(View view) {
-        Intent intent = new Intent(MainActivity.this, OfflineModeSettingsActivityView.class);
+        Intent intent = new Intent(MainActivity.this, OfflineMapsActivity.class);
         intent.putExtra("lat", mapDisplay.getMapboxMap().getCameraPosition().target.getLatitude());
         intent.putExtra("long", mapDisplay.getMapboxMap().getCameraPosition().target.getLongitude());
         intent.putExtra("zoom", mapDisplay.getMapboxMap().getCameraPosition().zoom);

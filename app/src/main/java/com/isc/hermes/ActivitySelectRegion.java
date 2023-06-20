@@ -2,13 +2,12 @@ package com.isc.hermes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.isc.hermes.controller.PopUp.DialogListener;
 import com.isc.hermes.controller.PopUp.TextInputPopup;
-import com.isc.hermes.model.RegionData;
+import com.isc.hermes.controller.offline.OfflineDataRepository;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -17,7 +16,6 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 
-import java.util.Objects;
 
 /**
  * This activity allows the user to select a region on a MapView.
@@ -28,6 +26,7 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
     private TextInputPopup textInputPopup;
     public static final String MAP_CENTER_LATITUDE = "mapCenterLatitude";
     public static final String MAP_CENTER_LONGITUDE = "mapCenterLongitude";
+    public static final String ZOOM_LEVEL = "zoom";
     private MapView mapView;
 
     /**
@@ -77,7 +76,8 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
         if (bundle != null) {
             double centerLatitude = bundle.getDouble(MAP_CENTER_LATITUDE);
             double centerLongitude = bundle.getDouble(MAP_CENTER_LONGITUDE);
-            configureMapView(centerLatitude, centerLongitude);
+            double zoom = bundle.getDouble(ZOOM_LEVEL);
+            configureMapView(centerLatitude, centerLongitude, zoom);
         }
     }
 
@@ -86,12 +86,13 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
      *
      * @param centerLatitude  The latitude value for the center of the map.
      * @param centerLongitude The longitude value for the center of the map.
+     * @param zoom            The zoom value for the map visualization.
      */
-    private void configureMapView(double centerLatitude, double centerLongitude) {
-        if (mapboxMap != null && mapboxMap.getStyle() != null) {
+    private void configureMapView(double centerLatitude, double centerLongitude, double zoom) {
+        if (mapboxMap != null) {
             mapboxMap.setCameraPosition(new CameraPosition.Builder()
                     .target(new LatLng(centerLatitude, centerLongitude))
-                    .zoom(12)
+                    .zoom(zoom)
                     .build());
         }
     }
@@ -129,8 +130,8 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
             double maxZoom = mapboxMap.getMaxZoomLevel();
             float pixelRatio = getResources().getDisplayMetrics().density;
             LatLngBounds latLngBounds = mapboxMap.getProjection().getVisibleRegion().latLngBounds;
-            Intent intent = createIntent(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds);
-            setResult(RESULT_OK, intent);
+            OfflineDataRepository.getInstance().saveData(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds);
+            setResult(RESULT_OK);
             finish();
         }
     }
@@ -144,23 +145,6 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
         textInputPopup.showPopup();
     }
 
-    /**
-     * This method creates an intent with the selected region data.
-     *
-     * @param regionName   The region name to download
-     * @param styleUrl     The URL of the selected map style.
-     * @param minZoom      The minimum zoom level of the selected region.
-     * @param maxZoom      The maximum zoom level of the selected region.
-     * @param pixelRatio   The pixel ratio of the device screen.
-     * @param latLngBounds The bounding box of the selected region.
-     * @return The created intent with the selected region data.
-     */
-    private Intent createIntent(String regionName, String styleUrl, double minZoom, double maxZoom, float pixelRatio, LatLngBounds latLngBounds) {
-        Intent intent = new Intent();
-        RegionData regionData = new RegionData(regionName, styleUrl, minZoom, maxZoom, pixelRatio, latLngBounds);
-        intent.putExtra("REGION_DATA", regionData);
-        return intent;
-    }
 
     @Override
     public void dialogClosed(String text) {

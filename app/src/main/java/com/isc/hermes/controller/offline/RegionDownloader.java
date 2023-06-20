@@ -10,7 +10,7 @@ import com.mapbox.mapboxsdk.offline.OfflineRegionStatus;
 
 import timber.log.Timber;
 /**
- * This class represents a RegionDownloader, which is responsible for downloading offline regions.
+ * This class  is responsible for downloading offline regions.
  * It implements the OfflineManager.CreateOfflineRegionCallback interface.
  */
 public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallback {

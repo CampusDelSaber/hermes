@@ -2,6 +2,7 @@ package com.isc.hermes;
 
 import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LATITUDE;
 import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LONGITUDE;
+import static com.isc.hermes.ActivitySelectRegion.ZOOM_LEVEL;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.isc.hermes.controller.offline.OfflineDataRepository;
 import com.isc.hermes.model.RegionData;
 import com.isc.hermes.controller.offline.CardViewHandler;
 import com.isc.hermes.view.OfflineCardView;
@@ -25,12 +27,11 @@ import com.isc.hermes.controller.offline.RegionObserver;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
 
-import timber.log.Timber;
 
 /**
  * This class represents the Offline Mode Settings UI.
  */
-public class OfflineModeSettingsActivityView extends AppCompatActivity implements RegionObserver {
+public class OfflineMapsActivity extends AppCompatActivity implements RegionObserver {
     private static final int REQUEST_CODE_OFFLINE = 231;
     private static final int RENAME = R.id.rename, NAVIGATE_TO = R.id.navigateTo, DELETE = R.id.delete;
     private LinearLayout vBoxDownloadedMaps;
@@ -72,7 +73,7 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
         Intent intent = new Intent(this, ActivitySelectRegion.class);
         intent.putExtra(MAP_CENTER_LATITUDE, bundle.getDouble("lat"));
         intent.putExtra(MAP_CENTER_LONGITUDE, bundle.getDouble("long"));
-        intent.putExtra("zoom", bundle.getDouble("zoom"));
+        intent.putExtra(ZOOM_LEVEL, bundle.getDouble("zoom"));
 
         startActivityForResult(intent, REQUEST_CODE_OFFLINE);
     }
@@ -81,8 +82,9 @@ public class OfflineModeSettingsActivityView extends AppCompatActivity implement
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_OFFLINE && resultCode == RESULT_OK) {
-            RegionData regionData = data.getExtras().getParcelable("REGION_DATA");
-            downloadRegion(regionData);
+            RegionData regionData = OfflineDataRepository.getInstance().getRegionData();
+            if (regionData != null)
+                downloadRegion(regionData);
         }
     }
 

@@ -45,7 +45,7 @@
         </activity>
         <!--    Offline Mode Activities   -->
         <activity
-            android:name=".OfflineModeSettingsActivityView"
+            android:name=".OfflineMapsActivity"
             android:exported="true">
 
         </activity>

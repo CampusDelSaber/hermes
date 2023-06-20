@@ -1,18 +1,12 @@
 package com.isc.hermes.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
-
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 
-import java.io.Serializable;
 
 /**
  * The RegionData class represents the data needed to create a region in Mapbox.
  */
-public class RegionData implements Parcelable {
+public class RegionData {
     private String regionName;
     private String styleUrl;
     private double minZoom;
@@ -148,61 +142,4 @@ public class RegionData implements Parcelable {
         this.latLngBounds = latLngBounds;
     }
 
-
-    /**
-     * This method describes the type of the Parcelable objects' contents.
-     *
-     * @return An integer representing the type of contents (in this case, always returns 0).
-     */
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    /**
-     * This method writes the values of the class fields to the Parcel.
-     *
-     * @param dest  The Parcel to which the values will be written.
-     * @param flags Additional options for writing the Parcel (not used in this case).
-     */
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(regionName);
-        dest.writeString(styleUrl);
-        dest.writeDouble(minZoom);
-        dest.writeDouble(maxZoom);
-        dest.writeFloat(pixelRatio);
-        dest.writeParcelable(latLngBounds, flags);
-    }
-
-    /**
-     * This method constructs a new RegionData object from a Parcel.
-     *
-     * @param in The Parcel from which to read the RegionData object.
-     */
-    protected RegionData(Parcel in) {
-        regionName = in.readString();
-        styleUrl = in.readString();
-        minZoom = in.readDouble();
-        maxZoom = in.readDouble();
-        pixelRatio = in.readFloat();
-        latLngBounds = in.readParcelable(LatLngBounds.class.getClassLoader());
-    }
-
-    /**
-     * This is a creator for the RegionData class, used to create new instances of RegionData from a Parcel.
-     */
-
-    public static final Creator<RegionData> CREATOR = new Creator<RegionData>() {
-        @Override
-        public RegionData createFromParcel(Parcel in) {
-            return new RegionData(in);
-        }
-
-        @Override
-        public RegionData[] newArray(int size) {
-            return new RegionData[size];
-        }
-    };
 }
