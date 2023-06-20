@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.cardview.widget.CardView;
-import com.isc.hermes.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 import com.isc.hermes.databinding.ActivityMainBinding;
 
