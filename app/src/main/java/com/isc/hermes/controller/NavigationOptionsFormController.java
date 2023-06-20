@@ -8,7 +8,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.graph.Node;
+import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -27,7 +29,7 @@ public class NavigationOptionsFormController {
             startPointButton, finalPointButton, currentLocationButton;
     private final LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
-    private boolean isStartPointFromMapSelected;
+    private boolean isStartPointFromMapSelected, isCurrentLocationSelected;
     private LatLng startPoint, finalPoint;
 
     /**
@@ -40,14 +42,16 @@ public class NavigationOptionsFormController {
         this.context = context;
         this.isStartPointFromMapSelected = false;
         this.mapWayPointController = mapWayPointController;
-        navOptionsForm = ((AppCompatActivity)context).findViewById(R.id.navOptions_form);
-        cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
-        startButton = ((AppCompatActivity) context).findViewById(R.id.start_button);
-        chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
-        currentLocationButton = ((AppCompatActivity) context).findViewById(R.id.current_location_button);
-        startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);
-        finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);
-        transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
+        this.startPoint = CurrentLocationModel.getCurrentLocationModel().getLatLng();
+        this.isCurrentLocationSelected = true;
+        this.navOptionsForm = ((AppCompatActivity)context).findViewById(R.id.navOptions_form);
+        this.cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
+        this.startButton = ((AppCompatActivity) context).findViewById(R.id.start_button);
+        this.chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
+        this.currentLocationButton = ((AppCompatActivity) context).findViewById(R.id.current_location_button);
+        this.startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);
+        this.finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);
+        this.transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
         setButtonsOnClick();
         setNavOptionsUiComponents();
     }
@@ -57,6 +61,7 @@ public class NavigationOptionsFormController {
      */
     private void setButtonsOnClick() {
         cancelButton.setOnClickListener(v -> {
+            isCurrentLocationSelected = true;
             startPoint = null;
             finalPoint = null;
             isStartPointFromMapSelected = false;
@@ -72,7 +77,7 @@ public class NavigationOptionsFormController {
      * Clears the current start point and updates the button text accordingly.
      */
     private void handleOnCurrentLocationOption() {
-        startPoint = null;
+        isCurrentLocationSelected = true;
         setPointsButtonShownTexts();
     }
 
@@ -80,7 +85,7 @@ public class NavigationOptionsFormController {
      * Updates the button texts for the start and final points based on their values.
      */
     private void setPointsButtonShownTexts() {
-        startPointButton.setText((startPoint != null) ?
+        startPointButton.setText((!isCurrentLocationSelected) ?
                 formatLatLng(startPoint.getLatitude(), startPoint.getLongitude()) : "Your Location");
         finalPointButton.setText((finalPoint != null) ?
                 formatLatLng(finalPoint.getLatitude(), finalPoint.getLongitude()) : "Not selected");
@@ -106,13 +111,14 @@ public class NavigationOptionsFormController {
      */
     private void handleChooseStartPointButton() {
         isStartPointFromMapSelected = true;
+        isCurrentLocationSelected = false;
         handleHiddeItemsView();
     }
 
     /**
      * This method handles the actions performed when the cancel button is clicked.
      */
-    private void handleHiddeItemsView() {
+    public void handleHiddeItemsView() {
         mapWayPointController.setMarked(false);
         navOptionsForm.startAnimation(Animations.exitAnimation);
         navOptionsForm.setVisibility(View.GONE);
@@ -129,7 +135,7 @@ public class NavigationOptionsFormController {
                 startPoint.getLatitude()): null;
         Node finalPointNode = new Node("02",finalPoint.getLatitude(), finalPoint.getLatitude());
         // TODO: Navigation Route between these two nodes
-        startPoint = null;
+        isCurrentLocationSelected = false;
         finalPoint = null;
     }
 
@@ -151,11 +157,25 @@ public class NavigationOptionsFormController {
             for (int i = 0; i < navOptionsTypes.length; i++) {
                 Button button = IncidentTypeButton.getIncidentTypeButton(context, navOptionsTypes[i].toLowerCase(),
                         Color.parseColor((String) navOptionTypeColors[i]), navOptionTypeIcons[i]);
+                setTransportationTypeButtonAction(button);
                 transportationTypesContainer.addView(button);
             }
         } else {
             Timber.i(String.valueOf(R.string.array_size_text_timber));
         }
+    }
+
+    /**
+     * This method set the event to the transportation type button.
+     * @param typeButton button to set the event.
+     */
+    private void setTransportationTypeButtonAction(Button typeButton) {
+        typeButton.setOnClickListener(
+                v -> {
+                    TransportationType actualTransportChosen = TransportationType.valueOf((String) typeButton.getText());
+                    //TODO: set The transportation type in model class for navigation
+                }
+        );
     }
 
     /**
@@ -181,6 +201,7 @@ public class NavigationOptionsFormController {
     public void setStartPoint(LatLng point) {
         startPoint = point;
         updateUiPointsComponents();
+        isStartPointFromMapSelected = false;
     }
 
 
@@ -205,5 +226,13 @@ public class NavigationOptionsFormController {
     public void setFinalNavigationPoint(LatLng point) {
         this.finalPoint = point;
         updateUiPointsComponents();
+    }
+
+    /**
+     * Method to set the current location boolean attribute
+     * @param currentLocationSelected true if the current location is selected as the start point
+     */
+    public void setCurrentLocationSelected(boolean currentLocationSelected) {
+        isCurrentLocationSelected = currentLocationSelected;
     }
 }
