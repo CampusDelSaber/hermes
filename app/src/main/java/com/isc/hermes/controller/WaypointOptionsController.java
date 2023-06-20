@@ -5,23 +5,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
-import com.mapbox.api.geocoding.v5.MapboxGeocoding;
-import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.isc.hermes.utils.MapClickEventsManager;
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
@@ -32,20 +19,24 @@ public class WaypointOptionsController {
     private final Button navigateButton;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
+    private final Button reportNaturalDisasterButton;
+    private final Context context;
     private TextView placeName;
 
     /**
      * This is the constructor method. Init all the components of UI.
      *
      * @param context Is the context application.
-     * @param mapController Is the controller of the map.
+     * @param mapWayPointController Is the controller of the map.
      */
-    public WaypointOptionsController(Context context, MapController mapController) {
+    public WaypointOptionsController(Context context, MapWayPointController mapWayPointController) {
+        this.context = context;
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
-        incidentFormController = new IncidentFormController(context, mapController);
+        incidentFormController = new IncidentFormController(context, mapWayPointController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
+        reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);
         placeName = ((AppCompatActivity) context).findViewById(R.id.place_name);
         setButtonsOnClick();
     }
@@ -67,6 +58,13 @@ public class WaypointOptionsController {
 
         reportTrafficButton.setOnClickListener(v -> {
 
+        });
+
+        reportNaturalDisasterButton.setOnClickListener(v->{
+            MapClickEventsManager.getInstance().removeCurrentClickController();
+            MapClickEventsManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapClickEventsManager.getInstance().getMapboxMap(), this.context));
+            waypointOptions.startAnimation(Animations.exitAnimation);
+            waypointOptions.setVisibility(View.GONE);
         });
     }
 

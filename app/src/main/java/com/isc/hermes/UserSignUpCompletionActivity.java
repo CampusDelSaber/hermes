@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User;
 
 /**
@@ -85,17 +87,30 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Sends a User object to another activity using an Intent.
+     *
+     * @param user The User object to be sent to the other activity.
+     */
+    private void sendUserBetweenActivities(User user) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("userObtained", user);
+        startActivity(intent);
+    }
+
     /**
      * Generates an action for the sign-up button.
      * Sets a click listener on the "Register" button, which saves the user's information to the database
      * and navigates the user to the main activity.
      */
     private void generateActionToButtonSignUp() {
+        AccountInfoManager accountInfoManager = new AccountInfoManager();
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
-                //TODO: Save the registeredUser in dataBase
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    accountInfoManager.addUser(userRegistered.getEmail(),userRegistered.getFullName(),userRegistered.getUserName(),userRegistered.getTypeUser());
+                sendUserBetweenActivities(userRegistered);
             } else comboBoxTextField.setHelperText("Required");
         });
     }
