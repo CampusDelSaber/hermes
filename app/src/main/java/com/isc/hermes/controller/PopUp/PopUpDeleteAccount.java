@@ -19,7 +19,26 @@ public class PopUpDeleteAccount extends PopUp{
      * @param activity The activity we were in before the popup opened
      */
     public PopUpDeleteAccount(Activity activity) {
-        super(activity, TypePopUp.DELETE_POP_UP);
+        super(activity, new PopUpStyle() {
+            @Override
+            public String getTittlePopUP() {
+                return "Are you sure you want to delete your account?"; }
+            @Override
+            public String getWarningPopUp() {
+                return "By accepting your data will be permanently deleted"; }
+            @Override
+            public String getIconImagePopUp() {
+                return "app/src/main/res/drawable/img_delete_icon_blue.png"; }
+        });
+    }
+
+    /**
+     * Closes the authentication process and redirects the user to the sign-up activity.
+     */
+    private void closeAuthentication() {
+        googleAuthentication.revokeAccess(getContext());
+        Intent intent = new Intent(this.activity, SignUpActivityView.class);
+        activity.startActivity(intent);
     }
 
     /**
@@ -31,12 +50,9 @@ public class PopUpDeleteAccount extends PopUp{
     public void onClick(View v) {
         if (v == super.confirmButton){
             AccountInfoManager accountInfoManager = new AccountInfoManager();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                accountInfoManager.deleteUser("6492381ce2a844fa31b4cc14");
-                System.out.println("SDfaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            }googleAuthentication.revokeAccess(getContext());
-            Intent intent = new Intent(this.activity, SignUpActivityView.class);
-            activity.startActivity(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                accountInfoManager.deleteUser("64925b38e2a844fa31b4d9b0");
+            closeAuthentication();
         } dismiss();
     }
 }

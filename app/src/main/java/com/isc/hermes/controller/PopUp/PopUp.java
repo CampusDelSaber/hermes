@@ -13,9 +13,8 @@ import com.isc.hermes.R;
 import com.isc.hermes.controller.authentication.GoogleAuthentication;
 
 /**
- * This is the controller class for the notification popup when we try to delete our account
- * It extends from the Dialog class
- * It implements a listener which will listen to the option we choose.
+ * The abstract class {@code PopUp} extends {@code Dialog} and implements {@code View.OnClickListener},
+ * providing functionality for displaying a pop-up dialog in an Android application.
  */
 public abstract class PopUp extends Dialog implements View.OnClickListener {
     protected boolean status;
@@ -23,15 +22,16 @@ public abstract class PopUp extends Dialog implements View.OnClickListener {
     protected TextView deleteAccountText;
     protected TextView warningText;
     protected ImageView iconMessagePopUp;
-    protected final Activity activity;
     protected GoogleAuthentication googleAuthentication;
+    protected final Activity activity;
 
     /**
-     * Warning Popup constructor class within which the dialog, activity and buttons are initialized
+     * Constructs a Warning Popup with the provided activity and pop-up style.
      *
-     * @param activity The activity we were in before the popup opened
+     * @param activity The activity that was in use before the pop-up was opened.
+     * @param typePopUp The PopUpStyle object specifying the style and content of the pop-up.
      */
-    public PopUp(Activity activity, TypePopUp typePopUp){
+    public PopUp(Activity activity, PopUpStyle typePopUp){
         super(activity);
         this.activity = activity;
         initializeDialog();
@@ -41,11 +41,11 @@ public abstract class PopUp extends Dialog implements View.OnClickListener {
     }
 
     /**
-     * Assigns values to the components based on the provided TypePopUp.
+     * Assigns values to the components based on the provided PopUpStyle.
      *
-     * @param typePopUp The TypePopUp object containing the values to be assigned.
+     * @param typePopUp The PopUpStyle object containing the values to be assigned.
      */
-    public void assignValuesToComponents(TypePopUp typePopUp) {
+    public void assignValuesToComponents(PopUpStyle typePopUp) {
         this.googleAuthentication = new GoogleAuthentication();
         this.warningText = findViewById(R.id.warningText);
         this.iconMessagePopUp = findViewById(R.id.iconMessagePopUp);

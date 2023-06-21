@@ -6,8 +6,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 /**
- * A class that represents a popup dialog for editing an account.
- * Extends the PopUp class.
+ * The class {@code PopUpEditAccount} extends {@code PopUp} and represents a specific type of pop-up
+ * for editing an account. It provides functionality for editing account information.
  */
 public class PopUpEditAccount extends PopUp{
 
@@ -22,7 +22,17 @@ public class PopUpEditAccount extends PopUp{
      * @param activity  The activity we were in before the popup opened
      */
     public PopUpEditAccount(Activity activity) {
-        super(activity, TypePopUp.EDIT_POP_UP);
+        super(activity, new PopUpStyle() {
+            @Override
+            public String getTittlePopUP() {
+                return "Are you sure you want to overwrite your account data?"; }
+            @Override
+            public String getWarningPopUp() {
+                return "By accepting your data will be change"; }
+            @Override
+            public String getIconImagePopUp() {
+                return "app/src/main/res/drawable/img_edit_icon_blue.png"; }
+        });
     }
 
     /**
