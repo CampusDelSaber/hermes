@@ -2,7 +2,15 @@ package com.isc.hermes.view;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import com.isc.hermes.controller.IncidentsGetterController;
 import com.isc.hermes.utils.MapConfigure;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -14,23 +22,29 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 public class MapDisplay {
     private final MapView mapView;
     private final MapConfigure mapConfigure;
-    private final Context context;
     private MapboxMap mapboxMap;
+    private static MapDisplay instance;
+    private IncidentsGetterController incidentsGetterController;
+    private Context context;
 
     /**
      * Constructor to create a MapDisplay object.
      *
-     * @param mapView       the MapView object to display the map
-     * @param mapConfigure  the MapConfigure object to configure the map
+     * @param mapView      the MapView object to display the map
+     * @param mapConfigure the MapConfigure object to configure the map
      */
     public MapDisplay(Context context, MapView mapView, MapConfigure mapConfigure) {
         this.mapView = mapView;
         this.mapConfigure = mapConfigure;
         this.context = context;
         mapConfigure.setContext(context);
+        incidentsGetterController = IncidentsGetterController.getInstance();
     }
 
-
+    public static MapDisplay getInstance(Context context, MapView mapView, MapConfigure mapConfigure) {
+        if (instance == null) instance = new MapDisplay(context, mapView, mapConfigure);
+        return instance;
+    }
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -42,10 +56,12 @@ public class MapDisplay {
         mapView.getMapAsync(mapboxMap -> {
             this.mapboxMap = mapboxMap;
             mapConfigure.configure(mapboxMap);
+
+            mapboxMap.addOnCameraIdleListener(
+                    () -> incidentsGetterController.getNearIncidentsWithinRadius(mapboxMap, context)
+            );
         });
     }
-
-
 
     /**
      * Method for starting the MapView object instance.
@@ -98,7 +114,8 @@ public class MapDisplay {
         mapView.onSaveInstanceState(outState);
     }
 
-    /** Getter for the MapboxMap object.
+    /**
+     * Getter for the MapboxMap object.
      *
      * @return the MapboxMap object
      */
@@ -114,14 +131,25 @@ public class MapDisplay {
     public void setMapStyle(String mapStyle) {
         if (mapView != null && mapStyle != null) {
             mapView.getMapAsync(mapboxMap -> {
-                if (mapStyle.equals("satellite")) {
-                    mapboxMap.setStyle(Style.SATELLITE_STREETS);
-                } else if (mapStyle.equals("dark")) {
-                    mapboxMap.setStyle(Style.DARK);
-                } else {
-                    mapboxMap.setStyle(Style.MAPBOX_STREETS);
+                switch (mapStyle) {
+                    case "Satellite" -> mapboxMap.setStyle(Style.SATELLITE_STREETS);
+                    case "Dark" -> mapboxMap.setStyle(Style.DARK);
+                    case "Default" -> mapboxMap.setStyle(Style.MAPBOX_STREETS);
                 }
             });
         }
+    }
+    /**
+     * This method animates the camera position on the Mapbox map to the specified latitude and longitude with a given zoom level.
+     *
+     * @param latLng The latitude and longitude to move the camera to.
+     * @param zoom The zoom level for the camera position.
+     */
+    public void animateCameraPosition(LatLng latLng,double zoom){
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(zoom)
+                .build();
+        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1500);
     }
 }

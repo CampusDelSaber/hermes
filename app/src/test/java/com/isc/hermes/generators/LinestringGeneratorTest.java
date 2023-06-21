@@ -3,6 +3,7 @@ package com.isc.hermes.generators;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class LinestringGeneratorTest {
     @Before
     public void linestringSize() {
         int amountPoints = 5;
-        linestring = generator.getLinestring(referencePoint, Radium.FIFTY_METERS, amountPoints);
+        linestring = generator.generate(referencePoint, Radium.FIFTY_METERS, amountPoints);
 
         assertEquals(amountPoints, linestring.size());
     }

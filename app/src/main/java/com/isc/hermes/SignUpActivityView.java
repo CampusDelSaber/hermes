@@ -21,8 +21,8 @@ import timber.log.Timber;
  * This class is in charge of controlling the user's authentication activity.
  */
 public class SignUpActivityView extends AppCompatActivity {
-
-    private Map<Integer, IAuthentication> authenticationServices;
+    private static final int REQUEST_CODE = 7;
+    private Map<AuthenticationServices, IAuthentication> authenticationServices;
     public static IAuthentication authenticator;
 
     /**
@@ -59,8 +59,8 @@ public class SignUpActivityView extends AppCompatActivity {
     private void startAuthenticationServices() {
         authenticationServices = new HashMap<>();
         for (AuthenticationServices service : AuthenticationServices.values()) {
-            authenticationServices.put(service.getID(), AuthenticationFactory.createAuthentication(service));
-            Objects.requireNonNull(authenticationServices.get(service.getID())).configureAccess(this);
+            authenticationServices.put(service, AuthenticationFactory.createAuthentication(service));
+            Objects.requireNonNull(authenticationServices.get(service)).configureAccess(this);
         }
     }
 
@@ -75,6 +75,7 @@ public class SignUpActivityView extends AppCompatActivity {
         super.onStart();
         authenticationServices.forEach((key, authentication) -> {
             if (authentication.checkUserSignIn(this)) {
+                authenticator = authentication;
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             }
@@ -87,11 +88,11 @@ public class SignUpActivityView extends AppCompatActivity {
      * @param view it contains the event info.
      */
     public void signUp(View view) {
-        authenticator = authenticationServices.get(view.getId());
+        authenticator = authenticationServices.get(AuthenticationServices.valueOf((String) view.getTag()));
         if (authenticator == null) return;
         startActivityForResult( //TODO: Solve this is a deprecated method.
                 authenticator.signIn()
-                , view.getId()
+                , REQUEST_CODE
         );
     }
 
@@ -119,8 +120,9 @@ public class SignUpActivityView extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (authenticationServices.containsKey(requestCode))
-                sendUserBetweenActivities(authenticator.getUserBySignInResult(data));
+            if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+                    sendUserBetweenActivities(authenticator.getUserBySignInResult(data));
+            }
         } catch (ApiException e) {
             Toast.makeText(SignUpActivityView.this,"Wait a moment ",
                     Toast.LENGTH_SHORT).show();

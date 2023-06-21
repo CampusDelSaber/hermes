@@ -2,6 +2,8 @@ package com.isc.hermes.generators;
 
 import static org.junit.Assert.assertNotNull;
 
+import com.isc.hermes.model.Radium;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +20,6 @@ public class PolygonGeneratorTest {
 
     @Test
     public void generatePolygon() {
-        assertNotNull(generator.getPolygon(referencePoint, Radium.ONE_KILOMETER));
+        assertNotNull(generator.generate(referencePoint, Radium.ONE_KILOMETER, 0));
     }
 }
