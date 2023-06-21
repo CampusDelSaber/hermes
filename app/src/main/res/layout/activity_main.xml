@@ -181,6 +181,14 @@
                 mapbox:icon="@drawable/img_layer_icon" />
 
         </androidx.cardview.widget.CardView>
+        <!--  Offline Mode Button      -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:onClick="goOfflineMaps"
+            android:text="@string/Offline_Mode_text"
+            android:textColor="@color/white" />
 
         <TextView
             android:layout_width="match_parent"

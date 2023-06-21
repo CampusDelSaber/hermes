@@ -2,6 +2,8 @@ package com.isc.hermes.model.incidents;
 
 import androidx.annotation.NonNull;
 
+import org.bson.types.ObjectId;
+
 import java.util.Date;
 
 /**
