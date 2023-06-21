@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private CurrentLocationController currentLocationController;
     private User userRegistered;
     private boolean visibilityMenu = false;
-    private SearchView searchView;
+    private ImageView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
