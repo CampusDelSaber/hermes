@@ -40,4 +40,13 @@ public class AccountInfoManager {
         apiHandler.postFutureCollections(ACCOUNT_INFO_COLLECTION, user);
     }
 
+    /**
+     Delete a user to the account information collection.
+     @param idUser the id of the user
+     @since API 26
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void deleteUser(String idUser) {
+        apiHandler.deleteFutureCollections(ACCOUNT_INFO_COLLECTION, idUser);
+    }
 }

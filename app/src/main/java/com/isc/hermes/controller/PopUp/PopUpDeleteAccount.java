@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import com.isc.hermes.SignUpActivityView;
+import com.isc.hermes.database.AccountInfoManager;
 
 /**
  * A class that represents a popup dialog for deleting an account.
@@ -29,9 +30,11 @@ public class PopUpDeleteAccount extends PopUp{
     @Override
     public void onClick(View v) {
         if (v == super.confirmButton){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                accountInfoManager.deleteUser("6491c6eb2d9de10039b27533");
-            googleAuthentication.revokeAccess(getContext());
+            AccountInfoManager accountInfoManager = new AccountInfoManager();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                accountInfoManager.deleteUser("6492381ce2a844fa31b4cc14");
+                System.out.println("SDfaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            }googleAuthentication.revokeAccess(getContext());
             Intent intent = new Intent(this.activity, SignUpActivityView.class);
             activity.startActivity(intent);
         } dismiss();
