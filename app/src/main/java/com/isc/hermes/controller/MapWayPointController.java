@@ -45,7 +45,8 @@ public class MapWayPointController implements MapClickConfigurationController {
     public boolean onMapClick(@NonNull LatLng point) {
         if (NavigationOptionsController.isActive) {
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
-           } else {
+            markPointBehavior(point);
+        } else {
             doMarkOnMapAction(point);
             waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
 
@@ -79,6 +80,15 @@ public class MapWayPointController implements MapClickConfigurationController {
     }
 
     /**
+     * Method to set the marker behavior on map
+     * @param point geocode point to set
+     */
+    private void markPointBehavior(LatLng point) {
+            deleteMarks();
+            setMarkerOnMap(point);
+    }
+
+    /**
      * Method to perform action to click on map
      * @param point Is point passed as parameter with its latitude and longitude
      */
@@ -88,13 +98,21 @@ public class MapWayPointController implements MapClickConfigurationController {
             handleVisibilityPropertiesForLayouts();
             isMarked = false;
         } else {
-            MarkerOptions markerOptions = new MarkerOptions().position(point);
-            mapboxMap.addMarker(markerOptions);
+            setMarkerOnMap(point);
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
             isMarked = true;
         }
     }
+
+    /**
+     * Method to render a marker on map
+     */
+    private void setMarkerOnMap(LatLng point) {
+        MarkerOptions markerOptions = new MarkerOptions().position(point);
+        mapboxMap.addMarker(markerOptions);
+    }
+
 
     /**
      * Method to delete all the marks in the map.

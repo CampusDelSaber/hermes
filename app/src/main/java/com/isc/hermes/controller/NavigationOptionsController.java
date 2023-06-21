@@ -61,12 +61,20 @@ public class NavigationOptionsController {
     private void setButtons() {
         chooseStartPointButton.setOnClickListener(v -> handleChooseStartPointButton());
         currentLocationButton.setOnClickListener(v -> handleCurrentLocationChosen());
+        manageCancelButton();
+        startButton.setOnClickListener(v -> handleAcceptButtonClick());
+    }
+
+    /**
+     * Method to manage the cancel button behavior
+     */
+    private void manageCancelButton() {
         cancelButton.setOnClickListener(v -> {
             isLocationStartChosen = true;
             handleHiddeItemsView();
             isActive = false;
+            mapWayPointController.setMarked(false);
         });
-        startButton.setOnClickListener(v -> handleAcceptButtonClick());
     }
 
     /**
@@ -118,6 +126,8 @@ public class NavigationOptionsController {
                         Color.parseColor((String) navOptionTypeColors[i]), navOptionTypeIcons[i]);
                 transportationTypesContainer.addView(button);
             }
+            transportationTypesContainer.removeViews(0,
+                    transportationTypesContainer.getChildCount()-4);
         } else {
             Timber.i(String.valueOf(R.string.array_size_text_timber));
         }
@@ -155,7 +165,7 @@ public class NavigationOptionsController {
      * @return The formatted string in the format "Lt: {latitude}\nLg: {longitude}".
      */
     private String formatLatLng(double latitude, double longitude) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.######");
+        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
         String formattedLatitude = decimalFormat.format(latitude);
         String formattedLongitude = decimalFormat.format(longitude);
         return "Lt: " + formattedLatitude + "\n" + "Lg: " + formattedLongitude;
