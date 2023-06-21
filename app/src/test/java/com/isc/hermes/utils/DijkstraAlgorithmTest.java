@@ -7,6 +7,7 @@ import com.isc.hermes.controller.GraphController;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import org.json.JSONException;
 import org.junit.Before;
@@ -29,7 +30,10 @@ public class DijkstraAlgorithmTest {
 
     @Test
     public void graphTest() throws JSONException {
-        GraphController.getIntersections();
+        LatLng start = new LatLng(-17.4275176,-66.1592252);
+        LatLng destination = new LatLng(-17.418664,-66.155998);
+        GraphController graphController = new GraphController(start, destination);
+        graphController.buildGraphFromIntersections(graphController.getIntersections());
     }
 
     @Test
