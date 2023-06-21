@@ -34,7 +34,6 @@ public class MapWayPointController implements MapClickConfigurationController {
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
     private Context context;
-    private int markerCount;
     /**
      * This is the constructor method.
      *
@@ -46,7 +45,6 @@ public class MapWayPointController implements MapClickConfigurationController {
         this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
-        markerCount = 0;
         Animations.loadAnimations();
     }
 
