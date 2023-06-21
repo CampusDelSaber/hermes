@@ -34,7 +34,7 @@ public class MapWayPointController implements MapClickConfigurationController {
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
     private Context context;
-    private int markerCount = 0;
+    private int markerCount;
     /**
      * This is the constructor method.
      *
@@ -46,6 +46,7 @@ public class MapWayPointController implements MapClickConfigurationController {
         this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
+        markerCount = 0;
         Animations.loadAnimations();
     }
 
@@ -74,8 +75,7 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
 
     private void doMarkOnMapAction(LatLng point) {
-        PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
-        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
+
         if (isMarked || !mapboxMap.getMarkers().isEmpty()) {
             deleteMarks();
             if (waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
@@ -84,21 +84,7 @@ public class MapWayPointController implements MapClickConfigurationController {
             }
             if (waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
                 waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
-
-                if (markerCount == 1 ) {
-                    waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
-                    markerCount = 0;
-                }
-                if (!features.isEmpty() && (features.get(0).geometry().type().equals("MultiLineString") || features.get(0).geometry().type().equals("LineString"))) {
-                    MarkerOptions markerOptions = new MarkerOptions().position(point);
-                    mapboxMap.addMarker(markerOptions);
-                    markerCount++;
-
-
-                }else{
-                    Toast.makeText(context, "Invalid geometry type", Toast.LENGTH_SHORT).show();
-                    waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
-                }
+                conditionalTwoPoints(point);
             }
             isMarked = false;
         } else {
@@ -107,6 +93,28 @@ public class MapWayPointController implements MapClickConfigurationController {
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
             isMarked = true;
+        }
+    }
+
+    /**
+     * Method to control when te user what to report an incident on a house
+     * @param point Is point passed as parameter with its latitude and longitude
+     */
+    private void conditionalTwoPoints(LatLng point){
+        PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
+        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
+        if (markerCount == 1 ) {
+            waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
+            markerCount = 0;
+        }
+        if (!features.isEmpty() && (features.get(0).geometry().type().equals("MultiLineString") || features.get(0).geometry().type().equals("LineString"))) {
+            MarkerOptions markerOptions = new MarkerOptions().position(point);
+            mapboxMap.addMarker(markerOptions);
+            markerCount++;
+
+        }else{
+            Toast.makeText(context, "Please indicate a street or avenue", Toast.LENGTH_SHORT).show();
+            waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
         }
     }
 
