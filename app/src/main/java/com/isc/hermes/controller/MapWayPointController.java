@@ -1,28 +1,20 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PointF;
-import android.os.AsyncTask;
-import android.view.View;
-import android.widget.Toast;
 
+import android.view.View;
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.Geometry;
-import com.mapbox.geojson.LineString;
-import com.mapbox.geojson.MultiLineString;
-import com.mapbox.geojson.Point;
+
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.annotations.Polyline;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,10 +29,8 @@ public class MapWayPointController implements MapClickConfigurationController {
     private final MapboxMap mapboxMap;
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
+    private Context context;
     private int markerCount = 0;
-    private final Context context;
-
-
     /**
      * This is the constructor method.
      *
@@ -48,8 +38,8 @@ public class MapWayPointController implements MapClickConfigurationController {
      * @param context Is the context application.
      */
     public MapWayPointController(MapboxMap mapboxMap, Context context ) {
-        this.mapboxMap = mapboxMap;
         this.context = context;
+        this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
         Animations.loadAnimations();
@@ -64,13 +54,18 @@ public class MapWayPointController implements MapClickConfigurationController {
     public boolean onMapClick(@NonNull LatLng point) {
         doMarkOnMapAction(point);
         IncidentsUploader.getInstance().setLastClickedPoint(point);
+        try {
+            IncidentDialogController.getInstance(context).showDialogCorrect(point);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         TrafficUploader.getInstance().setLastClickedPoint(point);
+
         return true;
     }
 
     /**
      * Method to perform action to click on map
-     *
      * @param point Is point passed as parameter with its latitude and longitude
      */
 

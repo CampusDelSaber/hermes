@@ -82,7 +82,7 @@ public class Incident {
     @Override
     public String toString() {
         return "Incident{"+
-                 "\n_id = " + _id +
+                "\n_id = " + _id +
                 ",\ntype = " + type + '\'' +
                 ",\nreason = " + reason + '\'' +
                 ",\ndateCreated = " + dateCreated +

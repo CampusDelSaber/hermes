@@ -46,8 +46,8 @@ public class IncidentGeneratorManage {
                 numberPoints = random.nextInt(5 - 2 + 1) + 2;
             }
             pointsGenerated = generatorSelected.generate(referencePoint, radium, numberPoints);
-            Incident incident = getIncident(generatorSelected, pointsGenerated);
-            incidentsGenerated.add(incident);
+            Incident pointIncidet = getIncident(generatorSelected, pointsGenerated);
+            incidentsGenerated.add(pointIncidet);
         }
         return incidentsGenerated;
     }
