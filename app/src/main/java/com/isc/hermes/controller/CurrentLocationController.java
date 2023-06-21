@@ -72,7 +72,7 @@ public class CurrentLocationController {
         ImageButton locationButton = activity.findViewById(R.id.locationButton);
         locationButton.setOnClickListener(v -> {
             enableLocationComponent();
-//            initLocation();
+            initLocation();
         });
     }
 

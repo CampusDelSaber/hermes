@@ -1,5 +1,6 @@
 package com.isc.hermes.generators;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.GeometryType;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * This method has the responsibility to generate linestring coordinates data.
  */
-public class LinestringGenerator extends CoordinateGen implements IGeometryGenerator {
+public class LinestringGenerator extends CoordinateGen implements CoordinatesGenerable {
 
     private PointGenerator pointGenerator;
 

@@ -1,10 +1,13 @@
-package com.isc.hermes.generators;
+package com.isc.hermes.model;
 
 /**
  * This class has the responsibility to store radium values on geodetic units.
  */
 public enum Radium {
 
+    FIVE_METERS(0.000045),
+    TEN_METERS(0.00009),
+    TWENTY_FIVE_METERS(0.000225),
     FIFTY_METERS(0.00045),
     ONE_HUNDRED_METERS(0.0009),
     FIVE_HUNDRED_METERS(0.0045),
