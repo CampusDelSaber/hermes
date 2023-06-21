@@ -14,14 +14,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:foregroundGravity="top">
 
         <LinearLayout
             android:id="@+id/tagsContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="10dp" />
+            android:paddingHorizontal="10dp"
+            android:layout_gravity="top"/>
 
     </HorizontalScrollView>
 
