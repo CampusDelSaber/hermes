@@ -2,22 +2,14 @@ package com.isc.hermes.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import com.isc.hermes.controller.GraphController;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +25,7 @@ public class DijkstraAlgorithmTest {
         LatLng start = new LatLng(-17.4275176,-66.1592252);
         LatLng destination = new LatLng(-17.418664,-66.155998);
         GraphController graphController = new GraphController(start, destination);
-        graphController.buildGraphFromIntersections(graphController.getIntersections());
+        graphController.buildGraph();
     }
 
     @Test
