@@ -71,6 +71,26 @@ public class ApiRequestHandler {
     }
 
     /**
+     * Sends a DELETE request to the specified API URL with the provided ID.
+     *
+     * @param apiUrl the URL of the API to send the request to
+     * @param id     the ID of the data to delete
+     */
+    public void deleteDataById(String apiUrl, String id) {
+        try {
+            URL url = new URL(apiUrl + "/" + id);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+            System.out.println("CODE RESPONSE: " + responseCode);
+            connection.disconnect();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    /**
      * Retrieves the singleton instance of ApiRequestHandler.
      *
      * @return The singleton instance of ApiRequestHandler.

@@ -52,6 +52,18 @@ public class ApiHandler {
     }
 
     /**
+     * delete a Future for collections to the specified API URL with the given parameters and id.
+     *
+     * @param params The parameters to be appended to the API URL.
+     * @param object The id to be converted to JSON and sent as the request payload.
+     * @return A Future representing the asynchronous operation of posting data to the API.
+     */
+    public Future<?> deleteFutureCollections(String params, String object) {
+        String url = API_URL + params;
+        return executorService.submit(() -> requestHandler.deleteDataById(url, object));
+    }
+
+    /**
      * Retrieves the singleton instance of ApiHandler.
      *
      * @return The singleton instance of ApiHandler.
