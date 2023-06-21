@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.view.View;
+
+import com.isc.hermes.R;
 import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.database.AccountInfoManager;
 
@@ -27,8 +29,8 @@ public class PopUpDeleteAccount extends PopUp{
             public String getWarningPopUp() {
                 return "By accepting your data will be permanently deleted"; }
             @Override
-            public String getIconImagePopUp() {
-                return "app/src/main/res/drawable/img_delete_icon_blue.png"; }
+            public int getIconImagePopUp() {
+                return R.drawable.img_delete_icon_blue; }
         });
     }
 

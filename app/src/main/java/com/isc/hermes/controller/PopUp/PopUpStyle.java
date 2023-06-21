@@ -23,7 +23,7 @@ public interface PopUpStyle {
     /**
      * Returns the path or name of the icon image to be displayed in the pop-up window.
      *
-     * @return the path or name of the icon image for the pop-up window
+     * @return the xml of the icon image for the pop-up window
      */
-    String getIconImagePopUp();
+    int getIconImagePopUp();
 }

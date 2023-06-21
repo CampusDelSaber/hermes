@@ -5,11 +5,13 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
+import com.isc.hermes.R;
+
 /**
  * The class {@code PopUpEditAccount} extends {@code PopUp} and represents a specific type of pop-up
  * for editing an account. It provides functionality for editing account information.
  */
-public class PopUpEditAccount extends PopUp{
+public class PopUpOverwriteInformationAccount extends PopUp{
 
     private Button button;
     private AutoCompleteTextView fullName;
@@ -21,7 +23,7 @@ public class PopUpEditAccount extends PopUp{
      *
      * @param activity  The activity we were in before the popup opened
      */
-    public PopUpEditAccount(Activity activity) {
+    public PopUpOverwriteInformationAccount(Activity activity) {
         super(activity, new PopUpStyle() {
             @Override
             public String getTittlePopUP() {
@@ -30,8 +32,8 @@ public class PopUpEditAccount extends PopUp{
             public String getWarningPopUp() {
                 return "By accepting your data will be change"; }
             @Override
-            public String getIconImagePopUp() {
-                return "app/src/main/res/drawable/img_edit_icon_blue.png"; }
+            public int getIconImagePopUp() {
+                return R.drawable.img_edit_icon_blue; }
         });
     }
 

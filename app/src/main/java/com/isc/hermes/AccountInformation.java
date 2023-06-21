@@ -12,10 +12,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
-import com.isc.hermes.controller.PopUp.PopUpEditAccount;
+import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
 
 import java.io.IOException;
@@ -37,7 +35,7 @@ public class AccountInformation extends AppCompatActivity {
     private ImageView imageView;
     private static final int PICK_IMAGE_REQUEST = 1;
     private User userRegistered;
-    private PopUpEditAccount popUpDialogEdit;
+    private PopUpOverwriteInformationAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
 
     /**
@@ -71,7 +69,8 @@ public class AccountInformation extends AppCompatActivity {
      * Updates the text fields with user-provided data.
      */
     private void updateTextFieldsByUser() {
-        imageView.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
+        ImageUtil.getInstance().updateImageOfImageView(this,
+                userRegistered.getPathImageUser(), imageView);
         textFieldUserName.setText(userRegistered.getUserName());
         textFieldFullName.setText(userRegistered.getFullName());
         textFieldEmail.setText(userRegistered.getEmail());
@@ -152,7 +151,7 @@ public class AccountInformation extends AppCompatActivity {
             Uri selectedImageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                Bitmap croppedBitmap = ImageUtil.cropToSquare(bitmap);
+                Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
 
                 imageView.setImageBitmap(croppedBitmap);
             } catch (IOException e) {e.printStackTrace();}
@@ -188,6 +187,7 @@ public class AccountInformation extends AppCompatActivity {
         userRegistered.setUserName(String.valueOf(textFieldUserName.getText()));
         userRegistered.setFullName(String.valueOf(textFieldFullName.getText()));
     }
+
     /**
      * This method is used to edit an account information using on click action.
      *
@@ -204,7 +204,7 @@ public class AccountInformation extends AppCompatActivity {
      * This method initialize the popup warning when we pressed on the delete account button
      */
     private void initializePopups(){
-        this.popUpDialogEdit = new PopUpEditAccount(this);
+        this.popUpDialogEdit = new PopUpOverwriteInformationAccount(this);
         this.popUpDialogDelete = new PopUpDeleteAccount(this);
     }
 
