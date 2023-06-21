@@ -130,6 +130,11 @@
         mapbox:layout_anchorGravity="center" />
 
     <include
+        layout="@layout/navigation_options"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
         layout="@layout/waypoint_options_fragment"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />

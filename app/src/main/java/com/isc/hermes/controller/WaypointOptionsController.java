@@ -4,11 +4,11 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapClickEventsManager;
+
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
@@ -16,12 +16,12 @@ import com.isc.hermes.utils.MapClickEventsManager;
 public class WaypointOptionsController {
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
+    private final NavigationOptionsController navigationOptionsFormController;
     private final Button navigateButton;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
     private final Button reportNaturalDisasterButton;
     private final Context context;
-    private TextView placeName;
 
     /**
      * This is the constructor method. Init all the components of UI.
@@ -33,11 +33,11 @@ public class WaypointOptionsController {
         this.context = context;
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = new IncidentFormController(context, mapWayPointController);
+        navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);
-        placeName = ((AppCompatActivity) context).findViewById(R.id.place_name);
         setButtonsOnClick();
     }
 
@@ -46,7 +46,10 @@ public class WaypointOptionsController {
      */
     private void setButtonsOnClick(){
         navigateButton.setOnClickListener(v -> {
-
+            waypointOptions.startAnimation(Animations.exitAnimation);
+            navigationOptionsFormController.getNavOptionsForm().startAnimation(Animations.entryAnimation);
+            navigationOptionsFormController.getNavOptionsForm().setVisibility(View.VISIBLE);
+            waypointOptions.setVisibility(View.GONE);
         });
 
         reportIncidentButton.setOnClickListener(v -> {
@@ -82,5 +85,13 @@ public class WaypointOptionsController {
      */
     public IncidentFormController getIncidentFormController() {
         return incidentFormController;
+    }
+
+    /**
+     * This is the getter method to get the navigation options controller instance.
+     * @return Return the navigation options controller form view.
+     */
+    public NavigationOptionsController getNavOptionsFormController() {
+        return navigationOptionsFormController;
     }
 }
