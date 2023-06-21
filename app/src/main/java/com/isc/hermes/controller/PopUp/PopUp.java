@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -43,16 +42,16 @@ public abstract class PopUp extends Dialog implements View.OnClickListener {
     /**
      * Assigns values to the components based on the provided PopUpStyle.
      *
-     * @param typePopUp The PopUpStyle object containing the values to be assigned.
+     * @param popUpStyle The PopUpStyle object containing the values to be assigned.
      */
-    public void assignValuesToComponents(PopUpStyle typePopUp) {
+    public void assignValuesToComponents(PopUpStyle popUpStyle) {
         this.googleAuthentication = new GoogleAuthentication();
         this.warningText = findViewById(R.id.warningText);
         this.iconMessagePopUp = findViewById(R.id.iconMessagePopUp);
         this.deleteAccountText = findViewById(R.id.deleteAccountText);
-        this.iconMessagePopUp.setImageURI(Uri.parse(typePopUp.getIconImagePopUp()));
-        this.warningText.setText(typePopUp.getWarningPopUp());
-        this.deleteAccountText.setText(typePopUp.getTittlePopUP());
+        this.iconMessagePopUp.setImageResource(popUpStyle.getIconImagePopUp());
+        this.warningText.setText(popUpStyle.getWarningPopUp());
+        this.deleteAccountText.setText(popUpStyle.getTittlePopUP());
     }
 
     /**
