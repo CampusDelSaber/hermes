@@ -77,6 +77,27 @@
         <item>month</item>
     </string-array>
 
+    <!-- Nav Options -->
+    <string-array name="navOptions_type">
+        <item>Car</item>
+        <item>Bike</item>
+        <item>Walk</item>
+        <item>Motorcycle</item>
+    </string-array>
+    <string-array name="navOptions_type_colors">
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+    </string-array>
+    <string-array name="navOptions_type_icons">
+        <item>car_navoption_type</item>
+        <item>bike_navoption_type</item>
+        <item>walk_navoption_type</item>
+        <item>moto_navoption_type</item>
+    </string-array>
+
+
     <!-- Geocoding -->
     <string name="latitude">latitude</string>
     <string name="longitude">longitude</string>
