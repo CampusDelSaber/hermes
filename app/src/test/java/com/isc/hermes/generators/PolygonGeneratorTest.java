@@ -2,6 +2,8 @@ package com.isc.hermes.generators;
 
 import static org.junit.Assert.assertNotNull;
 
+import com.isc.hermes.model.Radium;
+
 import org.junit.Before;
 import org.junit.Test;
 

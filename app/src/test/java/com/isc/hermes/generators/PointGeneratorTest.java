@@ -1,16 +1,15 @@
 package com.isc.hermes.generators;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 

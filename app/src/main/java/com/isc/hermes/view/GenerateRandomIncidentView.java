@@ -5,7 +5,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
-import com.isc.hermes.generators.Radium;
+import com.isc.hermes.model.Radium;
 
 /**
  * This class is used to initialize the view to select how to generate incidents.

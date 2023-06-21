@@ -1,8 +1,10 @@
 package com.isc.hermes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -13,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
@@ -56,6 +59,8 @@ import java.util.Objects;
  * Handles current user location functionality.
  */
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    public static Context context;
     private MapView mapView;
     private MapDisplay mapDisplay;
     private String mapStyle;
@@ -73,9 +78,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      *
      * @param savedInstanceState the saved state of the instance
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
@@ -220,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * This method adds the button for incident generation.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void addIncidentGeneratorButton() {
         GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this);
     }
