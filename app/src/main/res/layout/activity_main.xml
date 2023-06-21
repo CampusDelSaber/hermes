@@ -75,17 +75,24 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
                     android:layout_marginEnd="10dp"
                     android:baselineAligned="false"
                     android:orientation="vertical"
                     android:paddingStart="70dp"
                     android:paddingEnd="55dp">
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/searchView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        mapbox:srcCompat="@drawable/firterbar" />
+                        android:layout_height="35dp"
+                        android:background="@drawable/searchview_rounded_bg"
+                        android:gravity="center"
+                        android:paddingStart="5dp"
+                        android:text="Search..."
+                        android:textSize="22sp"
+                        android:textAlignment="viewStart"
+                        android:textAllCaps="false" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -105,9 +112,14 @@
             android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
+            android:importantForAccessibility="no"
             mapbox:srcCompat="@drawable/img_icon_incident_generate"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
-            android:importantForAccessibility="no" />
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        <include
+            layout="@layout/customization_menu"
+            mapbox:layout_anchor="@+id/mapView"
+            mapbox:layout_anchorGravity="center" />
 
         <ImageButton
             android:id="@+id/locationButton"
@@ -142,11 +154,6 @@
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 
-    <include
-        layout="@layout/customization_menu"
-        mapbox:layout_anchor="@+id/mapView"
-        mapbox:layout_anchorGravity="center" />
-
     <LinearLayout
         android:id="@+id/lateralMenu"
         android:layout_width="300dp"
@@ -164,18 +171,18 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            app:cardCornerRadius="30dp"
-            app:cardBackgroundColor="@color/white">
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
 
             <Button
                 android:id="@+id/styles_menu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@android:color/transparent"
                 android:gravity="center"
                 android:onClick="openStylesMenu"
                 android:text="@string/styles_menu"
                 android:textColor="@color/black"
-                android:background="@android:color/transparent"
                 mapbox:icon="@drawable/img_layer_icon" />
 
         </androidx.cardview.widget.CardView>
@@ -229,16 +236,20 @@
 
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="406dp"
-                    android:layout_height="137dp" tools:layout_editor_absoluteY="-2dp"
+                    android:layout_height="137dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints"
                     tools:layout_editor_absoluteX="-7dp"
-                    android:gravity="center" tools:ignore="MissingConstraints">
+                    tools:layout_editor_absoluteY="-2dp">
+
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="210dp"
-                        android:layout_height="wrap_content" android:textAlignment="center"
-                        android:gravity="center">
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:textAlignment="center">
 
                         <LinearLayout
                             android:layout_width="214dp"
@@ -250,11 +261,11 @@
                                 android:id="@+id/geocode_latitude_editText"
                                 android:layout_width="110dp"
                                 android:layout_height="50dp"
-                                android:paddingStart="5dp"
                                 android:autofillHints=""
                                 android:hint="@string/latitude"
                                 android:inputType="numberDecimal|numberSigned"
-                                android:minHeight="48dp" />
+                                android:minHeight="48dp"
+                                android:paddingStart="5dp" />
 
                             <EditText
                                 android:id="@+id/geocode_longitude_editText"
@@ -272,8 +283,7 @@
                             android:backgroundTint="@color/mapboxBlueDark"
                             android:text="@string/geocode"
                             android:textAllCaps="false"
-                            android:textColor="@color/white"
-                            />
+                            android:textColor="@color/white" />
                     </LinearLayout>
 
                     <LinearLayout

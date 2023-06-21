@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
@@ -24,11 +23,9 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.offline.OfflineDataRepository;
-import com.isc.hermes.model.RegionData;
 import com.isc.hermes.model.User;
 
-import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -39,8 +36,6 @@ import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -50,7 +45,6 @@ import com.mapbox.mapboxsdk.maps.Style;
 import java.util.HashMap;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -63,12 +57,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private CurrentLocationController currentLocationController;
     private User userRegistered;
     private boolean visibilityMenu = false;
-    private ImageView searchView;
+    private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
-
+    String initialText = "Search...";
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
      *
@@ -182,8 +176,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addMapboxSearcher();
         searchView.setOnClickListener(v -> {
             new Handler().post(() -> {
+                searchView.setText(initialText);
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
                 startActivity(intent);
+                String searchResult  = String.valueOf(intent);
+                searchView.setText(searchResult);
             });
         });
     }
