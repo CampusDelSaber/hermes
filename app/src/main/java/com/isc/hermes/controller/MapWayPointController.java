@@ -17,8 +17,8 @@ import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-
 import org.json.JSONException;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +57,14 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
-        doMarkOnMapAction(point);
+        if (NavigationOptionsController.isActive) {
+            waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
+            markPointBehavior(point);
+        } else {
+            doMarkOnMapAction(point);
+            waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
+
+        }
         IncidentsUploader.getInstance().setLastClickedPoint(point);
         try {
             IncidentDialogController.getInstance(context).showDialogCorrect(point);
@@ -70,26 +77,44 @@ public class MapWayPointController implements MapClickConfigurationController {
     }
 
     /**
+     * Method to handle the visibility of the layouts on screen
+     */
+    private void handleVisibilityPropertiesForLayouts() {
+        if(waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
+            waypointOptionsController.getWaypointOptions().startAnimation(Animations.exitAnimation);
+            waypointOptionsController.getWaypointOptions().setVisibility(View.GONE);
+        }
+        if(waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
+            waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
+            waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
+        }
+
+        if(waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().getVisibility() == View.VISIBLE) {
+            waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().startAnimation(Animations.exitAnimation);
+            waypointOptionsController.getNavOptionsFormController().getNavOptionsForm().setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Method to set the marker behavior on map
+     * @param point geocode point to set
+     */
+    private void markPointBehavior(LatLng point) {
+            deleteMarks();
+            setMarkerOnMap(point);
+    }
+
+    /**
      * Method to perform action to click on map
      * @param point Is point passed as parameter with its latitude and longitude
      */
-
-    private void doMarkOnMapAction(LatLng point) {
-
-        if (isMarked || !mapboxMap.getMarkers().isEmpty()) {
+    private void doMarkOnMapAction(LatLng point){
+        if (isMarked){
             deleteMarks();
-            if (waypointOptionsController.getWaypointOptions().getVisibility() == View.VISIBLE) {
-                waypointOptionsController.getWaypointOptions().startAnimation(Animations.exitAnimation);
-                waypointOptionsController.getWaypointOptions().setVisibility(View.GONE);
-            }
-            if (waypointOptionsController.getIncidentFormController().getIncidentForm().getVisibility() == View.VISIBLE) {
-                waypointOptionsController.getIncidentFormController().getIncidentForm().startAnimation(Animations.exitAnimation);
-                conditionalTwoPoints(point);
-            }
+            handleVisibilityPropertiesForLayouts();
             isMarked = false;
         } else {
-            MarkerOptions markerOptions = new MarkerOptions().position(point);
-            mapboxMap.addMarker(markerOptions);
+            setMarkerOnMap(point);
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
             isMarked = true;
@@ -97,26 +122,13 @@ public class MapWayPointController implements MapClickConfigurationController {
     }
 
     /**
-     * Method to control when te user what to report an incident on a house
-     * @param point Is point passed as parameter with its latitude and longitude
+     * Method to render a marker on map
      */
-    private void conditionalTwoPoints(LatLng point){
-        PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
-        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
-        if (markerCount == 1 ) {
-            waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
-            markerCount = 0;
-        }
-        if (!features.isEmpty() && (features.get(0).geometry().type().equals("MultiLineString") || features.get(0).geometry().type().equals("LineString"))) {
-            MarkerOptions markerOptions = new MarkerOptions().position(point);
-            mapboxMap.addMarker(markerOptions);
-            markerCount++;
-
-        }else{
-            Toast.makeText(context, "Please indicate a street or avenue", Toast.LENGTH_SHORT).show();
-            waypointOptionsController.getIncidentFormController().getIncidentForm().setVisibility(View.GONE);
-        }
+    private void setMarkerOnMap(LatLng point) {
+        MarkerOptions markerOptions = new MarkerOptions().position(point);
+        mapboxMap.addMarker(markerOptions);
     }
+
 
     /**
      * Method to delete all the marks in the map.
