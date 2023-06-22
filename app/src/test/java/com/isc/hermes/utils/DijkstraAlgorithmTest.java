@@ -192,12 +192,11 @@ public class DijkstraAlgorithmTest {
 
         List<Node> alternative3 = shortestPathAlternatives.get("Route C").getPath();
         assertNotNull(alternative3);
-        assertEquals(5, alternative3.size());
+        assertEquals(4, alternative3.size());
         assertEquals(source, alternative3.get(0));
-        assertEquals(graph.getNode("B"), alternative3.get(1));
-        assertEquals(graph.getNode("D"), alternative3.get(2));
-        assertEquals(graph.getNode("E"), alternative3.get(3));
-        assertEquals(destination, alternative3.get(4));
+        assertEquals(graph.getNode("C"), alternative3.get(1));
+        assertEquals(graph.getNode("E"), alternative3.get(2));
+        assertEquals(destination, alternative3.get(3));
     }
 
     private Graph createGraph() {
@@ -222,6 +221,7 @@ public class DijkstraAlgorithmTest {
         // POSSIBLE ROUTES
         // A - B - D - F
         // A - C - D - F
+        // A - C - E - F
         // A - B - D - E - F
         // A - C - D - E - F
 

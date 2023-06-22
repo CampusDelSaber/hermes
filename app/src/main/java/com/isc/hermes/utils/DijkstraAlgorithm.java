@@ -7,12 +7,11 @@ import com.isc.hermes.model.navigation.TransportationType;
 import java.util.*;
 
 /**
- * This class implements Dijkstra's algorithm for
- * finding the shortest path between two nodes in a graph.
+ * This class implements Dijkstra's algorithm for finding the shortest path between two nodes in a graph.
  */
 public class DijkstraAlgorithm {
     private static DijkstraAlgorithm instance;
-    private GeoJsonUtils geoJsonUtils;
+    private final GeoJsonUtils geoJsonUtils;
     private static final int MAX_ROUTE_ALTERNATIVES = 3;
 
     /**
@@ -26,10 +25,10 @@ public class DijkstraAlgorithm {
     /**
      * Retrieves the GeoJSON routes between a source and a destination node in a graph.
      *
-     * @param graph       the graph containing the nodes and edges
-     * @param source      the source node
-     * @param destination the destination node
-     * @param transportationType the type of transportation to be used
+     * @param graph               the graph containing the nodes and edges
+     * @param source              the source node
+     * @param destination         the destination node
+     * @param transportationType  the type of transportation to be used
      * @return a map of route names to their respective GeoJSON representations
      */
     public Map<String, String> getGeoJsonRoutes(
@@ -38,11 +37,12 @@ public class DijkstraAlgorithm {
         Map<String, String> geoJsonRoutes = new HashMap<>();
         Map<String, Route> routeAlternatives =
                 getPathAlternatives(graph, source, destination, transportationType);
-        for (String key:routeAlternatives.keySet())
+        for (String key : routeAlternatives.keySet()) {
             geoJsonRoutes.put(
-                key,
-                geoJsonUtils.generateGeoJson(routeAlternatives.get(key))
+                    key,
+                    geoJsonUtils.generateGeoJson(routeAlternatives.get(key))
             );
+        }
 
         return geoJsonRoutes;
     }
@@ -50,13 +50,14 @@ public class DijkstraAlgorithm {
     /**
      * Calculates the shortest path from the source node to the destination node in the given graph.
      *
-     * @param graph       The graph in which to find the shortest path.
-     * @param source      The source node.
-     * @param destination The destination node.
+     * @param graph               The graph in which to find the shortest path.
+     * @param source              The source node.
+     * @param destination         The destination node.
+     * @param transportationType  The type of transportation to be used.
      * @return A map with route alternatives as keys and their corresponding list of nodes as values.
      */
     public Map<String, Route> getPathAlternatives(
-        Graph graph, Node source, Node destination, TransportationType transportationType
+            Graph graph, Node source, Node destination, TransportationType transportationType
     ) {
         Map<String, Route> routeAlternatives = new HashMap<>();
         PriorityQueue<Route> routeQueue =
@@ -96,11 +97,12 @@ public class DijkstraAlgorithm {
     /**
      * Explores the neighbors of the current node in the graph and adds new routes to the routeQueue.
      *
-     * @param currentRoute  The current route being evaluated.
-     * @param routeQueue    The priority queue of routes.
+     * @param currentRoute        The current route being evaluated.
+     * @param routeQueue          The priority queue of routes.
+     * @param transportationType  The type of transportation to be used.
      */
     private void exploreNeighbors(
-        Route currentRoute, PriorityQueue<Route> routeQueue, TransportationType transportationType
+            Route currentRoute, PriorityQueue<Route> routeQueue, TransportationType transportationType
     ) {
         Node currentNode = currentRoute.getCurrentNode();
 
@@ -214,7 +216,7 @@ public class DijkstraAlgorithm {
     /**
      * Gets the singleton instance of the DijkstraAlgorithm class.
      *
-     * @return the instance of DijkstraAlgorithm.
+     * @return The instance of DijkstraAlgorithm.
      */
     public static DijkstraAlgorithm getInstance() {
         if (instance == null) {
