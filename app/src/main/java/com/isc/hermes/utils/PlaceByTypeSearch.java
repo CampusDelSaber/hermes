@@ -14,22 +14,53 @@ import java.util.List;
 
 import retrofit2.Response;
 
+/**
+ * Utility class for searching places by type using Mapbox Geocoding API.
+ */
 public class PlaceByTypeSearch {
     private static final String MAPBOX_ACCESS_TOKEN = "sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA";
     private Activity activity;
 
-    public PlaceByTypeSearch( ){
+    /**
+     * Constructs a new PlaceByTypeSearch instance.
+     */
+    public PlaceByTypeSearch() {
     }
 
+    /**
+     * Listener interface for handling the search results.
+     */
     public interface SearchPlacesListener {
+        /**
+         * Called when the place search is complete and returns a list of places matching the specified type.
+         *
+         * @param places the list of places matching the specified type
+         */
         void onSearchComplete(List<CarmenFeature> places);
+
+        /**
+         * Called when an error occurs during the place search.
+         *
+         * @param errorMessage the error message describing the search error
+         */
         void onSearchError(String errorMessage);
     }
 
+    /**
+     * Searches for places of the specified type near the given latitude and longitude coordinates.
+     *
+     * @param placeType the type of places to search for
+     * @param latitude  the latitude of the search location
+     * @param longitude the longitude of the search location
+     * @param listener  the listener to handle the search results
+     */
     public void searchPlacesByType(String placeType, double latitude, double longitude, SearchPlacesListener listener) {
         new SearchPlacesTask(listener).execute(placeType, String.valueOf(latitude), String.valueOf(longitude));
     }
 
+    /**
+     * AsyncTask for performing the place search in the background.
+     */
     private static class SearchPlacesTask extends AsyncTask<String, Void, List<CarmenFeature>> {
         private SearchPlacesListener listener;
 
@@ -61,6 +92,15 @@ public class PlaceByTypeSearch {
         }
     }
 
+    /**
+     * Performs the geocoding request to retrieve places of the specified type.
+     *
+     * @param placeType  the type of places to search for
+     * @param latitude   the latitude of the search location
+     * @param longitude  the longitude of the search location
+     * @return a list of places matching the specified type
+     * @throws IOException if an error occurs during the geocoding request
+     */
     private static List<CarmenFeature> performGeocodingRequest(String placeType, double latitude, double longitude) throws IOException {
         MapboxGeocoding geocoding = MapboxGeocoding.builder()
                 .accessToken(MAPBOX_ACCESS_TOKEN)
@@ -80,6 +120,4 @@ public class PlaceByTypeSearch {
             throw new IOException("An error occurred during the geocoding request.");
         }
     }
-
-
 }
