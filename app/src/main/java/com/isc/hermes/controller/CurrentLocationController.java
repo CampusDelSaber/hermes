@@ -5,6 +5,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
+import com.isc.hermes.model.location.LocationIntervals;
 import com.isc.hermes.utils.LocationListeningCallback;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.android.core.location.LocationEngine;
@@ -39,9 +40,12 @@ public class CurrentLocationController {
     private CurrentLocationController(AppCompatActivity activity, MapDisplay mapDisplay) {
         locationEngine = LocationEngineProvider.getBestLocationEngine(activity);
         currentLocationModel = new CurrentLocationModel();
-        locationListeningCallback = new LocationListeningCallback(activity, currentLocationModel);
-        this.activity = activity;
         locationPermissionsController = new LocationPermissionsController(activity);
+        locationListeningCallback =
+            new LocationListeningCallback(
+                activity, currentLocationModel, locationEngine, locationPermissionsController
+            );
+        this.activity = activity;
         this.mapDisplay = mapDisplay;
     }
 
@@ -83,7 +87,9 @@ public class CurrentLocationController {
     private void enableLocationComponent() {
         if (locationPermissionsController.checkLocationPermissions()) {
             LocationComponentOptions locationComponentOptions =
-                    LocationComponentOptions.builder(activity).pulseEnabled(true).build();
+                    LocationComponentOptions.builder(activity)
+                            .accuracyAlpha(LocationIntervals.ACCURACY_ALPHA.getValue())
+                            .pulseEnabled(true).build();
 
             LocationComponentActivationOptions locationComponentActivationOptions =
                     LocationComponentActivationOptions.builder(
@@ -109,8 +115,13 @@ public class CurrentLocationController {
     @SuppressLint("MissingPermission")
     private void onLocationEngineConnected() {
         if (locationPermissionsController.checkLocationPermissions()) {
-            LocationEngineRequest locationEngineRequest = new LocationEngineRequest.Builder(1000)
-                    .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+            LocationEngineRequest locationEngineRequest =
+                    new LocationEngineRequest.Builder(
+                            (long) LocationIntervals.UPDATE_INTERVAL_MS.getValue()
+                    )
+                    .setFastestInterval((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue())
+                    .setDisplacement(LocationIntervals.SMALLEST_DISPLACEMENT_METERS.getValue())
+                    .setPriority(LocationEngineRequest.PRIORITY_BALANCED_POWER_ACCURACY)
                     .build();
 
             locationEngine.requestLocationUpdates(
