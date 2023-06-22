@@ -62,6 +62,11 @@ public class IncidentFormController {
 
         setButtonsOnClick();
         setIncidentComponents();
+
+    }
+
+    public MapWayPointController getMapController() {
+        return mapWayPointController;
     }
 
     /**
