@@ -99,29 +99,12 @@ public class AccountInfoManager {
 
     /**
      Edits a user's information.
-     @param userId the ID of the user to be edited
-     @param email the new email for the user
-     @param fullName the new full name for the user
-     @param userName the new username for the user
-     @param typeUser the new user type
-     @param pathImageUser the new image path for the user
-     @throws ExecutionException if an error occurs during execution
-     @throws InterruptedException if the execution is interrupted
-     @throws JSONException if an error occurs while processing JSON
+     @param user the user will be used to update their information in db.
      @requiresApi(api = Build.VERSION_CODES.O) Requires API level O or higher
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void editUser(String userId, String email, String fullName, String userName, String typeUser, String pathImageUser) throws ExecutionException, InterruptedException, JSONException {
-        User user = getUserById(userId);
-        String apiUrl = ACCOUNT_INFO_COLLECTION + "/" + userId;
-        if (user != null) {
-            user.setEmail(email);
-            user.setFullName(fullName);
-            user.setUserName(userName);
-            user.setTypeUser(typeUser);
-            user.setPathImageUser(pathImageUser);
-            apiHandler.putFutureCollection(apiUrl, user);
-        }
+    public void editUser(User user) {
+        String apiUrl = ACCOUNT_INFO_COLLECTION + "/" + user.getId();
+        apiHandler.putFutureCollection(apiUrl, user);
     }
-
 }
