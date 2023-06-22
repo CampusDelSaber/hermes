@@ -241,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void initShowIncidentsController(){
         viewIncidentsController = new ViewIncidentsController(this);
-        viewIncidentsController.onStart();
     }
 
     /**

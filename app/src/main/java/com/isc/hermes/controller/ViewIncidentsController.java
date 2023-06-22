@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -8,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -16,6 +18,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.isc.hermes.R;
+import com.isc.hermes.ViewingPetitions;
 import com.isc.hermes.utils.MapClickEventsManager;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.maps.Style;
@@ -30,7 +33,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ViewIncidentsController extends Fragment {
+public class ViewIncidentsController{
     private LinearLayout incidentsVisualizationForm;
     private ImageButton viewIncidentsFormButton;
     private Button viewTrafficButton;
@@ -39,28 +42,20 @@ public class ViewIncidentsController extends Fragment {
     private OkHttpClient client;
     private boolean buttonMarked;
     List<List<Point>> allPolygons = new ArrayList<>();
-    private Context context;
 
-    public ViewIncidentsController(Context context) {
-        this.context = context;
-    }
+    private AppCompatActivity activity;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        initComponents();
-    }
-
-    public void initComponents() {
-        this.incidentsVisualizationForm = ((AppCompatActivity) context).findViewById(R.id.viewIncidentsForm);
-        this.viewIncidentsFormButton = ((AppCompatActivity) context).findViewById(R.id.viewIncidentsButton);
-        this.viewTrafficButton = ((AppCompatActivity) context).findViewById(R.id.viewTrafficButton);
-        this.viewSocialEventButton = ((AppCompatActivity) context).findViewById(R.id.viewSocialIncidentsButton);
-        this.viewNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.viewNaturalDisasterButton);
+    public ViewIncidentsController(AppCompatActivity activity){
+        this.incidentsVisualizationForm = activity.findViewById(R.id.viewIncidentsForm);
+        this.viewIncidentsFormButton = activity.findViewById(R.id.viewIncidentsButton);
+        this.viewTrafficButton = activity.findViewById(R.id.viewTrafficButton);
+        this.viewSocialEventButton = activity.findViewById(R.id.viewSocialIncidentsButton);
+        this.viewNaturalDisasterButton = activity.findViewById(R.id.viewNaturalDisasterButton);
         this.client = new OkHttpClient();
         initEyeButtonFunctionality();
         initViewDifferentIncidentsTypeButton();
     }
+
 
     private void initEyeButtonFunctionality() {
         viewIncidentsFormButton.setOnClickListener(v -> {
@@ -122,7 +117,6 @@ public class ViewIncidentsController extends Fragment {
                     Log.i("incidents", String.valueOf(allPolygons));
                 }
             });
-
             allPolygons.clear();
         });
     }
