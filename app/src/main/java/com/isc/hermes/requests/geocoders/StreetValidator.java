@@ -80,6 +80,13 @@ public class StreetValidator {
         return false;
     }
 
+    /**
+     * This method verify is a point is a street using a mapbox map.
+     *
+     * @param mapboxMap is the map to search the point.
+     * @param point is the point to verify if is a street.
+     * @return boolean to know if the point is a street point.
+     */
     public static boolean isStreetPoint(MapboxMap mapboxMap, LatLng point) {
         PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
         List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);

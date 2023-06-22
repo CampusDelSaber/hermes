@@ -3,11 +3,15 @@ package com.isc.hermes.controller;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapClickEventsManager;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 
 /**
@@ -17,6 +21,7 @@ public class WaypointOptionsController {
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
+    private final LinearLayout reportIncidentsView;
     private final Button navigateButton;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
@@ -38,6 +43,7 @@ public class WaypointOptionsController {
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);
+        reportIncidentsView = ((AppCompatActivity) context).findViewById(R.id.report_incidents);
         setButtonsOnClick();
     }
 
@@ -93,5 +99,17 @@ public class WaypointOptionsController {
      */
     public NavigationOptionsController getNavOptionsFormController() {
         return navigationOptionsFormController;
+    }
+
+    /**
+     * This method set the report incident status view if the point market is a street.
+     *
+     * @param mapboxMap is the map to get point information.
+     * @param point is the coordinate point market.
+     */
+    public void setReportIncidentStatus(MapboxMap mapboxMap, LatLng point) {
+        if (!StreetValidator.isStreetPoint(mapboxMap, point))
+            reportIncidentsView.setVisibility(View.GONE);
+        else reportIncidentsView.setVisibility(View.VISIBLE);
     }
 }

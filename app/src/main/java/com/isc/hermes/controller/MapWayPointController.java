@@ -101,6 +101,7 @@ public class MapWayPointController implements MapClickConfigurationController {
             setMarkerOnMap(point);
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
+            waypointOptionsController.setReportIncidentStatus(mapboxMap, point);
             isMarked = true;
         }
     }
