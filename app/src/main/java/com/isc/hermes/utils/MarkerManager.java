@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
+import androidx.annotation.Nullable;
+
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -11,6 +13,8 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+
+import java.util.Map;
 
 
 /**
@@ -51,15 +55,16 @@ public class MarkerManager {
     /**
      * Adds a marker to the map at the specified location.
      *
-     * @param mapView   The MapView instance.
-     * @param placeName The name of the place associated with the marker.
-     * @param latitude  The latitude of the marker's position.
-     * @param longitude The longitude of the marker's position.
+     * @param mapView    The MapView instance.
+     * @param placeName  The name of the place associated with the marker.
+     * @param latitude   The latitude of the marker's position.
+     * @param longitude  The longitude of the marker's position.
+     * @param multiPoint To add many points in the map
      */
-    public void addMarkerToMap(MapView mapView, String placeName, double latitude, double longitude) {
+    public void addMarkerToMap(MapView mapView, String placeName, double latitude, double longitude, boolean multiPoint) {
         mapView.getMapAsync(mapboxMap -> {
             if (currentMarker != null) {
-                mapboxMap.removeMarker(currentMarker);
+                if (!multiPoint) mapboxMap.removeMarker(currentMarker);
                 removeSavedMarker();
             }
 
@@ -71,6 +76,18 @@ public class MarkerManager {
                 setCameraPosition(mapboxMap, latitude, longitude);
             }
         });
+    }
+
+    /**
+     * Adds a marker to the map at the specified location.
+     *
+     * @param mapView    The MapView instance.
+     * @param placeName  The name of the place associated with the marker.
+     * @param latitude   The latitude of the marker's position.
+     * @param longitude  The longitude of the marker's position.
+     */
+    public void addMarkerToMap(MapView mapView, String placeName, double latitude, double longitude){
+        addMarkerToMap(mapView, placeName, latitude, longitude, false);
     }
 
     /**
