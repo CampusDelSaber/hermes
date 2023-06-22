@@ -3,11 +3,14 @@ package com.isc.hermes.model;
 import android.content.Context;
 import android.os.StrictMode;
 import com.isc.hermes.R;
+import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.utils.PlaceSearch;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

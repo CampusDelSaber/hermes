@@ -15,6 +15,7 @@ import com.isc.hermes.R;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.PlaceSearch;
+import com.isc.hermes.utils.PlacesType;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
@@ -45,7 +46,7 @@ public class FilterCategoriesController {
         this.activity = activity;
         markerManager = MarkerManager.getInstance(activity);
         createItemsUI();
-        addTag("Restaurant");
+        addTags();
     }
 
     private void createItemsUI() {
@@ -120,6 +121,12 @@ public class FilterCategoriesController {
         });
 
         tagsContainer.addView(tagTextView);
+    }
+
+    private void addTags(){
+        for (PlacesType tag: PlacesType.values()) {
+            addTag(tag.getDisplayName());
+        }
     }
 
 
