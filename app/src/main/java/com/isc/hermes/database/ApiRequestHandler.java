@@ -22,7 +22,6 @@ public class ApiRequestHandler {
      */
     public String getDataFromApi(String apiUrl) {
         StringBuilder response = new StringBuilder();
-
         try {
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -62,8 +61,7 @@ public class ApiRequestHandler {
             outputStream.writeBytes(jsonData);
             outputStream.flush();
             outputStream.close();
-            int responseCode = connection.getResponseCode();
-            System.out.println("CODE RESPONSE: " + responseCode);
+            connection.getResponseCode();
             connection.disconnect();
         } catch (IOException ioException) {
             ioException.printStackTrace();
@@ -82,8 +80,7 @@ public class ApiRequestHandler {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.connect();
-            int responseCode = connection.getResponseCode();
-            System.out.println("CODE RESPONSE: " + responseCode);
+            connection.getResponseCode();
             connection.disconnect();
         } catch (IOException ioException) {
             ioException.printStackTrace();
