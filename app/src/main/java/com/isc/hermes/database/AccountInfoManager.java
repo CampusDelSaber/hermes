@@ -5,6 +5,13 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.isc.hermes.model.User;
+import com.mapbox.geojson.Feature;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  The AccountInfoManager class is responsible for managing account information.
@@ -48,5 +55,19 @@ public class AccountInfoManager {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void deleteUser(String idUser) {
         apiHandler.deleteFutureCollections(ACCOUNT_INFO_COLLECTION, idUser);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public User getUserById(String userId) throws ExecutionException, InterruptedException, JSONException {
+        String apiUrl = ACCOUNT_INFO_COLLECTION + "/" + userId;
+        Future<String> responseData = apiHandler.getFutureCollectionString(apiUrl);
+        String futureRespons = responseData.get();
+        JSONObject jsonObject = new JSONObject(futureRespons);
+        return new User(
+                jsonObject.getString("email"),
+                jsonObject.getString("fullName"),
+                jsonObject.getString("userName"),
+                jsonObject.getString("typeUser"),
+                jsonObject.getString("_id"));
     }
 }
