@@ -40,5 +40,8 @@ public class FilterViewActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         adapter = new LocationCategoryAdapter(categories);
         recyclerView.setAdapter(adapter);
+
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        recyclerView.addItemDecoration(new SpacingItemDecoration(spacingInPixels));
     }
 }
