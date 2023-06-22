@@ -2,6 +2,8 @@ package com.isc.hermes.generators;
 
 import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.GeometryType;
+import com.isc.hermes.utils.MapClickEventsManager;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,11 @@ import java.util.List;
 public class PointGenerator extends CoordinateGen implements CoordinatesGenerable {
 
     private final int MAX_ATTEMPTS = 500;
+    private MapboxMap mapboxMap;
+
+    public PointGenerator() {
+        this.mapboxMap = MapClickEventsManager.getInstance().getMapboxMap();
+    }
 
     /**
      * This method generate a point coordinate within a habitable zone.

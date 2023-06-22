@@ -7,10 +7,12 @@ import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LONGITUDE;
 
 import android.graphics.PointF;
 
+import com.isc.hermes.utils.MapClickEventsManager;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.models.CarmenContext;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
@@ -23,13 +25,13 @@ import java.util.Objects;
  */
 public class StreetValidator {
 
-    private ReverseGeocoding reverseGeocoding;
+    private MapboxMap mapboxMap;
 
     /**
      * This is the constructor method to initialize the reverse geocoding.
      */
     public StreetValidator() {
-        this.reverseGeocoding = new ReverseGeocoding();
+        this.mapboxMap = MapClickEventsManager.getInstance().getMapboxMap();
     }
 
     /**
@@ -40,8 +42,7 @@ public class StreetValidator {
      * @return boolean to know if the point coordinate is a street.
      */
     public boolean isPointStreet(double longitude, double latitude) {
-        return hasStreetContext(reverseGeocoding.getPointInfo(
-                        longitude, latitude, GeocodingCriteria.TYPE_ADDRESS));
+        return hasStreetContext(new LatLng(longitude, latitude));
     }
 
     /**
@@ -59,39 +60,15 @@ public class StreetValidator {
     /**
      * This method validate if a place information has a street context.
      *
-     * @param placeInformation is the response of reverse geocoding.
+     * @param point is the point to know if is a street point.
      * @return boolean to know if the place has a street context.
      */
-    private boolean hasStreetContext(CarmenFeature placeInformation) {
-        if (placeInformation != null) {
-            for (CarmenContext context : Objects.requireNonNull(placeInformation.context())) {
-                if (Objects.requireNonNull(context.id()).startsWith("place.")
-                        || context.id().startsWith("postcode.")
-                        || context.id().startsWith("neighborhood.")
-                        || context.id().startsWith("locality.")
-                        || context.id().startsWith("region.")
-                        || context.id().startsWith("country.")
-                        || context.id().startsWith("street.")
-                        || context.id().startsWith("intersection.")
-                        || context.id().startsWith("address."))
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * This method verify is a point is a street using a mapbox map.
-     *
-     * @param mapboxMap is the map to search the point.
-     * @param point is the point to verify if is a street.
-     * @return boolean to know if the point is a street point.
-     */
-    public static boolean isStreetPoint(MapboxMap mapboxMap, LatLng point) {
+    public boolean hasStreetContext(LatLng point) {
         PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
         List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
         return (!features.isEmpty() &&
                 (features.get(0).geometry().type().equals("MultiLineString") ||
                         features.get(0).geometry().type().equals("LineString")));
     }
+
 }

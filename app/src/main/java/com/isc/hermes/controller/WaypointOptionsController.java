@@ -18,6 +18,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
  * This is the controller class for "waypoints_options_fragment" view.
  */
 public class WaypointOptionsController {
+
+    private StreetValidator streetValidator;
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
@@ -36,6 +38,7 @@ public class WaypointOptionsController {
      */
     public WaypointOptionsController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
+        streetValidator = new StreetValidator();
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = new IncidentFormController(context, mapWayPointController);
         navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
@@ -104,11 +107,10 @@ public class WaypointOptionsController {
     /**
      * This method set the report incident status view if the point market is a street.
      *
-     * @param mapboxMap is the map to get point information.
      * @param point is the coordinate point market.
      */
-    public void setReportIncidentStatus(MapboxMap mapboxMap, LatLng point) {
-        if (!StreetValidator.isStreetPoint(mapboxMap, point))
+    public void setReportIncidentStatus(LatLng point) {
+        if (!streetValidator.hasStreetContext(point))
             reportIncidentsView.setVisibility(View.GONE);
         else reportIncidentsView.setVisibility(View.VISIBLE);
     }
