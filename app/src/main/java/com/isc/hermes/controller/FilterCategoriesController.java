@@ -10,6 +10,7 @@ import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.PlaceByTypeSearch;
 import com.isc.hermes.utils.PlacesType;
+import com.isc.hermes.utils.searcher.SearchPlacesListener;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
@@ -71,7 +72,7 @@ public class FilterCategoriesController {
                 if (response.isSuccessful()) {
                     List<CarmenFeature> places = null;
                     Searcher placeSearch = new Searcher();
-                    placeSearch.searchPlacesByType(tag, new PlaceByTypeSearch.SearchPlacesListener() {
+                    placeSearch.searchPlacesByType(tag, new SearchPlacesListener() {
                         @Override
                         public void onSearchComplete(List<CarmenFeature> places) {
                             showPlacesOnMap(places);

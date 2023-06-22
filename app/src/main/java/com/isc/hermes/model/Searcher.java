@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.StrictMode;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.PlaceByTypeSearch;
+import com.isc.hermes.utils.searcher.SearchPlacesListener;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
@@ -165,7 +166,7 @@ public class Searcher {
      * @param placeType   the type of place to search for
      * @param listener    the listener to receive the search results
      */
-    public void searchPlacesByType(String placeType, PlaceByTypeSearch.SearchPlacesListener listener) {
+    public void searchPlacesByType(String placeType, SearchPlacesListener listener) {
         // TODO: Replace this data with the current location
         double latitude = -17.37;
         double longitude = -66.18;
