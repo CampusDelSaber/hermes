@@ -216,4 +216,12 @@ public class User implements Parcelable {
     public void setFullName(String fullName){
         this.fullName = fullName;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPathImageUser(String pathImageUser) {
+        this.pathImageUser = pathImageUser;
+    }
 }

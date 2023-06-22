@@ -4,8 +4,8 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
 import com.isc.hermes.model.User;
-import com.mapbox.geojson.Feature;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,4 +81,19 @@ public class AccountInfoManager {
                 jsonObject.getString("_id"),
                 jsonObject.getString("pathImageUser"));
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void editUser(String userId, String email, String fullName, String userName, String typeUser, String pathImageUser) throws ExecutionException, InterruptedException, JSONException {
+        User user = getUserById(userId);
+        String apiUrl = ACCOUNT_INFO_COLLECTION + "/" + userId;
+        if (user != null) {
+            user.setEmail(email);
+            user.setFullName(fullName);
+            user.setUserName(userName);
+            user.setTypeUser(typeUser);
+            user.setPathImageUser(pathImageUser);
+            apiHandler.putFutureCollection(apiUrl, user);
+        }
+    }
+
 }

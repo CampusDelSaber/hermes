@@ -64,6 +64,21 @@ public class ApiHandler {
     }
 
     /**
+     * Updates a Future for collections in the specified API URL with the given parameters and object.
+     *
+     * @param params The parameters to be appended to the API URL.
+     * @param object The object to be converted to JSON and sent as the request payload.
+     * @return A Future representing the asynchronous operation of updating data in the API.
+     */
+    public Future<?> putFutureCollection(String params, Object object) {
+        String url = API_URL + params;
+        Gson gson = new Gson();
+        String result = gson.toJson(object);
+        System.out.println("RESULT: " + result);
+        return executorService.submit(() -> requestHandler.putDataFromApi(url, result));
+    }
+
+    /**
      * Retrieves the singleton instance of ApiHandler.
      *
      * @return The singleton instance of ApiHandler.
