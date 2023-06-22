@@ -33,6 +33,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private Button buttonRegister;
     private ImageView imgUser;
     private User userRegistered;
+    public static String idUserLogged;
 
     /**
      * Assigns values to the components view.
@@ -87,18 +88,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         });
     }
 
-
-    /**
-     * Sends a User object to another activity using an Intent.
-     *
-     * @param user The User object to be sent to the other activity.
-     */
-    private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("userObtained", user);
-        startActivity(intent);
-    }
-
     /**
      * Generates an action for the sign-up button.
      * Sets a click listener on the "Register" button, which saves the user's information to the database
@@ -109,8 +98,15 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    accountInfoManager.addUser(userRegistered.getEmail(),userRegistered.getFullName(),userRegistered.getUserName(),userRegistered.getTypeUser());
-                sendUserBetweenActivities(userRegistered);
+                    accountInfoManager.addUser(
+                            userRegistered.getEmail(),
+                            userRegistered.getFullName(),
+                            userRegistered.getUserName(),
+                            userRegistered.getTypeUser(),
+                            userRegistered.getPathImageUser());
+                idUserLogged = userRegistered.getId();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
             } else comboBoxTextField.setHelperText("Required");
         });
     }
