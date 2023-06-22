@@ -57,6 +57,16 @@ public class AccountInfoManager {
         apiHandler.deleteFutureCollections(ACCOUNT_INFO_COLLECTION, idUser);
     }
 
+    /**
+     * Retrieves a User object by the specified user ID.
+     *
+     * @param userId the ID of the user to retrieve
+     * @return the User object corresponding to the provided user ID
+     * @throws ExecutionException  if an execution exception occurs while retrieving the user
+     * @throws InterruptedException if the retrieval process is interrupted
+     * @throws JSONException if there is an error in parsing the JSON response
+     * @apiNote Requires API level {@link android.os.Build.VERSION_CODES#O} or higher
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public User getUserById(String userId) throws ExecutionException, InterruptedException, JSONException {
         String apiUrl = ACCOUNT_INFO_COLLECTION + "/" + userId;
