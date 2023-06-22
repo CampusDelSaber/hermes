@@ -62,6 +62,11 @@ public class IncidentFormController {
 
         setButtonsOnClick();
         setIncidentComponents();
+
+    }
+
+    public MapWayPointController getMapController() {
+        return mapWayPointController;
     }
 
     /**
@@ -127,6 +132,7 @@ public class IncidentFormController {
      * </p>
      */
     public void setIncidentComponents() {
+        incidentTypesContainer.removeAllViews();
         String[] incidentTypes = context.getResources().getStringArray(R.array.incidents_type);
         String[] incidentTypeColors = context.getResources().getStringArray(R.array.incidents_type_colors);
         String[] incidentTypeIcons = context.getResources().getStringArray(R.array.incidents_type_icons);

@@ -300,5 +300,7 @@ public class FilterController {
                         .target(latLng)
                         .zoom(11)
                         .build()), 1500);
+
+        mapboxMap.getMarkers().get(0).getTitle().toString();
     }
 }

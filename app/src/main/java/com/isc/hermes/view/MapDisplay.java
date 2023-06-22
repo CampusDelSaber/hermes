@@ -5,6 +5,12 @@ import android.os.Bundle;
 
 import com.isc.hermes.controller.IncidentsGetterController;
 import com.isc.hermes.utils.MapConfigure;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -132,5 +138,18 @@ public class MapDisplay {
                 }
             });
         }
+    }
+    /**
+     * This method animates the camera position on the Mapbox map to the specified latitude and longitude with a given zoom level.
+     *
+     * @param latLng The latitude and longitude to move the camera to.
+     * @param zoom The zoom level for the camera position.
+     */
+    public void animateCameraPosition(LatLng latLng,double zoom){
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(zoom)
+                .build();
+        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1500);
     }
 }
