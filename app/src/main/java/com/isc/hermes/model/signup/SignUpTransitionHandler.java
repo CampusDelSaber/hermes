@@ -33,9 +33,10 @@ public class SignUpTransitionHandler {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(UserRoles roles, String email) {
         if (roles.getRole().equals("Administrator")) {
-            SendEmailManager sendEmailManager = new SendEmailManager();
-            sendEmailManager.addEmail(email, Validator.getValidator().getCode());
             Validator validator = Validator.getValidator();
+            validator.obtainVerificationCode();
+            SendEmailManager sendEmailManager = new SendEmailManager();
+            sendEmailManager.addEmail(email, validator.getCode());
             validator.setEmail(email);
         }
     }
