@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 searchView.setText(initialText);
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
                 startActivity(intent);
-                String searchResult  = String.valueOf(intent);
+                String searchResult  = String.valueOf(intent.getDataString());
                 searchView.setText(searchResult);
             });
         });
