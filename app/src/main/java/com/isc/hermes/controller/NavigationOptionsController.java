@@ -36,6 +36,7 @@ public class NavigationOptionsController {
     private final LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
+    private final NavigationDirectionController navigationDirectionController;
 
     private final NavigationDirectionController navigationDirectionController;
 

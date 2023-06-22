@@ -130,10 +130,6 @@
         layout="@layout/incident_form_fragment"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
-    <include
-        layout="@layout/natural_disaster_form_fragment"
-        mapbox:layout_anchor="@+id/mapView"
-        mapbox:layout_anchorGravity="center" />
 
     <include
         layout="@layout/navigation_options"
@@ -151,10 +147,18 @@
         mapbox:layout_anchorGravity="center" />
 
     <include
-        layout="@layout/navigation_view"
+        layout="@layout/natural_disaster_form_fragment"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 
+    <include
+        layout="@layout/customization_menu"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+    <include
+        layout="@layout/navigation_view"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
 
     <LinearLayout
         android:id="@+id/lateralMenu"
