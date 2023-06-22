@@ -9,11 +9,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapView;
+
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 import timber.log.Timber;
 
 
@@ -30,8 +36,8 @@ public class NavigationOptionsController {
     private final LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
-    private final NavigationDirectionController navigationDirectionController;
 
+    private final NavigationDirectionController navigationDirectionController;
 
     /**
      * This is the constructor method. Init all the necessary components.
