@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
+import com.isc.hermes.model.navigation.TransportationType;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -89,6 +90,9 @@ public class DijkstraAlgorithmRealTest {
         assertEquals(jordan_sanMartin, routeB.get(5));
 
         System.out.println(
-                dijkstraAlgorithm.getGeoJsonRoutes(graph, estebanArze_Sucre, jordan_sanMartin));
+            dijkstraAlgorithm.getGeoJsonRoutes(
+                    graph, estebanArze_Sucre, jordan_sanMartin, TransportationType.CAR
+            )
+        );
     }
 }

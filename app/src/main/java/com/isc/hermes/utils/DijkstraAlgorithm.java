@@ -2,6 +2,7 @@ package com.isc.hermes.utils;
 
 import com.isc.hermes.model.graph.*;
 import com.isc.hermes.model.navigation.Route;
+import com.isc.hermes.model.navigation.TransportationType;
 
 import java.util.*;
 
@@ -28,9 +29,12 @@ public class DijkstraAlgorithm {
      * @param graph       the graph containing the nodes and edges
      * @param source      the source node
      * @param destination the destination node
+     * @param transportationType the type of transportation to be used
      * @return a map of route names to their respective GeoJSON representations
      */
-    public Map<String, String> getGeoJsonRoutes(Graph graph, Node source, Node destination){
+    public Map<String, String> getGeoJsonRoutes(
+            Graph graph, Node source, Node destination, TransportationType transportationType
+    ){
         Map<String, String> geoJsonRoutes = new HashMap<>();
         Map<String, Route> routeAlternatives = getPathAlternatives(graph, source, destination);
         for (String key:routeAlternatives.keySet())
@@ -199,20 +203,6 @@ public class DijkstraAlgorithm {
         }
 
         return shortestPath;
-    }
-
-    /**
-     * Removes the edges of the nodes in the given shortest path from the graph.
-     *
-     * @param graph       The graph from which to remove the edges.
-     * @param shortestPath The shortest path with nodes whose edges should be removed.
-     */
-    private void removeEdgesFromGraph(Graph graph, List<Node> shortestPath) {
-        for (int i = 0; i < shortestPath.size() - 1; i++) {
-            Node currentNode = shortestPath.get(i);
-            Node nextNode = shortestPath.get(i + 1);
-            currentNode.removeEdgeTo(nextNode);
-        }
     }
 
     /**

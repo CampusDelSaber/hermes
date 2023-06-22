@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
+import com.isc.hermes.model.navigation.TransportationType;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class DijkstraAlgorithmTest {
                 dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A")
                         .getPath();
 
-        System.out.println(dijkstraAlgorithm.getGeoJsonRoutes(graph, nodeA, nodeD));
+        System.out.println(dijkstraAlgorithm.getGeoJsonRoutes(graph, nodeA, nodeD, TransportationType.CAR));
 
         assertNotNull(shortestPath);
         // The shortest path should be [nodeA, nodeC, nodeD]
