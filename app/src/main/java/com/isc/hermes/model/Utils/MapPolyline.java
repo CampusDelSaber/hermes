@@ -1,26 +1,16 @@
 package com.isc.hermes.model.Utils;
 
-import android.graphics.Color;
-
 import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.MultiLineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Feature;
-import com.mapbox.mapboxsdk.annotations.Polyline;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.style.expressions.Expression;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
-import com.mapbox.mapboxsdk.style.sources.Source;
-
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,28 +37,24 @@ public class MapPolyline {
      * @param colors line color.
      */
     public void displaySavedCoordinates(List<String> geoJson, List<Integer> colors){
-        List<Point> coordinatesRoute1 = new ArrayList<>();
-        List<Point> coordinatesRoute2 = new ArrayList<>();
-        List<Point> coordinatesRoute3 = new ArrayList<>();
         List<List<Point>> coordinates = new ArrayList<>();
-
-        for (Point point : initializeCoordinates(geoJson.get(0))) {
-            coordinatesRoute1.add(Point.fromLngLat(point.longitude(), point.latitude()));
-        }
-        for (Point point : initializeCoordinates(geoJson.get(1))) {
-            coordinatesRoute2.add(Point.fromLngLat(point.longitude(), point.latitude()));
-        }
-
-        for (Point point : initializeCoordinates(geoJson.get(2))) {
-            coordinatesRoute3.add(Point.fromLngLat(point.longitude(), point.latitude()));
-        }
-
-        coordinates.add(coordinatesRoute1);
-        coordinates.add(coordinatesRoute2);
-        coordinates.add(coordinatesRoute3);
+        extractCoordinates(coordinates, geoJson);
 
         MapPolyline mapPolyline = new MapPolyline(mapView);
         mapPolyline.drawPolyline(coordinates,colors);
+    }
+
+    /**
+     * This method extracts the coordinates from the list and geoJson
+     */
+    private void extractCoordinates(List<List<Point>> coordinates, List<String> geoJson){
+        for (String json : geoJson){
+            List<Point> coordinatesRoute = new ArrayList<>();
+            for (Point point : initializeCoordinates(json)){
+                coordinatesRoute.add(Point.fromLngLat(point.longitude(), point.latitude()));
+            }
+            coordinates.add(coordinatesRoute);
+        }
     }
 
     /**
@@ -101,35 +87,41 @@ public class MapPolyline {
     public void drawPolyline(List<List<Point>> points, List<Integer> colors){
         mapView.getMapAsync(mapboxMap -> {
             mapboxMap.getStyle(style -> {
-
-                List<Point> polyline1Points = points.get(0);
-                LineString polyline1 = LineString.fromLngLats(polyline1Points);
-
-                List<Point> polyline2Points = points.get(1);
-                LineString polyline2 = LineString.fromLngLats(polyline2Points);
-
-                List<Point> polyline3Points = points.get(2);
-                LineString polyline3 = LineString.fromLngLats(polyline3Points);
-
-                List<Feature> features = setFeatures(polyline1, polyline2, polyline3);
+                List<LineString> polyLineGeoJson = getPointsList(points, colors, style);
+                List<Feature> features = setFeatures(polyLineGeoJson);
                 FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
 
-                GeoJsonSource polyline1Source = new GeoJsonSource("polyline1-source", featureCollection);
-                GeoJsonSource polyline2Source = new GeoJsonSource("polyline2-source", featureCollection);
-                GeoJsonSource polyline3Source = new GeoJsonSource("polyline3-source", featureCollection);
-                style.addSource(polyline1Source);
-                style.addSource(polyline2Source);
-                style.addSource(polyline3Source);
-
-                verifyPolylineNull(polyline1Points, "polyline1-layer", "polyline1-source",colors, 0, style);
-                verifyPolylineNull(polyline2Points, "polyline2-layer", "polyline2-source",colors, 1, style);
-                verifyPolylineNull(polyline3Points, "polyline3-layer", "polyline3-source",colors, 2, style);
-
-                polyline1Source.setGeoJson(features.get(0));
-                polyline2Source.setGeoJson(features.get(1));
-                polyline3Source.setGeoJson(features.get(2));
+                for (int i = 0; i < features.size(); i++){
+                    GeoJsonSource polylineSource =
+                            new GeoJsonSource("polyline" + i + "-source", featureCollection);
+                    style.addSource(polylineSource);
+                    polylineSource.setGeoJson(features.get(i));
+                }
             });
         });
+    }
+
+    /**
+     * This method will get the points list
+     * @param points
+     * @param colors
+     * @param style
+     * @return
+     */
+    private List<LineString> getPointsList(
+            List<List<Point>> points, List<Integer> colors, Style style
+    ){
+        List<LineString> polyLineGeoJson = new ArrayList<>();
+        for (int i = 0; i < points.size(); i++){
+            List<Point> pointList = points.get(i);
+            polyLineGeoJson.add(LineString.fromLngLats(pointList));
+            verifyPolylineNull(
+                    pointList,
+                    "polyline" + i + "-layer",
+                    "polyline" + i + "-source",
+                    colors, i, style);
+        }
+        return polyLineGeoJson;
     }
 
     /**
@@ -137,11 +129,11 @@ public class MapPolyline {
      *
      * @return list of features.
      */
-    public  List<Feature> setFeatures(LineString polyline1, LineString polyline2, LineString polyline3){
+    public  List<Feature> setFeatures(List<LineString> polylineList){
         List<Feature> features = new ArrayList<>();
-        features.add(Feature.fromGeometry(polyline1));
-        features.add(Feature.fromGeometry(polyline2));
-        features.add(Feature.fromGeometry(polyline3));
+        for (LineString lineString : polylineList){
+            features.add(Feature.fromGeometry(lineString));
+        }
         return features;
     }
 
