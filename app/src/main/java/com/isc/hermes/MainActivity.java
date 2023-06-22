@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
-    private final String restoreValue = "Search...";
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -392,8 +391,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (!placeNames.isEmpty()) {
             String lastPlaceName = placeNames.get(placeNames.size() - 1);
             searchView.setText(lastPlaceName);
-        } else {
-            searchView.setText(restoreValue);
         }
     }
 

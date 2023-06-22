@@ -81,7 +81,7 @@
                     android:background="@drawable/searchview_rounded_bg"
                     android:gravity="center"
                     android:paddingStart="5dp"
-                    android:text="Search..."
+                    android:hint="Search..."
                     android:textAlignment="viewStart"
                     android:textAllCaps="false"
                     android:textSize="15sp"
