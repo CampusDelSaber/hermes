@@ -30,6 +30,8 @@ public class NavigationOptionsController {
     private final LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
+    private final NavigationDirectionController navigationDirectionController;
+
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -43,6 +45,7 @@ public class NavigationOptionsController {
         isLocationStartChosen = true;
         this.mapWayPointController = mapWayPointController;
         navOptionsForm = ((AppCompatActivity)context).findViewById(R.id.navOptions_form);
+        navigationDirectionController = new NavigationDirectionController(context,mapWayPointController);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button_nav);
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
@@ -206,7 +209,10 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     private void handleAcceptButtonClick() {
-        handleHiddeItemsView();
+        navOptionsForm.startAnimation(Animations.exitAnimation);
+        navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
+        navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
+        navOptionsForm.setVisibility(View.GONE);
         isActive = false;
         Node startPointNode = (startPoint != null) ? new Node("01",startPoint.getLatitude(),
                 startPoint.getLatitude()): null;
