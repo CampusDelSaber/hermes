@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         MapPolyline mapPolyline = new MapPolyline(mapView);
         mapPolyline.displaySavedCoordinates(routes, colors);
-
     }
 
     /**

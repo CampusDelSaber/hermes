@@ -48,6 +48,8 @@
     <string name="incidents_uploaded">Incident uploaded successfully.</string>
     <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
     <string name="incidents_api_url">https://api-rest-hermes.onrender.com/pointIncidets</string>
+    <string name="traffic_uploaded">Traffic uploaded successfully.</string>
+    <string name="traffic_not_uploaded">Traffic could not be uploaded.</string>
     <string name="styles_menu">Customization</string>
     <string name="satellite_style">Satellite</string>
     <string name="default_style">Default</string>
@@ -70,12 +72,43 @@
         <item>protest_svgrepo_com</item>
         <item>hammer_tool_settings_fix_repair_svgrepo_com</item>
     </string-array>
+    <string-array name="traffic_level">
+        <item>Normal</item>
+        <item>Conditional</item>
+        <item>Discontinued</item>
+        <item>Saturated</item>
+    </string-array>
+    <string-array name="traffic_estimated_time">
+        <item>min</item>
+        <item>hr</item>
+    </string-array>
     <string-array name="incidents_estimated_time">
         <item>min</item>
         <item>hr</item>
         <item>day</item>
         <item>month</item>
     </string-array>
+
+    <!-- Nav Options -->
+    <string-array name="navOptions_type">
+        <item>Car</item>
+        <item>Bike</item>
+        <item>Walk</item>
+        <item>Motorcycle</item>
+    </string-array>
+    <string-array name="navOptions_type_colors">
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+    </string-array>
+    <string-array name="navOptions_type_icons">
+        <item>car_navoption_type</item>
+        <item>bike_navoption_type</item>
+        <item>walk_navoption_type</item>
+        <item>moto_navoption_type</item>
+    </string-array>
+
 
     <!-- Geocoding -->
     <string name="latitude">latitude</string>
