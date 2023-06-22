@@ -120,9 +120,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         routes.add(jsonB);
         routes.add(jsonC);
 
+        colors.add(0xFF0000FF);
         colors.add(0xFFFF0000);
-        colors.add(0xFF0000FF);
-        colors.add(0xFF0000FF);
+        colors.add(0xFF008000);
 
         MapPolyline mapPolyline = new MapPolyline(mapView);
         mapPolyline.displaySavedCoordinates(routes, colors);
