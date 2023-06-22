@@ -109,6 +109,8 @@ public class NavigationOptionsController {
     public void handleHiddeItemsView() {
         mapWayPointController.setMarked(false);
         getNavOptionsForm().startAnimation(Animations.exitAnimation);
+        navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
+        navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         getNavOptionsForm().setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
     }
@@ -215,10 +217,6 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     private void handleAcceptButtonClick() {
-        navOptionsForm.startAnimation(Animations.exitAnimation);
-        navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
-        navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
-        navOptionsForm.setVisibility(View.GONE);
         isActive = false;
         Node startPointNode = (startPoint != null) ? new Node("01",startPoint.getLatitude(),
                 startPoint.getLatitude()): null;
