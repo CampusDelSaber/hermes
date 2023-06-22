@@ -42,8 +42,8 @@ public class AccountInfoManager {
      @since API 26
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addUser(String email, String fullName, String userName, String typeUser) {
-        User user = new User(fullName, email, userName, typeUser);
+    public void addUser(String email, String fullName, String userName, String typeUser, String pathImageUser) {
+        User user = new User( email, fullName, userName, typeUser, pathImageUser);
         apiHandler.postFutureCollections(ACCOUNT_INFO_COLLECTION, user);
     }
 
@@ -78,6 +78,7 @@ public class AccountInfoManager {
                 jsonObject.getString("fullName"),
                 jsonObject.getString("userName"),
                 jsonObject.getString("typeUser"),
-                jsonObject.getString("_id"));
+                jsonObject.getString("_id"),
+                jsonObject.getString("pathImageUser"));
     }
 }

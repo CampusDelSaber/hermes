@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -17,10 +18,14 @@ import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 
 import com.isc.hermes.controller.PopUp.PopUp;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User;
+
+import org.json.JSONException;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
@@ -86,22 +91,12 @@ public class AccountInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
-        assignValuesToComponentsView();
+        try {assignValuesToComponentsView();
+        } catch (JSONException | ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);}
         generateActionToComboBox();
-        getUserInformation();
         updateTextFieldsByUser();
         initializePopups();
-    }
-
-    /**
-     * Sends a User object to another activity using an Intent.
-     *
-     * @param user The User object to be sent to the other activity.
-     */
-    private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("userObtained", user);
-        startActivity(intent);
     }
 
     /**
@@ -110,7 +105,8 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void goToPrincipalView(View view) {
-        sendUserBetweenActivities(userRegistered);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -159,15 +155,6 @@ public class AccountInformation extends AppCompatActivity {
     }
 
     /**
-     * Retrieves the user information passed through the intent.
-     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
-     */
-    private void getUserInformation() {
-        Intent intent = getIntent();
-        userRegistered = intent.getParcelableExtra("userObtained");
-    }
-
-    /**
      * This method is used to edit an account information using on click action.
      *
      * @param view The view that triggers the navigation.
@@ -213,7 +200,9 @@ public class AccountInformation extends AppCompatActivity {
      * This method initializes the corresponding variables with the view IDs retrieved from the layout XML file
      * and disables the text fields initially.
      */
-    private void  assignValuesToComponentsView() {
+    private void  assignValuesToComponentsView() throws JSONException, ExecutionException, InterruptedException {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            userRegistered = new AccountInfoManager().getUserById(UserSignUpCompletionActivity.idUserLogged);
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
         imageView = findViewById(R.id.imageUpload);
         comboBoxField = findViewById(R.id.textFieldUserType);

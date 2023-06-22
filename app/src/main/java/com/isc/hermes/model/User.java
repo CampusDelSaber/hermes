@@ -52,11 +52,12 @@ public class User implements Parcelable {
      * @param userName  The username of the user.
      * @param typeUser  The type of user.
      */
-    public User(String email, String fullName, String userName, String typeUser) {
+    public User(String email, String fullName, String userName, String typeUser, String pathImageUser) {
         this.fullName = fullName;
         this.email = email;
         this.userName = userName;
         this.typeUser = typeUser;
+        this.pathImageUser = pathImageUser;
     }
 
     /**
@@ -68,12 +69,13 @@ public class User implements Parcelable {
      * @param typeUser  the type of user
      * @param id        the ID of the user
      */
-    public User(String email, String fullName, String userName, String typeUser, String id) {
+    public User(String email, String fullName, String userName, String typeUser, String id, String pathImageUser) {
         this.fullName = fullName;
         this.email = email;
         this.userName = userName;
         this.typeUser = typeUser;
         this.id = id;
+        this.pathImageUser = pathImageUser;
     }
 
 
