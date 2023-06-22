@@ -1,77 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/distance_directions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="392dp"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
+    <RelativeLayout
+        android:id="@+id/directions_form"
+        android:layout_width="wrap_content"
+        android:layout_height="335dp"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/selector_item"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/directions_container"
-        android:name="com.mapbox.mapboxsdk.maps.MapFragment"
-        android:layout_width="410dp"
-        android:layout_height="208dp"
-        android:background="#002147"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible">
 
-    <TextView
-        android:id="@+id/distance_view"
-        android:layout_width="190dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="17dp"
-        android:text="100 Meters"
-        android:textColor="#FFFFFF"
-        android:textSize="27sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/directions_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.072"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/directions_container"
-        app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
-        android:id="@+id/go_straight"
-        android:layout_width="72dp"
-        android:layout_height="75dp"
-        app:srcCompat="@drawable/go_straight_icon"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="169dp"
-        tools:layout_editor_absoluteY="103dp" />
+        <ImageView
+            android:id="@+id/go_straight"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="125dp"
+            android:layout_marginEnd="125dp"
+            android:layout_marginBottom="34dp"
+            app:srcCompat="@drawable/go_straight_icon" />
 
-    <ImageView
-        android:id="@+id/turn_left"
-        android:layout_width="77dp"
-        android:layout_height="76dp"
-        app:srcCompat="@drawable/turn_left_icon"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="103dp" />
+        <ImageView
+            android:id="@+id/turn_right"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="34dp"
+            app:srcCompat="@drawable/turn_right_icon" />
 
-    <ImageView
-        android:id="@+id/turn_right"
-        android:layout_width="80dp"
-        android:layout_height="72dp"
-        app:srcCompat="@drawable/turn_right_icon"
-        tools:layout_editor_absoluteX="295dp"
-        tools:layout_editor_absoluteY="103dp"
-        tools:ignore="MissingConstraints" />
+        <ImageView
+            android:id="@+id/turn_left"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="34dp"
+            app:srcCompat="@drawable/turn_left_icon" />
+
+        <TextView
+            android:id="@+id/distance_text"
+            android:layout_width="300dp"
+            android:layout_height="106dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="34dp"
+            android:layout_marginBottom="193dp"
+            android:text="100 Meters"
+            android:textColor="#FFFFFF"
+            android:textSize="55sp" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

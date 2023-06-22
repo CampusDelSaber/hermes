@@ -31,7 +31,6 @@ public class NavigationOptionsController {
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
 
-
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -214,5 +213,6 @@ public class NavigationOptionsController {
         Node finalPointNode = (startPoint != null) ? new Node("02",finalPoint.getLatitude(),
                 finalPoint.getLatitude()): null;
         // TODO: Navigation Route between these two nodes
+
     }
 }
