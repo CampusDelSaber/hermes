@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string-array name="spinner_items_incidents_generate">
+        <item>50m</item>
+        <item>100m</item>
+        <item>500m</item>
+        <item>1Km</item>
+        <item>5Km</item>
+        <item>10Km</item>
+    </string-array>
+</resources>

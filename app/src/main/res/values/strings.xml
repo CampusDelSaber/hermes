@@ -1,0 +1,142 @@
+<resources>
+    <string name="app_name">Hermes</string>
+    <string name="welcomeApp">Welcome to Hermes App</string>
+    <string name="userType">User Type</string>
+    <string name="logInGoogle">Sign in with Google</string>
+    <string name="exploreApp">Explore the world at your fingertips</string>
+    <string name="suggest">Do you require more information? </string>
+    <string name="linkAboutUs">About Us</string>
+    <string name="email">Email</string>
+    <string name="finishSignUp">Sign Up</string>
+    <string name="typeUser">Type User</string>
+    <string name="informationSection">-- Your Information --</string>
+    <string name="userName">Username</string>
+    <string name="userID">User ID</string>
+    <string name="version"> Current Version: 0.0.0</string>
+    <string name="access_token">sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA</string>
+    <string name="web_client_id">628551362001-osi4l1rcdiqt00got5n0hvn1akoc2una.apps.googleusercontent.com</string>
+    <string name="get_location_text">Get Location</string>
+    <string name="log_out_text">Log out</string>
+    <string name="account_text">Account</string>
+    <string name="delete_account_question_text">Are you sure you want to delete your account?</string>
+    <string name="edit_account_question_text">Are you sure you want to overwrite your account data?</string>
+    <string name="delete_account_warning_text">By accepting your data will be permanently deleted</string>
+    <string name="edit_account_warning_text">By accepting your data will be change</string>
+    <string name="im_sure_text">Im sure!</string>
+    <string name="Better_not_text">Better not</string>
+    <string name="account_title">Account Information</string>
+    <string name="action_save_info">saveAccountInformationAction</string>
+    <string name="action_edit_info">editAccountAction</string>
+    <string name="action_upload_info">uploadImageProfileAction</string>
+    <string name="action_delete_info">deleteAccountAction</string>
+    <string name="edit_information">Edit Information</string>
+    <string name="save_information">Save Information</string>
+    <string name="edit_profile">Upload Profile</string>
+    <string name="complete_name">Full Name</string>
+    <string name="delete_account">Delete Account</string>
+
+
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="close">Close</string>
+
+    <!--    Authentication Strings-->
+    <string name="google">GOOGLE</string>
+    <string name="save_authentication_state">authentication_state</string>
+
+
+    <string name="incidents_uploaded">Incident uploaded successfully.</string>
+    <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
+    <string name="incidents_api_url">https://api-rest-hermes.onrender.com/pointIncidets</string>
+    <string name="traffic_uploaded">Traffic uploaded successfully.</string>
+    <string name="traffic_not_uploaded">Traffic could not be uploaded.</string>
+    <string name="styles_menu">Customization</string>
+    <string name="satellite_style">Satellite</string>
+    <string name="default_style">Default</string>
+    <string name="dark_style">Dark</string>
+    <string-array name="incidents_type">
+        <item>Accident</item>
+        <item>Obstruction</item>
+        <item>Social Event</item>
+        <item>Street Fix</item>
+    </string-array>
+    <string-array name="incidents_type_colors">
+        <item>#002147</item>
+        <item>#0038E1</item>
+        <item>#333333</item>
+        <item>#CCCCCC</item>
+    </string-array>
+    <string-array name="incidents_type_icons">
+        <item>car_crash_car_accident_traffic_accident_traffic_collision_svgrepo_com</item>
+        <item>warning_sign_attention_svgrepo_com</item>
+        <item>protest_svgrepo_com</item>
+        <item>hammer_tool_settings_fix_repair_svgrepo_com</item>
+    </string-array>
+    <string-array name="traffic_level">
+        <item>Normal</item>
+        <item>Conditional</item>
+        <item>Discontinued</item>
+        <item>Saturated</item>
+    </string-array>
+    <string-array name="traffic_estimated_time">
+        <item>min</item>
+        <item>hr</item>
+    </string-array>
+    <string-array name="incidents_estimated_time">
+        <item>min</item>
+        <item>hr</item>
+        <item>day</item>
+        <item>month</item>
+    </string-array>
+
+    <!-- Nav Options -->
+    <string-array name="navOptions_type">
+        <item>Car</item>
+        <item>Bike</item>
+        <item>Walk</item>
+        <item>Motorcycle</item>
+    </string-array>
+    <string-array name="navOptions_type_colors">
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+        <item>#1F6E8C</item>
+    </string-array>
+    <string-array name="navOptions_type_icons">
+        <item>car_navoption_type</item>
+        <item>bike_navoption_type</item>
+        <item>walk_navoption_type</item>
+        <item>moto_navoption_type</item>
+    </string-array>
+
+
+    <!-- Geocoding -->
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
+    <string name="geocode">Start geocode</string>
+    <string name="map_center">Map center</string>
+    <string name="no_results">No results</string>
+    <string name="choose_city_spinner">Choose city</string>
+    <string name="fill_in_a_value">Fill in a value</string>
+    <string name="geocoding_results">Raw geocoding results:</string>
+    <string name="make_valid_lat">Latitude must be between -90 and 90.
+        Longitude must be between -180 and 180.</string>
+    <string name="search_a_city">Search a City</string>
+    <string name="array_size_text_timber">The arrays about colors, icons and the type buttons have a different size</string>
+
+
+
+    <!--  Offline Maps Settings  -->
+    <string name="downloaded_maps">Downloaded Maps</string>
+    <string name="from_your_location_history">From your Location History</string>
+    <string name="select_new_map">SELECT NEW MAP</string>
+    <string name="navigate_to">Navigate to</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+    <string name="Offline_Mode_text">Offline Mode</string>
+    <string name="Offline_maps_text">Offline Maps</string>
+    <string name="list_button_text">List</string>
+    <string name="download_button_text">Download\n</string>
+    <string name="tittle_region_popup">Give a name to your map</string>
+    <string name="your_name_map">Your name map</string>
+</resources>

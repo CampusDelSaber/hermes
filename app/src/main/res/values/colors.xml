@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <!--COLOR PALETTE-->
+    <color name="oxfordBlue">#002147</color>
+    <color name="palatinateBlue">#0038e1</color>
+    <color name="jet_bc">#333333</color>
+    <color name="silver">#CCCCCC</color>
+    <color name="red">#C11515</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blueOxford_app_theme">#002147</color>
+    <color name="blueClayola_Button">#4D74E6</color>
+    <color name="jet">#2c2c2c</color>
+    <color name="blueLogo">#489ce4</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="mapboxBlue">#4264fb</color>
+    <color name="mapboxBlueDark">#314ccd</color>
+    <color name="mapboxBlueLight">#aab7ef</color>
+    <color name="mapboxBlueFaint">#edf0fd</color>
+
+    <color name="mapboxRedDark">#ba3b3f</color>
+    <color name="mapboxRed">#f74e4e</color>
+    <color name="mapboxRedLight">#f6b7b7</color>
+    <color name="mapboxRedFaint">#fbe5e5</color>
+
+    <color name="colorGoogleText">#9F656565</color>
+    <color name="colorGoogleStroke">#668A8989</color>
+</resources>

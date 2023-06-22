@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Hermes" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/oxfordBlue</item>
+        <item name="colorPrimaryVariant">@color/palatinateBlue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/palatinateBlue</item>
+        <item name="colorSecondaryVariant">@color/oxfordBlue</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize another themes here. -->
+    </style>
+
+    <style name="Theme.Hermes" parent="Base.Theme.Hermes" />
+</resources>
