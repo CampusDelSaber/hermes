@@ -51,6 +51,7 @@ public class User implements Parcelable {
      * @param fullName  The full name of the user.
      * @param userName  The username of the user.
      * @param typeUser  The type of user.
+     * @param pathImageUser the image of the user
      */
     public User(String email, String fullName, String userName, String typeUser, String pathImageUser) {
         this.fullName = fullName;
@@ -68,6 +69,7 @@ public class User implements Parcelable {
      * @param userName  the username of the user
      * @param typeUser  the type of user
      * @param id        the ID of the user
+     * @param pathImageUser the image of the user
      */
     public User(String email, String fullName, String userName, String typeUser, String id, String pathImageUser) {
         this.fullName = fullName;
