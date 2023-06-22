@@ -65,8 +65,7 @@ public class AccountInformation extends AppCompatActivity {
     private void generateActionToComboBox() {
         generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
             String item = parent.getItemAtPosition(position).toString();
-            Toast.makeText(getApplicationContext(), "Item: " + item,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Item: " + item, Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -74,8 +73,6 @@ public class AccountInformation extends AppCompatActivity {
      * Updates the text fields with user-provided data.
      */
     private void updateTextFieldsByUser() {
-        ImageUtil.getInstance().updateImageOfImageView(this,
-                userRegistered.getPathImageUser(), imageView);
         textFieldUserName.setText(userRegistered.getUserName());
         textFieldFullName.setText(userRegistered.getFullName());
         textFieldEmail.setText(userRegistered.getEmail());
@@ -91,9 +88,8 @@ public class AccountInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
-        try {assignValuesToComponentsView();
-        } catch (JSONException | ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);}
+        fetchUserFromDB();
+        assignValuesToComponentsView();
         generateActionToComboBox();
         updateTextFieldsByUser();
         initializePopups();
@@ -148,7 +144,6 @@ public class AccountInformation extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
-
                 imageView.setImageBitmap(croppedBitmap);
             } catch (IOException e) {e.printStackTrace();}
         }
@@ -196,13 +191,26 @@ public class AccountInformation extends AppCompatActivity {
     }
 
     /**
+     * Retrieves user information from the database.
+     * This method fetches user details from the database based on the specified user ID.
+     * The retrieved user information is stored in the 'userRegistered' variable.
+     *
+     * @throws RuntimeException      If any other runtime exception occurs during the execution.
+     */
+    private void fetchUserFromDB() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                userRegistered = new AccountInfoManager().getUserById(UserSignUpCompletionActivity.idUserLogged);
+        } catch (JSONException | ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e); }
+    }
+
+    /**
      * Assigns values to various components/views in the activity or fragment.
      * This method initializes the corresponding variables with the view IDs retrieved from the layout XML file
      * and disables the text fields initially.
      */
-    private void  assignValuesToComponentsView() throws JSONException, ExecutionException, InterruptedException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            userRegistered = new AccountInfoManager().getUserById(UserSignUpCompletionActivity.idUserLogged);
+    private void  assignValuesToComponentsView() {
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
         imageView = findViewById(R.id.imageUpload);
         comboBoxField = findViewById(R.id.textFieldUserType);
