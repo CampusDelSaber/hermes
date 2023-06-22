@@ -43,6 +43,10 @@
             android:name=".SearchViewActivity"
             android:exported="true" >
         </activity>
+        <activity
+            android:name=".FilterViewActivity"
+            android:exported="true" >
+        </activity>
     </application>
 
 </manifest>
