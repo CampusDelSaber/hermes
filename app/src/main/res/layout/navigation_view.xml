@@ -7,8 +7,8 @@
 
     <RelativeLayout
         android:id="@+id/directions_form"
-        android:layout_width="410dp"
-        android:layout_height="171dp"
+        android:layout_width="414dp"
+        android:layout_height="732dp"
         android:animateLayoutChanges="true"
         android:background="@color/oxfordBlue"
         android:paddingLeft="20dp"
@@ -24,26 +24,26 @@
 
 
         <ImageView
-            android:id="@+id/go_straight"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="135dp"
-            android:layout_marginEnd="155dp"
-            android:layout_marginBottom="34dp"
-            app:srcCompat="@drawable/go_straight_icon" />
-
-        <ImageView
             android:id="@+id/turn_right"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="34dp"
+            android:layout_marginEnd="49dp"
+            android:layout_marginBottom="550dp"
             app:srcCompat="@drawable/turn_right_icon" />
+
+        <ImageView
+            android:id="@+id/go_straight"
+            android:layout_width="89dp"
+            android:layout_height="71dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="155dp"
+            android:layout_marginEnd="150dp"
+            android:layout_marginBottom="554dp"
+            app:srcCompat="@drawable/go_straight_icon" />
 
         <ImageView
             android:id="@+id/turn_left"
@@ -51,23 +51,34 @@
             android:layout_height="70dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="34dp"
+            android:layout_marginStart="51dp"
+            android:layout_marginBottom="550dp"
             app:srcCompat="@drawable/turn_left_icon" />
 
         <TextView
             android:id="@+id/distance_text"
-            android:layout_width="265dp"
-            android:layout_height="49dp"
+            android:layout_width="256dp"
+            android:layout_height="51dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="60dp"
-            android:layout_marginEnd="60dp"
-            android:layout_marginBottom="122dp"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="68dp"
+            android:layout_marginBottom="657dp"
             android:text="100 Meters"
             android:textColor="#FFFFFF"
             android:textSize="45sp" />
+
+        <TextView
+            android:id="@+id/directions_list"
+            android:layout_width="371dp"
+            android:layout_height="466dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="28dp"
+            android:background="#FFFFFF"
+            android:text="TextView"
+            android:textColor="#000000"
+            android:textSize="24sp" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
