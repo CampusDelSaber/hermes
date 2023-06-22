@@ -158,12 +158,18 @@ public class Searcher {
                 point.longitude());
     }
 
-    public void searchPlacesByType(String placeType, PlaceSearch.SearchPlacesListener listener){
+    /**
+     * Searches for places of a specific type near the current location.
+     *
+     * @param placeType   the type of place to search for
+     * @param listener    the listener to receive the search results
+     */
+    public void searchPlacesByType(String placeType, PlaceSearch.SearchPlacesListener listener) {
         // TODO: Replace this data with the current location
         double latitude = -17.37;
         double longitude = -66.18;
-        placeSearch.searchPlacesByType(placeType, latitude,
-                longitude, listener);
+        placeSearch.searchPlacesByType(placeType, latitude, longitude, listener);
     }
+
 
 }
