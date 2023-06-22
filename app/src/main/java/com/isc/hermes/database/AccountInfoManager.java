@@ -82,6 +82,19 @@ public class AccountInfoManager {
                 jsonObject.getString("pathImageUser"));
     }
 
+    /**
+     Edits a user's information.
+     @param userId the ID of the user to be edited
+     @param email the new email for the user
+     @param fullName the new full name for the user
+     @param userName the new username for the user
+     @param typeUser the new user type
+     @param pathImageUser the new image path for the user
+     @throws ExecutionException if an error occurs during execution
+     @throws InterruptedException if the execution is interrupted
+     @throws JSONException if an error occurs while processing JSON
+     @requiresApi(api = Build.VERSION_CODES.O) Requires API level O or higher
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void editUser(String userId, String email, String fullName, String userName, String typeUser, String pathImageUser) throws ExecutionException, InterruptedException, JSONException {
         User user = getUserById(userId);
