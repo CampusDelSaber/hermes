@@ -8,6 +8,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.model.Utils.IncidentsUtils;
+import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapClickEventsManager;
 
@@ -69,7 +72,7 @@ public class PolygonOptionsController {
         AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... voids) {
-                return uploadIncidentDataBase();
+                return uploadNaturalDisasterDataBase();
             }
 
             @Override
@@ -88,7 +91,13 @@ public class PolygonOptionsController {
         }
     }
 
-
+    private Integer uploadNaturalDisasterDataBase(){
+        String id = IncidentsUtils.getInstance().generateObjectId();
+        String dateCreated= "0000-00-00T00:00:00.000+00:00", deathDate = "0000-00-00T00:00:00.000+00:00";
+        String coordinates = "";
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,"Natural Disaster","Natural Disaster",dateCreated, deathDate , GeometryType.POLYGON.getName(),coordinates);
+        return IncidentsUploader.getInstance().uploadIncident(JsonString);
+    }
 
     /**
      * Method to change map controller to its original configuration with waypoints
