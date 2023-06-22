@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/userAccount"
+            android:title="User account"
+            android:icon="@drawable/backbutton"/>
+        <item
+            android:id="@+id/offlineMaps"
+            android:title="Offline maps"
+            android:icon="@drawable/backbutton"/>
+        <item
+            android:id="@+id/changeDisplayMode"
+            android:title="Change display mode"
+            android:icon="@drawable/backbutton"/>
+        <item
+            android:id="@+id/mapStyle"
+            android:title="Map style"
+            android:icon="@drawable/backbutton"/>
+        <item
+            android:id="@+id/thirdDimensionMode"
+            android:title="3D mode"
+            android:icon="@drawable/backbutton"/>
+        <item
+            android:id="@+id/logOut"
+            android:title="Log out"
+            android:icon="@drawable/backbutton"/>
+
+    </group>
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:title="Profile">
+
+            <menu>
+
+                <item
+                    android:id="@+id/uno"
+                    android:title="uno"
+                    android:icon="@drawable/backbutton"/>
+                <item
+                    android:id="@+id/dos"
+                    android:title="dos"
+                    android:icon="@drawable/backbutton"/>
+                <item
+                    android:id="@+id/tres"
+                    android:title="tres"
+                    android:icon="@drawable/backbutton"/>
+
+            </menu>
+
+        </item>
+
+    </group>
+
+    <item android:title="Comunnicate">
+
+        <menu>
+
+            <item
+                android:id="@+id/cuatro"
+                android:title="cuatro"
+                android:icon="@drawable/backbutton"/>
+            <item
+                android:id="@+id/cinco"
+                android:title="cinco"
+                android:icon="@drawable/backbutton"/>
+
+        </menu>
+
+    </item>
+
+</menu>

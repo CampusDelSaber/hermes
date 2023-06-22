@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -14,20 +15,22 @@ import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Handler;
 
+import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.offline.OfflineDataRepository;
-import com.isc.hermes.model.RegionData;
 import com.isc.hermes.model.User;
 
 import android.widget.SearchView;
@@ -41,8 +44,6 @@ import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -52,13 +53,12 @@ import com.mapbox.mapboxsdk.maps.Style;
 import java.util.HashMap;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     public static Context context;
     private MapView mapView;
@@ -72,6 +72,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
+
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
+
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -99,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+        initializeBurgerButtonToolBar();
+        initializeFunctionalityOfTheBurgerButton();
     }
 
     public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
@@ -115,6 +122,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MapPolyline mapPolyline = new MapPolyline(mapView);
         mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
         //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
+
+    }
+
+    private void initializeBurgerButtonToolBar(){
+        this.drawerLayout = findViewById(R.id.drawerLayout);
+        this.navigationView = findViewById(R.id.dropdown_menu);
+        this.toolbar = findViewById(R.id.dropdown_menu_toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void initializeFunctionalityOfTheBurgerButton(){
+        navigationView.bringToFront();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar, R.string.close, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
 
     }
 
@@ -169,16 +192,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param view Helps build the view.
      */
     public void openSideMenu(View view) {
-        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
-        if (!visibilityMenu) {
-            lateralMenu.setVisibility(View.VISIBLE);
-            visibilityMenu = true;
-            setMapScrollGesturesEnabled(false);
-        } else {
-            lateralMenu.setVisibility(View.GONE);
-            visibilityMenu = false;
-            setMapScrollGesturesEnabled(true);
-        }
+
     }
 
     /**
@@ -340,18 +354,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param view The view that triggered the method.
      */
     public void openStylesMenu(View view) {
-        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
-        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
-        isStyleOptionsVisible = !isStyleOptionsVisible;
 
-        if (isStyleOptionsVisible) {
-            lateralMenu.setVisibility(View.GONE);
-            styleOptionsWindow.setVisibility(View.VISIBLE);
-            setMapScrollGesturesEnabled(true);
-            visibilityMenu = false;
-        } else {
-            styleOptionsWindow.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -409,5 +412,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                 });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return true;
     }
 }
