@@ -30,6 +30,7 @@ public class NavigationOptionsController {
     private final LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
+    private final NavigationDirectionController navigationDirectionController;
 
 
     /**
@@ -44,6 +45,7 @@ public class NavigationOptionsController {
         isLocationStartChosen = true;
         this.mapWayPointController = mapWayPointController;
         navOptionsForm = ((AppCompatActivity)context).findViewById(R.id.navOptions_form);
+        navigationDirectionController = new NavigationDirectionController(context,mapWayPointController);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button_nav);
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
@@ -101,6 +103,8 @@ public class NavigationOptionsController {
     public void handleHiddeItemsView() {
         mapWayPointController.setMarked(false);
         getNavOptionsForm().startAnimation(Animations.exitAnimation);
+        navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
+        navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         getNavOptionsForm().setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
     }
