@@ -1,6 +1,7 @@
 package com.isc.hermes;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,10 +11,16 @@ import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User;
+
+import org.json.JSONException;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+
 import timber.log.Timber;
 
 
