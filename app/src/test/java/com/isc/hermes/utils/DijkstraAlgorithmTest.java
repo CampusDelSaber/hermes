@@ -21,14 +21,6 @@ public class DijkstraAlgorithmTest {
     }
 
     @Test
-    public void graphTest() throws JSONException {
-        LatLng start = new LatLng(-17.4275176,-66.1592252);
-        LatLng destination = new LatLng(-17.418664,-66.155998);
-        GraphController graphController = new GraphController(start, destination);
-        graphController.buildGraph();
-    }
-
-    @Test
     public void shortestPathShouldFindShortestPathWhenGraphHasValidPath() {
         // Create a sample graph
         Graph graph = new Graph();

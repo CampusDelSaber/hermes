@@ -10,6 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * This is the controller class for the graph.
  *
@@ -126,11 +129,9 @@ public class GraphController {
                 graph.addNode(node);
             }
 
-            graph.addNode(startNode);
-            graph.addNode(destinationNode);
+            addStartNode();
+            addDestinationNode();
         }
-
-        System.out.println(graph.getNodes().size());
 
     }
 
@@ -160,6 +161,46 @@ public class GraphController {
     }
 
     /**
+     * Method to add  the start node to graph with an edge.
+     *
+     * @throws JSONException If there is an issue with parsing the JSON data.
+     */
+    private void addStartNode() throws JSONException {
+        String response = intersectionRequest.getIntersections(start.getLatitude(), startNode.getLongitude(), 150);
+        if (response != null) {
+            JSONObject json = new JSONObject(response);
+            JSONArray intersection = json.getJSONArray("elements");
+
+            Node node = new Node(String.valueOf(intersection.getJSONObject(0).get("id")),
+                    (Double) intersection.getJSONObject(0).get("lat"),
+                    (Double) intersection.getJSONObject(0).get("lon"));
+
+            startNode.addUnidirectionalEdge(node);
+            graph.addNode(startNode);
+        }
+    }
+
+    /**
+     * Method to add the destination node to graph with one edge
+     *
+     * @throws JSONException If there is an issue with parsing the JSON data.
+     */
+    private void addDestinationNode() throws JSONException {
+        String response = intersectionRequest.getIntersections(destinationNode.getLatitude(), destinationNode.getLongitude(), 150);
+        if (response != null) {
+            JSONObject json = new JSONObject(response);
+            JSONArray intersection = json.getJSONArray("elements");
+
+            Node node = new Node(String.valueOf(intersection.getJSONObject(0).get("id")),
+                    (Double) intersection.getJSONObject(0).get("lat"),
+                    (Double) intersection.getJSONObject(0).get("lon"));
+
+            destinationNode.addUnidirectionalEdge(node);
+            graph.addNode(destinationNode);
+        }
+    }
+
+    /**
      * This is a getter method to the Graph.
      *
      * @return A graph object with the intersections and ways data.
@@ -184,5 +225,14 @@ public class GraphController {
      */
     public Node getDestinationNode() {
         return destinationNode;
+    }
+
+    public void printGraph() {
+        for (Map.Entry<String, Node> entry : graph.getNodes().entrySet()) {
+            String clave = entry.getKey();
+            Node node = entry.getValue();
+            System.out.println(clave);
+            System.out.println(node.getEdges());
+        }
     }
 }

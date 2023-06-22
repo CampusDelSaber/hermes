@@ -12,7 +12,7 @@ import java.util.*;
 public class DijkstraAlgorithm {
     private static DijkstraAlgorithm instance;
     private GeoJsonUtils geoJsonUtils;
-    private static final int MAX_ROUTE_ALTERNATIVES = 3;
+    private static final int MAX_ROUTE_ALTERNATIVES = 1;
 
     /**
      * Initializes a new instance of the DijkstraAlgorithm class.
@@ -55,11 +55,12 @@ public class DijkstraAlgorithm {
      * @param destination The destination node.
      * @return A map with route alternatives as keys and their corresponding list of nodes as values.
      */
-    public Map<String, Route> getPathAlternatives(Graph graph, Node source, Node destination) {
+    public Map<String, Route> getPathAlternatives(
+            Graph graph, Node source, Node destination
+    ) {
         Map<String, Route> routeAlternatives = new HashMap<>();
         PriorityQueue<Route> routeQueue =
                 new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalDistance));
-        routeQueue.add(new Route(getShortestPath(graph, source, destination)));
         routeQueue.add(new Route(source));
 
         while (!routeQueue.isEmpty() && routeAlternatives.size() < MAX_ROUTE_ALTERNATIVES) {
@@ -178,7 +179,7 @@ public class DijkstraAlgorithm {
                 Node adjacent = edge.getDestination();
                 double newDistance = distances.get(current) + edge.getWeight();
 
-                if (newDistance < distances.get(adjacent)) {
+                if (distances.get(adjacent) != null && newDistance < distances.get(adjacent)) {
                     distances.put(adjacent, newDistance);
                     parents.put(adjacent, current);
 

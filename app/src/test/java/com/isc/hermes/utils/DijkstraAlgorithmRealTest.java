@@ -3,10 +3,13 @@ package com.isc.hermes.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com.isc.hermes.controller.GraphController;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -90,5 +93,20 @@ public class DijkstraAlgorithmRealTest {
 
         System.out.println(
                 dijkstraAlgorithm.getGeoJsonRoutes(graph, estebanArze_Sucre, jordan_sanMartin));
+    }
+
+    @Test
+    public void getRoutesRealGraph() throws JSONException {
+        LatLng start = new LatLng(-17.4275176,-66.1592252);
+        LatLng destination = new LatLng(-17.418664,-66.155998);
+        GraphController graphController = new GraphController(start, destination);
+        graphController.buildGraph();
+        System.out.println(graphController.getGraph());
+        Graph graph = graphController.getGraph();
+        graphController.printGraph();
+
+        System.out.println("XD");
+        System.out.println(
+                dijkstraAlgorithm.getShortestPath(graph, graphController.getStartNode(), graphController.getDestinationNode()));
     }
 }
