@@ -23,7 +23,7 @@ public class MapPolygonStyle implements Style.OnStyleLoaded {
 
     public MapPolygonStyle(MapboxMap mapboxMap,List<List<Point>> allPolygonsPoints){
         this.allPolygonsPoints = allPolygonsPoints;
-        mapboxMap.setStyle(MapClickEventsManager.getInstance().getMapboxMap().getStyle().getUri(),this);
+        mapboxMap.setStyle(Style.DARK,this);
     }
 
     /**
