@@ -1,6 +1,7 @@
 package com.isc.hermes;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -97,6 +98,12 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         editor.putFloat("longitude", (float)wayPoint.getLongitude());
         editor.apply();
         finish();
+        /* Optional
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("selectedPlaceName", wayPoint.getPlaceName());
+        setResult(RESULT_OK, resultIntent);
+        finish();
+         */
     }
 
     /**

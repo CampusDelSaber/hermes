@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
-    String initialText = "Search...";
+
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
      *
@@ -176,14 +176,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addMapboxSearcher();
         searchView.setOnClickListener(v -> {
             new Handler().post(() -> {
-                searchView.setText(initialText);
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
                 startActivity(intent);
-                String searchResult  = String.valueOf(intent.getDataString());
-                searchView.setText(searchResult);
+                //startActivityForResult(intent, 1); // Usar startActivityForResult() en lugar de startActivity()
             });
         });
     }
+
+    /* Review 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            String selectedPlaceName = data.getStringExtra("selectedPlaceName");
+            searchView.setText(selectedPlaceName); // Establecer el valor seleccionado en el TextView
+        }
+    }
+     */
 
     /**
      * Enables or disables map scroll gestures.
