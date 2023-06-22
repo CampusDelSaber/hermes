@@ -1,0 +1,48 @@
+name: application build 
+run-name: ${{ github.actor }} is building an application. 
+
+# run on push or PR to develop
+on: [push]
+  # push:
+  #   branches:
+  #     - develop
+  # pull_request:
+  #   branches:
+  #     - develop
+
+# Works as fallback
+jobs:
+  env_present:
+    name: check_if_environment_is_present
+    runs-on: self-hosted
+    steps:
+      uses: actions/checkout@v3
+      run: echo "================================================== Checking Enviroment =================================================="
+      run: echo "================================================== SUCCESS =================================================="
+  build:
+    name: build
+    needs: env_present
+    runs-on: self-hosted 
+    steps:
+      uses: actions/checkout@v3
+      run: echo "================================================== Building =================================================="
+      run: ./gradlew build
+      run: echo "================================================== SUCCESS =================================================="
+  test:
+    name: test
+    needs: build
+    runs-on: self-hosted 
+    steps:
+      uses: actions/checkout@v3
+      run: echo "================================================== Running Tests =================================================="
+      run: ./gradlew --task test
+      run: echo "================================================== SUCCESS =================================================="
+  export:
+    name: distribute_apk
+    needs: test    
+    runs-on: self-hosted 
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      uses: actions/checkout@v3
+      run: echo "================================================== APK Distribution =================================================="
+      run: echo "================================================== SUCCESS =================================================="
