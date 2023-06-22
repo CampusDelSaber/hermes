@@ -35,10 +35,6 @@ android {
         disable "LogNotTimber","StringFormatInTimber","ThrowableNotAtBeginning","BinaryOperationInTimber","TimberArgCount","TimberArgTypes","TimberTagLength","TimberExceptionLogging"
         abortOnError false
     }
-
-    lint {	
-        baseline = file("lint-baseline.xml")	
-    }
 }
 
 dependencies {
