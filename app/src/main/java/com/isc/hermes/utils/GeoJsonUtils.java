@@ -22,7 +22,9 @@ public class GeoJsonUtils {
 
         StringBuilder builder = new StringBuilder();
         builder.append("{\"type\":\"Feature\",\"distance\":")
-                .append(route.getTotalDistance())
+                .append(route.getTotalEstimatedDistance())
+                .append(",\"time\":")
+                .append(route.getTotalEstimatedArrivalTime())
                 .append(",\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[");
 
         for (int i = 0; i < path.size(); i++) {

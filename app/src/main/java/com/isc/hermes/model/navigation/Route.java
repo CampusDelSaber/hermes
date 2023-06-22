@@ -14,7 +14,8 @@ import java.util.List;
  */
 public class Route {
     private List<Node> path;
-    private double totalDistance;
+    private double totalEstimatedDistance;
+    private int totalEstimatedArrivalTime;
 
     /**
      * Constructs a new Route object starting from the initial node.
@@ -23,28 +24,39 @@ public class Route {
     public Route(Node initialNode) {
         path = new ArrayList<>();
         path.add(initialNode);
-        totalDistance = 0.0;
+        totalEstimatedDistance = 0.0;
     }
 
     /**
      * Constructs a new Route object with the same path and total distance as another route.
      * @param other the other route to copy the path and total distance from
      */
-    public Route(Route other) {
+    public Route(Route other, TransportationType transportationType) {
         path = new ArrayList<>(other.path);
-        totalDistance = other.totalDistance;
+        totalEstimatedDistance = other.totalEstimatedDistance;
+        setTotalEstimatedArrivalTime(transportationType);
     }
 
     /**
      * Constructs a new Route object with the given path.
      * @param path the path of nodes in the route
      */
-    public Route(List<Node> path){
+    public Route(List<Node> path, TransportationType transportationType){
         this.path = path;
         CoordinatesDistanceCalculator calculator = CoordinatesDistanceCalculator.getInstance();
         for (int i = 0; i < path.size() - 1; i++){
-            totalDistance += calculator.calculateDistance(path.get(i), path.get(i + 1));
+            totalEstimatedDistance += calculator.calculateDistance(path.get(i), path.get(i + 1));
         }
+        setTotalEstimatedArrivalTime(transportationType);
+    }
+
+    private void setTotalEstimatedArrivalTime(TransportationType transportationType){
+        totalEstimatedArrivalTime =
+                (int) Math.ceil(((totalEstimatedDistance / transportationType.getVelocity()) * 60));
+    }
+
+    public int getTotalEstimatedArrivalTime() {
+        return totalEstimatedArrivalTime;
     }
 
     /**
@@ -54,7 +66,7 @@ public class Route {
      */
     public void addNode(Node node, double distance) {
         path.add(node);
-        totalDistance += distance;
+        totalEstimatedDistance += distance;
     }
 
     /**
@@ -69,8 +81,8 @@ public class Route {
      * Retrieves the total distance traveled along the route.
      * @return the total distance
      */
-    public double getTotalDistance() {
-        return totalDistance;
+    public double getTotalEstimatedDistance() {
+        return totalEstimatedDistance;
     }
 
     /**

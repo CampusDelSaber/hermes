@@ -69,7 +69,7 @@ public class DijkstraAlgorithmRealTest {
         graph.addNode(lanza_jordan);
 
         Map<String, Route> routesMap = dijkstraAlgorithm
-                .getPathAlternatives(graph, estebanArze_Sucre, jordan_sanMartin);
+                .getPathAlternatives(graph, estebanArze_Sucre, jordan_sanMartin, TransportationType.CAR);
 
         List<Node> routeA = Objects.requireNonNull(routesMap.get("Route A")).getPath();
         assertNotNull(routeA);

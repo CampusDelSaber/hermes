@@ -50,7 +50,7 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from nodeA to nodeD
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A")
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR).get("Route A")
                         .getPath();
 
         System.out.println(dijkstraAlgorithm.getGeoJsonRoutes(graph, nodeA, nodeD, TransportationType.CAR));
@@ -83,7 +83,7 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from nodeA to nodeD
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeD, nodeA).get("Route A")
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeD, nodeA, TransportationType.CAR).get("Route A")
                         .getPath();
 
         assertNotNull(shortestPath);
@@ -114,7 +114,7 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from Plaza Principal to Plaza 14 de Septiembre
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A")
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR).get("Route A")
                         .getPath();
 
         System.out.println(shortestPath);
@@ -145,7 +145,8 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Calculate the routes
-        Map<String, Route> routes = dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD);
+        Map<String, Route> routes =
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR);
 
         System.out.println(routes);
 
@@ -167,7 +168,7 @@ public class DijkstraAlgorithmTest {
         Node destination = graph.getNode("F");
 
         Map<String, Route> shortestPathAlternatives =
-                dijkstraAlgorithm.getPathAlternatives(graph, source, destination);
+            dijkstraAlgorithm.getPathAlternatives(graph, source, destination, TransportationType.CAR);
         assertNotNull(shortestPathAlternatives);
         assertEquals(3, shortestPathAlternatives.size());
         System.out.println(shortestPathAlternatives);

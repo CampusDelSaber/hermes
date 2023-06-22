@@ -36,9 +36,13 @@ public class DijkstraAlgorithm {
             Graph graph, Node source, Node destination, TransportationType transportationType
     ){
         Map<String, String> geoJsonRoutes = new HashMap<>();
-        Map<String, Route> routeAlternatives = getPathAlternatives(graph, source, destination);
+        Map<String, Route> routeAlternatives =
+                getPathAlternatives(graph, source, destination, transportationType);
         for (String key:routeAlternatives.keySet())
-            geoJsonRoutes.put(key, geoJsonUtils.generateGeoJson(routeAlternatives.get(key)));
+            geoJsonRoutes.put(
+                key,
+                geoJsonUtils.generateGeoJson(routeAlternatives.get(key))
+            );
 
         return geoJsonRoutes;
     }
@@ -51,11 +55,13 @@ public class DijkstraAlgorithm {
      * @param destination The destination node.
      * @return A map with route alternatives as keys and their corresponding list of nodes as values.
      */
-    public Map<String, Route> getPathAlternatives(Graph graph, Node source, Node destination) {
+    public Map<String, Route> getPathAlternatives(
+        Graph graph, Node source, Node destination, TransportationType transportationType
+    ) {
         Map<String, Route> routeAlternatives = new HashMap<>();
         PriorityQueue<Route> routeQueue =
-                new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalDistance));
-        routeQueue.add(new Route(getShortestPath(graph, source, destination)));
+                new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalEstimatedDistance));
+        routeQueue.add(new Route(getShortestPath(graph, source, destination), transportationType));
         routeQueue.add(new Route(source));
 
         while (!routeQueue.isEmpty() && routeAlternatives.size() < MAX_ROUTE_ALTERNATIVES) {
@@ -65,7 +71,7 @@ public class DijkstraAlgorithm {
                 routeAlternatives.put(getRouteKey(routeAlternatives.size()), currentRoute);
                 continue;
             }
-            exploreNeighbors(currentRoute, routeQueue);
+            exploreNeighbors(currentRoute, routeQueue, transportationType);
         }
 
         return routeAlternatives;
@@ -94,7 +100,7 @@ public class DijkstraAlgorithm {
      * @param routeQueue    The priority queue of routes.
      */
     private void exploreNeighbors(
-            Route currentRoute, PriorityQueue<Route> routeQueue
+        Route currentRoute, PriorityQueue<Route> routeQueue, TransportationType transportationType
     ) {
         Node currentNode = currentRoute.getCurrentNode();
 
@@ -103,7 +109,7 @@ public class DijkstraAlgorithm {
             double edgeWeight = edge.getWeight();
 
             if (!currentRoute.visitedNode(nextNode)) {
-                Route newRoute = new Route(currentRoute);
+                Route newRoute = new Route(currentRoute, transportationType);
                 newRoute.addNode(nextNode, edgeWeight);
                 routeQueue.add(newRoute);
             }
