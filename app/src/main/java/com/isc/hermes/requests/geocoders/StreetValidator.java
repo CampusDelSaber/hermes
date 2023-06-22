@@ -5,10 +5,16 @@ import static com.mapbox.geojson.constants.GeoJsonConstants.MAX_LONGITUDE;
 import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LATITUDE;
 import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LONGITUDE;
 
+import android.graphics.PointF;
+
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.models.CarmenContext;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.geojson.Feature;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -72,5 +78,13 @@ public class StreetValidator {
             }
         }
         return false;
+    }
+
+    public static boolean isStreetPoint(MapboxMap mapboxMap, LatLng point) {
+        PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
+        List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
+        return (!features.isEmpty() &&
+                (features.get(0).geometry().type().equals("MultiLineString") ||
+                        features.get(0).geometry().type().equals("LineString")));
     }
 }
