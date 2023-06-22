@@ -1,11 +1,14 @@
 package com.isc.hermes.controller.PopUp;
 
 import android.app.Activity;
+import android.os.Build;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.isc.hermes.R;
+import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.model.User;
 
 /**
  * The class {@code PopUpEditAccount} extends {@code PopUp} and represents a specific type of pop-up
@@ -17,6 +20,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     private AutoCompleteTextView fullName;
     private AutoCompleteTextView username;
     private AutoCompleteTextView comboBoxField;
+    private User userToUpdateInformation;
 
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
@@ -45,11 +49,24 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     @Override
     public void onClick(View v) {
         if (v == super.confirmButton) {
+            updateUserInformation();
             button.setVisibility(View.INVISIBLE);
             fullName.setEnabled(false);
             username.setEnabled(false);
             comboBoxField.setEnabled(false);
         } dismiss();
+    }
+
+    /**
+     * Updates the user information.
+     * This method is responsible for updating the user information by calling the `editUser()` method
+     * of the `AccountInfoManager` class.
+     *
+     * @throws UnsupportedOperationException if the device's SDK version is lower than Android Oreo.
+     */
+    private void updateUserInformation(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            new AccountInfoManager().editUser(userToUpdateInformation);
     }
 
     /**
@@ -60,11 +77,12 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      * @param username  The text field for the username.
      * @param comboBoxField The text field fo combo-box.
      */
-    public void setInformationToAbelEdit(Button button, AutoCompleteTextView fullName,
-                                         AutoCompleteTextView username, AutoCompleteTextView comboBoxField) {
+    public void setInformationToAbelEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
+                                         AutoCompleteTextView comboBoxField, User user) {
         this.button = button;
         this.fullName = fullName;
         this.username = username;
         this.comboBoxField = comboBoxField;
+        this.userToUpdateInformation = user;
     }
 }

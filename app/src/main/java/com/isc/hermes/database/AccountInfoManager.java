@@ -4,6 +4,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
 import com.isc.hermes.model.User;
 
 import org.json.JSONArray;
@@ -94,5 +95,16 @@ public class AccountInfoManager {
         String futureResponses = future.get();
         JSONObject jsonObject = new JSONArray(futureResponses).getJSONObject(0);
         return jsonObject.getString("_id");
+    }
+
+    /**
+     Edits a user's information.
+     @param user the user will be used to update their information in db.
+     @requiresApi(api = Build.VERSION_CODES.O) Requires API level O or higher
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void editUser(User user) {
+        String apiUrl = ACCOUNT_INFO_COLLECTION + "/" + user.getId();
+        apiHandler.putFutureCollection(apiUrl, user);
     }
 }

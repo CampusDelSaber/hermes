@@ -38,10 +38,10 @@ public class AccountInformation extends AppCompatActivity {
     private AutoCompleteTextView comboBoxField;
     private AutoCompleteTextView textFieldEmail;
     private ImageView imageView;
-    private static final int PICK_IMAGE_REQUEST = 1;
     private User userRegistered;
     private PopUpOverwriteInformationAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -178,7 +178,7 @@ public class AccountInformation extends AppCompatActivity {
     public void saveAccountInformationAction(View view) {
         updateInformationUser();
         popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField);
+                textFieldUserName, comboBoxField, userRegistered);
         popUpDialogEdit.show();
     }
 
