@@ -124,6 +124,8 @@
 
     </LinearLayout>
 
+
+
     <include
         layout="@layout/incident_form_fragment"
         mapbox:layout_anchor="@+id/mapView"

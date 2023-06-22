@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -18,6 +19,7 @@ public class WaypointOptionsController {
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
     private final Button navigateButton;
+    private final TrafficAutomaticFormController trafficAutomaticFormController;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
     private final Button reportNaturalDisasterButton;
@@ -35,6 +37,7 @@ public class WaypointOptionsController {
         incidentFormController = new IncidentFormController(context, mapWayPointController);
         navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
+        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);
@@ -57,9 +60,29 @@ public class WaypointOptionsController {
             incidentFormController.getIncidentForm().startAnimation(Animations.entryAnimation);
             incidentFormController.getIncidentForm().setVisibility(View.VISIBLE);
             waypointOptions.setVisibility(View.GONE);
+            incidentFormController.getMapController().deleteMarks();
+
         });
 
         reportTrafficButton.setOnClickListener(v -> {
+            waypointOptions.startAnimation(Animations.exitAnimation);
+
+
+            AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
+                @Override
+                protected Integer doInBackground(Void... voids) {
+
+                    return trafficAutomaticFormController.uploadTrafficDataBase();
+                }
+                @Override
+                protected void onPostExecute(Integer responseCode) {
+                    trafficAutomaticFormController.handleUploadResponse(responseCode);
+                }
+            };
+
+            task.execute();
+            waypointOptions.setVisibility(View.GONE);
+            incidentFormController.getMapController().deleteMarks();
 
         });
 
