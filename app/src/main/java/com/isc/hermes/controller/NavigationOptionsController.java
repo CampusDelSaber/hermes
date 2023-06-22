@@ -38,8 +38,6 @@ public class NavigationOptionsController {
     private LatLng startPoint, finalPoint;
     private final NavigationDirectionController navigationDirectionController;
 
-    private final NavigationDirectionController navigationDirectionController;
-
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -218,6 +216,7 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     private void handleAcceptButtonClick() {
+        handleHiddeItemsView();
         isActive = false;
         Node startPointNode = (startPoint != null) ? new Node("01",startPoint.getLatitude(),
                 startPoint.getLatitude()): null;
