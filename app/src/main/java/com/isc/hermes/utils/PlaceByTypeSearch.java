@@ -14,11 +14,11 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class PlaceSearch {
+public class PlaceByTypeSearch {
     private static final String MAPBOX_ACCESS_TOKEN = "sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA";
     private Activity activity;
 
-    public PlaceSearch ( ){
+    public PlaceByTypeSearch( ){
     }
 
     public interface SearchPlacesListener {

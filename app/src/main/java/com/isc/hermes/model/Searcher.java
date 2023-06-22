@@ -3,13 +3,11 @@ package com.isc.hermes.model;
 import android.content.Context;
 import android.os.StrictMode;
 import com.isc.hermes.R;
-import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.utils.PlaceSearch;
+import com.isc.hermes.utils.PlaceByTypeSearch;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,13 +27,13 @@ public class Searcher {
 
     protected CurrentLocationModel currentLocationModel;
     private Context context;
-    private PlaceSearch placeSearch;
+    private PlaceByTypeSearch placeByTypeSearch;
 
     /**
      * This method is the constructor of the class
      */
     public Searcher(){
-        placeSearch = new PlaceSearch();
+        placeByTypeSearch = new PlaceByTypeSearch();
     }
 
     /**
@@ -167,11 +165,11 @@ public class Searcher {
      * @param placeType   the type of place to search for
      * @param listener    the listener to receive the search results
      */
-    public void searchPlacesByType(String placeType, PlaceSearch.SearchPlacesListener listener) {
+    public void searchPlacesByType(String placeType, PlaceByTypeSearch.SearchPlacesListener listener) {
         // TODO: Replace this data with the current location
         double latitude = -17.37;
         double longitude = -66.18;
-        placeSearch.searchPlacesByType(placeType, latitude, longitude, listener);
+        placeByTypeSearch.searchPlacesByType(placeType, latitude, longitude, listener);
     }
 
 

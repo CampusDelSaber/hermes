@@ -1,39 +1,31 @@
 package com.isc.hermes.controller;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.support.v4.media.MediaBrowserCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.isc.hermes.R;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.MarkerManager;
-import com.isc.hermes.utils.PlaceSearch;
+import com.isc.hermes.utils.PlaceByTypeSearch;
 import com.isc.hermes.utils.PlacesType;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.api.geocoding.v5.models.*;
-
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.maps.MapView;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Controller class for filtering categories and displaying places on the map.
+ */
 public class FilterCategoriesController {
 
     private LinearLayout tagsContainer;
@@ -41,7 +33,11 @@ public class FilterCategoriesController {
     private MapView mapView;
     private Activity activity;
 
-
+    /**
+     * Constructs a new FilterCategoriesController with the specified activity.
+     *
+     * @param activity the activity associated with the controller
+     */
     public FilterCategoriesController(Activity activity) {
         this.activity = activity;
         markerManager = MarkerManager.getInstance(activity);
@@ -49,11 +45,19 @@ public class FilterCategoriesController {
         addTags();
     }
 
+    /**
+     * Creates the UI elements for the controller.
+     */
     private void createItemsUI() {
         tagsContainer = activity.findViewById(R.id.tagsContainer);
         mapView = activity.findViewById(R.id.mapView);
     }
 
+    /**
+     * Searches for places based on the specified tag.
+     *
+     * @param tag the tag to search for
+     */
     private void searchPlacesByTag(String tag) {
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken(activity.getString(R.string.access_token))
@@ -67,7 +71,7 @@ public class FilterCategoriesController {
                 if (response.isSuccessful()) {
                     List<CarmenFeature> places = null;
                     Searcher placeSearch = new Searcher();
-                    placeSearch.searchPlacesByType(tag, new PlaceSearch.SearchPlacesListener() {
+                    placeSearch.searchPlacesByType(tag, new PlaceByTypeSearch.SearchPlacesListener() {
                         @Override
                         public void onSearchComplete(List<CarmenFeature> places) {
                             showPlacesOnMap(places);
@@ -75,40 +79,39 @@ public class FilterCategoriesController {
 
                         @Override
                         public void onSearchError(String errorMessage) {
-
                         }
                     });
 
-                    // Handle the retrieved places
-//                    showPlacesOnMap(places);
-                } else {
-                    // Handle API error
                 }
             }
 
             @Override
             public void onFailure(Call<GeocodingResponse> call, Throwable t) {
-                // Handle network failure
+                throw new RuntimeException(t);
             }
         });
     }
 
+    /**
+     * Displays the retrieved places on the map.
+     *
+     * @param places the list of places to display
+     */
     private void showPlacesOnMap(List<CarmenFeature> places) {
-        // Iterate over the list of places and add them to the map
         for (CarmenFeature place : places) {
-            // Extract the necessary information from the place object
             String name = place.text();
             double latitude = ((Point) place.geometry()).latitude();
             double longitude = ((Point) place.geometry()).longitude();
 
-            // Add a marker or perform any other action on the map
-            // using the extracted place information
-
             markerManager.addMarkerToMap(mapView, name, latitude, longitude, true);
-            System.out.println(name);
         }
     }
 
+    /**
+     * Adds a tag to the UI and sets up the click listener.
+     *
+     * @param tag the tag to add
+     */
     private void addTag(final String tag) {
         TextView tagTextView = new TextView(activity);
         tagTextView.setText(tag);
@@ -123,11 +126,12 @@ public class FilterCategoriesController {
         tagsContainer.addView(tagTextView);
     }
 
+    /**
+     * Adds tags to the UI based on the available PlacesType values.
+     */
     private void addTags(){
         for (PlacesType tag: PlacesType.values()) {
             addTag(tag.getDisplayName());
         }
     }
-
-
 }
