@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -9,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapClickEventsManager;
+
+import java.net.HttpURLConnection;
 
 /**
  * Class on controller function to initialise all components in natural disaster form
@@ -45,6 +48,7 @@ public class PolygonOptionsController {
         });
         submitDisasterButton.setOnClickListener(v->{
             handleAcceptButtonClick();
+
         });
     }
 
@@ -62,7 +66,29 @@ public class PolygonOptionsController {
      */
     private void handleAcceptButtonClick(){
         handleCancelButtonClick();
+        AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... voids) {
+                return uploadIncidentDataBase();
+            }
+
+            @Override
+            protected void onPostExecute(Integer responseCode) {
+                handleUploadResponse(responseCode);
+            }
+        };
+        task.execute();
     }
+    private void handleUploadResponse(Integer responseCode) {
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            Toast.makeText(context, R.string.natural_disaster_uploaded, Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(context, R.string.natural_disaster_not_uploaded, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     /**
      * Method to change map controller to its original configuration with waypoints

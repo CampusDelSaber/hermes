@@ -47,6 +47,8 @@
 
     <string name="incidents_uploaded">Incident uploaded successfully.</string>
     <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
+    <string name="natural_disaster_uploaded">Natural Disaster uploaded successfully.</string>
+    <string name="natural_disaster_not_uploaded">Natural Disaster could not be uploaded.</string>
     <string name="incidents_api_url">https://api-rest-hermes.onrender.com/pointIncidets</string>
     <string name="traffic_uploaded">Traffic uploaded successfully.</string>
     <string name="traffic_not_uploaded">Traffic could not be uploaded.</string>
