@@ -35,6 +35,7 @@ import android.widget.SearchView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Utils.MapPolyline;
 
+import com.isc.hermes.utils.Files;
 import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      *
      * @param savedInstanceState the saved state of the instance
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+        Files files = new Files("OfflineMaps");
     }
 
     public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.

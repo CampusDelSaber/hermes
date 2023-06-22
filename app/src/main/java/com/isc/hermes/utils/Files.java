@@ -16,7 +16,9 @@ public class Files {
         this.nameDirectory = nameDirectory;
         this.urlFile = DIRECTORY_PATH + this.nameDirectory;
         this.urlDirectory = new File(this.urlFile);
-        this.directory = new File(Environment.getExternalStorageDirectory(), nameDirectory);
+        this.directory = new File(urlDirectory, nameDirectory);
+        System.out.println(this.directory.getPath());
+        createDirectory();
     }
 
     private boolean fileExists(File file) {
@@ -30,6 +32,9 @@ public class Files {
     private void createDirectory() {
         if (!fileExists(directory)) {
             directory.mkdirs();
+            System.out.println("CREANDO");
+        } else {
+            System.out.println("YA ESTABA CREADO");
         }
     }
 
