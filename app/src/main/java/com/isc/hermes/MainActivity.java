@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
+    private String restoreValue = "Search...";
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
+        searchView.setText(restoreValue);
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
@@ -267,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (!nameServiceUsed.equals("default")) {
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
         }
-
         addMarkers();
     }
 
@@ -374,7 +375,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void addMarkers() {
         markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
                 sharedSearcherPreferencesManager.getLatitude(),
+
                 sharedSearcherPreferencesManager.getLongitude());
+        searchView.setText(sharedSearcherPreferencesManager.getPlaceName());
+        verifySearchField();
+    }
+
+    private void verifySearchField(){
+        if (searchView.equals("")){
+            searchView.setText(restoreValue);
+        }
     }
 
     /**

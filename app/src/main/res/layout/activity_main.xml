@@ -84,7 +84,8 @@
                     android:text="Search..."
                     android:textAlignment="viewStart"
                     android:textAllCaps="false"
-                    android:textSize="22sp" />
+                    android:textSize="15sp"
+                    android:scrollHorizontally="true" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
