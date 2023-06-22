@@ -62,6 +62,11 @@ public class IncidentFormController {
 
         setButtonsOnClick();
         setIncidentComponents();
+
+    }
+
+    public MapWayPointController getMapController() {
+        return mapWayPointController;
     }
 
     /**
@@ -127,6 +132,7 @@ public class IncidentFormController {
      * </p>
      */
     public void setIncidentComponents() {
+        incidentTypesContainer.removeAllViews();
         String[] incidentTypes = context.getResources().getStringArray(R.array.incidents_type);
         String[] incidentTypeColors = context.getResources().getStringArray(R.array.incidents_type_colors);
         String[] incidentTypeIcons = context.getResources().getStringArray(R.array.incidents_type_icons);
@@ -209,7 +215,7 @@ public class IncidentFormController {
     }
 
     /**
-     * This is a getter method to Incident form layout.
+     * This is a getter method to PointIncidet form layout.
      * @return Return a layout.
      */
     public RelativeLayout getIncidentForm() {
@@ -232,7 +238,7 @@ public class IncidentFormController {
         typeButton.setOnClickListener(
                 v -> {
                     IncidentFormController.incidentType = typeButton.getText().toString();
-                    changeTypeTitle("Incident Type: " + typeButton.getText());
+                    changeTypeTitle("PointIncidet Type: " + typeButton.getText());
                 }
         );
     }
@@ -286,7 +292,7 @@ public class IncidentFormController {
      */
     private void clearForm() {
         incidentType = null;
-        changeTypeTitle("Incident Type: ");
+        changeTypeTitle("PointIncidet Type: ");
         Objects.requireNonNull(reasonTextField.getEditText()).setText("");
     }
 }
