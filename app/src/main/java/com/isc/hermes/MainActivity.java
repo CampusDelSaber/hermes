@@ -42,8 +42,10 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
-    private String restoreValue = "Search...";
+    private final String restoreValue = "Search...";
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
-        searchView.setText(restoreValue);
+
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
@@ -180,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             new Handler().post(() -> {
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
                 startActivity(intent);
-                //startActivityForResult(intent, 1); // Usar startActivityForResult() en lugar de startActivity()
             });
         });
     }
@@ -373,16 +374,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * The markers are added using the MarkerManager instance.
      */
     private void addMarkers() {
-        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
-                sharedSearcherPreferencesManager.getLatitude(),
 
-                sharedSearcherPreferencesManager.getLongitude());
-        searchView.setText(sharedSearcherPreferencesManager.getPlaceName());
-        verifySearchField();
-    }
 
-    private void verifySearchField(){
-        if (searchView.equals("")){
+        // Obtiene la lista de lugares y sus coordenadas
+        List<String> placeNames = Collections.singletonList(sharedSearcherPreferencesManager.getPlaceName());
+        List<Double> latitudes = Collections.singletonList(sharedSearcherPreferencesManager.getLatitude());
+        List<Double> longitudes = Collections.singletonList(sharedSearcherPreferencesManager.getLongitude());
+
+        // Agrega las nuevas marcas al mapa y actualiza el texto en searchView
+        for (int i = 0; i < placeNames.size(); i++) {
+            String placeName = placeNames.get(i);
+            double latitude = latitudes.get(i);
+            double longitude = longitudes.get(i);
+            markerManager.addMarkerToMap(mapView, placeName, latitude, longitude);
+        }
+
+        if (!placeNames.isEmpty()) {
+            String lastPlaceName = placeNames.get(placeNames.size() - 1);
+            searchView.setText(lastPlaceName);
+        } else {
             searchView.setText(restoreValue);
         }
     }
