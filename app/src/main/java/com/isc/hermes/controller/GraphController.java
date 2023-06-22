@@ -1,19 +1,29 @@
 package com.isc.hermes.controller;
 
-import android.annotation.SuppressLint;
-
-import com.isc.hermes.model.graph.Edge;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.requests.overpass.IntersectionRequest;
 import com.isc.hermes.requests.overpass.WayRequest;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * This is the controller class for the graph.
+ *
+ * <p>
+ *     Contains information of ways and intersection in a determinate area of the map.
+ *     This class uses the requests to Overpass API to get this data.
+ *     A midpoint is calculated between the start and destination points to determinate
+ *     a round area.
+ * </p>
+ *
+ * {@link CoordinatesDistanceCalculator} is used to calculate the radius of the area.<br>
+ * {@link IntersectionRequest} is used for the Overpass API intersection request.<br>
+ * {@link WayRequest} is used for the Overpass API ways request.<br>
+ */
 public class GraphController {
     private Graph graph;
     private LatLng start;
@@ -21,10 +31,16 @@ public class GraphController {
     private LatLng midpoint;
     private Node startNode;
     private Node destinationNode;
-    private CoordinatesDistanceCalculator calculator;
-    IntersectionRequest intersectionRequest;
-    WayRequest wayRequest;
+    private final CoordinatesDistanceCalculator calculator;
+    private final IntersectionRequest intersectionRequest;
+    private final WayRequest wayRequest;
 
+    /**
+     * Constructor method.
+     *
+     * @param start Is the route start point.
+     * @param destination Is the route destination point.
+     */
     public GraphController(LatLng start, LatLng destination) {
         this.graph = new Graph();
         this.start = start;
@@ -37,12 +53,22 @@ public class GraphController {
         this.wayRequest = new WayRequest();
     }
 
+    /**
+     * Method to build the graph with the intersections and the ways.
+     *
+     * @throws JSONException If there is an issue with parsing the JSON data.
+     */
     public void buildGraph() throws JSONException {
         int radius = (int) (getRadius() * 1000);
         loadIntersections(intersectionRequest.getIntersections(midpoint.getLatitude(), midpoint.getLongitude(), radius));
         loadEdges(wayRequest.getEdges(midpoint.getLatitude(), midpoint.getLongitude(), radius));
     }
 
+    /**
+     * This method calculate the mid point between the start and destination points.
+     *
+     * @return A LatLng object.
+     */
     private LatLng calculateMidpoint() {
         double lat1Rad = Math.toRadians(start.getLatitude());
         double lon1Rad = Math.toRadians(start.getLongitude());
@@ -72,12 +98,23 @@ public class GraphController {
         return new LatLng(latAvg, lonAvg);
     }
 
+    /**
+     * Method to calculated the radius of the area in kilometers.
+     *
+     * @return A double.
+     */
     private double getRadius() {
         Node midpointNode = new Node("midpoint", midpoint.getLatitude(), midpoint.getLongitude());
         return calculator.calculateDistance(startNode, midpointNode);
     }
 
-    public Graph loadIntersections(String intersectionsJson) throws JSONException {
+    /**
+     * This method load the intersections into the round area.
+     *
+     * @param intersectionsJson Is a Json with the information of streets intersections.
+     * @throws JSONException If there is an issue with parsing the JSON data.
+     */
+    public void loadIntersections(String intersectionsJson) throws JSONException {
         if (intersectionsJson != null) {
             JSONObject json = new JSONObject(intersectionsJson);
             JSONArray intersections = json.getJSONArray("elements");
@@ -95,9 +132,14 @@ public class GraphController {
 
         System.out.println(graph.getNodes().size());
 
-        return graph;
     }
 
+    /**
+     * This method load the intersection edges into the round area.
+     *
+     * @param edgesJson Contain the ways data.
+     * @throws JSONException If there is an issue with parsing the JSON data.
+     */
     private void loadEdges(String edgesJson) throws JSONException {
         if (edgesJson != null) {
             JSONObject json = new JSONObject(edgesJson);
@@ -117,14 +159,29 @@ public class GraphController {
         }
     }
 
+    /**
+     * This is a getter method to the Graph.
+     *
+     * @return A graph object with the intersections and ways data.
+     */
     public Graph getGraph() {
         return graph;
     }
 
+    /**
+     * This is a getter method to the start node.
+     *
+     * @return A node object.
+     */
     public Node getStartNode() {
         return startNode;
     }
 
+    /**
+     * This is a getter method to the destination node.
+     *
+     * @return A node object.
+     */
     public Node getDestinationNode() {
         return destinationNode;
     }
