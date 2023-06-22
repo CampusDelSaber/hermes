@@ -11,6 +11,9 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.os.Handler;
 
 import com.isc.hermes.controller.MapWayPointController;
@@ -36,11 +39,10 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 
-
-
-
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
+    private RecyclerView recyclerView;
+    private LocationCategoryAdapter adapter;
+    private List<LocationCategory> categories;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -83,6 +88,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
 
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+        categories = new ArrayList<>();
+        categories.add(new LocationCategory(R.drawable.back_arrow, "Restaurant"));
+        categories.add(new LocationCategory(R.drawable.ic_go, "Hotel"));
+        categories.add(new LocationCategory(R.drawable.backbutton, "Shopping"));
+        categories.add(new LocationCategory(R.drawable.baseline_circle_24, "Other"));
+        categories.add(new LocationCategory(R.drawable.baseline_circle_24, "Other"));
+        categories.add(new LocationCategory(R.drawable.baseline_circle_24, "Other"));
+        categories.add(new LocationCategory(R.drawable.baseline_circle_24, "Other"));
+        categories.add(new LocationCategory(R.drawable.baseline_circle_24, "Other"));
+        categories.add(new LocationCategory(R.drawable.baseline_circle_24, "Other"));
+        categories.add(new LocationCategory(R.drawable.baseline_circle_24, "Other"));
+        categories.add(new LocationCategory(R.drawable.baseline_circle_24, "Other"));
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        adapter = new LocationCategoryAdapter(categories);
+        recyclerView.setAdapter(adapter);
+
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        recyclerView.addItemDecoration(new SpacingItemDecoration(spacingInPixels));
     }
 
     public void testPolyline(){ // this is a test method that will be removed once the functionality has been verified.
