@@ -30,9 +30,6 @@ public class CurrentLocationController {
     private final MapDisplay mapDisplay;
     private CurrentLocationModel currentLocationModel;
     private static CurrentLocationController controllerInstance;
-    private final int UPDATE_INTERVAL_MS = 4000;
-    private final float SMALLEST_DISPLACEMENT_METERS = 100f;
-
 
     /**
      * Constructs a new CurrentLocationController with the specified activity and map display.
