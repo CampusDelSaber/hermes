@@ -46,7 +46,10 @@ public class WaypointOptionsController {
      */
     private void setButtonsOnClick(){
         navigateButton.setOnClickListener(v -> {
-
+            waypointOptions.startAnimation(Animations.exitAnimation);
+            incidentFormController.getIncidentForm().startAnimation(Animations.entryAnimation);
+            NavegationController.getInstance(this.context).showDistanceAndTimeView();
+            waypointOptions.setVisibility(View.GONE);
         });
 
         reportIncidentButton.setOnClickListener(v -> {
