@@ -53,6 +53,11 @@ public class Route {
         setTotalEstimatedArrivalTime(transportationType);
     }
 
+    /**
+     * Sets the total estimated arrival time within the transportation type.
+     * This will get the estimated arrival time with the transportation velocity
+     * @param transportationType the transportation to be used
+     */
     private void setTotalEstimatedArrivalTime(TransportationType transportationType) {
         totalEstimatedArrivalTime =
                 (int) Math.ceil(((totalEstimatedDistance / transportationType.getVelocity()) * 60));
