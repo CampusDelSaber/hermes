@@ -13,7 +13,6 @@ import java.util.concurrent.Future;
  */
 public class ApiHandler {
     private final String API_URL = "https://api-rest-hermes.onrender.com/";
-
     private ExecutorService executorService;
     private final ApiRequestHandler requestHandler;
     private static ApiHandler instance;
@@ -53,8 +52,13 @@ public class ApiHandler {
         return executorService.submit(() -> requestHandler.postDataFromApi(url, result));
     }
 
-    public Future<?> postFutureCollections(String params) {
-        //"send-email?to=garcia.villalobos.gabriela.4d@gmail.com&code=123"
+    /**
+     * Make an asynchronous request to send email in the future.
+     *
+     * @param params the request parameters in string format.
+     * @return a Future object representing the emailing task.
+     */
+    public Future<?> postFutureEmail(String params) {
         String url = API_URL + params;
         return executorService.submit(() -> requestHandler.postDataFromApi(url));
     }

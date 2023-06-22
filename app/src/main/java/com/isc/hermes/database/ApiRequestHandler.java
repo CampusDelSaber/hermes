@@ -82,7 +82,7 @@ public class ApiRequestHandler {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
             int responseCode = connection.getResponseCode();
-            System.out.println("CPDE RESPONSE: " + responseCode);
+            System.out.println("CODE RESPONSE: " + responseCode);
             connection.disconnect();
         } catch (IOException ioException) {
             ioException.printStackTrace();
