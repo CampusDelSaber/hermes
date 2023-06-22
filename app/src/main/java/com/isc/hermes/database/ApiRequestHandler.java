@@ -70,6 +70,26 @@ public class ApiRequestHandler {
     }
 
     /**
+     * Sends a POST request to the specified API URL with the provided JSON data.
+     *
+     * @param apiUrl   The URL of the API to send the request to.
+     */
+    public void postDataFromApi(String apiUrl) {
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+            int responseCode = connection.getResponseCode();
+            System.out.println("CPDE RESPONSE: " + responseCode);
+            connection.disconnect();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    /**
      * Updates data in the database through a PUT request to the specified API URL with the provided JSON data.
      *
      * @param apiUrl   The URL of the API to send the request to.

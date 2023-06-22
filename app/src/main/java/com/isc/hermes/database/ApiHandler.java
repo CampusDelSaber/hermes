@@ -53,6 +53,12 @@ public class ApiHandler {
         return executorService.submit(() -> requestHandler.postDataFromApi(url, result));
     }
 
+    public Future<?> postFutureCollections(String params) {
+        //"send-email?to=garcia.villalobos.gabriela.4d@gmail.com&code=123"
+        String url = API_URL + params;
+        return executorService.submit(() -> requestHandler.postDataFromApi(url));
+    }
+
     /**
      * Updates the validity of a verification code through the specified API URL and boolean value.
      *
