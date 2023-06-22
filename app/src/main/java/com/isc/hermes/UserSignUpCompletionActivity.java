@@ -1,5 +1,6 @@
 package com.isc.hermes;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,6 +17,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User;
+
+import org.json.JSONException;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -89,22 +94,36 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     }
 
     /**
+     * Loads user data into the database.
+     * This method adds user details to the database, including email, full name,
+     * username, user type, and the path to the user's image.
+     * The method also retrieves and assigns the user's ID after adding them to the database.
+     *
+     * @throws RuntimeException If any other runtime exception occurs during the execution.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void loadUserDataInDB() {
+        AccountInfoManager accountInfoManager = new AccountInfoManager();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            accountInfoManager.addUser(userRegistered.getEmail(), userRegistered.getFullName(),
+                    userRegistered.getUserName(), userRegistered.getTypeUser(), userRegistered.getPathImageUser());
+        try {
+            idUserLogged = accountInfoManager.getIdByEmail(userRegistered.getEmail());}
+        catch (ExecutionException | InterruptedException | JSONException e) {
+            throw new RuntimeException(e); }
+    }
+
+
+    /**
      * Generates an action for the sign-up button.
      * Sets a click listener on the "Register" button, which saves the user's information to the database
      * and navigates the user to the main activity.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void generateActionToButtonSignUp() {
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
         buttonRegister.setOnClickListener(v -> {
             if (userRegistered.getTypeUser() != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    accountInfoManager.addUser(
-                            userRegistered.getEmail(),
-                            userRegistered.getFullName(),
-                            userRegistered.getUserName(),
-                            userRegistered.getTypeUser(),
-                            userRegistered.getPathImageUser());
-                idUserLogged = userRegistered.getId();
+                loadUserDataInDB();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             } else comboBoxTextField.setHelperText("Required");
@@ -117,7 +136,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      */
     private void loadUserImageInView(){
         if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
-                    userRegistered.getPathImageUser())).into(imgUser);
+                userRegistered.getPathImageUser())).into(imgUser);
     }
 
     /**
@@ -134,6 +153,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      *
      * @param savedInstanceState the saved state of the instance
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -5,8 +5,8 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.isc.hermes.model.User;
-import com.mapbox.geojson.Feature;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,14 +71,28 @@ public class AccountInfoManager {
     public User getUserById(String userId) throws ExecutionException, InterruptedException, JSONException {
         String apiUrl = ACCOUNT_INFO_COLLECTION + "/" + userId;
         Future<String> responseData = apiHandler.getFutureCollectionString(apiUrl);
-        String futureRespons = responseData.get();
-        JSONObject jsonObject = new JSONObject(futureRespons);
-        return new User(
-                jsonObject.getString("email"),
-                jsonObject.getString("fullName"),
-                jsonObject.getString("userName"),
-                jsonObject.getString("typeUser"),
-                jsonObject.getString("_id"),
-                jsonObject.getString("pathImageUser"));
+        JSONObject jsonObject = new JSONObject(responseData.get());
+        return new User(jsonObject.getString("email"), jsonObject.getString("fullName"),
+                jsonObject.getString("userName"), jsonObject.getString("typeUser"),
+                jsonObject.getString("_id"), jsonObject.getString("pathImageUser"));
+    }
+
+    /**
+     * Retrieves a User object by the specified user ID.
+     *
+     * @param email the email of the user to retrieve
+     * @return the User object corresponding to the provided user ID
+     * @throws ExecutionException   if an execution exception occurs while retrieving the user
+     * @throws InterruptedException if the retrieval process is interrupted
+     * @throws JSONException        if there is an error in parsing the JSON response
+     * @apiNote Requires API level {@link android.os.Build.VERSION_CODES#O} or higher
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String getIdByEmail(String email) throws ExecutionException, InterruptedException, JSONException {
+        String apiUrl = ACCOUNT_INFO_COLLECTION + "/email/" +  email;
+        Future<String> future = apiHandler.getFutureCollectionString(apiUrl);
+        String futureResponses = future.get();
+        JSONObject jsonObject = new JSONArray(futureResponses).getJSONObject(0);
+        return jsonObject.getString("_id");
     }
 }
