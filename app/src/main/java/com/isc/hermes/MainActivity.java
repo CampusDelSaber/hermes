@@ -3,7 +3,6 @@ package com.isc.hermes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,11 +24,9 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.offline.OfflineDataRepository;
-import com.isc.hermes.model.RegionData;
 import com.isc.hermes.model.User;
 
-import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -41,20 +37,16 @@ import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
-
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -69,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private CurrentLocationController currentLocationController;
     private User userRegistered;
     private boolean visibilityMenu = false;
-    private SearchView searchView;
+    private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
@@ -96,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
+
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
@@ -278,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (!nameServiceUsed.equals("default")) {
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
         }
-
         addMarkers();
     }
 
@@ -383,9 +375,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * The markers are added using the MarkerManager instance.
      */
     private void addMarkers() {
-        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
-                sharedSearcherPreferencesManager.getLatitude(),
-                sharedSearcherPreferencesManager.getLongitude());
+        List<String> placeNames = Collections.singletonList(sharedSearcherPreferencesManager.getPlaceName());
+        List<Double> latitudes = Collections.singletonList(sharedSearcherPreferencesManager.getLatitude());
+        List<Double> longitudes = Collections.singletonList(sharedSearcherPreferencesManager.getLongitude());
+
+
+        for (int i = 0; i < placeNames.size(); i++) {
+            String placeName = placeNames.get(i);
+            double latitude = latitudes.get(i);
+            double longitude = longitudes.get(i);
+            markerManager.addMarkerToMap(mapView, placeName, latitude, longitude);
+        }
+
+        if (!placeNames.isEmpty()) {
+            String lastPlaceName = placeNames.get(placeNames.size() - 1);
+            searchView.setText(lastPlaceName);
+        }
     }
 
     /**
