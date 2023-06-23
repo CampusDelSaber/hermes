@@ -4,7 +4,6 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.google.gson.Gson;
 import com.isc.hermes.model.User;
 
 import org.json.JSONArray;
@@ -49,16 +48,6 @@ public class AccountInfoManager {
     }
 
     /**
-     Delete a user to the account information collection.
-     @param idUser the id of the user
-     @since API 26
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void deleteUser(String idUser) {
-        apiHandler.deleteFutureCollections(ACCOUNT_INFO_COLLECTION, idUser);
-    }
-
-    /**
      * Retrieves a User object by the specified user ID.
      *
      * @param userId the ID of the user to retrieve
@@ -78,6 +67,30 @@ public class AccountInfoManager {
                 jsonObject.getString("_id"), jsonObject.getString("pathImageUser"));
     }
 
+    public boolean verifyIfAccountIsRegistered(String email) throws ExecutionException, InterruptedException, JSONException {
+        boolean isRegistered = false;
+        JSONArray arrayAccounts = getJSONArrayByEmail(email);
+        if (arrayAccounts.length() != 0) {
+            isRegistered = true;
+        } return isRegistered;
+    }
+
+    private JSONArray getJSONArrayByEmail(String email) throws ExecutionException, InterruptedException, JSONException {
+        String apiUrl = ACCOUNT_INFO_COLLECTION + "/email/" +  email;
+        Future<String> future = apiHandler.getFutureCollectionString(apiUrl);
+        return new JSONArray(future.get());
+    }
+
+    /**
+     Delete a user to the account information collection.
+     @param idUser the id of the user
+     @since API 26
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void deleteUser(String idUser) {
+        apiHandler.deleteFutureCollections(ACCOUNT_INFO_COLLECTION, idUser);
+    }
+
     /**
      * Retrieves a User object by the specified user ID.
      *
@@ -90,10 +103,7 @@ public class AccountInfoManager {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String getIdByEmail(String email) throws ExecutionException, InterruptedException, JSONException {
-        String apiUrl = ACCOUNT_INFO_COLLECTION + "/email/" +  email;
-        Future<String> future = apiHandler.getFutureCollectionString(apiUrl);
-        String futureResponses = future.get();
-        JSONObject jsonObject = new JSONArray(futureResponses).getJSONObject(0);
+        JSONObject jsonObject = getJSONArrayByEmail(email).getJSONObject(0);
         return jsonObject.getString("_id");
     }
 

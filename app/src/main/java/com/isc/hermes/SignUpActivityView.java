@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.common.api.ApiException;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
@@ -28,9 +30,10 @@ import timber.log.Timber;
  * This class is in charge of controlling the user's authentication activity.
  */
 public class SignUpActivityView extends AppCompatActivity {
-    private static final int REQUEST_CODE = 7;
     private Map<AuthenticationServices, IAuthentication> authenticationServices;
     public static IAuthentication authenticator;
+    private static final int REQUEST_CODE = 7;
+    public static String idUserLogged;
 
     /**
      * Method for creating the view and configuring it using the components xml.
@@ -104,14 +107,25 @@ public class SignUpActivityView extends AppCompatActivity {
     }
 
     /**
-     * Sends a User object to another activity using an Intent.
+     * Changes the activity depending on whether the user is registered or not.
      *
-     * @param user The User object to be sent to the other activity.
+     * @param user The user object containing the user's information.
+     * @throws ExecutionException If an error occurs while executing the asynchronous task.
+     * @throws InterruptedException If the current thread is interrupted while waiting for the asynchronous task to complete.
+     * @throws JSONException If an error occurs while parsing JSON data.
      */
-    private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, UserSignUpCompletionActivity.class);
-        intent.putExtra("userObtained", user);
-        startActivity(intent);
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void changeActivityDependingIsUserIsRegistered(User user) throws ExecutionException, InterruptedException, JSONException {
+        AccountInfoManager accountInfoManager = new AccountInfoManager();
+        Intent intent;
+
+        if (accountInfoManager.verifyIfAccountIsRegistered(user.getEmail())) {
+            intent = new Intent(this, MainActivity.class);
+            idUserLogged = accountInfoManager.getIdByEmail(user.getEmail());
+        } else {
+            intent = new Intent(this, UserSignUpCompletionActivity.class);
+            intent.putExtra("userObtained", user);
+        } startActivity(intent);
     }
 
     /**
@@ -123,14 +137,13 @@ public class SignUpActivityView extends AppCompatActivity {
      * @param resultCode  The integer result code returned by the child activity
      * @param data        An Intent, which can return result data to the caller
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
-                    sendUserBetweenActivities(authenticator.getUserBySignInResult(data));
-            }
-        } catch (ApiException e) {
+            changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(data));
+        } catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
             Toast.makeText(SignUpActivityView.this,"Wait a moment ",
                     Toast.LENGTH_SHORT).show();
             Timber.tag("LOG").e(e);

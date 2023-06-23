@@ -38,7 +38,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private Button buttonRegister;
     private ImageView imgUser;
     private User userRegistered;
-    public static String idUserLogged;
 
     /**
      * Assigns values to the components view.
@@ -108,7 +107,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
             accountInfoManager.addUser(userRegistered.getEmail(), userRegistered.getFullName(),
                     userRegistered.getUserName(), userRegistered.getTypeUser(), userRegistered.getPathImageUser());
         try {
-            idUserLogged = accountInfoManager.getIdByEmail(userRegistered.getEmail());}
+            SignUpActivityView.idUserLogged = accountInfoManager.getIdByEmail(userRegistered.getEmail());}
         catch (ExecutionException | InterruptedException | JSONException e) {
             throw new RuntimeException(e); }
     }
