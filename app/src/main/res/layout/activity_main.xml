@@ -53,11 +53,9 @@
                         android:id="@+id/dropdown_menu_toolbar"
                         android:layout_width="70dp"
                         android:layout_height="wrap_content"
-                        android:isScrollContainer="false"
-                        android:navigationIcon="@drawable/edittext_style"
-                        android:pointerIcon="context_menu"
-                        android:visibility="visible"
-                        tools:visibility="visible" />
+                        android:layout_marginStart="15dp"
+                        android:background="#00FFFFFF"
+                        app:navigationIcon="@drawable/burger_button" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/filtersButton"

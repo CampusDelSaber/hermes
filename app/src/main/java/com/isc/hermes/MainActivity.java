@@ -82,10 +82,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
-
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
 
 
     /**
@@ -144,6 +143,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapPolyline.displaySavedCoordinates(routes, colors);
     }
 
+    /**
+     * This method initialize the drop down menu
+     */
     private void initializeBurgerButtonToolBar(){
         this.drawerLayout = findViewById(R.id.drawerLayout);
         this.navigationView = findViewById(R.id.dropdown_menu);
@@ -151,12 +153,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
     }
 
+    /**
+     * This method initialize the functionalities of the dropdown menu
+     */
     private void initializeFunctionalityOfTheBurgerButton(){
         navigationView.bringToFront();
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar, R.string.close, R.string.close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,
+                toolbar, R.string.close, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.burger_button);
     }
 
     /**
@@ -373,25 +382,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     public void openStylesMenu(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
-
-        isStyleOptionsVisible = !isStyleOptionsVisible;
-
-        if (isStyleOptionsVisible) {
-            styleOptionsWindow.setVisibility(View.VISIBLE);
-            setMapScrollGesturesEnabled(true);
-            visibilityMenu = false;
-        } else {
-            styleOptionsWindow.setVisibility(View.GONE);
-        }
+        styleOptionsWindow.setVisibility(View.VISIBLE);
+        setMapScrollGesturesEnabled(true);
     }
 
+    /**
+     * This method set the information of the user in the header of the drop down menu
+     */
     private void setTheUserInformationInTheDropMenu(){
-        TextView userNameText = navigationView.getHeaderView(0).findViewById(R.id.userNameText);
-        //userNameText.setText(userRegistered.getUserName());
-        TextView userEmailText = navigationView.getHeaderView(0).findViewById(R.id.userEmailText);
-        //userEmailText.setText(userRegistered.getEmail());
-        ImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.userAccountImage);
-        //userImage.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
+        TextView userNameText = navigationView.getHeaderView(0)
+                .findViewById(R.id.userNameText);
+        userNameText.setText(userRegistered.getUserName());
+        TextView userEmailText = navigationView.getHeaderView(0)
+                .findViewById(R.id.userEmailText);
+        userEmailText.setText(userRegistered.getEmail());
+        ImageView userImage = navigationView.getHeaderView(0)
+                .findViewById(R.id.userAccountImage);
+        userImage.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
 
 
     }
@@ -453,27 +460,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
+    /**
+     * This method analyzes the option that the user wants to perform and activates it.
+     *
+     * @param item The selected item
+     * @return a boolean if all is correct
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.logOut:
                 logOut(new View(context));
-                break;
-            case R.id.styleOptionsWindow:
+                return true;
+            case R.id.mapStyle:
                 openStylesMenu(new View(context));
-                break;
+                return true;
             case R.id.offlineMaps:
                 goOfflineMaps(new View(context));
-                break;
+                return true;
             case R.id.userAccount:
                 goToAccountInformation(new View(context));
-                break;
+                return true;
             case R.id.thirdDimensionMode:
                 //TODO: Implement the third dimension mode;
-                break;
+                return true;
             case R.id.changeDisplayMode:
                 //TODO: Implement the change dimension mode;
-                break;
+                return true;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
