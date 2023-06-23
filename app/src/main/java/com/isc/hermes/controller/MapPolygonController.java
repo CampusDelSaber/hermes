@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.generators.CoordinateParser;
 import com.isc.hermes.utils.Animations;
-import com.isc.hermes.view.MapPolygonStyle;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -70,7 +69,7 @@ public class MapPolygonController implements MapClickConfigurationController {
 
         if (coordinates.size() > 2) {
             buildPolygon();
-            new MapPolygonStyle(this.mapboxMap,this.allPolygonsPoints);
+            PolygonVisualizationController.getInstance().displayPointsPolygonOnMap(allPolygonsPoints,"#3bb2d0");
         }else {
             polygonOptionsController.showPolygonVertexesMessage(3-coordinates.size());
         }

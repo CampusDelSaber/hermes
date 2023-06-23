@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -13,16 +14,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputLayout;
+import com.bumptech.glide.Glide;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
-import com.isc.hermes.controller.PopUp.PopUpEditAccount;
+import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 
 import com.isc.hermes.controller.PopUp.PopUp;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User;
+
+import org.json.JSONException;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
@@ -35,10 +40,10 @@ public class AccountInformation extends AppCompatActivity {
     private AutoCompleteTextView comboBoxField;
     private AutoCompleteTextView textFieldEmail;
     private ImageView imageView;
-    private static final int PICK_IMAGE_REQUEST = 1;
     private User userRegistered;
-    private PopUpEditAccount popUpDialogEdit;
+    private PopUpOverwriteInformationAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -62,16 +67,18 @@ public class AccountInformation extends AppCompatActivity {
     private void generateActionToComboBox() {
         generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
             String item = parent.getItemAtPosition(position).toString();
-            Toast.makeText(getApplicationContext(), "Item: " + item,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Item: " + item, Toast.LENGTH_SHORT).show();
         });
     }
 
     /**
-     * Updates the text fields with user-provided data.
+     * Updates the components with the user information.
+     * If the user has a profile image, it loads the image into the ImageView using Glide library.
+     * Sets the user's username, full name, email, and type in their respective text fields.
      */
-    private void updateTextFieldsByUser() {
-        imageView.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
+    private void updateComponentsByUserInformation() {
+        if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
+                userRegistered.getPathImageUser())).into(imageView);
         textFieldUserName.setText(userRegistered.getUserName());
         textFieldFullName.setText(userRegistered.getFullName());
         textFieldEmail.setText(userRegistered.getEmail());
@@ -87,22 +94,11 @@ public class AccountInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
+        fetchUserFromDB();
         assignValuesToComponentsView();
         generateActionToComboBox();
-        getUserInformation();
-        updateTextFieldsByUser();
+        updateComponentsByUserInformation();
         initializePopups();
-    }
-
-    /**
-     * Sends a User object to another activity using an Intent.
-     *
-     * @param user The User object to be sent to the other activity.
-     */
-    private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("userObtained", user);
-        startActivity(intent);
     }
 
     /**
@@ -111,7 +107,8 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void goToPrincipalView(View view) {
-        sendUserBetweenActivities(userRegistered);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -152,20 +149,10 @@ public class AccountInformation extends AppCompatActivity {
             Uri selectedImageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                Bitmap croppedBitmap = ImageUtil.cropToSquare(bitmap);
-
+                Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
                 imageView.setImageBitmap(croppedBitmap);
             } catch (IOException e) {e.printStackTrace();}
         }
-    }
-
-    /**
-     * Retrieves the user information passed through the intent.
-     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
-     */
-    private void getUserInformation() {
-        Intent intent = getIntent();
-        userRegistered = intent.getParcelableExtra("userObtained");
     }
 
     /**
@@ -188,6 +175,7 @@ public class AccountInformation extends AppCompatActivity {
         userRegistered.setUserName(String.valueOf(textFieldUserName.getText()));
         userRegistered.setFullName(String.valueOf(textFieldFullName.getText()));
     }
+
     /**
      * This method is used to edit an account information using on click action.
      *
@@ -196,7 +184,7 @@ public class AccountInformation extends AppCompatActivity {
     public void saveAccountInformationAction(View view) {
         updateInformationUser();
         popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField);
+                textFieldUserName, comboBoxField, userRegistered);
         popUpDialogEdit.show();
     }
 
@@ -204,8 +192,23 @@ public class AccountInformation extends AppCompatActivity {
      * This method initialize the popup warning when we pressed on the delete account button
      */
     private void initializePopups(){
-        this.popUpDialogEdit = new PopUpEditAccount(this);
+        this.popUpDialogEdit = new PopUpOverwriteInformationAccount(this);
         this.popUpDialogDelete = new PopUpDeleteAccount(this);
+    }
+
+    /**
+     * Retrieves user information from the database.
+     * This method fetches user details from the database based on the specified user ID.
+     * The retrieved user information is stored in the 'userRegistered' variable.
+     *
+     * @throws RuntimeException      If any other runtime exception occurs during the execution.
+     */
+    private void fetchUserFromDB() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                userRegistered = new AccountInfoManager().getUserById(SignUpActivityView.idUserLogged);
+        } catch (JSONException | ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e); }
     }
 
     /**

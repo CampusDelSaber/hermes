@@ -1,57 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
     android:layout_height="250dp"
     android:background="@drawable/popup_background"
     android:layout_gravity="center">
 
-    <TextView
-        android:id="@+id/deleteAccountText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="40dp"
-        android:gravity="center"
-        android:text="@string/delete_account_question_text"
-        android:textColor="#FF0000"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:typeface="normal"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="30sp"
+        android:paddingEnd="30sp">
 
-    <TextView
-        android:id="@+id/warningText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
-        android:layout_marginStart="40dp"
-        android:text="@string/delete_account_warning_text"
-        android:textColor="#000000"
-        android:textSize="15sp"
-        android:typeface="normal"
-        android:layout_below="@id/deleteAccountText"/>
+        <ImageView
+            android:id="@+id/iconMessagePopUp"
+            android:layout_width="61dp"
+            android:layout_height="58dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.120000005" />
 
-    <Button
-        android:id="@+id/imSureButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/warningText"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="40dp"
-        android:text="@string/im_sure_text"/>
+        <TextView
+            android:id="@+id/deleteAccountText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:gravity="center"
+            android:text="@string/delete_account_question_text"
+            android:textColor="@color/jet"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:typeface="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconMessagePopUp" />
 
-    <Button
-        android:id="@+id/betterNotButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/warningText"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="150dp"
-        android:text="@string/Better_not_text"/>
+        <TextView
+            android:id="@+id/warningText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/deleteAccountText"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingStart="20sp"
+            android:paddingEnd="20sp"
+            android:text="@string/delete_account_warning_text"
+            android:textColor="@color/jet_bc"
+            android:textSize="9sp"
+            android:typeface="sans"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deleteAccountText"
+            app:layout_constraintVertical_bias="0.120000005"
+            tools:ignore="SmallSp" />
 
+        <Button
+            android:id="@+id/betterNotButton"
+            android:layout_width="95dp"
+            android:layout_height="37dp"
+            android:text="@string/Better_not_text"
+            android:textSize="10sp"
+            app:cornerRadius="5sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.94"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/warningText"
+            app:layout_constraintVertical_bias="0.38"
+            tools:ignore="SmallSp,TouchTargetSizeCheck" />
+
+        <Button
+            android:id="@+id/imSureButton"
+            android:layout_width="95dp"
+            android:layout_height="37dp"
+            android:layout_below="@id/warningText"
+            android:backgroundTint="@color/blueOxford_app_theme"
+            android:text="@string/im_sure_text"
+            android:textSize="10sp"
+            app:cornerRadius="5sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/betterNotButton"
+            app:layout_constraintHorizontal_bias="0.24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/warningText"
+            app:layout_constraintVertical_bias="0.38"
+            tools:ignore="SmallSp,TouchTargetSizeCheck" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </RelativeLayout>
