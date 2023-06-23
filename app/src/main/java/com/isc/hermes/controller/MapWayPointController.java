@@ -11,6 +11,8 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
+import org.json.JSONException;
+
 /**
  * Class to configure the event of do click on a map
  */
@@ -18,7 +20,7 @@ public class MapWayPointController implements MapClickConfigurationController {
     private final MapboxMap mapboxMap;
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
-
+    private Context context;
     /**
      * This is the constructor method.
      *
@@ -26,6 +28,7 @@ public class MapWayPointController implements MapClickConfigurationController {
      * @param context Is the context application.
      */
     public MapWayPointController(MapboxMap mapboxMap, Context context ) {
+        this.context = context;
         this.mapboxMap = mapboxMap;
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
@@ -41,6 +44,11 @@ public class MapWayPointController implements MapClickConfigurationController {
     public boolean onMapClick(@NonNull LatLng point) {
         doMarkOnMapAction(point);
         IncidentsUploader.getInstance().setLastClickedPoint(point);
+        try {
+            IncidentDialogController.getInstance(context).showDialogCorrect(point);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 

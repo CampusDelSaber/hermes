@@ -1,5 +1,7 @@
 package com.isc.hermes.database;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +44,41 @@ public class IncidentsDataProcessor {
     }
 
     /**
+     * This method gets the near incidents from the API
+     * @param latLng the coordinates to be able where to get the incidents
+     * @param radius the radius of the incidents near to that coordinates
+     * @return the incidents JSON Array response
+     */
+    public JSONArray getNearIncidents(LatLng latLng, double radius) {
+        try{
+            Future<String> future =
+                    apiHandler.getFutureCollectionString(buildApiUrlNearIncidents(latLng, radius));
+            String futureResponse = future.get();
+            return responseParser.getJSONArrayOnResult(futureResponse);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new JSONArray();
+    }
+
+    /**
+     * This method will build the url to make the read operation to the API of near incidents
+     * @param latLng the coordinates to be able where to get the incidents
+     * @param radius the radius of the incidents near to that coordinates
+     * @return the API url to get the near incidents
+     */
+    private String buildApiUrlNearIncidents(LatLng latLng, double radius) {
+        String latitude = Double.toString(latLng.getLatitude());
+        String longitude = Double.toString(latLng.getLongitude());
+        String radiusString = Double.toString(radius / 10.0);
+
+        return String.format(
+                "%s?longitude=%s&latitude=%s&radius=%s",
+                INCIDENTS_COLLECTION_NAME, longitude, latitude, radiusString
+        );
+    }
+
+    /**
      * Handles the API response and processes the incidents data.
      *
      * @param incidentsArray The JSONArray containing the incidents data.
@@ -56,10 +93,10 @@ public class IncidentsDataProcessor {
                 String dateCreated = incidentObj.getString("dateCreated");
 
                 // Process the incident data as needed, example:
-                Timber.tag("Incident").d("ID: %s", id);
-                Timber.tag("Incident").d("Type: %s", type);
-                Timber.tag("Incident").d("Reason: %s", reason);
-                Timber.tag("Incident").d("Date Created: %s", dateCreated);
+                Timber.tag("PointIncidet").d("ID: %s", id);
+                Timber.tag("PointIncidet").d("Type: %s", type);
+                Timber.tag("PointIncidet").d("Reason: %s", reason);
+                Timber.tag("PointIncidet").d("Date Created: %s", dateCreated);
             }
         } catch (JSONException e) {
             e.printStackTrace();
