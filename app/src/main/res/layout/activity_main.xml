@@ -185,7 +185,7 @@
                 android:layout_height="30dp"
                 android:layout_margin="10dp"
                 android:background="@android:color/transparent"
-                mapbox:srcCompat="@drawable/img_icon_incident_generate"
+                android:src="@drawable/img_icon_incident_generate"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
                 android:importantForAccessibility="no" />
 
