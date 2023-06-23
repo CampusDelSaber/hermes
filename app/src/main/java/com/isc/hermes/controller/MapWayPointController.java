@@ -5,6 +5,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -57,6 +58,8 @@ public class MapWayPointController implements MapClickConfigurationController {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+        TrafficUploader.getInstance().setLastClickedPoint(point);
+
         return true;
     }
 
