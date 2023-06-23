@@ -95,11 +95,11 @@
 
             <TextView
                 android:id="@+id/distanceText"
-                android:layout_width="117dp"
-                android:layout_height="33dp"
+                android:layout_width="228dp"
+                android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:text="( 123 Km )"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textSize="25dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

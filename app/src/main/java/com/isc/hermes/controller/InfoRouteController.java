@@ -92,8 +92,7 @@ public class InfoRouteController {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
-
+        setTimeAndDistanceInformation(jsonObjects.get(0));
         mapPolyline.displaySavedCoordinates(jsonCoordinates, colorsInfoRoutes);
     }
     public ConstraintLayout getLayout() {
@@ -117,14 +116,14 @@ public class InfoRouteController {
 
             double meters = jsonObject.getDouble("distance");
             double kilometers = 0;
-            while( meters - 1 >= 1){
+            while( meters - 1 > 0){
                 meters -= 1;
                 kilometers ++;
             }
 
             int decimals = 3;
             DecimalFormat decimalFormat = new DecimalFormat("#." + "0".repeat(decimals));
-            if(kilometers > 0) distanceText.setText(kilometers+ " km. " + decimalFormat.format(meters).substring(1)+ " m.");
+            if(kilometers > 0) distanceText.setText(kilometers+ " km " + decimalFormat.format(meters).substring(1)+ " m");
             else distanceText.setText(decimalFormat.format(meters).substring(1)+ " m.");
 
         } catch (JSONException e) {
