@@ -200,7 +200,7 @@ public class AccountInformation extends AppCompatActivity {
     private void fetchUserFromDB() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                userRegistered = new AccountInfoManager().getUserById(UserSignUpCompletionActivity.idUserLogged);
+                userRegistered = new AccountInfoManager().getUserById(SignUpActivityView.idUserLogged);
         } catch (JSONException | ExecutionException | InterruptedException e) {
             throw new RuntimeException(e); }
     }
