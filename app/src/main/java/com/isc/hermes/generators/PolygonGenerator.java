@@ -1,8 +1,9 @@
 package com.isc.hermes.generators;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
+import com.isc.hermes.model.Radium;
+import com.isc.hermes.model.incidents.GeometryType;
+
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * This method has the responsibility to generate polygon coordinates data.
  */
-public class PolygonGenerator extends CoordinateGen {
+public class PolygonGenerator extends CoordinateGen implements CoordinatesGenerable {
 
     private Geometry polygon;
     private PointGenerator pointGenerator;
@@ -37,21 +38,51 @@ public class PolygonGenerator extends CoordinateGen {
      *
      * @param referencePoint to get the main point reference of limited range.
      * @param radium to get the radium using the reference point.
+     * @param vertexAmount to define the number of vertices of the polygon.
      * @return the polygon coordinates generated.
      */
-    public List<Double[]> getPolygon(Double[] referencePoint, Radium radium) {
+    @Override
+    public List<Double[]> generate(Double[] referencePoint, Radium radium, int vertexAmount) {
         polygonCoordinates.clear();
-
         if (isValidReferencePoint(referencePoint)) {
             polygonCoordinates.add(coordinateParser.doubleToCoordinate(referencePoint));
-            for (int i = 0; i < 15; i++) {
-                coordinate = pointGenerator.getNearPoint(referencePoint, radium);
-                polygonCoordinates.add(coordinateParser.doubleToCoordinate(coordinate));
-            }
+            polygonCoordinates = genSymmetricPolygon(referencePoint, radium, vertexAmount);
             polygon = buildTriangulation(polygonCoordinates);
         }
 
         return coordinateParser.parseToDoubles(polygon);
+    }
+
+    /**
+     * This method generate coordinates to represent a symmetric polygon.
+     *
+     * @param referencePoint to get the main point reference of limited range.
+     * @param radium to get the radium using the reference point.
+     * @param vertexAmount to define the number of vertices of the polygon.
+     * @return symmetric polygon coordinates generated.
+     */
+    public List<Coordinate> genSymmetricPolygon(Double[] referencePoint, Radium radium, int vertexAmount) {
+        vertexAmount *= 4;
+        double currentAngle;
+        double angleIncrement = 2 * Math.PI / vertexAmount;
+
+        for (int i = 0; i < vertexAmount; i++) {
+            currentAngle = i * angleIncrement;
+            coordinate = pointGenerator.getNearPoint(referencePoint, radium, currentAngle);
+            polygonCoordinates.add(coordinateParser.doubleToCoordinate(coordinate));
+        }
+
+        return polygonCoordinates;
+    }
+
+    /**
+     * This method returns the type of geometric object that is generated.
+     *
+     * @return TypeGeometry type.
+     */
+    @Override
+    public GeometryType getTypeGeometry() {
+        return GeometryType.POLYGON;
     }
 
     /**

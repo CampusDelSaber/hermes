@@ -10,7 +10,7 @@ import com.mapbox.mapboxsdk.maps.Style;
  * Class for configuring a MapboxMap object.
  */
 public class MapConfigure {
-    private PlacesSearchedManager placesSearchedManager;
+    private IncidentsManager incidentsManager;
     private Context context;
     /**
      * Configures a MapboxMap object with the MAPBOX_STREETS style.
@@ -21,8 +21,10 @@ public class MapConfigure {
         mapboxMap.setStyle(Style.MAPBOX_STREETS);
         MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
         MapClickEventsManager.getInstance().setContext(context);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(MapClickEventsManager.getInstance().getMapboxMap(),context));
-        placesSearchedManager = new PlacesSearchedManager(mapboxMap,context);
+        MapClickEventsManager.getInstance().setMapClickConfiguration(
+            new MapWayPointController(MapClickEventsManager.getInstance().getMapboxMap(),context
+        ));
+        incidentsManager = new IncidentsManager(mapboxMap, context);
     }
 
     public void setContext(Context context) {

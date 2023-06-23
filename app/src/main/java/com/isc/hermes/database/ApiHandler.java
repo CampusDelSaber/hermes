@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -38,21 +40,6 @@ public class ApiHandler {
     }
 
     /**
-     * Posts future collections to the specified API URL with the given parameters and object.
-     *
-     * @param params  The parameters to append to the API URL.
-     * @param object  The object to be posted as JSON data.
-     * @return A Future representing the result of the asynchronous operation.
-     */
-    public Future<?> postFutureCollections(String params, Object object) {
-        String url = API_URL + params;
-        Gson gson = new Gson();
-        String result = gson.toJson(object);
-        System.out.println("RESULT: " + result);
-        return executorService.submit(() -> requestHandler.postDataFromApi(url, result));
-    }
-
-    /**
      * Make an asynchronous request to send email in the future.
      *
      * @param params the request parameters in string format.
@@ -80,6 +67,48 @@ public class ApiHandler {
         }
 
         return executorService.submit(() -> requestHandler.updateDataInDatabase(url, updateData.toString()));
+    }
+
+    /**
+     * Posts a Future for collections to the specified API URL with the given parameters and object.
+     *
+     * @param params The parameters to be appended to the API URL.
+     * @param object The object to be converted to JSON and sent as the request payload.
+     * @return A Future representing the asynchronous operation of posting data to the API.
+     */
+    public Future<?> postFutureCollections(String params, Object object) {
+        String url = API_URL + params;
+        Gson gson = new Gson();
+        String result = gson.toJson(object);
+        System.out.println("RESULT: " + result);
+        return executorService.submit(() -> requestHandler.postDataFromApi(url, result));
+    }
+
+    /**
+     * delete a Future for collections to the specified API URL with the given parameters and id.
+     *
+     * @param params The parameters to be appended to the API URL.
+     * @param object The id to be converted to JSON and sent as the request payload.
+     * @return A Future representing the asynchronous operation of posting data to the API.
+     */
+    public Future<?> deleteFutureCollections(String params, String object) {
+        String url = API_URL + params;
+        return executorService.submit(() -> requestHandler.deleteDataById(url, object));
+    }
+
+    /**
+     * Updates a Future for collections in the specified API URL with the given parameters and object.
+     *
+     * @param params The parameters to be appended to the API URL.
+     * @param object The object to be converted to JSON and sent as the request payload.
+     * @return A Future representing the asynchronous operation of updating data in the API.
+     */
+    public Future<?> putFutureCollection(String params, Object object) {
+        String url = API_URL + params;
+        Gson gson = new Gson();
+        String result = gson.toJson(object);
+        System.out.println("RESULT: " + result);
+        return executorService.submit(() -> requestHandler.putDataFromApi(url, result));
     }
 
     /**

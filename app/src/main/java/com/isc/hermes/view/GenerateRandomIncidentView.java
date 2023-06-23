@@ -5,7 +5,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
-import com.isc.hermes.generators.Radium;
+import com.isc.hermes.model.Radium;
 
 /**
  * This class is used to initialize the view to select how to generate incidents.
@@ -84,7 +84,7 @@ public class GenerateRandomIncidentView {
             case "1Km":
                 radiumSelected = Radium.ONE_KILOMETER;
                 break;
-            case "5km":
+            case "5Km":
                 radiumSelected = Radium.FIVE_KILOMETERS;
                 break;
             case "10Km":

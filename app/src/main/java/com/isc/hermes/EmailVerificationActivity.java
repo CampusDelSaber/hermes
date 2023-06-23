@@ -59,7 +59,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
                 String code = getCodeUser();
-                System.out.println("CODE FINAL: " + code + "++++++++++++++++++++++++");
                 if (validator.isCorrect(code)) {
                     VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
                     verificationCodesManager.updateVerificationCode(validator.getId(), false);

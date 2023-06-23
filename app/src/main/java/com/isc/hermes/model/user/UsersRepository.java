@@ -1,5 +1,6 @@
 package com.isc.hermes.model.user;
 
+import com.isc.hermes.model.User;
 import com.isc.hermes.model.token.TokenGenerator;
 import java.util.HashMap;
 
@@ -30,17 +31,17 @@ public class UsersRepository {
         return self;
     }
 
-    /**
-     * Saves the payload as an instance of the User object into the HashMap.
-     *
-     * @param payload the data to be saved.
-     * @return a integer token key to the payload.
-     */
-    public int put(Payload payload){
-        int token = handler.generate();
-        users.put(token, new User(payload));
-        return token;
-    }
+//    /**
+//     * Saves the payload as an instance of the User object into the HashMap.
+//     *
+//     * @param payload the data to be saved.
+//     * @return a integer token key to the payload.
+//     */
+//    public int put(Payload payload){
+//        int token = handler.generate();
+//        users.put(token, new User(payload));
+//        return token;
+//    }
 
     /**
      * Retrieves a user from the HashMap by using the given token as a key.

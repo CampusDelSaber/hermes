@@ -2,7 +2,6 @@ package com.isc.hermes.model.signup;
 
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.MainActivity;
-import com.isc.hermes.model.user.UserRoles;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +12,7 @@ import java.util.Map;
  * It is a Singleton class.
  */
 public class RoleTransitionRepository {
-    private final Map<UserRoles, Class<?>> rolesClassMap;
+    private final Map<String, Class<?>> rolesClassMap;
     private static RoleTransitionRepository self;
 
     /**
@@ -22,8 +21,8 @@ public class RoleTransitionRepository {
     private RoleTransitionRepository(){
         rolesClassMap = new HashMap<>();
 
-        rolesClassMap.put(UserRoles.ADMINISTRATOR, EmailVerificationActivity.class);
-        rolesClassMap.put(UserRoles.GENERAL, MainActivity.class);
+        rolesClassMap.put("Administrator", EmailVerificationActivity.class);
+        rolesClassMap.put("General", MainActivity.class);
     }
 
     /**
@@ -35,9 +34,7 @@ public class RoleTransitionRepository {
     public static RoleTransitionRepository getInstance(){
         if (self == null){
             self = new RoleTransitionRepository();
-        }
-
-        return self;
+        } return self;
     }
 
     /**
@@ -46,7 +43,7 @@ public class RoleTransitionRepository {
      * @param role The user role to search for.
      * @return A class to make the transition to.
      */
-    public Class<?> get(UserRoles role){
+    public Class<?> get(String role){
         return rolesClassMap.get(role);
     }
 }
