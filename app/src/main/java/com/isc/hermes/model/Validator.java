@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.isc.hermes.R;
 import com.isc.hermes.database.VerificationCodesManager;
+import com.isc.hermes.model.user.User;
 
 /**
  * The Validator class is responsible for validating a verification code entered by the user.
@@ -24,6 +26,7 @@ public class Validator {
     private VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
     private static Validator validator;
+    private User user;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Validator() {

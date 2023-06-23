@@ -16,6 +16,9 @@ public class RoleTransitionRepository {
     private final Map<UserRoles, Class<?>> rolesClassMap;
     private static RoleTransitionRepository self;
 
+    /**
+     * Constructs a RoleTransitionRepository
+     */
     private RoleTransitionRepository(){
         rolesClassMap = new HashMap<>();
 
