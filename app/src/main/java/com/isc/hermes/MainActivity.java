@@ -98,10 +98,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
-        //testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+        testPolyline(); // this is a test method that will be removed once the functionality has been verified.
     }
 
-  /* public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
+  public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
         Map<String, String> r = new HashMap<>();
 
         r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
@@ -116,8 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
         //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
 
-    }*/
-
+    }
     /**
      * Method to add the searcher to the main scene above the map
      */
