@@ -4,11 +4,27 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 /**
  * Utility class containing helper methods for image manipulation.
  */
 public class ImageUtil {
+
+    private static ImageUtil instance;
+
+    /**
+     * Returns the singleton instance of ImageUtil.
+     *
+     * @return The ImageUtil instance.
+     */
+    public static ImageUtil getInstance() {
+        if (instance == null) {
+            instance = new ImageUtil();
+        } return instance;
+    }
 
     /**
      * Crops a bitmap to a square shape.
@@ -16,7 +32,7 @@ public class ImageUtil {
      * @param bitmap The bitmap to be cropped.
      * @return The cropped bitmap.
      */
-    public static Bitmap cropToSquare(Bitmap bitmap) {
+    public Bitmap cropToSquare(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
 
@@ -35,7 +51,7 @@ public class ImageUtil {
      * @param bitmap the Bitmap object to get the Uri from.
      * @return the Uri corresponding to the Bitmap object, or null if an error occurs.
      */
-    public static Uri getUriFromBitmap(Context context, Bitmap bitmap) {
+    public Uri getUriFromBitmap(Context context, Bitmap bitmap) {
         Uri uri = null;
         try {
             String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap,
@@ -45,5 +61,4 @@ public class ImageUtil {
             e.printStackTrace();
         }return uri;
     }
-
 }

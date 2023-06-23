@@ -3,6 +3,7 @@ package com.isc.hermes.utils;
 import android.app.Activity;
 
 import com.isc.hermes.model.WayPoint;
+import com.mapbox.geojson.Feature;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class SearcherAdapterUpdater {
     public SearcherAdapterUpdater(Activity activity, SearcherAdapter adapter) {
         this.activity = activity;
         this.adapter = adapter;
+
     }
 
     /**
