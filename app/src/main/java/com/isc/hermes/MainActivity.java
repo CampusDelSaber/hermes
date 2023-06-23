@@ -29,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Handler;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
@@ -115,10 +116,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
-        fetchUserFromDB();
+        //fetchUserFromDB();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
-        setTheUserInformationInTheDropMenu();
+        //setTheUserInformationInTheDropMenu();
     }
 
     public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
@@ -381,7 +382,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         userEmailText.setText(userRegistered.getEmail());
         ImageView userImage = navigationView.getHeaderView(0)
                 .findViewById(R.id.userAccountImage);
-        userImage.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
+        if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
+                userRegistered.getPathImageUser())).into(userImage);
     }
 
     /**
@@ -394,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void fetchUserFromDB() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                userRegistered = new AccountInfoManager().getUserById(UserSignUpCompletionActivity.idUserLogged);
+                userRegistered = new AccountInfoManager().getUserById(SignUpActivityView.idUserLogged);
         } catch (JSONException | ExecutionException | InterruptedException e) {
             throw new RuntimeException(e); }
     }
