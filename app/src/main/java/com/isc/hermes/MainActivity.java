@@ -116,10 +116,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
-        //fetchUserFromDB();
+        fetchUserFromDB();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
-        //setTheUserInformationInTheDropMenu();
+        setTheUserInformationInTheDropMenu();
     }
 
     public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
