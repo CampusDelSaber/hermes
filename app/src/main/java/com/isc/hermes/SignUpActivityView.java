@@ -45,7 +45,7 @@ public class SignUpActivityView extends AppCompatActivity {
     private void creationActionAboutUs(){
         TextView btn = findViewById(R.id.bttn_about_us);
         btn.setOnClickListener(v -> startActivity(
-                new Intent(this,AboutUs.class)));
+                new Intent(this,MainActivity.class)));
     }
 
     /**

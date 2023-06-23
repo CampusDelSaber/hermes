@@ -184,7 +184,6 @@
                 android:onClick="openStylesMenu"
                 android:text="@string/styles_menu"
                 android:textColor="@color/black"
-                android:background="@android:color/transparent"
                 mapbox:icon="@drawable/img_layer_icon" />
 
         </androidx.cardview.widget.CardView>
