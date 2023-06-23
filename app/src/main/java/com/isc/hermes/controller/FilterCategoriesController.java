@@ -1,31 +1,26 @@
 package com.isc.hermes.controller;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.support.v4.media.MediaBrowserCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.isc.hermes.R;
+import com.isc.hermes.SpacingItemDecoration;
+import com.isc.hermes.model.CategoryFilter;
 import com.isc.hermes.model.Searcher;
+import com.isc.hermes.utils.CategoryFilterAdapter;
+import com.isc.hermes.utils.CategoryFilterClickListener;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.PlaceSearch;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.api.geocoding.v5.models.*;
-
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.maps.MapView;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +28,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FilterCategoriesController {
+public class FilterCategoriesController implements CategoryFilterClickListener {
 
     private LinearLayout tagsContainer;
     private MarkerManager markerManager;
     private MapView mapView;
     private Activity activity;
+    private RecyclerView locationCategoriesRecyclerView;
+    private CategoryFilterAdapter locationCategoryAdapter;
 
 
     public FilterCategoriesController(Activity activity) {
@@ -51,6 +48,45 @@ public class FilterCategoriesController {
     private void createItemsUI() {
         tagsContainer = activity.findViewById(R.id.tagsContainer);
         mapView = activity.findViewById(R.id.mapView);
+        recyclerViewConfig();
+        adapterConfiguration();
+    }
+
+    private void recyclerViewConfig() {
+        locationCategoriesRecyclerView = activity.findViewById(R.id.recyclerView);
+        locationCategoriesRecyclerView.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false));
+        addSpaceBetweenCategories();
+    }
+
+    private void addSpaceBetweenCategories() {
+        int spacingInPixels = activity.getResources().getDimensionPixelSize(R.dimen.spacing);
+        locationCategoriesRecyclerView.addItemDecoration(new SpacingItemDecoration(spacingInPixels));
+    }
+
+    private void adapterConfiguration() {
+        List<CategoryFilter> categories = generateLocationCategories();
+        locationCategoryAdapter = new CategoryFilterAdapter(categories, this);
+        locationCategoriesRecyclerView.setAdapter(locationCategoryAdapter);
+    }
+
+    private List<CategoryFilter> generateLocationCategories() {
+        List<CategoryFilter> categories = new ArrayList<>();
+
+        // Example categories
+        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        return categories;
+    }
+
+    @Override
+    public void onLocationCategoryClick(CategoryFilter locationCategory) {
+        searchPlacesByTag(locationCategory.getNameCategory());
     }
 
     private void searchPlacesByTag(String tag) {
