@@ -61,17 +61,4 @@ public class ImageUtil {
             e.printStackTrace();
         }return uri;
     }
-
-
-    /**
-     * Updates the image of an ImageView with the image located at the specified path using Picasso.
-     *
-     * @param context       The context used to load the image. It should be an instance of Context.
-     * @param pathImage     The path to the image file to be loaded. It should be a valid file path or a URL.
-     * @param imageToUpdate The ImageView object to be updated with the loaded image.
-     */
-    public void updateImageOfImageView(Context context, String pathImage,
-                                                   ImageView imageToUpdate) {
-        Picasso.with(context).load(pathImage).into(imageToUpdate);
-    }
 }

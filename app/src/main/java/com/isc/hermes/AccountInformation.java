@@ -13,6 +13,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
@@ -70,9 +72,13 @@ public class AccountInformation extends AppCompatActivity {
     }
 
     /**
-     * Updates the text fields with user-provided data.
+     * Updates the components with the user information.
+     * If the user has a profile image, it loads the image into the ImageView using Glide library.
+     * Sets the user's username, full name, email, and type in their respective text fields.
      */
-    private void updateTextFieldsByUser() {
+    private void updateComponentsByUserInformation() {
+        if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
+                userRegistered.getPathImageUser())).into(imageView);
         textFieldUserName.setText(userRegistered.getUserName());
         textFieldFullName.setText(userRegistered.getFullName());
         textFieldEmail.setText(userRegistered.getEmail());
@@ -91,7 +97,7 @@ public class AccountInformation extends AppCompatActivity {
         fetchUserFromDB();
         assignValuesToComponentsView();
         generateActionToComboBox();
-        updateTextFieldsByUser();
+        updateComponentsByUserInformation();
         initializePopups();
     }
 

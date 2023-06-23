@@ -70,12 +70,13 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     }
 
     /**
-     * Sets the button and text fields for the account edit.
+     * Sets the information to be edited in the AbelEdit form.
      *
-     * @param button    The button for account editing.
-     * @param fullName  The text field for the full name.
-     * @param username  The text field for the username.
-     * @param comboBoxField The text field fo combo-box.
+     * @param button The button used for editing the information.
+     * @param fullName The AutoCompleteTextView for entering the full name.
+     * @param username The AutoCompleteTextView for entering the username.
+     * @param comboBoxField The AutoCompleteTextView for selecting a field from a combo box.
+     * @param user The user object containing the user's information to be edited.
      */
     public void setInformationToAbelEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
                                          AutoCompleteTextView comboBoxField, User user) {

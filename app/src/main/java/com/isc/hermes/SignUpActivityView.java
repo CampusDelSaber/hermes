@@ -107,9 +107,12 @@ public class SignUpActivityView extends AppCompatActivity {
     }
 
     /**
-     * Sends a User object to another activity using an Intent.
+     * Changes the activity depending on whether the user is registered or not.
      *
-     * @param user The User object to be sent to the other activity.
+     * @param user The user object containing the user's information.
+     * @throws ExecutionException If an error occurs while executing the asynchronous task.
+     * @throws InterruptedException If the current thread is interrupted while waiting for the asynchronous task to complete.
+     * @throws JSONException If an error occurs while parsing JSON data.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void changeActivityDependingIsUserIsRegistered(User user) throws ExecutionException, InterruptedException, JSONException {
@@ -119,15 +122,6 @@ public class SignUpActivityView extends AppCompatActivity {
         if (accountInfoManager.verifyIfAccountIsRegistered(user.getEmail())) {
             intent = new Intent(this, MainActivity.class);
             idUserLogged = accountInfoManager.getIdByEmail(user.getEmail());
-            System.out.println(idUserLogged);
-            System.out.println(idUserLogged);
-            System.out.println(idUserLogged);
-            System.out.println(idUserLogged);
-            System.out.println(idUserLogged);
-            System.out.println(idUserLogged);
-            System.out.println(idUserLogged);
-            System.out.println(idUserLogged);
-            System.out.println(idUserLogged);
         } else {
             intent = new Intent(this, UserSignUpCompletionActivity.class);
             intent.putExtra("userObtained", user);
