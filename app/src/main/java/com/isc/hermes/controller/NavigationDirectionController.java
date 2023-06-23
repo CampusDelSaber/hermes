@@ -1,8 +1,9 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.view.View;
-
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,13 +29,12 @@ public class NavigationDirectionController {
     private final MapWayPointController mapWayPointController;
     private TextView directionsList;
 
-
     public NavigationDirectionController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
         this.mapWayPointController = mapWayPointController;
         directionsForm = ((AppCompatActivity) context).findViewById(R.id.directions_form);
 
-        directionsList = ((AppCompatActivity)context).findViewById(R.id.directions_list);
+        directionsList = ((AppCompatActivity) context).findViewById(R.id.directions_list);
 
         Map<String, String> r = new HashMap<>();
 
@@ -46,11 +47,10 @@ public class NavigationDirectionController {
         String jsonC = r.get("Route C");
 
         processRoute(jsonA);
-
     }
 
     private void setButtons() {
-
+        // Configura los botones
     }
 
     void updateUiPointsComponents() {
@@ -73,40 +73,58 @@ public class NavigationDirectionController {
             e.printStackTrace();
         }
     }
-    private void processCoordinates(JSONArray coordinates) throws JSONException {
+
+    private void processCoordinates(JSONArray coordinates) {
         List<String> directions = new ArrayList<>();
 
-        JSONArray startPoint = coordinates.getJSONArray(0);
-        double prevLatitude = startPoint.getDouble(1);
-        double prevLongitude = startPoint.getDouble(0);
+        try {
+            JSONArray startPoint = coordinates.getJSONArray(0);
+            double prevLatitude = startPoint.getDouble(1);
+            double prevLongitude = startPoint.getDouble(1);
 
-        for (int i = 1; i < coordinates.length(); i++) {
-            JSONArray currentPoint = coordinates.getJSONArray(i);
-            double latitude = currentPoint.getDouble(1);
-            double longitude = currentPoint.getDouble(0);
+            for (int i = 1; i < coordinates.length(); i++) {
+                JSONArray currentPoint = coordinates.getJSONArray(i);
+                double latitude = currentPoint.getDouble(1);
+                double longitude = currentPoint.getDouble(0);
 
-            double angle = calculateAngle(Math.toRadians(prevLatitude), Math.toRadians(prevLongitude), Math.toRadians(latitude), Math.toRadians(longitude));
-            String direction = determineDirection(angle);
-            directions.add(direction);
+                String streetName = getStreetNameForCoordinates(latitude, longitude);
+                String direction = determineDirection(prevLatitude, prevLongitude, latitude, longitude);
+                String directionWithStreet = direction + " on " + streetName;
+                directions.add(directionWithStreet);
 
-            prevLatitude = latitude;
-            prevLongitude = longitude;
+                prevLatitude = latitude;
+                prevLongitude = longitude;
+            }
+
+            displayDirections(directions);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getStreetNameForCoordinates(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(context);
+        String streetName = "";
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                streetName = address.getThoroughfare();
+                if (streetName == null)
+                    streetName = address.getAddressLine(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        displayDirections(directions);
+        return streetName;
     }
 
+    private String determineDirection(double prevLatitude, double prevLongitude, double latitude, double longitude) {
+        double angle = calculateAngle(Math.toRadians(prevLatitude), Math.toRadians(prevLongitude), Math.toRadians(latitude), Math.toRadians(longitude));
 
-
-    private double calculateAngle(double latA, double lonA, double latB, double lonB) {
-        double dLon = lonB - lonA;
-        double y = Math.sin(dLon) * Math.cos(latB);
-        double x = Math.cos(latA) * Math.sin(latB) - Math.sin(latA) * Math.cos(latB) * Math.cos(dLon);
-        double angle = Math.atan2(y, x);
-        return Math.toDegrees(angle);
-    }
-
-    private String determineDirection(double angle) {
         if (angle > -45 && angle <= 45) {
             return "Go straight";
         } else if (angle > 45 && angle <= 135) {
@@ -116,6 +134,14 @@ public class NavigationDirectionController {
         } else {
             return "Go straight";
         }
+    }
+
+    private double calculateAngle(double latA, double lonA, double latB, double lonB) {
+        double dLon = lonB - lonA;
+        double y = Math.sin(dLon) * Math.cos(latB);
+        double x = Math.cos(latA) * Math.sin(latB) - Math.sin(latA) * Math.cos(latB) * Math.cos(dLon);
+        double angle = Math.atan2(y, x);
+        return Math.toDegrees(angle);
     }
 
     private void displayDirections(List<String> directions) {

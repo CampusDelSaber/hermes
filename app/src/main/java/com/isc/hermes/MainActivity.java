@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String jsonC = r.get("Route C");
 
         MapPolyline mapPolyline = new MapPolyline(mapView);
-        //mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
-        mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
+        mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
+        //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
 
     }*/
 
