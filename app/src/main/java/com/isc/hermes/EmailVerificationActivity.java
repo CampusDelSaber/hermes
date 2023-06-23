@@ -34,7 +34,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_verification);
         validator = Validator.getValidator();
-        //validator.obtainVerificationCode();
         initComponents();
     }
 

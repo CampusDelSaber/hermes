@@ -30,6 +30,13 @@ public class SignUpTransitionHandler {
         packageContext.startActivity(intent);
     }
 
+    /**
+     * Sends a verification code to the specified email address, based on the user roles,
+     * only "Administrator".
+     *
+     * @param roles The user roles object containing the role information.
+     * @param email The email address to which the verification code will be sent.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(UserRoles roles, String email) {
         if (roles.getRole().equals("Administrator")) {
