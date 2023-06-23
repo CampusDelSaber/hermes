@@ -2,14 +2,14 @@ package com.isc.hermes.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
+import com.isc.hermes.controller.GraphController;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
-
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.util.List;
 import java.util.Map;
 
