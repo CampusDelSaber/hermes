@@ -50,12 +50,12 @@ public class InfoRouteController {
         buttonRouteA = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteOne);
         buttonRouteB = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteTwo);
         buttonRouteC = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteThree);
+        colorsInfoRoutes = new ArrayList<>();
         isActive = false;
         colorsInfoRoutes.add(0XFFFF6E26);
         colorsInfoRoutes.add(0xFF2867DC);
         colorsInfoRoutes.add(0XFFC5D9FD);
         jsonObjects = new ArrayList<>();
-        colorsInfoRoutes = new ArrayList<>();
         setActionButtons();
     }
 
