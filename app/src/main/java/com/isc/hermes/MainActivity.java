@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
 
+import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
@@ -96,13 +97,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
-        getUserInformation();
         initCurrentLocationController();
         mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
+        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
         initShowIncidentsController();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
@@ -154,19 +155,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap,this));
-    }
-
-
-    /**
-     * Sends a User object to another activity using an Intent.
-     *
-     * @param user The User object to be sent to the other activity.
-     */
-    private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, AccountInformation.class);
-        intent.putExtra("userObtained", user);
-        startActivity(intent);
+        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
     }
 
     /**
@@ -175,7 +164,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param view Helps build the view
      */
     public void goToAccountInformation(View view) {
-        sendUserBetweenActivities(userRegistered);
+        Intent intent = new Intent(this, AccountInformation.class);
+        startActivity(intent);
     }
 
     /**
@@ -242,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * This method init the form with all button to show incidents from database
      */
-    private void initShowIncidentsController(){
+    private void initShowIncidentsController() {
         viewIncidentsController = new ViewIncidentsController(this);
     }
 
@@ -348,15 +338,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Retrieves the user information passed through the intent.
-     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
-     */
-    private void getUserInformation() {
-        Intent intent = getIntent();
-        userRegistered = intent.getParcelableExtra("userObtained");
-    }
-
-    /**
      * Opens the styles menu by toggling its visibility.
      *
      * @param view The view that triggered the method.
@@ -413,6 +394,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         launcher.launch(intent);
     }
+
     /**
      * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
      *
