@@ -52,9 +52,9 @@ public class PopUpDeleteAccount extends PopUp{
     public void onClick(View v) {
         if (v == super.confirmButton){
             AccountInfoManager accountInfoManager = new AccountInfoManager();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                accountInfoManager.deleteUser("64925b38e2a844fa31b4d9b0");
-            closeAuthentication();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                accountInfoManager.deleteUser(SignUpActivityView.idUserLogged);
+            } closeAuthentication();
         } dismiss();
     }
 }

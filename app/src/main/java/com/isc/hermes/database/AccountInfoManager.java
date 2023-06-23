@@ -4,7 +4,6 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.google.gson.Gson;
 import com.isc.hermes.model.User;
 
 import org.json.JSONArray;
@@ -49,16 +48,6 @@ public class AccountInfoManager {
     }
 
     /**
-     Delete a user to the account information collection.
-     @param idUser the id of the user
-     @since API 26
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void deleteUser(String idUser) {
-        apiHandler.deleteFutureCollections(ACCOUNT_INFO_COLLECTION, idUser);
-    }
-
-    /**
      * Retrieves a User object by the specified user ID.
      *
      * @param userId the ID of the user to retrieve
@@ -79,6 +68,47 @@ public class AccountInfoManager {
     }
 
     /**
+     Verifies if an account is registered based on the provided email.
+     @param email the email to be checked for registration
+     @return true if the account is registered, false otherwise
+     @throws ExecutionException if an execution exception occurs during the verification process
+     @throws InterruptedException if the verification process is interrupted
+     @throws JSONException if a JSON exception occurs while retrieving the account information
+     */
+    public boolean verifyIfAccountIsRegistered(String email) throws ExecutionException, InterruptedException, JSONException {
+        boolean isRegistered = false;
+        JSONArray arrayAccounts = getJSONArrayByEmail(email);
+        if (arrayAccounts.length() != 0) {
+            isRegistered = true;
+        } return isRegistered;
+    }
+
+    /**
+     * Retrieves a private JSONArray based on the provided email.
+     *
+     * @param email the email address used for retrieving the JSONArray
+     * @return the private JSONArray associated with the provided email
+     * @throws ExecutionException     if the computation of the future resulted in an exception
+     * @throws InterruptedException if the current thread was interrupted while waiting
+     * @throws JSONException         if there was an error parsing the JSON data
+     */
+    private JSONArray getJSONArrayByEmail(String email) throws ExecutionException, InterruptedException, JSONException {
+        String apiUrl = ACCOUNT_INFO_COLLECTION + "/email/" +  email;
+        Future<String> future = apiHandler.getFutureCollectionString(apiUrl);
+        return new JSONArray(future.get());
+    }
+
+    /**
+     Delete a user to the account information collection.
+     @param idUser the id of the user
+     @since API 26
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void deleteUser(String idUser) {
+        apiHandler.deleteFutureCollections(ACCOUNT_INFO_COLLECTION, idUser);
+    }
+
+    /**
      * Retrieves a User object by the specified user ID.
      *
      * @param email the email of the user to retrieve
@@ -90,10 +120,7 @@ public class AccountInfoManager {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String getIdByEmail(String email) throws ExecutionException, InterruptedException, JSONException {
-        String apiUrl = ACCOUNT_INFO_COLLECTION + "/email/" +  email;
-        Future<String> future = apiHandler.getFutureCollectionString(apiUrl);
-        String futureResponses = future.get();
-        JSONObject jsonObject = new JSONArray(futureResponses).getJSONObject(0);
+        JSONObject jsonObject = getJSONArrayByEmail(email).getJSONObject(0);
         return jsonObject.getString("_id");
     }
 
