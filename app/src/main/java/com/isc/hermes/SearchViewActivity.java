@@ -98,12 +98,6 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         editor.putFloat("longitude", (float)wayPoint.getLongitude());
         editor.apply();
         finish();
-        /* Optional
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("selectedPlaceName", wayPoint.getPlaceName());
-        setResult(RESULT_OK, resultIntent);
-        finish();
-         */
     }
 
     /**

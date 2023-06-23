@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
@@ -184,18 +183,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
         });
     }
-
-    /* Review 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            String selectedPlaceName = data.getStringExtra("selectedPlaceName");
-            searchView.setText(selectedPlaceName); // Establecer el valor seleccionado en el TextView
-        }
-    }
-     */
-
+    
     /**
      * Enables or disables map scroll gestures.
      *
@@ -373,14 +361,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * The markers are added using the MarkerManager instance.
      */
     private void addMarkers() {
-
-
-        // Obtiene la lista de lugares y sus coordenadas
         List<String> placeNames = Collections.singletonList(sharedSearcherPreferencesManager.getPlaceName());
         List<Double> latitudes = Collections.singletonList(sharedSearcherPreferencesManager.getLatitude());
         List<Double> longitudes = Collections.singletonList(sharedSearcherPreferencesManager.getLongitude());
 
-        // Agrega las nuevas marcas al mapa y actualiza el texto en searchView
+
         for (int i = 0; i < placeNames.size(); i++) {
             String placeName = placeNames.get(i);
             double latitude = latitudes.get(i);

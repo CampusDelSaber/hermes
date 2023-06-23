@@ -118,11 +118,6 @@
             mapbox:srcCompat="@drawable/img_icon_incident_generate"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-        <include
-            layout="@layout/customization_menu"
-            mapbox:layout_anchor="@+id/mapView"
-            mapbox:layout_anchorGravity="center" />
-
         <ImageButton
             android:id="@+id/locationButton"
             android:layout_width="30dp"
@@ -143,6 +138,11 @@
 
     <include
         layout="@layout/incident_generate_view"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
+        layout="@layout/customization_menu"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 
