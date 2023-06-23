@@ -1,14 +1,18 @@
 package com.isc.hermes;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
@@ -20,6 +24,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Handler;
@@ -34,6 +39,7 @@ import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.model.User;
 
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -49,6 +55,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 
@@ -106,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
+        setTheUserInformationInTheDropMenu();
     }
 
     public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
@@ -138,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
     /**
@@ -354,6 +362,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param view The view that triggered the method.
      */
     public void openStylesMenu(View view) {
+        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
+
+        isStyleOptionsVisible = !isStyleOptionsVisible;
+
+        if (isStyleOptionsVisible) {
+            styleOptionsWindow.setVisibility(View.VISIBLE);
+            setMapScrollGesturesEnabled(true);
+            visibilityMenu = false;
+        } else {
+            styleOptionsWindow.setVisibility(View.GONE);
+        }
+    }
+
+    private void setTheUserInformationInTheDropMenu(){
+        TextView userNameText = navigationView.getHeaderView(0).findViewById(R.id.userNameText);
+        //userNameText.setText(userRegistered.getUserName());
+        TextView userEmailText = navigationView.getHeaderView(0).findViewById(R.id.userEmailText);
+        //userEmailText.setText(userRegistered.getEmail());
+        ImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.userAccountImage);
+        //userImage.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
+
 
     }
 
@@ -416,6 +445,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.logOut:
+                logOut(new View(context));
+                break;
+            case R.id.styleOptionsWindow:
+                openStylesMenu(new View(context));
+                break;
+            case R.id.offlineMaps:
+                goOfflineMaps(new View(context));
+                break;
+            case R.id.userAccount:
+                goToAccountInformation(new View(context));
+                break;
+            case R.id.thirdDimensionMode:
+                //TODO: Implement the third dimension mode;
+                break;
+            case R.id.changeDisplayMode:
+                //TODO: Implement the change dimension mode;
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }

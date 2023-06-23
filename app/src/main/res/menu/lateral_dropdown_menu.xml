@@ -1,54 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-
-        <item
-            android:id="@+id/userAccount"
-            android:title="User account"
-            android:icon="@drawable/backbutton"/>
-        <item
-            android:id="@+id/offlineMaps"
-            android:title="Offline maps"
-            android:icon="@drawable/backbutton"/>
-        <item
-            android:id="@+id/changeDisplayMode"
-            android:title="Change display mode"
-            android:icon="@drawable/backbutton"/>
-        <item
-            android:id="@+id/mapStyle"
-            android:title="Map style"
-            android:icon="@drawable/backbutton"/>
-        <item
-            android:id="@+id/thirdDimensionMode"
-            android:title="3D mode"
-            android:icon="@drawable/backbutton"/>
-        <item
-            android:id="@+id/logOut"
-            android:title="Log out"
-            android:icon="@drawable/backbutton"/>
-
-    </group>
 
     <group android:checkableBehavior="single">
 
         <item
-            android:title="Profile">
+            android:title="@string/tools">
 
             <menu>
 
                 <item
-                    android:id="@+id/uno"
-                    android:title="uno"
-                    android:icon="@drawable/backbutton"/>
+                    android:id="@+id/offlineMaps"
+                    android:title="@string/offline_mode"
+                    android:icon="@drawable/offline_button_icon"/>
                 <item
-                    android:id="@+id/dos"
-                    android:title="dos"
-                    android:icon="@drawable/backbutton"/>
+                    android:id="@+id/changeDisplayMode"
+                    android:title="@string/change_display_mode"
+                    android:icon="@drawable/traveler_button_icon"/>
                 <item
-                    android:id="@+id/tres"
-                    android:title="tres"
-                    android:icon="@drawable/backbutton"/>
+                    android:id="@+id/mapStyle"
+                    android:title="@string/map_style"
+                    android:icon="@drawable/map_button_icon"/>
+                <item
+                    android:id="@+id/thirdDimensionMode"
+                    android:title="@string/third_dimension_mode"
+                    android:icon="@drawable/third_dimension_button_icon"/>
 
             </menu>
 
@@ -56,18 +32,18 @@
 
     </group>
 
-    <item android:title="Comunnicate">
+    <item android:title="@string/profile">
 
         <menu>
 
             <item
-                android:id="@+id/cuatro"
-                android:title="cuatro"
-                android:icon="@drawable/backbutton"/>
+                android:id="@+id/userAccount"
+                android:title="@string/user_account"
+                android:icon="@drawable/user_button_icon"/>
             <item
-                android:id="@+id/cinco"
-                android:title="cinco"
-                android:icon="@drawable/backbutton"/>
+                android:id="@+id/logOut"
+                android:title="@string/log_out"
+                android:icon="@drawable/icon_button_logout"/>
 
         </menu>
 

@@ -112,8 +112,6 @@
     <string name="search_a_city">Search a City</string>
     <string name="array_size_text_timber">The arrays about colors, icons and the type buttons have a different size</string>
 
-
-
     <!--  Offline Maps Settings  -->
     <string name="downloaded_maps">Downloaded Maps</string>
     <string name="from_your_location_history">From your Location History</string>
@@ -127,4 +125,15 @@
     <string name="download_button_text">Download\n</string>
     <string name="tittle_region_popup">Give a name to your map</string>
     <string name="your_name_map">Your name map</string>
+
+    <!--  Dropdown Menu  -->
+    <string name="tools">Tools</string>
+    <string name="profile">Profile</string>
+    <string name="offline_mode">Offline maps</string>
+    <string name="change_display_mode">Change display mode</string>
+    <string name="map_style">Map style</string>
+    <string name="third_dimension_mode">3D mode</string>
+    <string name="user_account">User account</string>
+    <string name="log_out">Log out</string>
+
 </resources>
