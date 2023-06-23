@@ -1,6 +1,5 @@
 package com.isc.hermes.model.Utils;
 
-import android.util.Log;
 
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
@@ -14,7 +13,6 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * This class will be in charge of displaying the Polyline.
@@ -23,7 +21,7 @@ public class MapPolyline {
 
     private MapView mapView;
     private List<List<Point>> allPoints;
-    private ArrayList<String> idPolyLinesList;
+    private ArrayList<GeoJsonSource> idPolyLinesList;
 
 
     /**
@@ -100,7 +98,7 @@ public class MapPolyline {
                 for (int i = 0; i < features.size(); i++){
                     GeoJsonSource polylineSource =
                             new GeoJsonSource("polyline" + i + "-source", featureCollection);
-                    idPolyLinesList.add(polylineSource.getId());
+                    idPolyLinesList.add(polylineSource);
                     style.addSource(polylineSource);
                     polylineSource.setGeoJson(features.get(i));
                 }
@@ -109,13 +107,12 @@ public class MapPolyline {
     }
 
 
+    /**
+     * This method will hide all the polylines in the map
+     */
     public void hidePolylines() {
         mapView.getMapAsync(mapboxMap -> {
-            mapboxMap.getStyle(style -> {
-                for (String currentId : idPolyLinesList){
-                    style.removeSource(currentId);
-                }
-            });
+            mapboxMap.setStyle(Style.MAPBOX_STREETS);
         });
     }
     /**
