@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void testGetAllIncidents4() throws ExecutionException, InterruptedException, JSONException {
+    public void showTraffic() throws ExecutionException, InterruptedException, JSONException {
         JSONArray incidentsArray = incidentsDataProcessor.getAllIncidentsByType("Traffic");
         assertNotNull(incidentsArray);
 
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onStyleLoaded(@NonNull Style style) {
                 filterController.initComponents();
                 try {
-                    testGetAllIncidents4();
+                    showTraffic();
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
