@@ -73,7 +73,7 @@ public class MarkerManager {
                 options.setTitle(placeName);
                 options.position(new LatLng(latitude, longitude));
                 currentMarker = mapboxMap.addMarker(options);
-                setCameraPosition(mapboxMap, latitude, longitude);
+                if (!multiPoint) setCameraPosition(mapboxMap, latitude, longitude);
             }
         });
     }
@@ -81,12 +81,12 @@ public class MarkerManager {
     /**
      * Adds a marker to the map at the specified location.
      *
-     * @param mapView    The MapView instance.
-     * @param placeName  The name of the place associated with the marker.
-     * @param latitude   The latitude of the marker's position.
-     * @param longitude  The longitude of the marker's position.
+     * @param mapView   The MapView instance.
+     * @param placeName The name of the place associated with the marker.
+     * @param latitude  The latitude of the marker's position.
+     * @param longitude The longitude of the marker's position.
      */
-    public void addMarkerToMap(MapView mapView, String placeName, double latitude, double longitude){
+    public void addMarkerToMap(MapView mapView, String placeName, double latitude, double longitude) {
         addMarkerToMap(mapView, placeName, latitude, longitude, false);
     }
 
@@ -117,7 +117,12 @@ public class MarkerManager {
         editor.apply();
     }
 
-    public void removeAllMarkers(MapView mapView){
+    /**
+     * Removes all markers from the map in a MapView.
+     *
+     * @param mapView The MapView from which markers will be removed.
+     */
+    public void removeAllMarkers(MapView mapView) {
         mapView.getMapAsync(mapboxMap -> {
             for (Marker marker : mapboxMap.getMarkers()) {
                 mapboxMap.removeMarker(marker);

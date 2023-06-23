@@ -6,35 +6,55 @@ import com.isc.hermes.R;
  * Represents the types of places available in a location.
  */
 public enum PlacesType {
-    /** Represents a restaurant. */
+    /**
+     * Represents a restaurant.
+     */
     RESTAURANT("Restaurant", R.drawable.restaurant),
 
-    /** Represents a hotel. */
+    /**
+     * Represents a hotel.
+     */
     HOTEL("Hotel", R.drawable.hotel),
 
-    /** Represents a park. */
-    PARK("Park", R.drawable.park),
-
-    /** Represents a museum. */
-    MUSEUM("Museum", R.drawable.museum),
-
-    /** Represents a shopping mall. */
-    SHOPPING_MALL("Shopping Mall", R.drawable.shopping_mall),
-
-    /** Represents a beach. */
-    BEACH("Beach", R.drawable.beach),
-
-    /** Represents a cafe. */
+    /**
+     * Represents a cafe.
+     */
     CAFE("Cafe", R.drawable.cafe),
 
-    /** Represents a bar. */
+    /**
+     * Represents a park.
+     */
+    PARK("Park", R.drawable.park),
+
+    /**
+     * Represents a bar.
+     */
     BAR("Bar", R.drawable.bar),
 
-    /** Represents a movie theater. */
+    /**
+     * Represents a museum.
+     */
+    MUSEUM("Museum", R.drawable.museum),
+
+    /**
+     * Represents a shopping mall.
+     */
+    SHOPPING_MALL("Shopping Mall", R.drawable.shopping_mall),
+
+    /**
+     * Represents a movie theater.
+     */
     MOVIE_THEATER("Movie Theater", R.drawable.movie_theater),
 
-    /** Represents a library. */
-    LIBRARY("Library", R.drawable.library);
+    /**
+     * Represents a library.
+     */
+    LIBRARY("Library", R.drawable.library),
+
+    /**
+     * Represents a beach.
+     */
+    BEACH("Beach", R.drawable.beach);
 
     private final String displayName;
     private final int imageResource;
@@ -42,7 +62,7 @@ public enum PlacesType {
     /**
      * Constructs a new PlacesType with the specified display name.
      *
-     * @param displayName the display name of the place type
+     * @param displayName   the display name of the place type
      * @param imageResource the image resource of the place type
      */
     PlacesType(String displayName, int imageResource) {
