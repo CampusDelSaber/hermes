@@ -1,6 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/distance_time_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="401dp"
+        android:layout_height="129dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:layout_width="392dp"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:paddingStart="5dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="131dp"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/ButtonRouteOne"
+                    android:backgroundTint="@color/routeA"
+                    android:layout_width="121dp"
+                    android:layout_height="48dp"
+                    android:text="ROUTE A"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="130dp"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/ButtonRouteTwo"
+                    android:backgroundTint="@color/routeB"
+                    android:layout_width="121dp"
+                    android:layout_height="48dp"
+                    android:text="ROUTE B"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="130dp"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/ButtonRouteThree"
+                    android:backgroundTint="@color/routeC"
+                    android:layout_width="121dp"
+                    android:layout_height="48dp"
+                    android:text="ROUTE C"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="43dp">
+
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="141dp"
+                android:layout_height="33dp"
+                android:text="00D y 00Hr"
+                android:textAlignment="center"
+                android:textColor="#0038E1"
+                android:textSize="25dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.06"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/distanceText"
+                android:layout_width="228dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:text="( 123 Km )"
+                android:textAlignment="viewStart"
+                android:textSize="25dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/timeText"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="247dp"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/startNavegationButton"
+                        android:layout_width="218dp"
+                        android:layout_height="47dp"
+                        android:text="START NAVIGATION"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/cancel_navigation_button"
+                        android:layout_width="122dp"
+                        android:layout_height="43dp"
+                        android:text="CANCEL"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.483"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

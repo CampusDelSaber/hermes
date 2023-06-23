@@ -1,5 +1,6 @@
 package com.isc.hermes.model.Utils;
 
+
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.LineString;
@@ -20,6 +21,8 @@ public class MapPolyline {
 
     private MapView mapView;
     private List<List<Point>> allPoints;
+    private ArrayList<GeoJsonSource> idPolyLinesList;
+
 
     /**
      * Constructor method
@@ -28,6 +31,7 @@ public class MapPolyline {
     public MapPolyline(MapView mapView) {
         this.mapView = mapView;
         this.allPoints = new ArrayList<>();
+        idPolyLinesList = new ArrayList<>();
     }
 
     /**
@@ -84,16 +88,17 @@ public class MapPolyline {
      * This method will plot the line on the map with a certain style and color.
      * @param colors polyline color.
      */
+
     public void drawPolyline(List<List<Point>> points, List<Integer> colors){
         mapView.getMapAsync(mapboxMap -> {
             mapboxMap.getStyle(style -> {
                 List<LineString> polyLineGeoJson = getPointsList(points, colors, style);
                 List<Feature> features = setFeatures(polyLineGeoJson);
                 FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
-
                 for (int i = 0; i < features.size(); i++){
                     GeoJsonSource polylineSource =
                             new GeoJsonSource("polyline" + i + "-source", featureCollection);
+                    idPolyLinesList.add(polylineSource);
                     style.addSource(polylineSource);
                     polylineSource.setGeoJson(features.get(i));
                 }
@@ -101,6 +106,15 @@ public class MapPolyline {
         });
     }
 
+
+    /**
+     * This method will hide all the polylines in the map
+     */
+    public void hidePolylines() {
+        mapView.getMapAsync(mapboxMap -> {
+            mapboxMap.setStyle(Style.MAPBOX_STREETS);
+        });
+    }
     /**
      * This method will get the points list
      * @param points
