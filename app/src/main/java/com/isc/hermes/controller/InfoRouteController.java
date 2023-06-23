@@ -53,8 +53,8 @@ public class InfoRouteController {
         colorsInfoRoutes = new ArrayList<>();
         isActive = false;
         colorsInfoRoutes.add(0XFFFF6E26);
-        colorsInfoRoutes.add(0xFF2867DC);
-        colorsInfoRoutes.add(0XFFC5D9FD);
+        colorsInfoRoutes.add(0xFF2350A3);
+        colorsInfoRoutes.add(0XFF686C6C);
         jsonObjects = new ArrayList<>();
         setActionButtons();
     }

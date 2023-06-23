@@ -30,8 +30,8 @@
 
                 <Button
                     android:id="@+id/ButtonRouteOne"
-                    style="@style/Widget.AppCompat.Button.Small"
-                    android:layout_width="132dp"
+                    android:backgroundTint="@color/routeA"
+                    android:layout_width="121dp"
                     android:layout_height="48dp"
                     android:text="ROUTE A"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -42,13 +42,13 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="150dp"
+                android:layout_width="130dp"
                 android:layout_height="match_parent">
 
                 <Button
                     android:id="@+id/ButtonRouteTwo"
-                    style="@style/Widget.AppCompat.Button.Small"
-                    android:layout_width="132dp"
+                    android:backgroundTint="@color/routeB"
+                    android:layout_width="121dp"
                     android:layout_height="48dp"
                     android:text="ROUTE B"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -58,12 +58,12 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:layout_width="130dp"
                 android:layout_height="match_parent">
 
                 <Button
                     android:id="@+id/ButtonRouteThree"
-                    style="@style/Widget.AppCompat.Button.Small"
+                    android:backgroundTint="@color/routeC"
                     android:layout_width="121dp"
                     android:layout_height="48dp"
                     android:text="ROUTE C"
