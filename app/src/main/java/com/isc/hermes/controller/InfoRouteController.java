@@ -1,23 +1,19 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.google.gson.JsonArray;
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.utils.Animations;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -104,16 +100,12 @@ public class InfoRouteController {
     }
 
     private void setTimeAndDistanceInformation(JSONObject jsonObject){
-        try {
-            int timeInMinutes = jsonObject.getInt("time");
-            int hours = 0;
-            while(timeInMinutes - 60 > 0){
-                timeInMinutes -= 60;
-                hours++;
-            }
-            if(hours > 0) timeText.setText(hours+" h "+ timeInMinutes+" min" );
-            else timeText.setText(timeInMinutes+" min" );
+        setDistanceInfo(jsonObject);
+        setEstimatedTimeInfo(jsonObject);
+    }
 
+    private void setDistanceInfo(JSONObject jsonObject){
+        try {
             double meters = jsonObject.getDouble("distance");
             double kilometers = 0;
             while( meters - 1 > 0){
@@ -123,11 +115,27 @@ public class InfoRouteController {
 
             int decimals = 3;
             DecimalFormat decimalFormat = new DecimalFormat("#." + "0".repeat(decimals));
-            if(kilometers > 0) distanceText.setText(kilometers+ " km " + decimalFormat.format(meters).substring(1)+ " m");
+            if(kilometers > 0) distanceText.setText(
+                kilometers+ " km " + decimalFormat.format(meters).substring(1)+ " m");
             else distanceText.setText(decimalFormat.format(meters).substring(1)+ " m.");
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void setEstimatedTimeInfo(JSONObject jsonObject){
+        try {
+            int timeInMinutes = jsonObject.getInt("time");
+            int hours = 0;
+            while(timeInMinutes - 60 > 0){
+                timeInMinutes -= 60;
+                hours++;
+            }
+            if(hours > 0) timeText.setText(hours+" h "+ timeInMinutes+" min" );
+            else timeText.setText(timeInMinutes+" min" );
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }
