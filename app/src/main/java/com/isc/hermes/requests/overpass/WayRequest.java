@@ -24,7 +24,7 @@ public class WayRequest {
     public String getEdges(double latitude, double longitude, int radius) {
         try {
             @SuppressLint("DefaultLocale") String request = String.format(
-                    "[out:json];way(around:%d,%f,%f)[highway~\"^(primary|secondary|tertiary)$\"][\"junction\"!=\"roundabout\"];" +
+                    "[out:json];way(around:%d,%f,%f)[highway~\"^(primary|secondary)$\"][\"junction\"!=\"roundabout\"];" +
                             "node(w)->.n1;node(w)->.n2;way(bn.n1)(bn.n2);out meta;",
                     radius, latitude, longitude
             );

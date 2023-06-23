@@ -188,6 +188,7 @@ public class DijkstraAlgorithm {
                 }
             }
         }
+
         return retrieveShortestPath(destination, parents);
     }
 

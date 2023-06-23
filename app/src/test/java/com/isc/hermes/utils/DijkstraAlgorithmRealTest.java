@@ -97,16 +97,26 @@ public class DijkstraAlgorithmRealTest {
 
     @Test
     public void getRoutesRealGraph() throws JSONException {
-        LatLng start = new LatLng(-17.4275176,-66.1592252);
-        LatLng destination = new LatLng(-17.418664,-66.155998);
+        LatLng start = new LatLng(-17.376973, -66.179360);
+        LatLng destination = new LatLng(-17.377594, -66.181011);
         GraphController graphController = new GraphController(start, destination);
+        System.out.println(graphController.getGraph().getNodes().size());
         graphController.buildGraph();
-        System.out.println(graphController.getGraph());
         Graph graph = graphController.getGraph();
-        graphController.printGraph();
 
-        System.out.println("XD");
         System.out.println(
                 dijkstraAlgorithm.getShortestPath(graph, graphController.getStartNode(), graphController.getDestinationNode()));
+    }
+
+    @Test
+    public void getRoutesRealGraph2() throws JSONException {
+        LatLng start = new LatLng(-17.376973, -66.179360);
+        LatLng destination = new LatLng(-17.377594, -66.181011);
+        GraphController graphController = new GraphController(start, destination);
+        graphController.buildGraph();
+        Graph graph = graphController.getGraph();
+
+        System.out.println(
+                dijkstraAlgorithm.getGeoJsonRoutes(graph, graphController.getStartNode(), graphController.getDestinationNode()));
     }
 }

@@ -25,7 +25,7 @@ public class IntersectionRequest {
 
         try {
             @SuppressLint("DefaultLocale") String request = String.format(
-                    "[out:json];way(around:%d,%f,%f)[highway~\"^(primary|secondary|tertiary)$\"];node(w);out center;",
+                    "[out:json];way(around:%d,%f,%f)[highway~\"^(primary|secondary)$\"];node(w);out center;",
                     radius, latitude, longitude
             );
 

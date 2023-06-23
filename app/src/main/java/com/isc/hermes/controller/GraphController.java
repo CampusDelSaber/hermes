@@ -62,7 +62,7 @@ public class GraphController {
      * @throws JSONException If there is an issue with parsing the JSON data.
      */
     public void buildGraph() throws JSONException {
-        int radius = (int) (getRadius() * 1000);
+        int radius = (int) (getRadius() * 1000) + 200;
         loadIntersections(intersectionRequest.getIntersections(midpoint.getLatitude(), midpoint.getLongitude(), radius));
         loadEdges(wayRequest.getEdges(midpoint.getLatitude(), midpoint.getLongitude(), radius));
     }
@@ -153,7 +153,7 @@ public class GraphController {
                     lastNode = graph.getNode(String.valueOf(edges.getJSONObject(i).getJSONArray("nodes").get(j-1)));
                     currentNode = graph.getNode(String.valueOf(edges.getJSONObject(i).getJSONArray("nodes").get(j)));
                     if(currentNode != null && lastNode != null) {
-                        lastNode.addBidirectionalEdge(currentNode);
+                        lastNode.addBidirectionalEdge(currentNode, calculator.calculateDistance(lastNode, currentNode));
                     }
                 }
             }
@@ -170,13 +170,18 @@ public class GraphController {
         if (response != null) {
             JSONObject json = new JSONObject(response);
             JSONArray intersection = json.getJSONArray("elements");
+            Node node;
 
-            Node node = new Node(String.valueOf(intersection.getJSONObject(0).get("id")),
-                    (Double) intersection.getJSONObject(0).get("lat"),
-                    (Double) intersection.getJSONObject(0).get("lon"));
-
-            startNode.addUnidirectionalEdge(node);
-            graph.addNode(startNode);
+            for (int i = 0; i < intersection.length(); i++) {
+                for (int j = 1 ; j< intersection.length() ; j++) {
+                    node = graph.getNode(String.valueOf(intersection.getJSONObject(i).get("id")));
+                    if(node != null) {
+                        startNode.addBidirectionalEdge(node, calculator.calculateDistance(startNode, node));
+                        graph.addNode(startNode);
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -190,13 +195,18 @@ public class GraphController {
         if (response != null) {
             JSONObject json = new JSONObject(response);
             JSONArray intersection = json.getJSONArray("elements");
+            Node node;
 
-            Node node = new Node(String.valueOf(intersection.getJSONObject(0).get("id")),
-                    (Double) intersection.getJSONObject(0).get("lat"),
-                    (Double) intersection.getJSONObject(0).get("lon"));
-
-            destinationNode.addUnidirectionalEdge(node);
-            graph.addNode(destinationNode);
+            for (int i = 0; i < intersection.length(); i++) {
+                for (int j = 1 ; j< intersection.length() ; j++) {
+                    node = graph.getNode(String.valueOf(intersection.getJSONObject(i).get("id")));
+                    if(node != null) {
+                        destinationNode.addBidirectionalEdge(node, calculator.calculateDistance(destinationNode, node));
+                        graph.addNode(destinationNode);
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -227,12 +237,4 @@ public class GraphController {
         return destinationNode;
     }
 
-    public void printGraph() {
-        for (Map.Entry<String, Node> entry : graph.getNodes().entrySet()) {
-            String clave = entry.getKey();
-            Node node = entry.getValue();
-            System.out.println(clave);
-            System.out.println(node.getEdges());
-        }
-    }
 }
