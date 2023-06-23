@@ -29,9 +29,13 @@ jobs:
 
   export:
     name: distribute_apk
-    needs: test    
+    needs: build    
     runs-on: self-hosted 
-    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Upload APK 
+        working-directory: ${{ github.workspace }}
+        run: |
+          ./gradlew assembleRelease
+          echo "APK download URL" $(curl --upload-file app/build/outputs/apk/release/*.apk https://transfer.sh/hermes.apk)
