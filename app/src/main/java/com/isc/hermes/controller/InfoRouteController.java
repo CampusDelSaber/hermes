@@ -19,6 +19,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The InfoRouteController class is responsible for managing the information related to routes,
+ * such as distance and estimated time, and displaying it in the user interface.
+ */
 public class InfoRouteController {
     private ConstraintLayout layout;
     private boolean isActive;
@@ -28,11 +32,16 @@ public class InfoRouteController {
     private Button buttonRouteC;
     private TextView timeText;
     private TextView distanceText;
-    private static InfoRouteController instanceNavigationController;ArrayList<Integer> colorsInfoRoutes = new ArrayList<>();
-    ArrayList<String> geoJsonRoutes;
-    MapPolyline mapPolyline;
-    ArrayList<JSONObject> jsonObjects;
+    private static InfoRouteController instanceNavigationController;
+    private ArrayList<Integer> colorsInfoRoutes;
+    private MapPolyline mapPolyline;
+   private ArrayList<JSONObject> jsonObjects;
 
+    /**
+     * Constructs a new InfoRouteController object.
+     *
+     * @param context The context of the activity.
+     */
     private InfoRouteController(Context context){
         layout = ((AppCompatActivity)context).findViewById(R.id.distance_time_view);
         cancelButton =  ((AppCompatActivity)context).findViewById(R.id.cancel_navigation_button);
@@ -46,9 +55,13 @@ public class InfoRouteController {
         colorsInfoRoutes.add(0xFF2867DC);
         colorsInfoRoutes.add(0XFFC5D9FD);
         jsonObjects = new ArrayList<>();
+        colorsInfoRoutes = new ArrayList<>();
         setActionButtons();
     }
 
+    /**
+     * Sets the action listeners for the buttons.
+     */
     private void setActionButtons(){
         isActive = false;
         cancelButton.setOnClickListener(v -> {
@@ -63,11 +76,12 @@ public class InfoRouteController {
         buttonRouteC.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(2)));
     }
 
-    public void showDistanceAndTimeView(){
-        isActive = true;
-        layout.setVisibility(View.VISIBLE);
-    }
-
+    /**
+     * Retrieves an instance of InfoRouteController.
+     *
+     * @param context The context of the activity.
+     * @return The InfoRouteController instance.
+     */
     public static InfoRouteController getInstance(Context context){
         if(instanceNavigationController == null){
             instanceNavigationController = new InfoRouteController(context);
@@ -75,35 +89,60 @@ public class InfoRouteController {
         return instanceNavigationController;
     }
 
+    /**
+     * Shows the route information view, including distance and time.
+     *
+     * @param jsonCoordinates The list of JSON coordinates representing the routes.
+     * @param mapPolyline The MapPolyline object for displaying the routes.
+     */
     public void showInfoRoute(List<String> jsonCoordinates, MapPolyline mapPolyline){
-        geoJsonRoutes = (ArrayList<String>) jsonCoordinates;
         this.mapPolyline = mapPolyline;
         isActive = true;
         layout.setVisibility(View.VISIBLE);
         jsonObjects = new ArrayList<>();
         try {
-            for(String currentJson : jsonCoordinates){
+            for(String currentJson : jsonCoordinates)
                 jsonObjects.add(new JSONObject(currentJson));
-            }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
         setTimeAndDistanceInformation(jsonObjects.get(0));
         mapPolyline.displaySavedCoordinates(jsonCoordinates, colorsInfoRoutes);
     }
+
+    /**
+     * Retrieves the layout of the route information view.
+     *
+     * @return The ConstraintLayout object representing the layout.
+     */
     public ConstraintLayout getLayout() {
         return layout;
     }
 
+    /**
+     * Checks if the route information view is active.
+     *
+     * @return true if the view is active, false otherwise.
+     */
     public boolean isActive(){
         return isActive;
     }
 
+    /**
+     * Sets the distance and time information based on the provided JSON object.
+     *
+     * @param jsonObject The JSON object containing the distance and time information.
+     */
     private void setTimeAndDistanceInformation(JSONObject jsonObject){
         setDistanceInfo(jsonObject);
         setEstimatedTimeInfo(jsonObject);
     }
 
+    /**
+     * Sets the distance information based on the provided JSON object.
+     *
+     * @param jsonObject The JSON object containing the distance information.
+     */
     private void setDistanceInfo(JSONObject jsonObject){
         try {
             double meters = jsonObject.getDouble("distance");
@@ -112,18 +151,21 @@ public class InfoRouteController {
                 meters -= 1;
                 kilometers ++;
             }
-
             int decimals = 3;
             DecimalFormat decimalFormat = new DecimalFormat("#." + "0".repeat(decimals));
             if(kilometers > 0) distanceText.setText(
                 kilometers+ " km " + decimalFormat.format(meters).substring(1)+ " m");
             else distanceText.setText(decimalFormat.format(meters).substring(1)+ " m.");
-
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Sets the estimated time information based on the provided JSON object.
+     *
+     * @param jsonObject The JSON object containing the estimated time information.
+     */
     private void setEstimatedTimeInfo(JSONObject jsonObject){
         try {
             int timeInMinutes = jsonObject.getInt("time");
