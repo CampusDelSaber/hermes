@@ -5,27 +5,16 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
-import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
-
-import com.mapbox.geojson.Feature;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import org.json.JSONException;
 
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
 
 /**
  * Class to configure the event of do click on a map
@@ -35,6 +24,7 @@ public class MapWayPointController implements MapClickConfigurationController {
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
     private Context context;
+
     /**
      * This is the constructor method.
      *
@@ -72,8 +62,6 @@ public class MapWayPointController implements MapClickConfigurationController {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        TrafficUploader.getInstance().setLastClickedPoint(point);
-
         return true;
     }
 
@@ -118,6 +106,7 @@ public class MapWayPointController implements MapClickConfigurationController {
             setMarkerOnMap(point);
             waypointOptionsController.getWaypointOptions().startAnimation(Animations.entryAnimation);
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
+            waypointOptionsController.setReportIncidentStatus(point);
             isMarked = true;
         }
     }

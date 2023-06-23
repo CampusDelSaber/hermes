@@ -55,7 +55,6 @@ public class MapDisplay {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(mapboxMap -> {
             this.mapboxMap = mapboxMap;
-            mapConfigure.configure(mapboxMap);
 
             mapboxMap.addOnCameraIdleListener(
                     () -> incidentsGetterController.getNearIncidentsWithinRadius(mapboxMap, context)

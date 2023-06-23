@@ -49,8 +49,10 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -98,24 +100,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
-        testPolyline(); // this is a test method that will be removed once the functionality has been verified.
-    }
-
-    public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
-      /*  Map<String, String> r = new HashMap<>();
-
-        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"time\":10,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
-        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
-        r.put("Route C", "{}");
-
-        String jsonA = r.get("Route A");
-        String jsonB = r.get("Route B");
-        String jsonC = r.get("Route C");
-
-        MapPolyline mapPolyline = new MapPolyline(mapView);
-        //mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
-        mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);*/
-
     }
 
     /**

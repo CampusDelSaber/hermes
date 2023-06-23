@@ -2,6 +2,7 @@ package com.isc.hermes.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +17,9 @@ import com.isc.hermes.view.IncidentTypeButton;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -35,6 +38,7 @@ public class NavigationOptionsController {
     private final LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
+    private InfoRouteController infoRouteController;
 
 
     /**
@@ -56,6 +60,7 @@ public class NavigationOptionsController {
         startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);;
         finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);;
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
+        infoRouteController = InfoRouteController.getInstance(context);
         setNavOptionsUiComponents();
         setButtons();
     }
@@ -227,17 +232,25 @@ public class NavigationOptionsController {
     private void showRoutes(){
         Map<String, String> r = new HashMap<>();
 
-        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
+        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"time\":10,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
         r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
-        r.put("Route C", "{}");
+        r.put("Route C", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.159019, -17.398311],[-66.154399, -17.397043],[-66.151315, -17.398656],[-66.147585, -17.400585],[-66.142978, -17.401595]]}}");
 
         String jsonA = r.get("Route A");
         String jsonB = r.get("Route B");
         String jsonC = r.get("Route C");
 
+        ArrayList<String> geoJson = new ArrayList<>();
+        geoJson.add(jsonA);
+        geoJson.add(jsonB);
+        geoJson.add(jsonC);
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(0xFF2867DC);
+        colors.add(0XFFC5D9FD);
+        colors.add(0XFFC5D9FD);
+
         MapPolyline mapPolyline = new MapPolyline(MapDisplay.getInstance(context,null,null).getMapView());
-        //mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
-        //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
-        InfoRouteController.getInstance(context).showInfoRoute(mapPolyline, null);
+        infoRouteController.showInfoRoute(geoJson, mapPolyline);
     }
 }
