@@ -57,7 +57,7 @@
     <string-array name="incidents_type">
         <item>Accident</item>
         <item>Obstruction</item>
-        <item>Social Event</item>
+        <item>Social Incident</item>
         <item>Street Fix</item>
     </string-array>
     <string-array name="incidents_type_colors">

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Handler;
 
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 
@@ -40,6 +42,7 @@ import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
+import com.isc.hermes.view.MapPolygonStyle;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -49,8 +52,10 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean visibilityMenu = false;
     private SearchView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
@@ -98,24 +104,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
+        initShowIncidentsController();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
     }
 
   public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
         Map<String, String> r = new HashMap<>();
+        List<String> routes = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
 
         r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
         r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
-        r.put("Route C", "{}");
+        r.put("Route C", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.159019, -17.398311],[-66.154399, -17.397043],[-66.151315, -17.398656],[-66.147585, -17.400585],[-66.142978, -17.401595]]}}");
 
         String jsonA = r.get("Route A");
         String jsonB = r.get("Route B");
         String jsonC = r.get("Route C");
 
-        MapPolyline mapPolyline = new MapPolyline(mapView);
-        mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
-        //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
+   
+        routes.add(jsonA);
+        routes.add(jsonB);
+        routes.add(jsonC);
 
+        colors.add(0xFF2867DC);
+        colors.add(0XFFC5D9FD);
+        colors.add(0XFFC5D9FD);
+
+        MapPolyline mapPolyline = new MapPolyline(mapView);
+        mapPolyline.displaySavedCoordinates(routes, colors);
     }
     /**
      * Method to add the searcher to the main scene above the map
@@ -221,6 +237,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
         currentLocationController.initLocationButton();
+    }
+
+    /**
+     * This method init the form with all button to show incidents from database
+     */
+    private void initShowIncidentsController(){
+        viewIncidentsController = new ViewIncidentsController(this);
     }
 
     /**
