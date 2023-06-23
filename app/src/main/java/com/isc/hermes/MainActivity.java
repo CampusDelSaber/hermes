@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,9 +30,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Handler;
 
+import com.isc.hermes.controller.FilterCategoriesController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 
@@ -51,6 +54,7 @@ import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
+import com.isc.hermes.view.MapPolygonStyle;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean visibilityMenu = false;
     private SearchView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
@@ -114,7 +119,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
+        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
+        initShowIncidentsController();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
         fetchUserFromDB();
         initializeBurgerButtonToolBar();
@@ -193,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap,this));
+        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
     }
 
     /**
@@ -256,6 +263,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
         currentLocationController.initLocationButton();
+    }
+
+    /**
+     * This method init the form with all button to show incidents from database
+     */
+    private void initShowIncidentsController() {
+        viewIncidentsController = new ViewIncidentsController(this);
     }
 
     /**
@@ -438,6 +452,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         launcher.launch(intent);
     }
+
     /**
      * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
      *
