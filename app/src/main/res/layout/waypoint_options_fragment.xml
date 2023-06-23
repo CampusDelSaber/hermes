@@ -53,46 +53,66 @@
                 android:backgroundTint="@color/oxfordBlue">
             </Button>
 
-            <TextView
-                android:id="@+id/report_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Report"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginStart="10dp" />
-
-
             <LinearLayout
+                android:id="@+id/report_incidents"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/report_incident_button"
+                <TextView
+                    android:id="@+id/report_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Report"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="10dp" />
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Incident"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/oxfordBlue">
-                </Button>
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/report_traffic_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Traffic"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/oxfordBlue">
-                </Button>
+                    <Button
+                        android:id="@+id/report_incident_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Incident"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/oxfordBlue">
+                    </Button>
+
+                    <Button
+                        android:id="@+id/report_traffic_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Traffic"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/oxfordBlue">
+                    </Button>
+
+                    <Button
+                        android:id="@+id/report_natural_disaster_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Natural Disaster"
+                        android:textSize="13sp"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/oxfordBlue">
+                    </Button>
+
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

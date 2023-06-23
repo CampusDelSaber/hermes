@@ -28,6 +28,7 @@ public class CurrentLocationController {
     private final LocationPermissionsController locationPermissionsController;
     private final MapDisplay mapDisplay;
     private CurrentLocationModel currentLocationModel;
+    private static CurrentLocationController controllerInstance;
 
     /**
      * Constructs a new CurrentLocationController with the specified activity and map display.
@@ -35,7 +36,7 @@ public class CurrentLocationController {
      * @param activity    The AppCompatActivity instance.
      * @param mapDisplay  The MapDisplay instance.
      */
-    public CurrentLocationController(AppCompatActivity activity, MapDisplay mapDisplay) {
+    private CurrentLocationController(AppCompatActivity activity, MapDisplay mapDisplay) {
         locationEngine = LocationEngineProvider.getBestLocationEngine(activity);
         currentLocationModel = new CurrentLocationModel();
         locationListeningCallback = new LocationListeningCallback(activity, currentLocationModel);
@@ -67,9 +68,12 @@ public class CurrentLocationController {
      * Method for initializing the location button and setting its click listener.
      */
     @SuppressLint("WrongViewCast")
-    private void initLocationButton() {
+    public void initLocationButton() {
         ImageButton locationButton = activity.findViewById(R.id.locationButton);
-        locationButton.setOnClickListener(v -> enableLocationComponent());
+        locationButton.setOnClickListener(v -> {
+            enableLocationComponent();
+            initLocation();
+        });
     }
 
     /**
@@ -84,7 +88,7 @@ public class CurrentLocationController {
             LocationComponentActivationOptions locationComponentActivationOptions =
                     LocationComponentActivationOptions.builder(
                                     activity, Objects.requireNonNull(mapDisplay.getMapboxMap().getStyle()))
-                    .locationComponentOptions(locationComponentOptions).build();
+                            .locationComponentOptions(locationComponentOptions).build();
 
             mapDisplay.getMapboxMap().getLocationComponent().activateLocationComponent(
                     locationComponentActivationOptions
@@ -114,5 +118,28 @@ public class CurrentLocationController {
             );
         } else
             Toast.makeText(activity, "Location permission denied.", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Generates an instance of this class if an existing one is not found and returns it.
+     *
+     * @param activity Receives an AppCompacActivity to generate changes to the activity passed to it.
+     * @param mapDisplay It receives a MapDisplay to be able to generate changes in the map view.
+     * @return Returns a instance of this class.
+     */
+    public static CurrentLocationController getControllerInstance(AppCompatActivity activity, MapDisplay mapDisplay){
+        if(controllerInstance == null){
+            controllerInstance = new CurrentLocationController(activity, mapDisplay);
+        }
+        return controllerInstance;
+    }
+
+    /**
+     * Returns the current CurrentLocationModel of the class.
+     *
+     * @return CurrentLocationModel type.
+     */
+    public CurrentLocationModel getCurrentLocationModel(){
+        return currentLocationModel;
     }
 }
