@@ -132,6 +132,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
                     placeSearch.searchPlacesByType(tag, new SearchPlacesListener() {
                         @Override
                         public void onSearchComplete(List<CarmenFeature> places) {
+                            markerManager.removeAllMarkers(mapView);
                             showPlacesOnMap(places);
                         }
 

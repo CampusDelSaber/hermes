@@ -117,4 +117,12 @@ public class MarkerManager {
         editor.apply();
     }
 
+    public void removeAllMarkers(MapView mapView){
+        mapView.getMapAsync(mapboxMap -> {
+            for (Marker marker : mapboxMap.getMarkers()) {
+                mapboxMap.removeMarker(marker);
+            }
+        });
+    }
+
 }

@@ -68,6 +68,7 @@ public class SearchPlacesTask extends AsyncTask<String, Void, List<CarmenFeature
                 .accessToken(MAPBOX_ACCESS_TOKEN)
                 .query(placeType)
                 .proximity(Point.fromLngLat(longitude, latitude))
+                .limit(8)
                 .build();
 
         Response<GeocodingResponse> response = geocoding.executeCall();
