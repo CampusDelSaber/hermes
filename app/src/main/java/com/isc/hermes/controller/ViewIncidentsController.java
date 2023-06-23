@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
 
-
+/**
+ * Class to manage all view elements in view incidents form
+ */
 public class ViewIncidentsController{
     private final LinearLayout incidentsVisualizationForm;
     private final ImageButton viewIncidentsFormButton;
@@ -30,6 +32,9 @@ public class ViewIncidentsController{
     }
 
 
+    /**
+     * Method to init the button with eye functionality
+     */
     private void initEyeButtonFunctionality() {
         viewIncidentsFormButton.setOnClickListener(v -> {
             if (!buttonMarked) incidentsVisualizationForm.setVisibility(View.VISIBLE);
@@ -38,6 +43,9 @@ public class ViewIncidentsController{
         });
     }
 
+    /**
+     * Method to init the action about click on a single button on show incidents form
+     */
     private void initViewDifferentIncidentsTypeButton() {
 
         viewTrafficButton.setOnClickListener(v -> {
@@ -54,6 +62,9 @@ public class ViewIncidentsController{
         });
     }
 
+    /**
+     * Method to make buttons form invisible
+     */
     private void disappearForm(){
         incidentsVisualizationForm.setVisibility(View.GONE);
         buttonMarked = !buttonMarked;
