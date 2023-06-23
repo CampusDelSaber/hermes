@@ -113,33 +113,99 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/generateIncidentButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:background="@android:color/transparent"
-            mapbox:srcCompat="@drawable/img_icon_incident_generate"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
-            android:importantForAccessibility="no" />
+        <LinearLayout
+            android:id="@+id/viewIncidentsForm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/locationButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:background="@android:color/transparent"
-            android:importantForAccessibility="no"
-            android:src="@drawable/img_current_location_icon"
-            android:text="@string/get_location_text"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            <Button
+                android:id="@+id/viewTrafficButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/oxfordBlue"
+                android:text="Traffic"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/viewSocialIncidentsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/oxfordBlue"
+                android:text="Social Incidents"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/viewNaturalDisasterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/oxfordBlue"
+                android:text="Natural Disasters"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/viewIncidentsButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:background="@android:color/transparent"
+                android:importantForAccessibility="no"
+                android:src="@drawable/eye_icon"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+            <ImageButton
+                android:id="@+id/generateIncidentButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:background="@android:color/transparent"
+                mapbox:srcCompat="@drawable/img_icon_incident_generate"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+                android:importantForAccessibility="no" />
+
+            <ImageButton
+                android:id="@+id/locationButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:background="@android:color/transparent"
+                android:importantForAccessibility="no"
+                android:src="@drawable/img_current_location_icon"
+                android:text="@string/get_location_text"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        </LinearLayout>
 
     </LinearLayout>
 
+
+
+
     <include
         layout="@layout/incident_form_fragment"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
+        layout="@layout/navigation_options"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 
@@ -195,6 +261,14 @@
                 mapbox:icon="@drawable/img_layer_icon" />
 
         </androidx.cardview.widget.CardView>
+        <!--  Offline Mode Button      -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:onClick="goOfflineMaps"
+            android:text="@string/Offline_Mode_text"
+            android:textColor="@color/white" />
 
         <TextView
             android:layout_width="match_parent"

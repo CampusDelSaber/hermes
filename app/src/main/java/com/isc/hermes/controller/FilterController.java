@@ -121,5 +121,6 @@ public class FilterController {
         if (results.size() > 0) {
             cameraAnimator.animateCameraToNewPosition(currentLatLng,11, 1500);
         } else Toast.makeText(mainActivity, R.string.no_results, Toast.LENGTH_SHORT).show();
+
     }
 }
