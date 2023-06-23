@@ -235,12 +235,6 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp">
 
-                <include
-                    layout="@layout/filter_view"
-                    mapbox:layout_anchor="@+id/mapView"
-                    mapbox:layout_anchorGravity="top" />
-
-
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="406dp"

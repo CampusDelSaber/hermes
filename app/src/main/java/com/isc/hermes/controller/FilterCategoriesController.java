@@ -1,7 +1,6 @@
 package com.isc.hermes.controller;
 
 import android.app.Activity;
-import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,23 +56,36 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
         adapterConfiguration();
     }
 
+    /**
+     * Configures the recycler view.
+     */
     private void recyclerViewConfig() {
         locationCategoriesRecyclerView = activity.findViewById(R.id.recyclerView);
         locationCategoriesRecyclerView.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false));
         addSpaceBetweenCategories();
     }
 
+    /**
+     * Adds space between the categories in the recycler view.
+     */
     private void addSpaceBetweenCategories() {
         int spacingInPixels = activity.getResources().getDimensionPixelSize(R.dimen.spacing);
         locationCategoriesRecyclerView.addItemDecoration(new SpacingItemDecoration(spacingInPixels));
     }
 
+    /**
+     * Configures the adapter for the recycler view.
+     */
     private void adapterConfiguration() {
         List<CategoryFilter> categories = generateLocationCategories();
         locationCategoryAdapter = new CategoryFilterAdapter(categories, this);
         locationCategoriesRecyclerView.setAdapter(locationCategoryAdapter);
     }
 
+    /**
+     * Generates the categories locations
+     * @return the list of categories
+     */
     private List<CategoryFilter> generateLocationCategories() {
         List<CategoryFilter> categories = new ArrayList<>();
 
@@ -81,12 +93,22 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
             categories.add(new CategoryFilter(place.getImageResource(), place.getDisplayName()));
         }
 
+        categories.add(new CategoryFilter(R.drawable.navigation, "Special"));
+
         return categories;
     }
 
+    /**
+     * Shows the places on the map.
+     * @param locationCategory the category of the places to show
+     */
     @Override
     public void onLocationCategoryClick(CategoryFilter locationCategory) {
-        searchPlacesByTag(locationCategory.getNameCategory());
+        if (locationCategory.getNameCategory().equals("Special")) {
+            // TODO: Implement Filter Controller here
+        } else {
+            searchPlacesByTag(locationCategory.getNameCategory());
+        }
     }
 
     /**
