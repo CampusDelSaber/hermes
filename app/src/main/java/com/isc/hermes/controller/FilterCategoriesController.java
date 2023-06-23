@@ -1,9 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.app.Activity;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +12,6 @@ import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.CategoryFilterAdapter;
 import com.isc.hermes.utils.CategoryFilterClickListener;
 import com.isc.hermes.utils.MarkerManager;
-import com.isc.hermes.utils.PlaceByTypeSearch;
 import com.isc.hermes.utils.PlacesType;
 import com.isc.hermes.utils.searcher.SearchPlacesListener;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
@@ -34,8 +31,6 @@ import retrofit2.Response;
  * Controller class for filtering categories and displaying places on the map.
  */
 public class FilterCategoriesController implements CategoryFilterClickListener {
-
-    private LinearLayout tagsContainer;
     private MarkerManager markerManager;
     private MapView mapView;
     private Activity activity;
@@ -51,14 +46,12 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
         this.activity = activity;
         markerManager = MarkerManager.getInstance(activity);
         createItemsUI();
-        addTags();
     }
 
     /**
      * Creates the UI elements for the controller.
      */
     private void createItemsUI() {
-        tagsContainer = activity.findViewById(R.id.tagsContainer);
         mapView = activity.findViewById(R.id.mapView);
         recyclerViewConfig();
         adapterConfiguration();
@@ -84,15 +77,10 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     private List<CategoryFilter> generateLocationCategories() {
         List<CategoryFilter> categories = new ArrayList<>();
 
-        // Example categories
-        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
-        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
-        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
-        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
-        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
-        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
-        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
-        categories.add(new CategoryFilter(R.drawable.ic_pin, "Restaurant"));
+        for (PlacesType place : PlacesType.values()) {
+            categories.add(new CategoryFilter(place.getImageResource(), place.getDisplayName()));
+        }
+
         return categories;
     }
 
@@ -152,34 +140,6 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
             double longitude = ((Point) place.geometry()).longitude();
 
             markerManager.addMarkerToMap(mapView, name, latitude, longitude, true);
-        }
-    }
-
-    /**
-     * Adds a tag to the UI and sets up the click listener.
-     *
-     * @param tag the tag to add
-     */
-    private void addTag(final String tag) {
-        TextView tagTextView = new TextView(activity);
-        tagTextView.setText(tag);
-        tagTextView.setPadding(10, 5, 10, 5);
-        tagTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchPlacesByTag(tag);
-            }
-        });
-
-        tagsContainer.addView(tagTextView);
-    }
-
-    /**
-     * Adds tags to the UI based on the available PlacesType values.
-     */
-    private void addTags(){
-        for (PlacesType tag: PlacesType.values()) {
-            addTag(tag.getDisplayName());
         }
     }
 }
