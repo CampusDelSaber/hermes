@@ -43,6 +43,18 @@
             android:name=".SearchViewActivity"
             android:exported="true" >
         </activity>
+        <!--    Offline Mode Activities   -->
+        <activity
+            android:name=".OfflineMapsActivity"
+            android:exported="true">
+
+        </activity>
+        <activity
+            android:name=".ActivitySelectRegion"
+            android:exported="true" >
+        </activity>
+
+
     </application>
 
 </manifest>

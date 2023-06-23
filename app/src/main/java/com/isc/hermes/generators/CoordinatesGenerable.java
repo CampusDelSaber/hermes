@@ -1,5 +1,6 @@
 package com.isc.hermes.generators;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.GeometryType;
 
 import java.util.List;
@@ -7,9 +8,10 @@ import java.util.List;
 /**
  * This interface abstracts the features of a generator.
  */
-public interface IGeometryGenerator {
+public interface CoordinatesGenerable {
+
     /**
-     * This method generates points that form geoemetric objects.
+     * This method generates coordinates that form geometric objects.
      *
      * @param referencePoint to get the main point reference of limited range.
      * @param radium to get the radium using the reference point.
