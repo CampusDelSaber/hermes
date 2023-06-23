@@ -4,26 +4,17 @@ run-name: ${{ github.actor }} is building an application.
 on: [push]
 
 jobs:
-  env_present:
-    name: check_if_environment_is_present
-    runs-on: self-hosted
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - run: echo "================================================== Checking Environment =================================================="
-      - run: echo "================================================== SUCCESS =================================================="
-
   build:
     name: build
-    needs: env_present
     runs-on: self-hosted 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Build
         working-directory: ${{ github.workspace }}
-        run: ./gradlew build -x test
-      - run: echo "================================================== SUCCESS =================================================="
+        run: |
+          ./scripts/check_env.sh
+          ./gradlew build -x test
 
   test:
     name: test
@@ -35,7 +26,6 @@ jobs:
       - name: Run Tests
         working-directory: ${{ github.workspace }}
         run: ./gradlew test
-      - run: echo "================================================== SUCCESS =================================================="
 
   export:
     name: distribute_apk
@@ -45,5 +35,3 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - run: echo "================================================== APK Distribution =================================================="
-      - run: echo "================================================== SUCCESS =================================================="
