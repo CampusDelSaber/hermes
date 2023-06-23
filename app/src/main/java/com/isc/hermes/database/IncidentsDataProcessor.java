@@ -103,6 +103,23 @@ public class IncidentsDataProcessor {
         }
     }
 
+    public JSONArray getAllIncidentsByType(String type) throws ExecutionException, InterruptedException {
+        try{
+            Future<String> future = apiHandler.getFutureCollectionString( String.format(
+                    "%s?types=%s",
+                    INCIDENTS_COLLECTION_NAME, "Traffic"
+            ) );
+            String futureResponse = future.get();
+            JSONArray incidentsArray = responseParser.getJSONArrayOnResult(futureResponse);
+
+            return incidentsArray;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new JSONArray();
+
+    }
+
     /**
      * Retrieves the singleton instance of IncidentsDataProcessor.
      *

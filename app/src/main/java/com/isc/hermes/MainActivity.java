@@ -1,5 +1,7 @@
 package com.isc.hermes;
 
+import static com.mongodb.assertions.Assertions.assertNotNull;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,6 +29,7 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.controller.offline.OfflineDataRepository;
+import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.model.RegionData;
 import com.isc.hermes.model.User;
 
@@ -41,18 +44,25 @@ import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -72,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
+
+    private IncidentsDataProcessor incidentsDataProcessor = IncidentsDataProcessor.getInstance();
+
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -118,6 +131,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public void testGetAllIncidents4() throws ExecutionException, InterruptedException, JSONException {
+        JSONArray incidentsArray = incidentsDataProcessor.getAllIncidentsByType("Traffic");
+        assertNotNull(incidentsArray);
+
+        for (int i = 0; i < incidentsArray.length(); i++) {
+            JSONObject jsonObject = incidentsArray.getJSONObject(i);
+            JSONObject geometryObject = jsonObject.getJSONObject("geometry");
+            JSONArray coordinatesArray = geometryObject.getJSONArray("coordinates");
+
+            PolylineOptions polylineOptions = new PolylineOptions();
+            polylineOptions.color(Color.RED);
+
+            for (int j = 0; j < coordinatesArray.length(); j++) {
+                JSONArray coordinate = coordinatesArray.getJSONArray(j);
+                double latitude = coordinate.getDouble(0);
+                double longitude = coordinate.getDouble(1);
+                polylineOptions.add(new LatLng(latitude, longitude));
+            }
+
+            mapDisplay.getMapboxMap().addPolyline(polylineOptions);
+        }
+    }
+
     /**
      * Method to add the searcher to the main scene above the map
      */
@@ -136,6 +172,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 filterController.initComponents();
+                try {
+                    testGetAllIncidents4();
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
