@@ -31,6 +31,12 @@ public class SearchPlacesTask extends AsyncTask<String, Void, List<CarmenFeature
         this.listener = listener;
     }
 
+    /**
+     * Runs in the background thread to perform the place search.
+     *
+     * @param params The parameters passed to the task. Expects three parameters: placeType, latitude, and longitude.
+     * @return A list of CarmenFeature objects representing the search results.
+     */
     @Override
     protected List<CarmenFeature> doInBackground(String... params) {
         String placeType = params[0];
@@ -45,6 +51,11 @@ public class SearchPlacesTask extends AsyncTask<String, Void, List<CarmenFeature
         }
     }
 
+    /**
+     * Runs on the UI thread after the background task is completed.
+     *
+     * @param places The list of CarmenFeature objects representing the search results.
+     */
     @Override
     protected void onPostExecute(List<CarmenFeature> places) {
         if (places != null) {
@@ -53,6 +64,7 @@ public class SearchPlacesTask extends AsyncTask<String, Void, List<CarmenFeature
             listener.onSearchError("An error occurred during the search.");
         }
     }
+
 
     /**
      * Performs the geocoding request to retrieve places of the specified type.
