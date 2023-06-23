@@ -154,4 +154,11 @@ public class Searcher {
                 point.longitude());
     }
 
+    /**
+     * Getter of application context.
+     * @return context.
+     */
+    public Context getContext() {
+        return context;
+    }
 }
