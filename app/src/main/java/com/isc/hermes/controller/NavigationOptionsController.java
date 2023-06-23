@@ -9,11 +9,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
+import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 import timber.log.Timber;
 
 
@@ -214,5 +219,25 @@ public class NavigationOptionsController {
         Node finalPointNode = (startPoint != null) ? new Node("02",finalPoint.getLatitude(),
                 finalPoint.getLatitude()): null;
         // TODO: Navigation Route between these two nodes
+        navOptionsForm.setVisibility(View.GONE);
+        showRoutes();
+
+    }
+
+    private void showRoutes(){
+        Map<String, String> r = new HashMap<>();
+
+        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
+        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
+        r.put("Route C", "{}");
+
+        String jsonA = r.get("Route A");
+        String jsonB = r.get("Route B");
+        String jsonC = r.get("Route C");
+
+        MapPolyline mapPolyline = new MapPolyline(MapDisplay.getInstance(context,null,null).getMapView());
+        //mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
+        //mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
+        InfoRouteController.getInstance(context).showInfoRoute(mapPolyline, null);
     }
 }

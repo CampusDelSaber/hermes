@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -19,7 +20,7 @@ public class WaypointOptionsController {
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
     private final Button navigateButton;
-    private final TrafficAutomaticFormController trafficAutomaticFormController;
+    private TrafficAutomaticFormController trafficAutomaticFormController;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
     private final Button reportNaturalDisasterButton;
@@ -34,6 +35,7 @@ public class WaypointOptionsController {
      */
     public WaypointOptionsController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
+        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = new IncidentFormController(context, mapWayPointController);
         navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);

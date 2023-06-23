@@ -22,6 +22,7 @@ import java.util.List;
 public class MapPolyline {
 
     private MapView mapView;
+    private LineLayer polylineLayer;
 
     /**
      * Constructor method
@@ -61,7 +62,7 @@ public class MapPolyline {
      * @param pointList list with coordinates.
      * @param color polyline color.
      */
-    public void drawPolyline(List<Point> pointList, int color) {
+    private void drawPolyline(List<Point> pointList, int color) {
         mapView.getMapAsync(mapboxMap -> {
             mapboxMap.getStyle(style -> {
                 LineString lineString = LineString.fromLngLats(pointList);
@@ -69,12 +70,20 @@ public class MapPolyline {
                 Source polylineSource = new GeoJsonSource("polyline-source", feature);
                 style.addSource(polylineSource);
 
-                LineLayer polylineLayer = new LineLayer("polyline-layer", "polyline-source");
+                polylineLayer = new LineLayer("polyline-layer", "polyline-source");
                 polylineLayer.setProperties(
                         PropertyFactory.lineColor(color),
                         PropertyFactory.lineWidth(4f)
                 );
                 style.addLayer(polylineLayer);
+            });
+        });
+    }
+
+    public void hidePolyline(){
+        mapView.getMapAsync(mapboxMap -> {
+            mapboxMap.getStyle(style -> {
+                style.removeLayer(polylineLayer);
             });
         });
     }
