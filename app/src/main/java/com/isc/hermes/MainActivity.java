@@ -239,6 +239,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         currentLocationController.initLocationButton();
     }
 
+    /**
+     * This method init the form with all button to show incidents from database
+     */
     private void initShowIncidentsController(){
         viewIncidentsController = new ViewIncidentsController(this);
     }
