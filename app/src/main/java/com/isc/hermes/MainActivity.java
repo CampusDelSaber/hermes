@@ -11,8 +11,10 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Handler;
 
+import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -34,13 +36,9 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-
-
-
-
-
 import java.util.HashMap;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
-
+        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
     }
 
