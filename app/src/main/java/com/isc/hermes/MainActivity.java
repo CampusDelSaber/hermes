@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
 
+import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
+        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
         initShowIncidentsController();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap,this));
+        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
     }
 
     /**
@@ -230,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * This method init the form with all button to show incidents from database
      */
-    private void initShowIncidentsController(){
+    private void initShowIncidentsController() {
         viewIncidentsController = new ViewIncidentsController(this);
     }
 
@@ -392,6 +394,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         launcher.launch(intent);
     }
+
     /**
      * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
      *
