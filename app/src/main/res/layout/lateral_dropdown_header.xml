@@ -20,7 +20,6 @@
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/satellite_style"
             tools:ignore="ContentDescription"/>
     </androidx.cardview.widget.CardView>
 

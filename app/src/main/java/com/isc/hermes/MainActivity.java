@@ -36,6 +36,7 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User;
 
 import android.widget.SearchView;
@@ -56,6 +57,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 
+import org.json.JSONException;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -112,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+        fetchUserFromDB();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
         setTheUserInformationInTheDropMenu();
@@ -378,8 +382,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ImageView userImage = navigationView.getHeaderView(0)
                 .findViewById(R.id.userAccountImage);
         userImage.setImageURI(Uri.parse(userRegistered.getPathImageUser()));
+    }
 
-
+    /**
+     * Retrieves user information from the database.
+     * This method fetches user details from the database based on the specified user ID.
+     * The retrieved user information is stored in the 'userRegistered' variable.
+     *
+     * @throws RuntimeException      If any other runtime exception occurs during the execution.
+     */
+    private void fetchUserFromDB() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                userRegistered = new AccountInfoManager().getUserById(UserSignUpCompletionActivity.idUserLogged);
+        } catch (JSONException | ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e); }
     }
 
     /**
@@ -449,15 +466,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.logOut:
+                drawerLayout.closeDrawer(GravityCompat.START);
                 logOut(new View(context));
                 return true;
             case R.id.mapStyle:
+                drawerLayout.closeDrawer(GravityCompat.START);
                 openStylesMenu(new View(context));
                 return true;
             case R.id.offlineMaps:
+                drawerLayout.closeDrawer(GravityCompat.START);
                 goOfflineMaps(new View(context));
                 return true;
             case R.id.userAccount:
+                drawerLayout.closeDrawer(GravityCompat.START);
                 goToAccountInformation(new View(context));
                 return true;
             case R.id.thirdDimensionMode:
@@ -467,7 +488,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //TODO: Implement the change dimension mode;
                 return true;
         }
-        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }
