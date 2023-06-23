@@ -40,7 +40,6 @@ public class FilterController {
         this.cameraAnimator = new CameraAnimator(mapboxMap);
         this.streetValidator = new StreetValidator();
         this.geocodingManager = new GeocodeFiltersManager(mainActivity);
-        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(mainActivity);
     }
 
     /**
