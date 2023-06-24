@@ -103,11 +103,16 @@ public class IncidentsDataProcessor {
         }
     }
 
-    public JSONArray getAllIncidentsByType(String type) throws ExecutionException, InterruptedException {
+    /**
+     * This method will filter and give me only the type of incident I want to show on the map.
+     *
+     * @param type the type of incident.
+     */
+    public JSONArray getAllIncidentsByType(String type) {
         try{
             Future<String> future = apiHandler.getFutureCollectionString( String.format(
                     "%s?types=%s",
-                    INCIDENTS_COLLECTION_NAME, "Traffic"
+                    INCIDENTS_COLLECTION_NAME, type
             ) );
             String futureResponse = future.get();
             JSONArray incidentsArray = responseParser.getJSONArrayOnResult(futureResponse);
