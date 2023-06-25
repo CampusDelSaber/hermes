@@ -42,13 +42,27 @@ public class ShowTrafficController {
      * @param mapDisplay It is the map which will be shown .
      */
     public void showTraffic(MapDisplay mapDisplay) throws JSONException {
-        JSONArray incidentsArray = incidentsDataProcessor.getAllIncidentsByType("Traffic");
-        assertNotNull(incidentsArray);
-
-        for (int i = 0; i < incidentsArray.length(); i++) {
-            Polyline polyline = createTrafficPolyline(mapDisplay, incidentsArray.getJSONObject(i));
+        JSONArray incidentsArrayNormal = incidentsDataProcessor.getAllIncidentsByType("Normal Traffic");
+        JSONArray incidentsArrayLow = incidentsDataProcessor.getAllIncidentsByType("Low Traffic");
+        JSONArray incidentsArrayHigh = incidentsDataProcessor.getAllIncidentsByType("High Traffic");
+        for (int i = 0; i < incidentsArrayNormal.length(); i++) {
+            JSONObject incident = incidentsArrayNormal.getJSONObject(i);
+            Polyline polyline = createTrafficPolyline(mapDisplay, incident, "Normal Traffic");
             trafficPolylines.add(polyline);
         }
+
+        for (int i = 0; i < incidentsArrayLow.length(); i++) {
+            JSONObject incident = incidentsArrayLow.getJSONObject(i);
+            Polyline polyline = createTrafficPolyline(mapDisplay, incident, "Low Traffic");
+            trafficPolylines.add(polyline);
+        }
+
+        for (int i = 0; i < incidentsArrayHigh.length(); i++) {
+            JSONObject incident = incidentsArrayHigh.getJSONObject(i);
+            Polyline polyline = createTrafficPolyline(mapDisplay, incident, "High Traffic");
+            trafficPolylines.add(polyline);
+        }
+
     }
 
     /**
@@ -57,12 +71,23 @@ public class ShowTrafficController {
      * @param mapDisplay It is the map which will be shown .
      * @param incidentObject is the JSON file to extract the data .
      */
-    private Polyline createTrafficPolyline(MapDisplay mapDisplay, JSONObject incidentObject) throws JSONException {
+    private Polyline createTrafficPolyline(MapDisplay mapDisplay, JSONObject incidentObject, String trafficType) throws JSONException {
         JSONObject geometryObject = incidentObject.getJSONObject("geometry");
         JSONArray coordinatesArray = geometryObject.getJSONArray("coordinates");
 
         PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.color(Color.RED);
+        polylineOptions.width(2f);
+        int color = 0;
+        if (trafficType.equals("Normal Traffic")) {
+            color = Color.parseColor("#FFA500");
+        }
+        if (trafficType.equals("Low Traffic")) {
+            color = Color.GREEN;
+        }
+        if (trafficType.equals("High Traffic")) {
+            color = Color.RED;
+        }
+        polylineOptions.color(color);
 
         for (int j = 0; j < coordinatesArray.length(); j++) {
             JSONArray coordinate = coordinatesArray.getJSONArray(j);
