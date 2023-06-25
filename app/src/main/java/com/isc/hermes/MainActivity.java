@@ -3,6 +3,7 @@ package com.isc.hermes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -89,8 +90,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addMapboxSearcher();
         initCurrentLocationController();
         mapView.getMapAsync(this);
-        searchView = findViewById(R.id.searchView);
-
+        setupSearchView();
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
@@ -123,6 +123,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         MapPolyline mapPolyline = new MapPolyline(mapView);
         mapPolyline.displaySavedCoordinates(routes, colors);
+    }
+
+    /**
+     * Set up the SearchView and set the text color to black.
+     */
+    private void setupSearchView() {
+        searchView = findViewById(R.id.searchView);
+        searchView.setTextColor(Color.BLACK);
     }
 
     /**
