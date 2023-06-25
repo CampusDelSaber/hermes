@@ -3,6 +3,7 @@ package com.isc.hermes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.model.User;
 
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String mapStyle;
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
-    private SearchView searchView;
+    private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
@@ -82,13 +84,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addMapboxSearcher();
         initCurrentLocationController();
         mapView.getMapAsync(this);
-        searchView = findViewById(R.id.searchView);
+        setupSearchView();
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
         FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
         initShowIncidentsController();
+    }
+
+    /**
+     * Set up the SearchView and set the text color to black.
+     */
+    private void setupSearchView() {
+        searchView = findViewById(R.id.searchView);
+        searchView.setTextColor(Color.BLACK);
     }
 
     /**
