@@ -13,11 +13,12 @@ import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
+import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapView;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -36,7 +37,7 @@ public class NavigationOptionsController {
     private final LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
-    private final NavigationDirectionController navigationDirectionController;
+    private InfoRouteController infoRouteController;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -50,7 +51,6 @@ public class NavigationOptionsController {
         isLocationStartChosen = true;
         this.mapWayPointController = mapWayPointController;
         navOptionsForm = ((AppCompatActivity)context).findViewById(R.id.navOptions_form);
-        navigationDirectionController = new NavigationDirectionController(context,mapWayPointController);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button_nav);
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
@@ -58,6 +58,7 @@ public class NavigationOptionsController {
         startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);;
         finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);;
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
+        infoRouteController = InfoRouteController.getInstance(context);
         setNavOptionsUiComponents();
         setButtons();
     }
@@ -108,8 +109,6 @@ public class NavigationOptionsController {
     public void handleHiddeItemsView() {
         mapWayPointController.setMarked(false);
         getNavOptionsForm().startAnimation(Animations.exitAnimation);
-        navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
-        navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         getNavOptionsForm().setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
     }
@@ -223,6 +222,27 @@ public class NavigationOptionsController {
         Node finalPointNode = (startPoint != null) ? new Node("02",finalPoint.getLatitude(),
                 finalPoint.getLatitude()): null;
         // TODO: Navigation Route between these two nodes
+        navOptionsForm.setVisibility(View.GONE);
+        showRoutes();
 
+    }
+
+    private void showRoutes(){
+        Map<String, String> r = new HashMap<>();
+
+        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"time\":10,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
+        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"time\":12,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
+        r.put("Route C", "{\"type\":\"Feature\",\"distance\":1.6061126697414532,\"time\":15,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.159019, -17.398311],[-66.154399, -17.397043],[-66.151315, -17.398656],[-66.147585, -17.400585],[-66.142978, -17.401595]]}}");
+        String jsonA = r.get("Route A");
+        String jsonB = r.get("Route B");
+        String jsonC = r.get("Route C");
+
+        ArrayList<String> geoJson = new ArrayList<>();
+        geoJson.add(jsonA);
+        geoJson.add(jsonB);
+        geoJson.add(jsonC);
+
+        MapPolyline mapPolyline = new MapPolyline(MapDisplay.getInstance(context,null,null).getMapView());
+        infoRouteController.showInfoRoute(geoJson, mapPolyline);
     }
 }

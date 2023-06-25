@@ -3,8 +3,6 @@ package com.isc.hermes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -15,12 +13,12 @@ import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
 
+import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
@@ -28,36 +26,23 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.offline.OfflineDataRepository;
-import com.isc.hermes.model.RegionData;
 import com.isc.hermes.model.User;
 
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.model.Utils.MapPolyline;
 
 import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.isc.hermes.view.MapDisplay;
-import com.isc.hermes.view.MapPolygonStyle;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -70,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapDisplay mapDisplay;
     private String mapStyle;
     private CurrentLocationController currentLocationController;
-    private User userRegistered;
     private boolean visibilityMenu = false;
     private SearchView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
@@ -96,42 +80,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
         mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
-        getUserInformation();
         initCurrentLocationController();
         mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
+        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
         initShowIncidentsController();
-        testPolyline(); // this is a test method that will be removed once the functionality has been verified.
-    }
-
-  public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
-        Map<String, String> r = new HashMap<>();
-        List<String> routes = new ArrayList<>();
-        List<Integer> colors = new ArrayList<>();
-
-        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
-        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
-        r.put("Route C", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.159019, -17.398311],[-66.154399, -17.397043],[-66.151315, -17.398656],[-66.147585, -17.400585],[-66.142978, -17.401595]]}}");
-
-        String jsonA = r.get("Route A");
-        String jsonB = r.get("Route B");
-        String jsonC = r.get("Route C");
-
-   
-        routes.add(jsonA);
-        routes.add(jsonB);
-        routes.add(jsonC);
-
-        colors.add(0xFF2867DC);
-        colors.add(0XFFC5D9FD);
-        colors.add(0XFFC5D9FD);
-
-        MapPolyline mapPolyline = new MapPolyline(mapView);
-        mapPolyline.displaySavedCoordinates(routes, colors);
     }
     /**
      * Method to add the searcher to the main scene above the map
@@ -154,19 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap,this));
-    }
-
-
-    /**
-     * Sends a User object to another activity using an Intent.
-     *
-     * @param user The User object to be sent to the other activity.
-     */
-    private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, AccountInformation.class);
-        intent.putExtra("userObtained", user);
-        startActivity(intent);
+        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
     }
 
     /**
@@ -175,7 +120,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param view Helps build the view
      */
     public void goToAccountInformation(View view) {
-        sendUserBetweenActivities(userRegistered);
+        Intent intent = new Intent(this, AccountInformation.class);
+        startActivity(intent);
     }
 
     /**
@@ -242,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * This method init the form with all button to show incidents from database
      */
-    private void initShowIncidentsController(){
+    private void initShowIncidentsController() {
         viewIncidentsController = new ViewIncidentsController(this);
     }
 
@@ -348,15 +294,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Retrieves the user information passed through the intent.
-     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
-     */
-    private void getUserInformation() {
-        Intent intent = getIntent();
-        userRegistered = intent.getParcelableExtra("userObtained");
-    }
-
-    /**
      * Opens the styles menu by toggling its visibility.
      *
      * @param view The view that triggered the method.
@@ -413,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         launcher.launch(intent);
     }
+
     /**
      * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
      *

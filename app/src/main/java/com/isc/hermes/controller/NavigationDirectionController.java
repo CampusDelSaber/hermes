@@ -3,12 +3,10 @@ package com.isc.hermes.controller;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
-import com.isc.hermes.utils.Animations;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,21 +18,17 @@ import java.util.Map;
 
 
 public class NavigationDirectionController {
-    static boolean isActive;
     private final Context context;
     private final RelativeLayout directionsForm;
-    private final MapWayPointController mapWayPointController;
     private TextView directionsList;
 
     /**
      * Constructor for the NavigationDirectionController class.
      *
      * @param context               The application context.
-     * @param mapWayPointController The map waypoint controller.
      */
-    public NavigationDirectionController(Context context, MapWayPointController mapWayPointController) {
+    public NavigationDirectionController(Context context) {
         this.context = context;
-        this.mapWayPointController = mapWayPointController;
         directionsForm = ((AppCompatActivity) context).findViewById(R.id.directions_form);
 
         directionsList = ((AppCompatActivity) context).findViewById(R.id.directions_list);
@@ -50,16 +44,6 @@ public class NavigationDirectionController {
         String jsonC = r.get("Route C");
 
         processRoute(jsonA);
-    }
-
-    /**
-     * Updates the UI components related to the direction points.
-     */
-    void updateUiPointsComponents() {
-        if (isActive) {
-            directionsForm.startAnimation(Animations.entryAnimation);
-            directionsForm.setVisibility(View.VISIBLE);
-        }
     }
 
     /**
@@ -209,5 +193,4 @@ public class NavigationDirectionController {
     public void processRoute(String routeJson) {
         parseRoute(routeJson);
     }
-
 }

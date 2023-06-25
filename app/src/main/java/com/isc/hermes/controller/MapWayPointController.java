@@ -1,10 +1,14 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+
+import android.graphics.PointF;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -46,10 +50,12 @@ public class MapWayPointController implements MapClickConfigurationController {
         if (NavigationOptionsController.isActive) {
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
             markPointBehavior(point);
-        } else {
+        } else if (!InfoRouteController.getInstance(context).isActive()) {
+            Log.i("Mau","Entre a dibuajr unb");
             doMarkOnMapAction(point);
             waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
-
+        } else {
+            Log.i("Mau","No puedo dibujar");
         }
         IncidentsUploader.getInstance().setLastClickedPoint(point);
         try {
@@ -57,6 +63,8 @@ public class MapWayPointController implements MapClickConfigurationController {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+        TrafficUploader.getInstance().setLastClickedPoint(point);
+
         return true;
     }
 

@@ -25,60 +25,14 @@
         tools:visibility="visible">
 
 
-        <ImageView
-            android:id="@+id/turn_right"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="60dp"
-            android:layout_marginBottom="510dp"
-            app:srcCompat="@drawable/turn_right_icon" />
-
-        <TextView
-            android:id="@+id/textVIew6"
-            android:layout_width="264dp"
-            android:layout_height="55dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="60dp"
-            android:layout_marginEnd="60dp"
-            android:layout_marginBottom="595dp"
-            android:text="100 Meters"
-            android:textColor="#FFFFFF"
-            android:textSize="45sp" />
-
-        <ImageView
-            android:id="@+id/turn_left"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="60dp"
-            android:layout_marginBottom="510dp"
-            app:srcCompat="@drawable/turn_left_icon" />
-
-        <ImageView
-            android:id="@+id/go_straight"
-            android:layout_width="89dp"
-            android:layout_height="67dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="150dp"
-            android:layout_marginEnd="154dp"
-            android:layout_marginBottom="511dp"
-            app:srcCompat="@drawable/go_straight_icon" />
-
         <TextView
             android:id="@+id/directions_list"
-            android:layout_width="353dp"
-            android:layout_height="429dp"
+            android:layout_width="375dp"
+            android:layout_height="397dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="52dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="150dp"
             android:background="#FFFFFF"
             android:text="    "
             android:textColor="#000000"
@@ -86,6 +40,38 @@
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="15dp"
             tools:layout_editor_absoluteY="194dp" />
+
+        <ImageView
+            android:id="@+id/turn_left"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="580dp"
+            app:srcCompat="@drawable/turn_left_icon" />
+
+        <ImageView
+            android:id="@+id/go_straight"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="133dp"
+            android:layout_marginEnd="133dp"
+            android:layout_marginBottom="580dp"
+            app:srcCompat="@drawable/go_straight_icon" />
+
+        <ImageView
+            android:id="@+id/turn_right"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="37dp"
+            android:layout_marginBottom="580dp"
+            app:srcCompat="@drawable/turn_right_icon" />
 
     </RelativeLayout>
 
