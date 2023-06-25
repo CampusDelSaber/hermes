@@ -146,6 +146,7 @@ public class InfoRouteController {
     private void setTimeAndDistanceInformation(JSONObject jsonObject){
         setDistanceInfo(jsonObject);
         setEstimatedTimeInfo(jsonObject);
+        navigationDirectionController.processRoute(jsonObject);
     }
 
     /**
