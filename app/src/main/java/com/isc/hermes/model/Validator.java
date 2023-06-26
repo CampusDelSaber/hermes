@@ -17,13 +17,12 @@ public class Validator {
     private VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
     private static Validator validator;
-    private User user;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Validator() {
-        this.email = "gandarillas.delgado.denis@gmail.com";
+    public Validator(String id, String email) {
+        this.email = email;
         this.verificationCodesManager = new VerificationCodesManager();
-        verificationCodesManager.addVerificationCode(email);
+        verificationCodesManager.addVerificationCode(id, email);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -59,13 +58,5 @@ public class Validator {
 
     public String getCode() {
         return code;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static Validator getValidator() {
-        if (validator == null) {
-            validator = new Validator();
-        }
-        return validator;
     }
 }

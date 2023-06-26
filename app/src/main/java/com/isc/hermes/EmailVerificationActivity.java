@@ -12,8 +12,14 @@ import android.widget.EditText;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
+import com.isc.hermes.model.User;
 import com.isc.hermes.model.Validator;
+
+import org.json.JSONException;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * This class manages the email verification when the user declares themself as a Administrator.
@@ -23,6 +29,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
     private EditText[] codeEditTexts;
     private Button continueButton;
     private Validator validator;
+    private User user;
 
     /**
      * This method initiates the window whe its called.
@@ -33,7 +40,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_verification);
-        validator = Validator.getValidator();
+        validator = new Validator(user.getId(), user.getEmail());
         initComponents();
     }
 
@@ -42,34 +49,20 @@ public class EmailVerificationActivity extends AppCompatActivity {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initComponents(){
-        codeEditTexts = new EditText[]{
-                findViewById(R.id.codeTextField1),
-                findViewById(R.id.codeTextField2),
-                findViewById(R.id.codeTextField3),
-                findViewById(R.id.codeTextField4),
-                findViewById(R.id.codeTextField5),
+        codeEditTexts = new EditText[]{findViewById(R.id.codeTextField1), findViewById(R.id.codeTextField2),
+                findViewById(R.id.codeTextField3), findViewById(R.id.codeTextField4), findViewById(R.id.codeTextField5),
                 findViewById(R.id.codeTextField6)
         };
-
         continueButton = findViewById(R.id.continueButton);
-        System.out.println(validator.getCode() + "---------------------");
-        continueButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
-                String code = getCodeUser();
-                if (validator.isCorrect(code)) {
-                    VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
-                    verificationCodesManager.updateVerificationCode(validator.getId(), false);
-                    startActivity(intent);
-                } else {
-                    changeColorCodeUser();
-                }
-            }
-        });
-
-        configureEditTexts();
+        continueButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
+            String code = getCodeUser();
+            if (validator.isCorrect(code)) {
+                VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
+                verificationCodesManager.updateVerificationCode(validator.getId(), false);
+                startActivity(intent);
+            } else changeColorCodeUser();
+        }); configureEditTexts();
     }
 
     /**
@@ -79,9 +72,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
         for (int i = 0; i < codeEditTexts.length; i++) {
             final EditText currentEditText = codeEditTexts[i];
             final EditText nextEditText = (i < codeEditTexts.length - 1) ? codeEditTexts[i + 1] : null;
-
             configureTextWatcher(currentEditText, nextEditText);
-
         }
     }
 
@@ -137,16 +128,15 @@ public class EmailVerificationActivity extends AppCompatActivity {
     }
 
     private String getCodeUser() {
-        String code = "";
-        for (int i = 0; i < codeEditTexts.length; i++) {
-            code += codeEditTexts[i].getText();
-        }
-        return code;
+        StringBuilder code = new StringBuilder();
+        for (EditText codeEditText : codeEditTexts) {
+            code.append(codeEditText.getText());
+        } return code.toString();
     }
 
     private void changeColorCodeUser() {
-        for (int i = 0; i < codeEditTexts.length; i++) {
-            codeEditTexts[i].setTextColor(getResources().getColor(R.color.redOriginal));
+        for (EditText codeEditText : codeEditTexts) {
+            codeEditText.setTextColor(getResources().getColor(R.color.redOriginal));
         }
     }
 }

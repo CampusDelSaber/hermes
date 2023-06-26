@@ -1,18 +1,19 @@
 package com.isc.hermes.model.signup;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.isc.hermes.EmailVerificationActivity;
+import com.isc.hermes.MainActivity;
 import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User;
 import com.isc.hermes.model.Validator;
-import com.isc.hermes.model.user.UserRoles;
-
 import org.json.JSONException;
 
 import java.util.concurrent.ExecutionException;
@@ -21,6 +22,7 @@ import java.util.concurrent.ExecutionException;
  * This class manages the transitions in the sign up process.
  */
 public class SignUpTransitionHandler {
+    private  User userRegistered;
 
     /**
      * Loads user data into the database.
@@ -31,7 +33,7 @@ public class SignUpTransitionHandler {
      * @throws RuntimeException If any other runtime exception occurs during the execution.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void loadUserDataInDB(User userRegistered) {
+    private void loadUserDataInDB() {
         AccountInfoManager accountInfoManager = new AccountInfoManager();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             accountInfoManager.addUser(userRegistered.getEmail(), userRegistered.getFullName(),
@@ -48,11 +50,17 @@ public class SignUpTransitionHandler {
      * @param user           UserRole such as Administrator or General
      * @param packageContext the context, so the activity can be launched.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void transitionBasedOnRole(User user, Context packageContext) {
-        Intent intent = new Intent(packageContext, RoleTransitionRepository.getInstance().get(
-                user.getTypeUser()));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) sendVerificationCode(user.getTypeUser(), user.getEmail());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) loadUserDataInDB(user);
+        this.userRegistered = user;
+        Intent intent;
+        if (user.getTypeUser().equals("Administrator")) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                sendVerificationCode(user.getTypeUser(), user.getEmail());
+            intent = new Intent(packageContext, EmailVerificationActivity.class);
+        }
+        else intent = new Intent(packageContext, MainActivity.class);
+        packageContext.startActivity(intent);
     }
 
     /**
@@ -65,11 +73,10 @@ public class SignUpTransitionHandler {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(String roles, String email) {
         if (roles.equals("Administrator")) {
-            Validator validator = Validator.getValidator();
+            Validator validator = new Validator(userRegistered);
             validator.obtainVerificationCode();
             SendEmailManager sendEmailManager = new SendEmailManager();
             sendEmailManager.addEmail(email, validator.getCode());
-            validator.setEmail(email);
         }
     }
 }
