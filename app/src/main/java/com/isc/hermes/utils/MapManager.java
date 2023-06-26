@@ -60,6 +60,10 @@ public class MapManager {
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1500);
     }
 
+    /**
+     * Method to obtain current mapbox map
+     * @return map from this class
+     */
     public MapboxMap getMapboxMap() {
         return this.mapboxMap;
     }
