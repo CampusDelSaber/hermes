@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
-import com.isc.hermes.model.User;
 import com.isc.hermes.model.signup.SignUpTransitionHandler;
 
 /**

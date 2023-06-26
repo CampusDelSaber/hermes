@@ -3,9 +3,7 @@ package com.isc.hermes.controller.authentication;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -14,8 +12,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.isc.hermes.R;
-import com.isc.hermes.model.User;
-
+import com.isc.hermes.model.User.User;
 import java.util.Objects;
 
 /**

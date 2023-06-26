@@ -1,6 +1,5 @@
 package com.isc.hermes.model.signup;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -12,7 +11,6 @@ import com.isc.hermes.MainActivity;
 import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
-import com.isc.hermes.model.User;
 import com.isc.hermes.model.Validator;
 import org.json.JSONException;
 

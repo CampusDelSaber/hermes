@@ -25,7 +25,6 @@ import java.util.concurrent.ExecutionException;
 
 import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.model.User;
 
 import org.json.JSONException;
 

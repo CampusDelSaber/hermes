@@ -14,7 +14,6 @@ import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.model.User;
 
 import org.json.JSONException;
 

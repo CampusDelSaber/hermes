@@ -53,7 +53,7 @@ public class PopUpDeleteAccount extends PopUp{
         if (v == super.confirmButton){
             AccountInfoManager accountInfoManager = new AccountInfoManager();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                accountInfoManager.deleteUser(SignUpActivityView.idUserLogged);
+                accountInfoManager.deleteUser(UserRepository.getInstance().getUserContained().getId());
             } closeAuthentication();
         } dismiss();
     }

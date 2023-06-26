@@ -1,10 +1,5 @@
 package com.isc.hermes.database;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
-import com.isc.hermes.model.User;
 import com.isc.hermes.model.VerificationCode;
 
 import org.json.JSONArray;

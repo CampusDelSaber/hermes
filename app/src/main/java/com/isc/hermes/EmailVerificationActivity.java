@@ -1,25 +1,16 @@
 package com.isc.hermes;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
-import com.isc.hermes.model.User;
 import com.isc.hermes.model.Validator;
-
-import org.json.JSONException;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * This class manages the email verification when the user declares themself as a Administrator.
