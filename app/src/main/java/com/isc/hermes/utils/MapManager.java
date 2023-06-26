@@ -16,7 +16,6 @@ public class MapManager {
 
     private static MapManager instance;
     private MapboxMap mapboxMap;
-    private Context context;
 
     private MapClickConfigurationController configurationController;
 
@@ -36,15 +35,6 @@ public class MapManager {
     }
 
     /**
-     * Method to set context when this instance will init
-     *
-     * @param context is context will be set
-     */
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    /**
      * Method to add a new mapbox map click configuration
      *
      * @param controller is controller that will map adopt to control its click event
@@ -61,10 +51,6 @@ public class MapManager {
         configurationController.discardFromMap(this.getMapboxMap());
     }
 
-    public MapboxMap getMapboxMap() {
-        return this.mapboxMap;
-    }
-
 
     /**
      * This method animates the camera position on the Mapbox map to the specified latitude and longitude with a given zoom level. * * @param latLng The latitude and longitude to move the camera to. * @param zoom The zoom level for the camera position.
@@ -72,5 +58,9 @@ public class MapManager {
     public void animateCameraPosition(LatLng latLng, double zoom) {
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(zoom).build();
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1500);
+    }
+
+    public MapboxMap getMapboxMap() {
+        return this.mapboxMap;
     }
 }
