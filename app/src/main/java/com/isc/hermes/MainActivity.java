@@ -9,31 +9,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Handler;
-
 import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.model.User;
-
-import android.widget.SearchView;
 import android.widget.TextView;
-
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-
+import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
@@ -44,7 +35,6 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -225,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.mapView);
     }
 
-
     /**
      * Method for starting the MapView object instance.
      */
@@ -247,7 +236,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (!nameServiceUsed.equals("default")) {
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
         }
-
         addMarkers();
     }
 
@@ -339,16 +327,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Adds markers to the map based on the shared searcher preferences.
-     * The markers are added using the MarkerManager instance.
+     * Adds markers to the map based on the current place preferences.
      */
     private void addMarkers() {
-        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
+        WayPoint place = new WayPoint(sharedSearcherPreferencesManager.getPlaceName(),
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
+
+        addMarkerToMap(place);
+
+        if (place.getPlaceName() != null) {
+            searchView.setText(place.getPlaceName());
+        }else {
+            String resetSearch = "Search...";
+            searchView.setText(resetSearch);
+        }
     }
 
     /**
+     * Adds a marker to the map for the given WayPoint if it has a valid place name.
+     *
+     * @param place The WayPoint representing the place to add the marker for.
+     */
+    private void addMarkerToMap(WayPoint place) {
+        if (place.getPlaceName() != null) {
+            markerManager.addMarkerToMap(mapView, place.getPlaceName(), place.getLatitude(), place.getLongitude());
+        }
+    }
+
+
+    /*
      * This method used for open a new activity, offline settings.
      *
      * @param view view

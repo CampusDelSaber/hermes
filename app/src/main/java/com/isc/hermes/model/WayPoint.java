@@ -29,6 +29,11 @@ public class WayPoint {
         this.longitude = longitude;
     }
 
+    public WayPoint(String placeName, double latitude, double longitude) {
+        this.placeName = placeName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     /**
      * Gets the place name.
