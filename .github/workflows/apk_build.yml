@@ -1,41 +1,70 @@
-name: application build
-run-name: ${{ github.actor }} is building an application.
+name: Application Build 🏗️ 
+run-name: ${{ github.actor }} is executing the workflow ${{ github.workflow }}.
 
 on: [push]
 
 jobs:
   build:
     name: build
-    runs-on: self-hosted 
+    runs-on:  ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17' 
+          cache: 'gradle'
+
       - name: Build
         working-directory: ${{ github.workspace }}
         run: |
           ./scripts/check_env.sh
-          ./gradlew build -x test
+          ./gradlew --no-daemon build -x test
 
   test:
     name: test
     needs: build
-    runs-on: self-hosted 
+    runs-on:  ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17' 
+          cache: 'gradle'
+
       - name: Run Tests
         working-directory: ${{ github.workspace }}
-        run: ./gradlew test
+        run: |
+          ./scripts/check_env.sh
+          ./gradlew --no-daemon build
 
   export:
     name: apk_distribution 
     needs: build    
-    runs-on: self-hosted 
+    runs-on:  ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17' 
+          cache: 'gradle'
+
       - name: Upload APK 
         working-directory: ${{ github.workspace }}
         run: |
-          ./gradlew assembleRelease
-          echo "::notice title={"APK download URL"}:: " $(curl --upload-file app/build/outputs/apk/release/*.apk https://transfer.sh/hermes.apk)
+          ./gradlew --no-daemon assembleRelease
+          echo "::notice title={"APK download URL"}:: " $(./scripts/publish.sh ${{ github.sh }})

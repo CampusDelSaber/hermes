@@ -9,5 +9,7 @@ do
     else
         echo "$item: FAILED"
         echo "The variable $item is not present."
+        exit 1
     fi
 done
+exit 0
