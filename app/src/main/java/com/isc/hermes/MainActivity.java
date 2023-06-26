@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         launcher = createActivityResult();
         initShowIncidentsController();
     }
-
     /**
      * Method to add the searcher to the main scene above the map
      */
