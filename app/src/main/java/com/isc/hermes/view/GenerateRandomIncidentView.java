@@ -44,16 +44,17 @@ public class GenerateRandomIncidentView {
      * Initializes the view buttons
      */
     private void initButtons(){
-        ImageButton locationButton = activity.findViewById(R.id.generateIncidentButton);
-        Button cancelButton = activity.findViewById(R.id.cancel_generate);
-        cancelButton.setOnClickListener(v -> hideOptions());
-        locationButton.setOnClickListener(v -> showOptions());
+        //ImageButton locationButton = activity.findViewById(R.id.generateIncidentButton);
+        //Button cancelButton = activity.findViewById(R.id.cancel_generate);
+        //cancelButton.setOnClickListener(v -> hideOptions());
+        //locationButton.setOnClickListener(v -> showOptions());
     }
 
     /**
      * This method displays the incident generation selection menu.
      */
     private void showOptions(){
+        //GridLayout locationButton = activity.findViewById(R.id.incident_view);
         layout.setVisibility(View.VISIBLE);
     }
 

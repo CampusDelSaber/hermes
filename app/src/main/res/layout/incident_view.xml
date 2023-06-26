@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/incident_view"
+    android:layout_gravity="center"
+    android:layout_width="300dp"
+    android:layout_height="250dp"
+    android:visibility="gone" >
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="250dp"
+    android:background="@drawable/popup_background"
+    android:layout_gravity="center"
+    tools:ignore="MissingConstraints">
+
+    <LinearLayout
+        android:layout_width="302dp"
+        android:layout_height="50dp"
+        android:background="#FF002147"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="-32dp"
+        tools:layout_editor_absoluteY="-3dp">
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="30sp"
+        android:paddingEnd="30sp">
+
+        <TextView
+            android:id="@+id/deleteAccountText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/select_an_option"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:typeface="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.07" />
+
+        <GridLayout
+            android:id="@+id/gridLayout"
+            android:layout_width="269dp"
+            android:layout_height="144dp"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.483"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deleteAccountText"
+            app:layout_constraintVertical_bias="0.522">
+
+            <Space
+                android:layout_width="58dp"
+                android:layout_height="58dp" />
+
+            <ImageView
+                android:id="@+id/imgDisplayIncidents"
+                android:layout_width="41dp"
+                android:layout_height="46dp"
+                android:layout_row="1"
+                android:layout_column="0"
+                app:srcCompat="@drawable/img_display_incidents"
+                android:layout_gravity="center"/>
+
+            <ImageView
+                android:id="@+id/imgGenerateIncidents"
+                android:layout_width="35dp"
+                android:layout_height="36dp"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/img_generate_incidents" />
+
+            <Space
+                android:layout_width="60dp"
+                android:layout_height="59dp"
+                android:layout_row="1"
+                android:layout_column="0" />
+
+            <Button
+                android:id="@+id/generateIncidentsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/blueOxford_app_theme"
+                android:text="@string/generate_incidents"
+                android:textSize="10sp"
+                app:cornerRadius="5sp"
+                tools:ignore="SmallSp,TouchTargetSizeCheck" />
+
+            <Button
+                android:id="@+id/displayIncidentsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="1"
+                android:layout_column="1"
+                android:layout_gravity="center"
+                android:text="@string/display_incidents"
+                android:textSize="10sp"
+                app:cornerRadius="5sp"
+                tools:ignore="SmallSp,TouchTargetSizeCheck" />
+        </GridLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,8 @@
     android:id="@+id/GenerateIncidentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="45dp">
+    android:padding="45dp"
+    android:visibility="gone" >
 
     <LinearLayout
         android:layout_width="305dp"

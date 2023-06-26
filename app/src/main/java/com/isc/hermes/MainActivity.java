@@ -42,6 +42,7 @@ import com.isc.hermes.utils.MapClickEventsManager;
 import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
+import com.isc.hermes.view.IncidentView;
 import com.isc.hermes.view.MapDisplay;
 import com.isc.hermes.view.MapPolygonStyle;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
+    private IncidentView incidentView;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchView = findViewById(R.id.searchView);
         changeSearchView();
         addIncidentGeneratorButton();
+        incidentViewButton();
         MarkerManager.getInstance(this).removeSavedMarker();
         FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
@@ -242,6 +245,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void addIncidentGeneratorButton() {
         GenerateRandomIncidentController incidentController = new GenerateRandomIncidentController(this);
+    }
+
+    /**
+     * This method adds the button for incident generation.
+     */
+    private void incidentViewButton() {
+        incidentView = new IncidentView(this);
     }
 
     /**

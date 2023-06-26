@@ -174,13 +174,13 @@
 
             <ImageButton
                 android:id="@+id/generateIncidentButton"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_margin="10dp"
                 android:background="@android:color/transparent"
+                android:importantForAccessibility="no"
                 mapbox:srcCompat="@drawable/img_icon_incident_generate"
-                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
-                android:importantForAccessibility="no" />
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             <ImageButton
                 android:id="@+id/locationButton"
@@ -215,7 +215,17 @@
         mapbox:layout_anchorGravity="center" />
 
     <include
+        layout="@layout/incident_view"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
         layout="@layout/incident_generate_view"
+        mapbox:layout_anchor="@+id/mapView"
+        mapbox:layout_anchorGravity="center" />
+
+    <include
+        layout="@layout/display_incidents"
         mapbox:layout_anchor="@+id/mapView"
         mapbox:layout_anchorGravity="center" />
 

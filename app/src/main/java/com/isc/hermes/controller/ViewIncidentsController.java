@@ -2,11 +2,14 @@ package com.isc.hermes.controller;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
+
+import java.util.List;
 
 /**
  * Class to manage all view elements in view incidents form

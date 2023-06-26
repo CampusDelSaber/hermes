@@ -139,4 +139,7 @@
     <string name="download_button_text">Download\n</string>
     <string name="tittle_region_popup">Give a name to your map</string>
     <string name="your_name_map">Your name map</string>
+    <string name="display_incidents">Display Incidents</string>
+    <string name="select_an_option">Select an Option</string>
+    <string name="generate_incidents">Generate Incidents</string>
 </resources>
