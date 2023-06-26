@@ -13,7 +13,6 @@ import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
-import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.text.DecimalFormat;
@@ -242,7 +241,7 @@ public class NavigationOptionsController {
         geoJson.add(jsonB);
         geoJson.add(jsonC);
 
-        MapPolyline mapPolyline = new MapPolyline(MapDisplay.getInstance(context,null,null).getMapView());
+        MapPolyline mapPolyline = new MapPolyline();
         infoRouteController.showInfoRoute(geoJson, mapPolyline);
     }
 }

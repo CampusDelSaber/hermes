@@ -37,7 +37,7 @@ public class TrafficUploader extends IncidentsUploader {
         String routeSelected = "Route A";
 
         Node destiny = new Node("Point 2", lastClickedPoint.getLatitude(), lastClickedPoint.getLongitude());
-        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null, null).getCurrentLocationModel();
+        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null).getCurrentLocationModel();
         Node location = new Node("Point 1", currentLocation.getLatitude(), currentLocation.getLongitude());
 
         //TODO: This part must be replaced by the network that will be generated with real data when it is ready.
