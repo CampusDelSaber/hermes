@@ -231,6 +231,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         }else{
             textInputPopup.closePopup();
             uploadNameRegion(selectedNameDownloadedRegion,text);
+            update();
         }
     }
 
