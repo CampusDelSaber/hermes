@@ -17,24 +17,12 @@ public class VerificationCode {
     /**
      * Constructs a VerificationCode object with the specified ID and user email.
      *
-     * @param id        The ID of the verification code.
      * @param userEmail The email associated with the verification code.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public VerificationCode(String id, String userEmail) {
-        this.id = id;
         this.email = userEmail;
         this.verificationCode = new CreateVerificationCode().generateVerificationCode();
         this.isValid = true;
-    }
-
-    /**
-     * Retrieves the ID of the verification code.
-     *
-     * @return The ID of the verification code.
-     */
-    public String getId() {
-        return id;
     }
 
     /**
@@ -71,6 +59,10 @@ public class VerificationCode {
      */
     public Boolean getValid() {
         return isValid;
+    }
+
+    public String getId() {
+        return id;
     }
 
     /**

@@ -35,19 +35,21 @@ public class EmailVerificationActivity extends AppCompatActivity {
      * This method initiates the window whe its called.
      * @param savedInstanceState The saved instance.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_verification);
-        validator = new Validator(user.getId(), user.getEmail());
+        Intent intent = getIntent();
+        user = intent.getParcelableExtra("user");
+        System.out.println("USER ACCOUNT: " + user.getEmail() + "=============================================================");
+
+        validator = new Validator(user);
         initComponents();
     }
 
     /**
      * This method calls the codeTextFields and groups those in a Array.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initComponents(){
         codeEditTexts = new EditText[]{findViewById(R.id.codeTextField1), findViewById(R.id.codeTextField2),
                 findViewById(R.id.codeTextField3), findViewById(R.id.codeTextField4), findViewById(R.id.codeTextField5),

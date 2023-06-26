@@ -11,30 +11,38 @@ import com.isc.hermes.database.VerificationCodesManager;
  */
 public class Validator {
     private String code;
-    private String email;
-    private Boolean valid;
+    private User user;
     private String id;
     private VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
-    private static Validator validator;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public Validator(String id, String email) {
-        this.email = email;
+    public Validator(User user) {
+        this.user = user;
         this.verificationCodesManager = new VerificationCodesManager();
-        verificationCodesManager.addVerificationCode(id, email);
+        getVerificationCode();
+        System.out.println("=======================================================0\nEMAIL: " + user.getEmail() +
+                "\nCODE: " + code + "\n=======================================================0\n");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void obtainVerificationCode() {
         try {
-            verificationCode = verificationCodesManager.getLastVerificationCode(email);
+            if (user != null) {
+                verificationCode = verificationCodesManager.getLastVerificationCode(user.getEmail());
+            } else {
+                throw new NullPointerException("User object is null");
+            }
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
+    }
 
+    public void getVerificationCode() {
+        obtainVerificationCode();
+        if (verificationCode == null) {
+            verificationCodesManager.addVerificationCode(user.getEmail());
+            getVerificationCode();
+        }
         code = verificationCode.getVerificationCode();
-        valid = verificationCode.getValid();
         id = verificationCode.getId();
     }
 
@@ -48,15 +56,15 @@ public class Validator {
         return code.equals(userCode);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getCode() {
+        return code;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getCode() {
-        return code;
     }
 }

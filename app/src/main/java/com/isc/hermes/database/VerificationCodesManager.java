@@ -37,9 +37,8 @@ public class VerificationCodesManager {
     /**
      * Adds a verification code for the specified user email.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addVerificationCode(String id, String email) {
-        VerificationCode verificationCode = new VerificationCode(id, email);
+    public void addVerificationCode(String email) {
+        VerificationCode verificationCode = new VerificationCode("0", email);
         apiHandler.postFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, verificationCode);
     }
 
@@ -77,7 +76,6 @@ public class VerificationCodesManager {
      * @throws InterruptedException If the operation is interrupted.
      * @throws JSONException        If a JSON error occurs.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public VerificationCode getLastVerificationCode(String email) throws ExecutionException, InterruptedException, JSONException {
         JSONArray array = getSpecificVerificationCode(email);
         VerificationCode verificationCodeObject = null;
