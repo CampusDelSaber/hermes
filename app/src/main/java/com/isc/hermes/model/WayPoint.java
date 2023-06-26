@@ -29,6 +29,18 @@ public class WayPoint {
         this.longitude = longitude;
     }
 
+    /**
+     * Constructor method to initialize the attributes
+     * builder's overhead
+     * @param placeName place's name
+     * @param latitude place's latitude
+     * @param longitude place's longitude
+     */
+    public WayPoint(String placeName, double latitude, double longitude) {
+        this.placeName = placeName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     /**
      * Gets the place name.
