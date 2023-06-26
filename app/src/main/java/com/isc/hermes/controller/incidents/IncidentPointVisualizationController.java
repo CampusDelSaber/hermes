@@ -89,7 +89,7 @@ public class IncidentPointVisualizationController {
      * @return a Set of Strings containing the desired types
      */
     private Set<String> getDesiredTypes() {
-        return new HashSet<>(Arrays.asList("Accident", "Social-Event", "Street obstruction"));
+        return new HashSet<>(Arrays.asList("Social Incident"));
     }
 
     /**
