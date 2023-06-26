@@ -27,7 +27,7 @@ public class OfflineCardView {
      * @param name The name of the downloaded region.
      */
     public CardView createNewCardMapDownloaded(String name, PopupMenu.OnMenuItemClickListener onClickListener) {
-        LinearLayout textViewsVertical = createVerticalLinearLayout();
+        LinearLayout textViewsVertical = createLinearLayout(LinearLayout.VERTICAL);
         textViewsVertical.setPadding(100, 0, 100, 0);
         textViewsVertical.addView(createTextView(name, 18, Typeface.BOLD));
         return joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup(onClickListener));
@@ -80,7 +80,7 @@ public class OfflineCardView {
      *
      * @return The created vertical LinearLayout.
      */
-    private LinearLayout createVerticalLinearLayout() {
+    private LinearLayout createLinearLayout(LinearLayout orientation) {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(

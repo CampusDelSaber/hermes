@@ -133,15 +133,16 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
     }
 
     /**
-     * Renames the selected downloaded map.
+     * Show Popup for Renames the selected downloaded map.
      */
-    protected void renameDownloadedMap() {
+    protected void displayPopupInputNewName() {
          textInputPopup = new TextInputPopup(this, this);
          textInputPopup.showPopup();
     }
 
     /**
      * Loads the available regions.
+     *
      */
     public void loadRegions() {
         MapboxOfflineManager.getInstance(this).listRegions(new RegionLoader(this));
@@ -194,7 +195,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         switch (item.getItemId()) {
             case RENAME:
                 selectedNameDownloadedRegion = nameItem;
-                renameDownloadedMap();
+                displayPopupInputNewName();
                 return true;
             case NAVIGATE_TO:
                 navigateToDownloadedMap(nameItem);
@@ -217,7 +218,12 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
                 .getOfflineRegions()
                 .forEach((key, value) -> uploadRegionsDownloaded(key));
     }
-    
+
+    /**
+     * This method the actions that the popup will take.
+     *
+     * @param text The text received from the dialog.
+     */
     @Override
     public void dialogClosed(String text) {
         if(MapboxOfflineManager.getInstance(this).getOfflineRegions().containsKey(text)){
@@ -228,6 +234,12 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         }
     }
 
+    /**
+     * This method changes the name of the downloaded map.
+     *
+     * @param previousName the current name of the selected map
+     * @param newName the new name for the selected map
+     */
     private void uploadNameRegion(String previousName, String newName){
         OfflineRegion targetRegion = MapboxOfflineManager.getInstance(this).getOfflineRegion(previousName);
         byte[] metadata = targetRegion.getMetadata();
