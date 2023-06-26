@@ -7,7 +7,7 @@ import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LONGITUDE;
 
 import android.graphics.PointF;
 
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.geojson.Feature;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -26,7 +26,7 @@ public class StreetValidator {
      * This is the constructor method to initialize the reverse geocoding.
      */
     public StreetValidator() {
-        this.mapboxMap = MapClickEventsManager.getInstance().getMapboxMap();
+        this.mapboxMap = MapManager.getInstance().getMapboxMap();
     }
 
     /**

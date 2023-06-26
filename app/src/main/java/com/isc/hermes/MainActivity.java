@@ -26,17 +26,14 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.model.User;
 
 import android.widget.SearchView;
 
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 
-import com.isc.hermes.utils.MapClickEventsManager;
-import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
-import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -52,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public static Context context;
     private MapView mapView;
-    private MapDisplay mapDisplay;
     private String mapStyle;
     private CurrentLocationController currentLocationController;
     private boolean visibilityMenu = false;
@@ -77,10 +73,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
         initMapView();
         this.mapStyle = "Default";
-        mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
-        mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
-        initCurrentLocationController();
         mapView.getMapAsync(this);
         searchView = findViewById(R.id.searchView);
         changeSearchView();
@@ -89,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
         initShowIncidentsController();
+        initCurrentLocationController();
     }
     /**
      * Method to add the searcher to the main scene above the map
@@ -110,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 filterController.initComponents();
             }
         });
-        MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
+        MapManager.getInstance().setMapboxMap(mapboxMap);
+        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
     }
 
     /**
@@ -181,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * This method will init the current location controller to get the real time user location
      */
     private void initCurrentLocationController() {
-        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
+        currentLocationController = CurrentLocationController.getControllerInstance(this);
         currentLocationController.initLocationButton();
     }
 
@@ -221,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         super.onStart();
-        mapDisplay.onStart();
     }
 
     /**
@@ -230,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        mapDisplay.onResume();
         SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
         if (!nameServiceUsed.equals("default")) {
@@ -246,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPause() {
         super.onPause();
-        mapDisplay.onPause();
         SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         if (SignUpActivityView.authenticator != null) {
@@ -261,7 +252,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStop() {
         super.onStop();
-        mapDisplay.onStop();
     }
 
     /**
@@ -270,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mapDisplay.onLowMemory();
     }
 
     /**
@@ -279,7 +268,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mapDisplay.onDestroy();
     }
 
     /**
@@ -290,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        mapDisplay.onSaveInstanceState(outState);
     }
 
     /**
@@ -323,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         styleOptionsWindow.setVisibility(View.GONE);
 
         mapStyle = ((ImageButton) view).getTag().toString();
-        mapDisplay.setMapStyle(mapStyle);
+        MapManager.getInstance().getMapboxMap().setStyle(mapStyle);
         isStyleOptionsVisible = false;
     }
 
@@ -344,9 +331,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     public void goOfflineMaps(View view) {
         Intent intent = new Intent(MainActivity.this, OfflineMapsActivity.class);
-        intent.putExtra("lat", mapDisplay.getMapboxMap().getCameraPosition().target.getLatitude());
-        intent.putExtra("long", mapDisplay.getMapboxMap().getCameraPosition().target.getLongitude());
-        intent.putExtra("zoom", mapDisplay.getMapboxMap().getCameraPosition().zoom);
+        intent.putExtra("lat", MapManager.getInstance().getMapboxMap().getCameraPosition().target.getLatitude());
+        intent.putExtra("long", MapManager.getInstance().getMapboxMap().getCameraPosition().target.getLongitude());
+        intent.putExtra("zoom", MapManager.getInstance().getMapboxMap().getCameraPosition().zoom);
 
         launcher.launch(intent);
     }
@@ -363,11 +350,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Intent data = result.getData();
                         if (data != null) {
                             Bundle b = data.getExtras();
-                            mapDisplay.animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
+                            MapManager.getInstance().animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
                             openSideMenu(null);
                         }
                     }
-
                 });
     }
 }
