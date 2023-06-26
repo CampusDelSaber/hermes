@@ -14,6 +14,7 @@ import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
+import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 
 import org.junit.Assert;
@@ -66,7 +67,7 @@ public class TrafficAutomaticTest {
         graph.addNode(location);
 
         Map<String, Route> routesMap = dijkstraAlgorithm
-                .getPathAlternatives(graph, destiny, jordan_sanMartin);
+                .getPathAlternatives(graph, destiny, jordan_sanMartin, TransportationType.CAR);
 
         List<Node> routeA = Objects.requireNonNull(routesMap.get("Route A")).getPath();
 

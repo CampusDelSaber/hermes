@@ -161,6 +161,14 @@ public class Searcher {
     }
 
     /**
+     * Getter of application context.
+     * @return context.
+     */
+    public Context getContext() {
+        return context;
+    }
+
+    /**
      * Searches for places of a specific type near the current location.
      *
      * @param placeType   the type of place to search for
@@ -172,6 +180,4 @@ public class Searcher {
         double longitude = -66.18;
         placeByTypeSearch.searchPlacesByType(placeType, latitude, longitude, listener);
     }
-
-
 }

@@ -6,11 +6,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.Animations;
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 
@@ -25,12 +26,12 @@ public class WaypointOptionsController {
     private final NavigationOptionsController navigationOptionsFormController;
     private final LinearLayout reportIncidentsView;
     private final Button navigateButton;
+    private TrafficAutomaticFormController trafficAutomaticFormController;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
     private final Button reportNaturalDisasterButton;
-    private final TrafficAutomaticFormController trafficAutomaticFormController;
-
     private final Context context;
+    private TextView placeName;
 
     /**
      * This is the constructor method. Init all the components of UI.
@@ -40,6 +41,7 @@ public class WaypointOptionsController {
      */
     public WaypointOptionsController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
+        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
         streetValidator = new StreetValidator();
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = new IncidentFormController(context, mapWayPointController);
@@ -49,6 +51,7 @@ public class WaypointOptionsController {
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);
+        placeName = ((AppCompatActivity) context).findViewById(R.id.place_name);
         reportIncidentsView = ((AppCompatActivity) context).findViewById(R.id.report_incidents);
         setButtonsOnClick();
     }
@@ -96,8 +99,8 @@ public class WaypointOptionsController {
         });
 
         reportNaturalDisasterButton.setOnClickListener(v->{
-            MapClickEventsManager.getInstance().removeCurrentClickController();
-            MapClickEventsManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapClickEventsManager.getInstance().getMapboxMap(), this.context));
+            MapManager.getInstance().removeCurrentClickController();
+            MapManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapManager.getInstance().getMapboxMap(), this.context));
             waypointOptions.startAnimation(Animations.exitAnimation);
             waypointOptions.setVisibility(View.GONE);
         });

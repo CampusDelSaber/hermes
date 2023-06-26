@@ -1,6 +1,6 @@
 package com.isc.hermes.controller;
 
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.view.MapPolygonStyle;
 import com.mapbox.geojson.Point;
 
@@ -26,7 +26,7 @@ public class PolygonVisualizationController {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                new MapPolygonStyle(MapClickEventsManager.getInstance().getMapboxMap(), allPolygonsPoints,hexCodeColor);
+                new MapPolygonStyle(MapManager.getInstance().getMapboxMap(), allPolygonsPoints,hexCodeColor);
             }
         });
     }

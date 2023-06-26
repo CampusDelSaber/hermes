@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.widget.SearchView;
+import android.widget.Toast;
 import com.isc.hermes.utils.SearcherAdapterUpdater;
 import com.isc.hermes.model.Searcher;
 import com.isc.hermes.model.WayPoint;
@@ -40,6 +41,9 @@ public class SearcherController {
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if(searcher.getSearcherSuggestionsPlacesInfo(query).isEmpty()){
+                    Toast.makeText(searcher.getContext(), "No results found", Toast.LENGTH_SHORT).show();
+                }
                 return false;
             }
 
