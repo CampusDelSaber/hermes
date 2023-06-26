@@ -151,4 +151,13 @@ public class MapDisplay {
                 .build();
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1500);
     }
+
+    /**
+     * Obtains the MapView of the map.
+     *
+     * @return MapView object.
+     */
+    public MapView getMapView() {
+        return mapView;
+    }
 }
