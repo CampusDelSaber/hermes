@@ -129,6 +129,11 @@ public class EmailVerificationActivity extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * Retrieves the entered code from the codeEditTexts.
+     *
+     * @return The entered code as a string.
+     */
     private String getCodeUser() {
         StringBuilder code = new StringBuilder();
         for (EditText codeEditText : codeEditTexts) {
@@ -136,6 +141,9 @@ public class EmailVerificationActivity extends AppCompatActivity {
         } return code.toString();
     }
 
+    /**
+     * Changes the text color of the codeEditTexts to indicate an incorrect code.
+     */
     private void changeColorCodeUser() {
         for (EditText codeEditText : codeEditTexts) {
             codeEditText.setTextColor(getResources().getColor(R.color.redOriginal));
