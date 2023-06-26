@@ -1,50 +1,48 @@
 package com.isc.hermes.model;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import com.isc.hermes.R;
 import com.isc.hermes.database.VerificationCodesManager;
-import com.isc.hermes.model.user.User;
 
 /**
  * The Validator class is responsible for validating a verification code entered by the user.
  */
 public class Validator {
     private String code;
-    private String email;
-    private Boolean valid;
+    private User user;
     private String id;
     private VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
-    private static Validator validator;
-    private User user;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public Validator() {
-        this.email = "gandarillas.delgado.denis@gmail.com";
+    public Validator(User user) {
+        this.user = user;
         this.verificationCodesManager = new VerificationCodesManager();
-        verificationCodesManager.addVerificationCode(email);
+        getVerificationCode();
+        System.out.println("=======================================================0\nEMAIL: " + user.getEmail() +
+                "\nCODE: " + code + "\n=======================================================0\n");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void obtainVerificationCode() {
         try {
-            verificationCode = verificationCodesManager.getLastVerificationCode(email);
+            if (user != null) {
+                verificationCode = verificationCodesManager.getLastVerificationCode(user.getEmail());
+            } else {
+                throw new NullPointerException("User object is null");
+            }
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
+    }
 
+    public void getVerificationCode() {
+        obtainVerificationCode();
+        if (verificationCode == null) {
+            verificationCodesManager.addVerificationCode(user.getEmail());
+            getVerificationCode();
+        }
         code = verificationCode.getVerificationCode();
-        valid = verificationCode.getValid();
         id = verificationCode.getId();
     }
 
@@ -58,23 +56,15 @@ public class Validator {
         return code.equals(userCode);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getId() {
-        return id;
-    }
-
     public String getCode() {
         return code;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static Validator getValidator() {
-        if (validator == null) {
-            validator = new Validator();
-        }
-        return validator;
+    public User getUser() {
+        return user;
+    }
+
+    public String getId() {
+        return id;
     }
 }

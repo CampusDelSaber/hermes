@@ -4,6 +4,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.isc.hermes.model.User;
 import com.isc.hermes.model.VerificationCode;
 
 import org.json.JSONArray;
@@ -35,12 +36,9 @@ public class VerificationCodesManager {
 
     /**
      * Adds a verification code for the specified user email.
-     *
-     * @param userEmail The email of the user.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addVerificationCode(String userEmail) {
-        VerificationCode verificationCode = new VerificationCode("0", userEmail);
+    public void addVerificationCode(String email) {
+        VerificationCode verificationCode = new VerificationCode("0", email);
         apiHandler.postFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, verificationCode);
     }
 
@@ -73,13 +71,11 @@ public class VerificationCodesManager {
     /**
      * Retrieves the last verification code for the specified email.
      *
-     * @param email The email associated with the verification code.
      * @return The last valid verification code as a VerificationCode object.
      * @throws ExecutionException   If an execution error occurs.
      * @throws InterruptedException If the operation is interrupted.
      * @throws JSONException        If a JSON error occurs.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public VerificationCode getLastVerificationCode(String email) throws ExecutionException, InterruptedException, JSONException {
         JSONArray array = getSpecificVerificationCode(email);
         VerificationCode verificationCodeObject = null;
