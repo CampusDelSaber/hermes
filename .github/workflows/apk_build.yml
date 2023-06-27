@@ -1,6 +1,16 @@
 name: Application Build 🏗️ 
 run-name: ${{ github.actor }} is executing the workflow ${{ github.workflow }}.
 
+# on:
+#   push:
+#     branches:
+#       - develop
+#       - main
+#   pull_request:
+#     types:
+#       - opened
+#       - synchronize
+
 on: [push]
 
 jobs:
@@ -23,7 +33,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           ./scripts/check_env.sh
-          ./scripts/run.sh "build -x test --no-daemon" "${{ github.job }}/${{ github.step }}"
+          ./gradlew build -x test --no-daemon
 
   test:
     name: test
@@ -45,11 +55,11 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           ./scripts/check_env.sh
-          ./scripts/run.sh "test --no-daemon" "${{ github.job }}/${{ github.step }}"
+          ./gradlew test --no-daemon
 
   publication:
     name: apk_distribution 
-    needs: build    
+    needs: [build]   
     runs-on: ubuntu-latest
 
     steps:
@@ -65,10 +75,14 @@ jobs:
 
       - name: Assemble
         working-directory: ${{ github.workspace }}
-        run: ./scripts/run.sh "assembleRelease --no-daemon" "${{ github.job }}/${{ github.step }}"
+        run: ./gradlew assembleRelease --no-daemon
         
       - name: Upload APK
-        run: ./scripts/publish.sh ${{ github.sha }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: hermes_${{ github.sha }}.apk
+          path: 'app/build/outputs/apk/release/*.apk'
+          retention-days: 10
       
   code_linting:
     name: code_analysis
