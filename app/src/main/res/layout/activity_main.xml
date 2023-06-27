@@ -90,21 +90,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <LinearLayout
-            android:layout_width="409dp"
-            android:layout_height="669dp"
-            android:orientation="horizontal"
-            android:paddingTop="65dp"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="61dp">
-
-            <include
-                layout="@layout/filters_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.mapbox.mapboxsdk.maps.MapView
@@ -117,7 +102,19 @@
         mapbox:mapbox_cameraZoom="12">
 
     </com.mapbox.mapboxsdk.maps.MapView>
-
+    <LinearLayout
+        android:paddingTop="65dp"
+        android:layout_width="409dp"
+        android:layout_height="669dp"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="61dp"
+        tools:ignore="MissingConstraints">
+        <include
+            layout="@layout/filters_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

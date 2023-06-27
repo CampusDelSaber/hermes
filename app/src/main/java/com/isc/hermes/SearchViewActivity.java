@@ -42,7 +42,6 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_view);
-
         initRecyclerView();
         setupSearchView();
         goBackMainPage();

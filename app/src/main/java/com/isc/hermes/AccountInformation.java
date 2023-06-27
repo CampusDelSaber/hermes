@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -20,14 +19,10 @@ import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 
 import com.isc.hermes.controller.PopUp.PopUp;
-import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.model.User;
-
-import org.json.JSONException;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
@@ -40,7 +35,6 @@ public class AccountInformation extends AppCompatActivity {
     private AutoCompleteTextView comboBoxField;
     private AutoCompleteTextView textFieldEmail;
     private ImageView imageView;
-    private User userRegistered;
     private PopUpOverwriteInformationAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -77,12 +71,13 @@ public class AccountInformation extends AppCompatActivity {
      * Sets the user's username, full name, email, and type in their respective text fields.
      */
     private void updateComponentsByUserInformation() {
-        if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
-                userRegistered.getPathImageUser())).into(imageView);
-        textFieldUserName.setText(userRegistered.getUserName());
-        textFieldFullName.setText(userRegistered.getFullName());
-        textFieldEmail.setText(userRegistered.getEmail());
-        comboBoxField.setText(userRegistered.getTypeUser());
+        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
+            Glide.with(this).load(Uri.parse(
+                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);
+        textFieldUserName.setText(UserRepository.getInstance().getUserContained().getUserName());
+        textFieldFullName.setText(UserRepository.getInstance().getUserContained().getFullName());
+        textFieldEmail.setText(UserRepository.getInstance().getUserContained().getEmail());
+        comboBoxField.setText(UserRepository.getInstance().getUserContained().getTypeUser());
     }
 
     /**
@@ -94,7 +89,6 @@ public class AccountInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
-        fetchUserFromDB();
         assignValuesToComponentsView();
         generateActionToComboBox();
         updateComponentsByUserInformation();
@@ -171,9 +165,9 @@ public class AccountInformation extends AppCompatActivity {
      * Updates the user information based on the values entered in the UI fields.
      */
     private  void updateInformationUser() {
-        userRegistered.setTypeUser(String.valueOf(comboBoxField.getText()));
-        userRegistered.setUserName(String.valueOf(textFieldUserName.getText()));
-        userRegistered.setFullName(String.valueOf(textFieldFullName.getText()));
+        UserRepository.getInstance().getUserContained().setTypeUser(String.valueOf(comboBoxField.getText()));
+        UserRepository.getInstance().getUserContained().setUserName(String.valueOf(textFieldUserName.getText()));
+        UserRepository.getInstance().getUserContained().setFullName(String.valueOf(textFieldFullName.getText()));
     }
 
     /**
@@ -184,7 +178,7 @@ public class AccountInformation extends AppCompatActivity {
     public void saveAccountInformationAction(View view) {
         updateInformationUser();
         popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField, userRegistered);
+                textFieldUserName, comboBoxField);
         popUpDialogEdit.show();
     }
 
@@ -194,21 +188,6 @@ public class AccountInformation extends AppCompatActivity {
     private void initializePopups(){
         this.popUpDialogEdit = new PopUpOverwriteInformationAccount(this);
         this.popUpDialogDelete = new PopUpDeleteAccount(this);
-    }
-
-    /**
-     * Retrieves user information from the database.
-     * This method fetches user details from the database based on the specified user ID.
-     * The retrieved user information is stored in the 'userRegistered' variable.
-     *
-     * @throws RuntimeException      If any other runtime exception occurs during the execution.
-     */
-    private void fetchUserFromDB() {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                userRegistered = new AccountInfoManager().getUserById(SignUpActivityView.idUserLogged);
-        } catch (JSONException | ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e); }
     }
 
     /**
