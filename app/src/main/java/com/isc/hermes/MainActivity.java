@@ -15,22 +15,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Handler;
-import com.isc.hermes.controller.FilterCategoriesController;
+
 import com.isc.hermes.controller.MapWayPointController;
-import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-
-import android.widget.SearchView;
 
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
-import com.isc.hermes.utils.MapConfigure;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -38,6 +34,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -52,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean visibilityMenu = false;
     private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
-    private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
@@ -77,9 +73,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
-        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
-        initShowIncidentsController();
         initCurrentLocationController();
     }
     /**
@@ -106,9 +100,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FilterController filterController = new FilterController(mapboxMap, this);
         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                filterController.initComponents();
-            }
+            public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
         MapManager.getInstance().setMapboxMap(mapboxMap);
         MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
@@ -186,13 +178,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * This method init the form with all button to show incidents from database
-     */
-    private void initShowIncidentsController() {
-        viewIncidentsController = new ViewIncidentsController(this);
-    }
-
-    /**
      * This method adds the button for incident generation.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -232,8 +217,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
         if (!nameServiceUsed.equals("default")) {
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
-        }
-        addMarkers();
+        } addMarkers();
     }
 
     /**
@@ -299,9 +283,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             styleOptionsWindow.setVisibility(View.VISIBLE);
             setMapScrollGesturesEnabled(true);
             visibilityMenu = false;
-        } else {
-            styleOptionsWindow.setVisibility(View.GONE);
-        }
+        } else styleOptionsWindow.setVisibility(View.GONE);
     }
 
     /**
@@ -325,12 +307,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         WayPoint place = new WayPoint(sharedSearcherPreferencesManager.getPlaceName(),
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
-
         addMarkerToMap(place);
-
-        if (place.getPlaceName() != null) {
+        if (place.getPlaceName() != null)
             searchView.setText(place.getPlaceName());
-        }else {
+        else {
             String resetSearch = "Search...";
             searchView.setText(resetSearch);
         }

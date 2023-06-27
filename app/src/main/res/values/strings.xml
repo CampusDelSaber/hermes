@@ -16,6 +16,11 @@
     <string name="access_token">sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA</string>
     <string name="web_client_id">628551362001-osi4l1rcdiqt00got5n0hvn1akoc2una.apps.googleusercontent.com</string>
     <string name="get_location_text">Get Location</string>
+    <string name="userEmail"> sebastian.faustino@example.com</string>
+    <string name="enterCodeLabel"> Please enter the code here</string>
+    <string name="resendLabel"> did not get an email ? Resend</string>
+    <string name="verifyEmailTittle">Verify admin user request </string>
+    <string name="emailVerificationSent"> An email with verification code has been sent to</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
     <string name="delete_account_question_text">Are you sure you want to delete your account?</string>
@@ -139,4 +144,6 @@
     <string name="download_button_text">Download\n</string>
     <string name="tittle_region_popup">Give a name to your map</string>
     <string name="your_name_map">Your name map</string>
+    <string name="verify_account">Verify Account</string>
+    <string name="continue_general_account">Continue General Account</string>
 </resources>

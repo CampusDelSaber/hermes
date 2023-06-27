@@ -5,10 +5,9 @@ import android.os.Build;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.model.User;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * The class {@code PopUpEditAccount} extends {@code PopUp} and represents a specific type of pop-up
@@ -20,7 +19,6 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     private AutoCompleteTextView fullName;
     private AutoCompleteTextView username;
     private AutoCompleteTextView comboBoxField;
-    private User userToUpdateInformation;
 
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
@@ -66,7 +64,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      */
     private void updateUserInformation(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            new AccountInfoManager().editUser(userToUpdateInformation);
+            new AccountInfoManager().editUser(UserRepository.getInstance().getUserContained());
     }
 
     /**
@@ -76,14 +74,12 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      * @param fullName The AutoCompleteTextView for entering the full name.
      * @param username The AutoCompleteTextView for entering the username.
      * @param comboBoxField The AutoCompleteTextView for selecting a field from a combo box.
-     * @param user The user object containing the user's information to be edited.
      */
     public void setInformationToAbelEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
-                                         AutoCompleteTextView comboBoxField, User user) {
+                                         AutoCompleteTextView comboBoxField) {
         this.button = button;
         this.fullName = fullName;
         this.username = username;
         this.comboBoxField = comboBoxField;
-        this.userToUpdateInformation = user;
     }
 }
