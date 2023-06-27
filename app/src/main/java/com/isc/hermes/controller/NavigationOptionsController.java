@@ -98,6 +98,7 @@ public class NavigationOptionsController {
             handleHiddeItemsView();
             isActive = false;
             mapWayPointController.setMarked(false);
+            mapWayPointController.deleteMarks();
         });
     }
 
@@ -246,6 +247,8 @@ public class NavigationOptionsController {
     }
 
     private void markStartEndPoint(LatLng start, LatLng destination) {
+        mapWayPointController.setMarkerOnMap(start);
+        mapWayPointController.setMarkerOnMap(destination);
     }
 
     /**

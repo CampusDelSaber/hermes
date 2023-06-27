@@ -117,7 +117,7 @@ public class MapWayPointController implements MapClickConfigurationController {
     /**
      * Method to render a marker on map
      */
-    private void setMarkerOnMap(LatLng point) {
+    public void setMarkerOnMap(LatLng point) {
         MarkerOptions markerOptions = new MarkerOptions().position(point);
         mapboxMap.addMarker(markerOptions);
     }
