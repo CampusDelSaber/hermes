@@ -27,10 +27,10 @@ public class OfflineCardView {
      * @param name The name of the downloaded region.
      */
     public CardView createNewCardMapDownloaded(String name, PopupMenu.OnMenuItemClickListener onClickListener) {
-        LinearLayout textViewsVertical = createLinearLayout(LinearLayout.VERTICAL);
+        LinearLayout textViewsVertical = createVerticalLinearLayout();
         textViewsVertical.setPadding(100, 0, 100, 0);
         textViewsVertical.addView(createTextView(name, 18, Typeface.BOLD));
-        return joinComponents(createImageView(null,R.drawable.img_check, 30, 10), textViewsVertical, createImageView(onClickListener,R.drawable.img_tree_points_vertical, 10, 30));
+        return joinComponents(createCheckImageView(), textViewsVertical, createButtonPopup(onClickListener));
     }
 
     /**
@@ -52,15 +52,27 @@ public class OfflineCardView {
      *
      * @return The created check image.
      */
-    private CircleImageView createImageView(PopupMenu.OnMenuItemClickListener onClickListener , int resID, int left, int right) {
-        CircleImageView circleImageView = new CircleImageView(context);
-        circleImageView.setImageResource(resID);
-        circleImageView.setPadding(left, 10, right, 0);
-        circleImageView.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
-        if(onClickListener != null){
-            circleImageView.setOnClickListener(v -> showPopupMenu(v, onClickListener));
-        }
-        return circleImageView;
+    private CircleImageView createCheckImageView() {
+        CircleImageView checkImageView = new CircleImageView(context);
+        checkImageView.setImageResource(R.drawable.img_check);
+        checkImageView.setPadding(30, 10, 10, 0);
+        checkImageView.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
+        return checkImageView;
+    }
+
+
+    /**
+     * Creates a popup button as a CircleImageView.
+     *
+     * @return The created popup button.
+     */
+    private CircleImageView createButtonPopup(PopupMenu.OnMenuItemClickListener onClickListener) {
+        CircleImageView popupButton = new CircleImageView(context);
+        popupButton.setImageResource(R.drawable.img_tree_points_vertical);
+        popupButton.setPadding(10, 10, 30, 0);
+        popupButton.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
+        popupButton.setOnClickListener(v -> showPopupMenu(v, onClickListener));
+        return popupButton;
     }
 
     /**
@@ -68,9 +80,9 @@ public class OfflineCardView {
      *
      * @return The created vertical LinearLayout.
      */
-    private LinearLayout createLinearLayout(int orientation) {
+    private LinearLayout createVerticalLinearLayout() {
         LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(orientation);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 0,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -107,8 +119,9 @@ public class OfflineCardView {
     private CardView joinComponents(CircleImageView checkImage, LinearLayout vBoxTextViews, CircleImageView popupMenu) {
         CardView cardView = new CardView(context);
         cardView.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
-        LinearLayout container = createLinearLayout(LinearLayout.HORIZONTAL);
+        LinearLayout container = new LinearLayout(context);
         container.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
+        container.setOrientation(LinearLayout.HORIZONTAL);
         cardView.addView(container);
 
         cardView.setPadding(10, 10, 10, 10);

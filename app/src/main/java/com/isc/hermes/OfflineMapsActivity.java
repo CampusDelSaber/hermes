@@ -16,8 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import com.isc.hermes.controller.PopUp.DialogListener;
-import com.isc.hermes.controller.PopUp.TextInputPopup;
 import com.isc.hermes.controller.offline.OfflineDataRepository;
 import com.isc.hermes.model.RegionData;
 import com.isc.hermes.controller.offline.CardViewHandler;
@@ -30,22 +28,15 @@ import com.isc.hermes.controller.offline.RegionObserver;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.nio.charset.StandardCharsets;
-import timber.log.Timber;
-
 
 /**
  * This class represents the Offline Mode Settings UI.
  */
-public class OfflineMapsActivity extends AppCompatActivity implements RegionObserver, DialogListener {
+public class OfflineMapsActivity extends AppCompatActivity implements RegionObserver {
     private static final int RENAME = R.id.rename, NAVIGATE_TO = R.id.navigateTo, DELETE = R.id.delete;
     private LinearLayout vBoxDownloadedMaps;
     private OfflineCardView offlineCardView;
     private ActivityResultLauncher<Intent> launcher;
-    private TextInputPopup textInputPopup;
-    private String selectedNameDownloadedRegion;
 
     /**
      * Method for creating the activity configuration.
@@ -133,16 +124,14 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
     }
 
     /**
-     * Show Popup for Renames the selected downloaded map.
+     * Renames the selected downloaded map.
      */
-    protected void displayPopupInputNewName() {
-         textInputPopup = new TextInputPopup(this, this);
-         textInputPopup.showPopup();
+    protected void renameDownloadedMap() {
+
     }
 
     /**
      * Loads the available regions.
-     *
      */
     public void loadRegions() {
         MapboxOfflineManager.getInstance(this).listRegions(new RegionLoader(this));
@@ -194,8 +183,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
     public boolean showPopupMenu(MenuItem item, String nameItem) {
         switch (item.getItemId()) {
             case RENAME:
-                selectedNameDownloadedRegion = nameItem;
-                displayPopupInputNewName();
+                renameDownloadedMap();
                 return true;
             case NAVIGATE_TO:
                 navigateToDownloadedMap(nameItem);
@@ -219,50 +207,4 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
                 .forEach((key, value) -> uploadRegionsDownloaded(key));
     }
 
-    /**
-     * This method the actions that the popup will take.
-     *
-     * @param text The text received from the dialog.
-     */
-    @Override
-    public void dialogClosed(String text) {
-        if(MapboxOfflineManager.getInstance(this).getOfflineRegions().containsKey(text)){
-            textInputPopup.setErrorMessage("That name already exists");
-        }else{
-            textInputPopup.closePopup();
-            uploadNameRegion(selectedNameDownloadedRegion,text);
-            update();
-        }
-    }
-
-    /**
-     * This method changes the name of the downloaded map.
-     *
-     * @param previousName the current name of the selected map
-     * @param newName the new name for the selected map
-     */
-    private void uploadNameRegion(String previousName, String newName){
-        OfflineRegion targetRegion = MapboxOfflineManager.getInstance(this).getOfflineRegion(previousName);
-        byte[] metadata = targetRegion.getMetadata();
-
-        try {
-            JSONObject jsonMetadata = new JSONObject(new String(metadata, StandardCharsets.UTF_8));
-            jsonMetadata.put("name", newName);
-            byte[] newMetadata = jsonMetadata.toString().getBytes(StandardCharsets.UTF_8);
-            targetRegion.updateMetadata(newMetadata,new OfflineRegion.OfflineRegionUpdateMetadataCallback() {
-                @Override
-                public void onUpdate(byte[] updatedMetadata) {
-                    Timber.i("Map name has been updated");
-                }
-
-                @Override
-                public void onError(String error) {
-                    Timber.i("Error:%s", error);
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Timber.i("An error occurred while updating the map");
-        }
-    }
 }
