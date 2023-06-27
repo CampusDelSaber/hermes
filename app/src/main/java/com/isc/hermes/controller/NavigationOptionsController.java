@@ -3,6 +3,8 @@ package com.isc.hermes.controller;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -10,15 +12,21 @@ import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
-import com.isc.hermes.model.graph.Node;
+import com.isc.hermes.model.graph.Graph;
+import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+
+import org.json.JSONException;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
 
@@ -37,6 +45,8 @@ public class NavigationOptionsController {
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
     private InfoRouteController infoRouteController;
+    private DijkstraAlgorithm dijkstraAlgorithm;
+    private Map<String, String> routeOptions;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -60,6 +70,8 @@ public class NavigationOptionsController {
         infoRouteController = InfoRouteController.getInstance(context);
         setNavOptionsUiComponents();
         setButtons();
+        routeOptions = new HashMap<>();
+        dijkstraAlgorithm = DijkstraAlgorithm.getInstance();
     }
 
     /**
@@ -69,7 +81,15 @@ public class NavigationOptionsController {
         chooseStartPointButton.setOnClickListener(v -> handleChooseStartPointButton());
         currentLocationButton.setOnClickListener(v -> handleCurrentLocationChosen());
         manageCancelButton();
-        startButton.setOnClickListener(v -> handleAcceptButtonClick());
+        startButton.setOnClickListener(v -> {
+            try {
+                handleAcceptButtonClick();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
@@ -213,33 +233,62 @@ public class NavigationOptionsController {
     /**
      * This method handles the actions performed when the accept button is clicked.
      */
-    private void handleAcceptButtonClick() {
+    private void handleAcceptButtonClick() throws InterruptedException, ExecutionException {
         handleHiddeItemsView();
         isActive = false;
-        Node startPointNode = (startPoint != null) ? new Node("01",startPoint.getLatitude(),
-                startPoint.getLatitude()): null;
-        Node finalPointNode = (startPoint != null) ? new Node("02",finalPoint.getLatitude(),
-                finalPoint.getLatitude()): null;
-        // TODO: Navigation Route between these two nodes
-        navOptionsForm.setVisibility(View.GONE);
-        showRoutes();
+
+        LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
+        LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
+        System.out.println(startPoint);
+        System.out.println(finalPoint);
+        GraphController graphController = new GraphController(start, destination);
+
+        Graph graph = graphController.getGraph();
+
+        Thread thread = new Thread(() -> {
+            try {
+                buildAsyncGraph(graphController).get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            routeOptions =
+                    dijkstraAlgorithm.getGeoJsonRoutes(
+                            graph, graphController.getStartNode(),
+                            graphController.getDestinationNode(), TransportationType.CAR
+                    );
+            navOptionsForm.setVisibility(View.GONE);
+            System.out.println(routeOptions);
+            ((AppCompatActivity) context).runOnUiThread(this::showRoutes);
+        });
+        thread.start();
 
     }
 
-    private void showRoutes(){
-        Map<String, String> r = new HashMap<>();
+    private static CompletableFuture<Void> buildAsyncGraph(GraphController graphController) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        CompletableFuture.runAsync(() -> {
+            try {
+                graphController.buildGraph();
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(() -> future.complete(null));
+            } catch (JSONException e) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(() -> future.completeExceptionally(e));
+                e.printStackTrace();
+            }
+        });
+        return future;
+    }
 
-        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"time\":10,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
-        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"time\":12,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
-        r.put("Route C", "{\"type\":\"Feature\",\"distance\":1.6061126697414532,\"time\":15,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.159019, -17.398311],[-66.154399, -17.397043],[-66.151315, -17.398656],[-66.147585, -17.400585],[-66.142978, -17.401595]]}}");
-        String jsonA = r.get("Route A");
-        String jsonB = r.get("Route B");
-        String jsonC = r.get("Route C");
+    private void showRoutes(){
+        String jsonA = routeOptions.get("Route A");
+        String jsonB = routeOptions.get("Route B");
+        String jsonC = routeOptions.get("Route C");
 
         ArrayList<String> geoJson = new ArrayList<>();
-        geoJson.add(jsonA);
-        geoJson.add(jsonB);
         geoJson.add(jsonC);
+        geoJson.add(jsonB);
+        geoJson.add(jsonA);
 
         MapPolyline mapPolyline = new MapPolyline();
         infoRouteController.showInfoRoute(geoJson, mapPolyline);
