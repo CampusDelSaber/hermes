@@ -47,10 +47,10 @@ jobs:
           ./scripts/check_env.sh
           ./gradlew --no-daemon build
 
-  export:
+  publication:
     name: apk_distribution 
     needs: build    
-    runs-on:  ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -63,8 +63,14 @@ jobs:
           java-version: '17' 
           cache: 'gradle'
 
-      - name: Upload APK 
+      - name: Assemble
         working-directory: ${{ github.workspace }}
-        run: |
-          ./gradlew --no-daemon assembleRelease
-          echo "::notice title={"APK download URL"}:: " $(./scripts/publish.sh ${{ github.sh }})
+        run: ./gradlew assembleRelease --no-daemon
+        
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}_hermes.apk
+          path: 'app/build/outputs/apk/release/*.apk'
+          retention-days: 5
