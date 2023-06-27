@@ -43,6 +43,12 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     public FilterCategoriesController(Activity activity) {
         this.activity = activity;
+    }
+
+    /**
+     * Generates the categories locations
+     */
+    public void initComponents() {
         markerManager = MarkerManager.getInstance(activity);
         createItemsUI();
     }
