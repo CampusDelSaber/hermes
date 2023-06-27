@@ -74,9 +74,27 @@ public class ShowTrafficController {
     private Polyline createTrafficPolyline(MapDisplay mapDisplay, JSONObject incidentObject, String trafficType) throws JSONException {
         JSONObject geometryObject = incidentObject.getJSONObject("geometry");
         JSONArray coordinatesArray = geometryObject.getJSONArray("coordinates");
-
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.width(2f);
+        polylineStyle(trafficType,polylineOptions);
+
+        for (int j = 0; j < coordinatesArray.length(); j++) {
+            JSONArray coordinate = coordinatesArray.getJSONArray(j);
+            double latitude = coordinate.getDouble(0);
+            double longitude = coordinate.getDouble(1);
+            polylineOptions.add(new LatLng(latitude, longitude));
+        }
+
+        Polyline polyline = mapDisplay.getMapboxMap().addPolyline(polylineOptions);
+        return polyline;
+    }
+
+    /**
+     * This method will be in charge the style of the different types of traffic whit different Colors
+     * @param trafficType It is the traffic Type .
+     * @param polylineOptions is the polyline Options.
+     */
+    private void polylineStyle(String trafficType,PolylineOptions polylineOptions){
         int color = 0;
         if (trafficType.equals("Normal Traffic")) {
             color = Color.parseColor("#FFA500");
@@ -89,15 +107,6 @@ public class ShowTrafficController {
         }
         polylineOptions.color(color);
 
-        for (int j = 0; j < coordinatesArray.length(); j++) {
-            JSONArray coordinate = coordinatesArray.getJSONArray(j);
-            double latitude = coordinate.getDouble(0);
-            double longitude = coordinate.getDouble(1);
-            polylineOptions.add(new LatLng(latitude, longitude));
-        }
-
-        Polyline polyline = mapDisplay.getMapboxMap().addPolyline(polylineOptions);
-        return polyline;
     }
 
 }
