@@ -242,6 +242,10 @@ public class NavigationOptionsController {
         executeGraphBuild(graphController);
     }
 
+    /**
+     * Executes the graph build async to load the graph before render it
+     * @param graphController the graph controller to build the graph
+     */
     private void executeGraphBuild(GraphController graphController){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
@@ -258,6 +262,9 @@ public class NavigationOptionsController {
         });
     }
 
+    /**
+     * Renders the routes on the map
+     */
     private void showRoutes() {
         String jsonA = routeOptions.getOrDefault("Route A", "{coordinates: []}");
         String jsonB = routeOptions.getOrDefault("Route B", "{coordinates: []}");
