@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Handler;
 
+import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private String mapStyle;
     private CurrentLocationController currentLocationController;
+    private FilterCategoriesController filterCategoriesController;
     private boolean visibilityMenu = false;
     private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
+        initFilterAdvancedView();
         launcher = createActivityResult();
         initCurrentLocationController();
     }
@@ -90,6 +93,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void addMapboxSearcher() {
         sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
         markerManager = MarkerManager.getInstance(this);
+    }
+
+    /**
+     * Method to initialize the filters advanced view.
+     */
+    private void initFilterAdvancedView() {
+        filterCategoriesController = new FilterCategoriesController(this);
+        filterCategoriesController.initComponents();
     }
 
     /**
