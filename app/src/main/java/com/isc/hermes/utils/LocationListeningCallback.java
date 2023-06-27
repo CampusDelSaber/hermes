@@ -19,11 +19,10 @@ public class LocationListeningCallback implements LocationEngineCallback<Locatio
      * Constructs a new LocationListeningCallback with the specified activity and currentLocationModel.
      *
      * @param activity             The AppCompatActivity to hold a weak reference to.
-     * @param currentLocationModel The CurrentLocationModel to update with the received location.
      */
-    public LocationListeningCallback(AppCompatActivity activity, CurrentLocationModel currentLocationModel) {
+    public LocationListeningCallback(AppCompatActivity activity) {
         this.activityWeakReference = new WeakReference<>(activity);
-        this.currentLocationModel = currentLocationModel;
+        this.currentLocationModel = CurrentLocationModel.getInstance();
     }
 
     /**

@@ -22,7 +22,6 @@ public class ApiRequestHandler {
      */
     public String getDataFromApi(String apiUrl) {
         StringBuilder response = new StringBuilder();
-
         try {
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -62,8 +61,26 @@ public class ApiRequestHandler {
             outputStream.writeBytes(jsonData);
             outputStream.flush();
             outputStream.close();
-            int responseCode = connection.getResponseCode();
-            System.out.println("CODE RESPONSE: " + responseCode);
+            connection.getResponseCode();
+            connection.disconnect();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    /**
+     * Sends a DELETE request to the specified API URL with the provided ID.
+     *
+     * @param apiUrl the URL of the API to send the request to
+     * @param id     the ID of the data to delete
+     */
+    public void deleteDataById(String apiUrl, String id) {
+        try {
+            URL url = new URL(apiUrl + "/" + id);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            connection.getResponseCode();
             connection.disconnect();
         } catch (IOException ioException) {
             ioException.printStackTrace();
@@ -79,4 +96,31 @@ public class ApiRequestHandler {
         if (instance == null) instance = new ApiRequestHandler();
         return instance;
     }
+
+    /**
+     * Sends a PUT request to the specified API URL with the provided JSON data.
+     *
+     * @param apiUrl  The URL of the API to send the request to.
+     * @param jsonData The JSON data to include in the request body.
+     */
+    public void putDataFromApi(String apiUrl, String jsonData) {
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+            outputStream.writeBytes(jsonData);
+            outputStream.flush();
+            outputStream.close();
+            int responseCode = connection.getResponseCode();
+            System.out.println("CODE RESPONSE: " + responseCode);
+            connection.disconnect();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+
 }

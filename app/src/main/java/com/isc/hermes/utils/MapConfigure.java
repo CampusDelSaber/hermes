@@ -10,18 +10,8 @@ import com.mapbox.mapboxsdk.maps.Style;
  * Class for configuring a MapboxMap object.
  */
 public class MapConfigure {
+    private IncidentsManager incidentsManager;
     private Context context;
-    /**
-     * Configures a MapboxMap object with the MAPBOX_STREETS style.
-     *
-     * @param mapboxMap the MapboxMap object to be configured
-     */
-    public void configure(@NonNull MapboxMap mapboxMap) {
-        mapboxMap.setStyle(Style.MAPBOX_STREETS);
-        MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setContext(context);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(MapClickEventsManager.getInstance().getMapboxMap(),context));
-    }
 
     public void setContext(Context context) {
         this.context = context;

@@ -7,6 +7,7 @@ import com.isc.hermes.controller.GraphController;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
+import com.isc.hermes.model.navigation.TransportationType;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import org.json.JSONException;
@@ -71,7 +72,7 @@ public class DijkstraAlgorithmRealTest {
         graph.addNode(lanza_jordan);
 
         Map<String, Route> routesMap = dijkstraAlgorithm
-                .getPathAlternatives(graph, estebanArze_Sucre, jordan_sanMartin);
+                .getPathAlternatives(graph, estebanArze_Sucre, jordan_sanMartin, TransportationType.CAR);
 
         List<Node> routeA = Objects.requireNonNull(routesMap.get("Route A")).getPath();
         assertNotNull(routeA);
@@ -92,20 +93,10 @@ public class DijkstraAlgorithmRealTest {
         assertEquals(jordan_sanMartin, routeB.get(5));
 
         System.out.println(
-                dijkstraAlgorithm.getGeoJsonRoutes(graph, estebanArze_Sucre, jordan_sanMartin));
-    }
-
-    @Test
-    public void getRoutesRealGraph() throws JSONException {
-        LatLng start = new LatLng(-17.376973, -66.179360);
-        LatLng destination = new LatLng(-17.377594, -66.181011);
-        GraphController graphController = new GraphController(start, destination);
-        System.out.println(graphController.getGraph().getNodes().size());
-        graphController.buildGraph();
-        Graph graph = graphController.getGraph();
-
-        System.out.println(
-                dijkstraAlgorithm.getShortestPath(graph, graphController.getStartNode(), graphController.getDestinationNode()));
+                dijkstraAlgorithm.getGeoJsonRoutes(
+                        graph, estebanArze_Sucre, jordan_sanMartin, TransportationType.CAR
+                )
+        );
     }
 
     @Test
@@ -117,6 +108,6 @@ public class DijkstraAlgorithmRealTest {
         Graph graph = graphController.getGraph();
 
         System.out.println(
-                dijkstraAlgorithm.getGeoJsonRoutes(graph, graphController.getStartNode(), graphController.getDestinationNode()));
+                dijkstraAlgorithm.getGeoJsonRoutes(graph, graphController.getStartNode(), graphController.getDestinationNode(), TransportationType.CAR));
     }
 }
