@@ -39,10 +39,10 @@ public class GenerateRandomIncidentController {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public GenerateRandomIncidentController(AppCompatActivity activity) {
         generateRandomIncidentView = new GenerateRandomIncidentView(activity);
-        /*Button generateButton = activity.findViewById(R.id.startGenerateIncidentButton);
+        Button generateButton = activity.findViewById(R.id.startGenerateIncidentButton);
         generateButton.setOnClickListener(v -> initGeneration());
         incidentGenerator = new IncidentGenerator();
-        incidentsUploader = IncidentsUploader.getInstance();*/
+        incidentsUploader = IncidentsUploader.getInstance();
     }
 
     /**
@@ -57,11 +57,11 @@ public class GenerateRandomIncidentController {
     private void initGeneration() {
         CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null, null).getCurrentLocationModel();
         Double[] referencePoint = {currentLocation.getLongitude(), currentLocation.getLatitude()};
-        /*Radium radium = generateRandomIncidentView.getRadiumSelected();
+        Radium radium = generateRandomIncidentView.getRadiumSelected();
         int quantity = generateRandomIncidentView.getNumberIncidentsSelected();
         if (radium != null && quantity != 0) {
             startGeneratingIncidents(referencePoint, radium, quantity);
-        }*/
+        }
         generateRandomIncidentView.hideOptions();
     }
 

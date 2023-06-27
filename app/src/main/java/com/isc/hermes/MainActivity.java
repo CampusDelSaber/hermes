@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
-    private IncidentView incidentView;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -251,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * This method adds the button for incident generation.
      */
     private void incidentViewButton() {
-        incidentView = new IncidentView(this);
+        IncidentView.getInstance(this);
     }
 
     /**
