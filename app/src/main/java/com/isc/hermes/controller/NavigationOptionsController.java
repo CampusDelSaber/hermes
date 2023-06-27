@@ -3,6 +3,7 @@ package com.isc.hermes.controller;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -16,6 +17,7 @@ import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import org.json.JSONException;
@@ -239,27 +241,42 @@ public class NavigationOptionsController {
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         GraphController graphController = new GraphController(start, destination);
 
+        markStartEndPoint(start, destination);
         executeGraphBuild(graphController);
+    }
+
+    private void markStartEndPoint(LatLng start, LatLng destination) {
     }
 
     /**
      * Executes the graph build async to load the graph before render it
      * @param graphController the graph controller to build the graph
      */
+    @SuppressLint("StaticFieldLeak")
     private void executeGraphBuild(GraphController graphController){
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(() -> {
-            try {
-                graphController.buildGraph();
-                routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
-                        graphController.getGraph(), graphController.getStartNode(),
-                        graphController.getDestinationNode(), TransportationType.CAR
-                );
-                ((AppCompatActivity) context).runOnUiThread(this::showRoutes);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        new AsyncTask<Void, Void, Map<String, String>>() {
+            @Override
+            protected Map<String, String> doInBackground(Void... voids) {
+                getRouteOptionsFromAlgorithm(graphController);
+                return null;
             }
-        });
+            @Override
+            protected void onPostExecute(Map<String, String> routes) {
+                showRoutes();
+            }
+        }.execute();
+    }
+
+    private void getRouteOptionsFromAlgorithm(GraphController graphController) {
+        try {
+            graphController.buildGraph();
+            routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
+                    graphController.getGraph(), graphController.getStartNode(),
+                    graphController.getDestinationNode(), TransportationType.CAR
+            );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
