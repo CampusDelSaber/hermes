@@ -19,10 +19,12 @@ import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
-import com.isc.hermes.model.SaveProfileImage;
-import com.isc.hermes.model.User.UserRepository;
 
 import java.io.IOException;
+
+import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.model.SaveProfileImage;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
@@ -72,6 +74,8 @@ public class AccountInformation extends AppCompatActivity {
      * Sets the user's username, full name, email, and type in their respective text fields.
      */
     private void updateComponentsByUserInformation() {
+        AccountInfoManager accountInfoManager = new AccountInfoManager();
+        accountInfoManager.updateUserInformationLocal();
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
                     UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);
@@ -130,7 +134,6 @@ public class AccountInformation extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
-
 
     /**
      * Handles the result of the activity for selecting an image from the gallery.
