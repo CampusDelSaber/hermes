@@ -11,6 +11,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.AccountInformation;
 
 public class SaveProfileImage {
 
