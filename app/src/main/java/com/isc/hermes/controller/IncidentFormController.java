@@ -60,7 +60,7 @@ public class IncidentFormController {
         incidentText = ((AppCompatActivity) context).findViewById(R.id.incident_text);
         reasonTextField = ((AppCompatActivity) context).findViewById(R.id.reason_text_field);
 
-        setButtonsOnClick();
+        //setButtonsOnClick();
         setIncidentComponents();
 
     }
