@@ -106,6 +106,11 @@ public class AccountInfoManager {
         return jsonObject.getString("_id");
     }
 
+    /**
+     * Updates the local user information using the email as a reference.
+     *
+     * @param email The email of the user to retrieve the updated information.
+     */
     public void updateUserInformationLocal(String email) {
         String apiUrl = ACCOUNT_INFO_COLLECTION + "/email/" + email;
         Future<String> future = apiHandler.getFutureCollectionString(apiUrl);
