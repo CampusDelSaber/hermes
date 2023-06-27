@@ -23,22 +23,16 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Handler;
-
-
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
-import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-
-import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.model.User;
+import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.MarkerManager;
@@ -48,11 +42,6 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-
-
-import org.json.JSONException;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -94,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
         launcher = createActivityResult();
         initCurrentLocationController();
-        fetchUserFromDB();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
         setTheUserInformationInTheDropMenu();
@@ -327,14 +315,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setTheUserInformationInTheDropMenu(){
         TextView userNameText = navigationView.getHeaderView(0)
                 .findViewById(R.id.userNameText);
-        userNameText.setText(userRegistered.getUserName());
+        userNameText.setText(UserRepository.getInstance().getUserContained().getUserName());
         TextView userEmailText = navigationView.getHeaderView(0)
                 .findViewById(R.id.userEmailText);
-        userEmailText.setText(userRegistered.getEmail());
+        userEmailText.setText(UserRepository.getInstance().getUserContained().getEmail());
         ImageView userImage = navigationView.getHeaderView(0)
                 .findViewById(R.id.userAccountImage);
-        if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
-                userRegistered.getPathImageUser())).into(userImage);
+        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
+            Glide.with(this).load(Uri.parse(
+                UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
     }
 
     /**
