@@ -16,19 +16,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/email_icon" />
 
     <TextView
         android:id="@+id/titleVerify"
         android:layout_width="348dp"
         android:layout_height="36dp"
+        android:layout_marginTop="20dp"
         android:text="@string/verifyEmailTittle"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="27sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailImage" />
 
@@ -36,23 +37,24 @@
         android:id="@+id/MessageCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/emailVerificationSent"
         android:textColor="#000000"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
-        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/emailTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleVerify" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/emailTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/userEmail"
-        android:textColor="#000000"
+        android:textColor="@color/blueLogo"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.541"
@@ -66,10 +68,11 @@
         android:text="@string/enterCodeLabel"
         android:textColor="#201313"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/emailTextView" />
 
     <EditText
         android:id="@+id/codeTextField1"
@@ -173,10 +176,12 @@
         android:id="@+id/cancelButton"
         android:layout_width="168dp"
         android:layout_height="59dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="10dp"
         android:layout_marginBottom="236dp"
+        android:backgroundTint="@color/mapboxRed"
         android:foregroundGravity="center_horizontal"
-        android:text="Continue General Account"
+        android:onClick="continueLikeGeneralUser"
+        android:text="@string/continue_general_account"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/continueButton"
@@ -184,11 +189,13 @@
 
     <Button
         android:id="@+id/continueButton"
-        android:layout_width="134dp"
+        android:layout_width="160dp"
         android:layout_height="59dp"
-        android:layout_marginEnd="36dp"
+        android:layout_marginEnd="28dp"
         android:layout_marginBottom="236dp"
-        android:text="Verify Account"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:onClick="continueVerification"
+        android:text="@string/verify_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

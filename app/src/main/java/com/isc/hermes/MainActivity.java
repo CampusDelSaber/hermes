@@ -140,9 +140,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FilterController filterController = new FilterController(mapboxMap, this);
         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                filterController.initComponents();
-            }
+            public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
         MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
         MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap,this));
@@ -333,9 +331,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             styleOptionsWindow.setVisibility(View.VISIBLE);
             setMapScrollGesturesEnabled(true);
             visibilityMenu = false;
-        } else {
-            styleOptionsWindow.setVisibility(View.GONE);
-        }
+        } else styleOptionsWindow.setVisibility(View.GONE);
     }
 
     /**

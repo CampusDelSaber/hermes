@@ -5,8 +5,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,6 +24,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
 
     private EditText[] codeEditTexts;
     private Validator validator;
+    private TextView emailTextView;
 
     /**
      * This method initiates the window whe its called.
@@ -40,7 +43,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
      */
     private void initComponents() {
         initCodeEditTexts();
-        initContinueButton();
         configureEditTexts();
     }
 
@@ -48,32 +50,12 @@ public class EmailVerificationActivity extends AppCompatActivity {
      * Initializes the code EditText fields.
      */
     private void initCodeEditTexts() {
+        emailTextView = findViewById(R.id.emailTextView);
+        emailTextView.setText(UserRepository.getInstance().getUserContained().getEmail());
         codeEditTexts = new EditText[]{findViewById(R.id.codeTextField1), findViewById(R.id.codeTextField2),
                 findViewById(R.id.codeTextField3), findViewById(R.id.codeTextField4),
                 findViewById(R.id.codeTextField5), findViewById(R.id.codeTextField6)
         };
-    }
-
-    /**
-     * Initializes the Continue button and its click listener.
-     */
-    private void initContinueButton() {
-        Button continueButton = findViewById(R.id.continueButton);
-        continueButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
-            String code = getCodeUser();
-            if (validator.isCorrect(code)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
-                            UserRepository.getInstance().getUserContained().getFullName(),
-                            UserRepository.getInstance().getUserContained().getUserName(),
-                            UserRepository.getInstance().getUserContained().getTypeUser(),
-                            UserRepository.getInstance().getUserContained().getPathImageUser());
-                VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
-                verificationCodesManager.updateVerificationCode(validator.getId(), false);
-                startActivity(intent);
-            } else changeColorCodeUser();
-        });
     }
 
     /**
@@ -106,23 +88,49 @@ public class EmailVerificationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the text change event when the user enters or removes text in an EditText.
+     *
+     * @param s                The entered CharSequence.
+     * @param currentEditText  The current EditText that triggered the text change event.
+     * @param nextEditText     The next EditText in the sequence, if available.
+     */
     private void handleTextChanged(CharSequence s, EditText currentEditText, EditText nextEditText) {
         if (s.length() == 2 && nextEditText != null) handleTwoDigitsEntered(s, currentEditText, nextEditText);
         else if (s.length() == 0 && currentEditText != codeEditTexts[0]) handleEmptyInput(currentEditText);
     }
 
+    /**
+     * Handles the scenario when two digits are entered in an EditText.
+     *
+     * @param s                The entered CharSequence.
+     * @param currentEditText  The current EditText that triggered the event.
+     * @param nextEditText     The next EditText in the sequence.
+     */
     private void handleTwoDigitsEntered(CharSequence s, EditText currentEditText, EditText nextEditText) {
         String lastCharacter = s.toString().substring(1);
         updateEditText(currentEditText, s.subSequence(0, 1), false);
         updateEditText(nextEditText, lastCharacter, true);
     }
 
+    /**
+     * Handles the scenario when an EditText becomes empty.
+     *
+     * @param currentEditText  The current EditText that became empty.
+     */
     private void handleEmptyInput(EditText currentEditText) {
         EditText previousEditText = getPreviousEditText(currentEditText);
         assert previousEditText != null;
         updateEditText(previousEditText, previousEditText.getText(), true);
     }
 
+    /**
+     * Updates the content of an EditText.
+     *
+     * @param editText     The EditText to update.
+     * @param text         The new text for the EditText.
+     * @param requestFocus Whether to request focus for the EditText.
+     */
     private void updateEditText(EditText editText, CharSequence text, boolean requestFocus) {
         editText.setFocusableInTouchMode(true);
         editText.setText(text);
@@ -143,14 +151,58 @@ public class EmailVerificationActivity extends AppCompatActivity {
         } return null;
     }
 
+    /**
+     * Retrieves the code entered by the user from the codeEditTexts.
+     *
+     * @return The code entered by the user as a String.
+     */
     private String getCodeUser() {
         StringBuilder code = new StringBuilder();
         for (EditText codeEditText : codeEditTexts) code.append(codeEditText.getText());
         return code.toString();
     }
 
+    /**
+     * Changes the color of the code EditTexts to indicate an error state.
+     */
     private void changeColorCodeUser() {
         for (EditText codeEditText : codeEditTexts)
             codeEditText.setTextColor(getResources().getColor(R.color.redOriginal));
+    }
+
+    /**
+     * Continues the email verification process and performs the necessary actions if the entered code is correct.
+     *
+     * @param view The View that triggered the method call.
+     */
+    public void continueVerification(View view) {
+        Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
+        String code = getCodeUser();
+        if (validator.isCorrect(code)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
+                        UserRepository.getInstance().getUserContained().getFullName(), UserRepository.getInstance().getUserContained().getUserName(),
+                        UserRepository.getInstance().getUserContained().getTypeUser(), UserRepository.getInstance().getUserContained().getPathImageUser());
+            VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
+            verificationCodesManager.updateVerificationCode(validator.getId(), false);
+            startActivity(intent);
+        } else changeColorCodeUser();
+    }
+
+
+    /**
+     * Continues the process for a general user (non-administrator).
+     *
+     * @param view The View that triggered the method call.
+     */
+    public void continueLikeGeneralUser(View view) {\
+        Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
+                    UserRepository.getInstance().getUserContained().getFullName(),
+                    UserRepository.getInstance().getUserContained().getUserName(),
+                    "General", UserRepository.getInstance().getUserContained().getPathImageUser());
+        }
+        startActivity(intent);
     }
 }
