@@ -4,20 +4,17 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.utils.Animations;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * The InfoRouteController class is responsible for managing the information related to routes,
@@ -41,6 +38,12 @@ public class InfoRouteController {
    private NavigationDirectionController navigationDirectionController;
 
 
+    /**
+     * Constructs a new InfoRouteController object.
+     *
+     * @param context The context of the activity.
+     * @param navigationOptionsController route navigation's options controller
+     */
     private InfoRouteController(Context context, NavigationOptionsController navigationOptionsController){
         layout = ((AppCompatActivity)context).findViewById(R.id.distance_time_view);
         cancelButton =  ((AppCompatActivity)context).findViewById(R.id.cancel_navigation_button);

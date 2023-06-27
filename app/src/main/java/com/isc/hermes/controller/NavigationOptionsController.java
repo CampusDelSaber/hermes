@@ -234,6 +234,11 @@ public class NavigationOptionsController {
         executeGraphBuild(graphController);
     }
 
+    /**
+     * Method to mark the start and destination point on map
+     * @param start start point to init route
+     * @param destination destination final point's route
+     */
     private void markStartEndPoint(LatLng start, LatLng destination) {
         mapWayPointController.setMarkerOnMap(start);
         mapWayPointController.setMarkerOnMap(destination);
@@ -258,6 +263,10 @@ public class NavigationOptionsController {
         }.execute();
     }
 
+    /**
+     * Method to get the routes' options from the algorithm for the route's suggestions
+     * @param graphController  the graph's controller class
+     */
     private void getRouteOptionsFromAlgorithm(GraphController graphController) {
         try {
             graphController.buildGraph();
@@ -277,13 +286,15 @@ public class NavigationOptionsController {
         String jsonA = routeOptions.getOrDefault("Route A", "{coordinates: []}");
         String jsonB = routeOptions.getOrDefault("Route B", "{coordinates: []}");
         String jsonC = routeOptions.getOrDefault("Route C", "{coordinates: []}");
-
         ArrayList<String> geoJson = new ArrayList<>(List.of(jsonC, jsonB, jsonA));
-
         MapPolyline mapPolyline = new MapPolyline();
         infoRouteController.showInfoRoute(geoJson, mapPolyline);
     }
 
+    /**
+     * Method to get the waypoint controller
+     * @return map waypoint controller
+     */
     public MapWayPointController getMapWayPointController() {
         return mapWayPointController;
     }
