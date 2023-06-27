@@ -18,7 +18,7 @@ public class OfflineSearcher {
 
 
     /**
-     * @return 
+     * @return
      */
     public Response<GeocodingResponse> getSuggestionsFeatureOffline(){
         OfflineGeocoding offlineGeocoding = OfflineGeocoding.getInstance(context);
