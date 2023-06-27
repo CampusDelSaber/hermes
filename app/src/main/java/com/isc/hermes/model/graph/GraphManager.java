@@ -23,8 +23,6 @@ public class GraphManager {
     private Graph graph;
 
     private double radius = 100;
-    private Node referenceNode = null;
-    private double minDistance = Double.MAX_VALUE;
 
     /**
      * Constructor method private to apply singleton pattern.
@@ -119,13 +117,14 @@ public class GraphManager {
      * @return an list with the IDs of the nearby nodes.
      */
     public List<String> searchNodesNearby(Point incident) {
+        Node referenceNode = null;
+        double minDistance = Double.MAX_VALUE;
         CoordinatesDistanceCalculator coordinatesDistanceCalculator = CoordinatesDistanceCalculator.getInstance();
         List<String> nearbyNodesIDs = new ArrayList<>();
 
         for (Node node : graph.getNodes().values()) {
             double distance = coordinatesDistanceCalculator.calculateDistance(node,
-                    new Node("incidentPoint", incident.longitude(), incident.latitude()));
-            System.out.println("Distance 1: " + distance);
+                    new Node("incidentPoint", incident.latitude(), incident.longitude()));
             if (distance <= radius && distance < minDistance) {
                 referenceNode = node;
                 minDistance = distance;
@@ -133,12 +132,12 @@ public class GraphManager {
         }
 
         if (referenceNode != null) {
+            nearbyNodesIDs.add(referenceNode.getId());
             List<Edge> nodeReferencesEdges = referenceNode.getEdges();
             for (Edge edge : nodeReferencesEdges) {
                 Node nodeIterated = edge.getDestination();
                 double distance = coordinatesDistanceCalculator.calculateDistance(
                         referenceNode, nodeIterated);
-                System.out.println("Distance 2: " + distance);
                 if (distance <= radius) nearbyNodesIDs.add(nodeIterated.getId());
             }
         }
