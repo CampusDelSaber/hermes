@@ -3,10 +3,10 @@
     <style name="Base.Theme.Hermes" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/oxfordBlue</item>
-        <item name="colorPrimaryVariant">@color/palatinateBlue</item>
+        <item name="colorPrimaryVariant">@color/oxfordBlue</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/palatinateBlue</item>
+        <item name="colorSecondary">@color/oxfordBlue</item>
         <item name="colorSecondaryVariant">@color/oxfordBlue</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
