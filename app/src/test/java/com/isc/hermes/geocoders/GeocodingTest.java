@@ -29,7 +29,6 @@ public class GeocodingTest {
     @Test
     public void placeAddress() {
         CarmenFeature response = geocoding.getPlaceInformation("jalasoft");
-        System.out.println(response);
         String addressExpect = "Melchor Perez";
         String addressResult = response.properties().get("address").getAsString();
 

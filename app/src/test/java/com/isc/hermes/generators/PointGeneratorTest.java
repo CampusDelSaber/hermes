@@ -30,7 +30,6 @@ public class PointGeneratorTest {
     public void validPointGenerated() {
         Double[] referencePoint = {-17.366472, -66.175682};
         pointCoordinate = generator.getStreetPoint(referencePoint, Radium.FIVE_HUNDRED_METERS);
-        System.out.print(pointCoordinate[0]+", "+pointCoordinate[1]);
         assertNotNull(pointCoordinate);
 
         Double longitude = pointCoordinate[1];
