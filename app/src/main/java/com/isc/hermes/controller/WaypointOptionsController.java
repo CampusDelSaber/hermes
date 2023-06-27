@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.Animations;
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 
@@ -99,8 +99,8 @@ public class WaypointOptionsController {
         });
 
         reportNaturalDisasterButton.setOnClickListener(v->{
-            MapClickEventsManager.getInstance().removeCurrentClickController();
-            MapClickEventsManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapClickEventsManager.getInstance().getMapboxMap(), this.context));
+            MapManager.getInstance().removeCurrentClickController();
+            MapManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapManager.getInstance().getMapboxMap(), this.context));
             waypointOptions.startAnimation(Animations.exitAnimation);
             waypointOptions.setVisibility(View.GONE);
         });

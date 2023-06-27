@@ -1,11 +1,12 @@
 package com.isc.hermes.model.Utils;
 
 
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Feature;
-import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
@@ -18,18 +19,16 @@ import java.util.List;
  * This class will be in charge of displaying the Polyline.
  */
 public class MapPolyline {
-
-    private MapView mapView;
+    private final MapboxMap mapboxMap;
     private List<List<Point>> allPoints;
     private ArrayList<GeoJsonSource> idPolyLinesList;
 
 
     /**
      * Constructor method
-     * @param mapView
      */
-    public MapPolyline(MapView mapView) {
-        this.mapView = mapView;
+    public MapPolyline() {
+        mapboxMap = MapManager.getInstance().getMapboxMap();
         this.allPoints = new ArrayList<>();
         idPolyLinesList = new ArrayList<>();
     }
@@ -44,7 +43,7 @@ public class MapPolyline {
         List<List<Point>> coordinates = new ArrayList<>();
         extractCoordinates(coordinates, geoJson);
 
-        MapPolyline mapPolyline = new MapPolyline(mapView);
+        MapPolyline mapPolyline = new MapPolyline();
         mapPolyline.drawPolyline(coordinates,colors);
     }
 
@@ -90,19 +89,17 @@ public class MapPolyline {
      */
 
     public void drawPolyline(List<List<Point>> points, List<Integer> colors){
-        mapView.getMapAsync(mapboxMap -> {
-            mapboxMap.getStyle(style -> {
-                List<LineString> polyLineGeoJson = getPointsList(points, colors, style);
-                List<Feature> features = setFeatures(polyLineGeoJson);
-                FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
-                for (int i = 0; i < features.size(); i++){
-                    GeoJsonSource polylineSource =
-                            new GeoJsonSource("polyline" + i + "-source", featureCollection);
-                    idPolyLinesList.add(polylineSource);
-                    style.addSource(polylineSource);
-                    polylineSource.setGeoJson(features.get(i));
-                }
-            });
+        mapboxMap.getStyle(style -> {
+            List<LineString> polyLineGeoJson = getPointsList(points, colors, style);
+            List<Feature> features = setFeatures(polyLineGeoJson);
+            FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
+            for (int i = 0; i < features.size(); i++){
+                GeoJsonSource polylineSource =
+                        new GeoJsonSource("polyline" + i + "-source", featureCollection);
+                idPolyLinesList.add(polylineSource);
+                style.addSource(polylineSource);
+                polylineSource.setGeoJson(features.get(i));
+            }
         });
     }
 
@@ -111,9 +108,7 @@ public class MapPolyline {
      * This method will hide all the polylines in the map
      */
     public void hidePolylines() {
-        mapView.getMapAsync(mapboxMap -> {
-            mapboxMap.setStyle(Style.MAPBOX_STREETS);
-        });
+        mapboxMap.setStyle(mapboxMap.getStyle().getUri());
     }
     /**
      * This method will get the points list

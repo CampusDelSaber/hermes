@@ -4,7 +4,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.Polygon;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -24,7 +24,7 @@ public class MapPolygonStyle implements Style.OnStyleLoaded {
     public MapPolygonStyle(MapboxMap mapboxMap,List<List<Point>> allPolygonsPoints,String polygonColorHexCode){
         this.polygonColorHexCode = polygonColorHexCode;
         this.allPolygonsPoints = allPolygonsPoints;
-        mapboxMap.setStyle(MapClickEventsManager.getInstance().getMapboxMap().getStyle().getUri(),this);
+        mapboxMap.setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri(),this);
     }
 
     /**
