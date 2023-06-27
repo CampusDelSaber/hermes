@@ -30,12 +30,14 @@ public class InfoRouteController {
     private Button buttonRouteA;
     private Button buttonRouteB;
     private Button buttonRouteC;
+    private Button startNavigationButton;
     private TextView timeText;
     private TextView distanceText;
     private static InfoRouteController instanceNavigationController;
     private ArrayList<Integer> colorsInfoRoutes;
     private MapPolyline mapPolyline;
    private ArrayList<JSONObject> jsonObjects;
+   private NavigationDirectionController navigationDirectionController;
 
     /**
      * Constructs a new InfoRouteController object.
@@ -50,6 +52,8 @@ public class InfoRouteController {
         buttonRouteA = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteOne);
         buttonRouteB = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteTwo);
         buttonRouteC = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteThree);
+        startNavigationButton = ((AppCompatActivity)context).findViewById(R.id.startNavegationButton);
+        navigationDirectionController = new NavigationDirectionController(context);
         colorsInfoRoutes = new ArrayList<>();
         isActive = false;
         colorsInfoRoutes.add(0XFFFF6E26);
@@ -68,12 +72,18 @@ public class InfoRouteController {
             mapPolyline.hidePolylines();
             layout.startAnimation(Animations.exitAnimation);
             layout.setVisibility(View.GONE);
+            navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
+            navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
             isActive = false;
         });
 
         buttonRouteA.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(0)));
         buttonRouteB.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(1)));
         buttonRouteC.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(2)));
+        startNavigationButton.setOnClickListener(v -> {
+            navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
+            navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
+        });
     }
 
     /**
@@ -136,6 +146,7 @@ public class InfoRouteController {
     private void setTimeAndDistanceInformation(JSONObject jsonObject){
         setDistanceInfo(jsonObject);
         setEstimatedTimeInfo(jsonObject);
+        navigationDirectionController.processRoute(jsonObject);
     }
 
     /**
