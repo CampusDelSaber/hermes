@@ -9,6 +9,11 @@ import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.UserRepository;
 
+/**
+ * The {@code PopUpContinueLikeGeneralUser} class extends {@code PopUp} and represents a specific
+ * type of popup window. so that the end user can continue as a general user. It provides
+ * functionality to be a general user.
+ */
 public class PopUpContinueLikeGeneralUser extends PopUp{
 
     /**
