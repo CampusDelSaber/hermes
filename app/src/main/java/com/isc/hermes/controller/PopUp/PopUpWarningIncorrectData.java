@@ -13,6 +13,10 @@ import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.UserRepository;
 
+/**
+ * The class extends {@code PopUp} and represents a specific type of popup window. In case the end
+ * user does not enter any verification number and wants to enter, this popup will appear
+ */
 public class PopUpWarningIncorrectData extends PopUp{
 
     /**
