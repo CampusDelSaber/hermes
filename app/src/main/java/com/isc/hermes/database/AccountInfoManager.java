@@ -106,6 +106,23 @@ public class AccountInfoManager {
         return jsonObject.getString("_id");
     }
 
+    public void updateUserInformationLocal(String email) {
+        String apiUrl = ACCOUNT_INFO_COLLECTION + "/email/" + email;
+        Future<String> future = apiHandler.getFutureCollectionString(apiUrl);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONArray(future.get()).getJSONObject(0);
+            UserRepository.getInstance().getUserContained().setPathImageUser(jsonObject.getString("pathImageUser"));
+            UserRepository.getInstance().getUserContained().setFullName(jsonObject.getString("fullName"));
+            UserRepository.getInstance().getUserContained().setUserName(jsonObject.getString("userName"));
+            UserRepository.getInstance().getUserContained().setTypeUser(jsonObject.getString("typeUser"));
+            UserRepository.getInstance().getUserContained().setEmail(jsonObject.getString("email"));
+            UserRepository.getInstance().getUserContained().setId(jsonObject.getString("_id"));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
     /**
      * Updates the local user information using the email as a reference.
      */
