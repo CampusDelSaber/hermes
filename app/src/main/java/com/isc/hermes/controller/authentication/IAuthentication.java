@@ -57,4 +57,10 @@ public interface IAuthentication {
      * @return an account with user information.
      */
     User getUserBySignInResult(Intent data) throws ApiException;
+
+    /**
+     * This method is for obtain the User already SignIn.
+     * @return User Sign In
+     */
+    User getUserSignIn();
 }
