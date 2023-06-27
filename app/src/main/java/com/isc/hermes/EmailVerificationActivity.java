@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.isc.hermes.controller.PopUp.PopUp;
+import com.isc.hermes.controller.PopUp.PopUpContinueLikeGeneralUser;
+import com.isc.hermes.controller.PopUp.PopUpWarningIncorrectData;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
 import com.isc.hermes.model.Validator;
@@ -25,6 +27,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
     private EditText[] codeEditTexts;
     private Validator validator;
     private TextView emailTextView;
+    private PopUp popUpToConfirmUser;
+    private PopUp warningPopUp;
 
     /**
      * This method initiates the window whe its called.
@@ -34,7 +38,9 @@ public class EmailVerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_verification);
-        validator = new Validator(UserRepository.getInstance().getUserContained());
+        this.validator = new Validator(UserRepository.getInstance().getUserContained());
+        this.popUpToConfirmUser = new PopUpContinueLikeGeneralUser(this);
+        this.warningPopUp = new PopUpWarningIncorrectData(this);
         initComponents();
     }
 
@@ -186,7 +192,10 @@ public class EmailVerificationActivity extends AppCompatActivity {
             VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
             verificationCodesManager.updateVerificationCode(validator.getId(), false);
             startActivity(intent);
-        } else changeColorCodeUser();
+        } else {
+            changeColorCodeUser();
+            warningPopUp.show();
+        }
     }
 
 
@@ -195,14 +204,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
      *
      * @param view The View that triggered the method call.
      */
-    public void continueLikeGeneralUser(View view) {\
-        Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
-                    UserRepository.getInstance().getUserContained().getFullName(),
-                    UserRepository.getInstance().getUserContained().getUserName(),
-                    "General", UserRepository.getInstance().getUserContained().getPathImageUser());
-        }
-        startActivity(intent);
+    public void continueLikeGeneralUser(View view) {
+        popUpToConfirmUser.show();
     }
 }
