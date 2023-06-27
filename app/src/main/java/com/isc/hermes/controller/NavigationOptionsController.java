@@ -3,8 +3,6 @@ package com.isc.hermes.controller;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -167,6 +165,7 @@ public class NavigationOptionsController {
     public void setStartPoint(LatLng point) {
         isLocationStartChosen = false;
         startPoint = point;
+        isCurrentLocationSelected = false;
         updateUiPointsComponents();
     }
 
@@ -235,19 +234,21 @@ public class NavigationOptionsController {
     private void handleAcceptButtonClick() {
         handleHiddeItemsView();
         isActive = false;
-
+        if (isCurrentLocationSelected) startPoint = CurrentLocationModel.getInstance().getLatLng();
         LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         GraphController graphController = new GraphController(start, destination);
 
-        Graph graph = graphController.getGraph();
+        executeGraphBuild(graphController);
+    }
 
+    private void executeGraphBuild(GraphController graphController){
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
             try {
                 graphController.buildGraph();
                 routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
-                        graph, graphController.getStartNode(),
+                        graphController.getGraph(), graphController.getStartNode(),
                         graphController.getDestinationNode(), TransportationType.CAR
                 );
                 ((AppCompatActivity) context).runOnUiThread(this::showRoutes);
@@ -255,7 +256,6 @@ public class NavigationOptionsController {
                 e.printStackTrace();
             }
         });
-        executorService.shutdown();
     }
 
     private void showRoutes() {

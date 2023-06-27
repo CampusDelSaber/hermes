@@ -25,7 +25,7 @@ public class WayRequest {
         try {
             @SuppressLint("DefaultLocale") String request = String.format(
                     "[out:json];way(around:%d,%f,%f)[highway~" +
-                    "\"^(primary|secondary|tertiary|residential|unclassified)$\"][\"junction\"!=" +
+                    "\"^(primary|secondary|tertiary|residential)$\"][\"junction\"!=" +
                     "\"roundabout\"];node(w)->.n1;node(w)->.n2;way(bn.n1)(bn.n2);out meta;",
                     radius, latitude, longitude
             );

@@ -2,6 +2,7 @@ package com.isc.hermes.controller;
 
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
+import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.requests.overpass.IntersectionRequest;
 import com.isc.hermes.requests.overpass.WayRequest;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
@@ -9,9 +10,6 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * This is the controller class for the graph.
@@ -166,7 +164,7 @@ public class GraphController {
      * @throws JSONException If there is an issue with parsing the JSON data.
      */
     private void addStartNode() throws JSONException {
-        String response = intersectionRequest.getIntersections(start.getLatitude(), startNode.getLongitude(), 150);
+        String response = intersectionRequest.getIntersections(start.getLatitude(), startNode.getLongitude(), 210);
         if (response != null) {
             JSONObject json = new JSONObject(response);
             JSONArray intersection = json.getJSONArray("elements");
