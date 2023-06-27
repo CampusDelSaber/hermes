@@ -1,6 +1,8 @@
 package com.isc.hermes;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +18,8 @@ import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.Utils.DataAccountOffline;
+import com.isc.hermes.utils.offline.NetworkManager;
 
 import org.json.JSONException;
 
@@ -84,13 +88,60 @@ public class SignUpActivityView extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         authenticationServices.forEach((key, authentication) -> {
-            if (authentication.checkUserSignIn(this)) {
-                authenticator = authentication;
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-            }
+            getUserDependingAbleNetwork(authentication);
         });
     }
+
+    /**
+     * Get an User Depending the app is connected to internet
+     *
+     * @param authentication The authentication object representing the signed-in user.
+     */
+    private void getUserDependingAbleNetwork(IAuthentication authentication){
+
+        if (authentication.checkUserSignIn(this)) {
+
+            authenticator = authentication;
+            User user = null;
+            if(NetworkManager.isOnline(this)){
+                user = obtainUserUsingInternet(authentication);
+            }else{
+                user = DataAccountOffline.getInstance(this).loadDataLogged();
+            }
+            UserRepository.getInstance().setUserContained(user);
+            changeActivityToMap();
+        }
+    }
+
+    /**
+     * Obtains the user object by retrieving data using internet connectivity.
+     *
+     * @param authentication The authentication object representing the signed-in user.
+     * @return the user obtained
+     */
+    private User obtainUserUsingInternet(IAuthentication authentication){
+        User user = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                AccountInfoManager manager = new AccountInfoManager();
+                String id = manager.getIdByEmail(authentication.getUserSignIn().getEmail());
+                user =  manager.getUserById(id);
+                DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
+            } catch (ExecutionException | InterruptedException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return user;
+    }
+
+    /**
+     * This method change the activity to the activity map.
+     */
+    private void changeActivityToMap(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
 
     /**
      * This method allows the user to register the user
@@ -118,6 +169,7 @@ public class SignUpActivityView extends AppCompatActivity {
     private void changeActivityDependingIsUserIsRegistered(User user) throws ExecutionException, InterruptedException, JSONException {
         AccountInfoManager accountInfoManager = new AccountInfoManager();
         UserRepository.getInstance().setUserContained(user);
+        DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
         Intent intent;
 
         if (accountInfoManager.verifyIfAccountIsRegistered(user.getEmail())) {

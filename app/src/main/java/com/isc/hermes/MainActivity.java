@@ -23,6 +23,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Handler;
+
+import com.isc.hermes.controller.FilterCategoriesController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private String mapStyle;
     private CurrentLocationController currentLocationController;
+    private FilterCategoriesController filterCategoriesController;
+    private boolean visibilityMenu = false;
     private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
@@ -81,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
+        initFilterAdvancedView();
         launcher = createActivityResult();
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
@@ -101,6 +106,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void addMapboxSearcher() {
         sharedSearcherPreferencesManager = new SharedSearcherPreferencesManager(this);
         markerManager = MarkerManager.getInstance(this);
+    }
+
+    /**
+     * Method to initialize the filters advanced view.
+     */
+    private void initFilterAdvancedView() {
+        filterCategoriesController = new FilterCategoriesController(this);
+        filterCategoriesController.initComponents();
     }
 
     /**
