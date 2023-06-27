@@ -124,7 +124,8 @@ public class GraphManager {
 
         for (Node node : graph.getNodes().values()) {
             double distance = coordinatesDistanceCalculator.calculateDistance(node,
-                    new Node("incidentPoint", incident.latitude(), incident.longitude()));
+                    new Node("incidentPoint", incident.longitude(), incident.latitude()));
+            System.out.println("Distance 1: " + distance);
             if (distance <= radius && distance < minDistance) {
                 referenceNode = node;
                 minDistance = distance;
@@ -137,6 +138,7 @@ public class GraphManager {
                 Node nodeIterated = edge.getDestination();
                 double distance = coordinatesDistanceCalculator.calculateDistance(
                         referenceNode, nodeIterated);
+                System.out.println("Distance 2: " + distance);
                 if (distance <= radius) nearbyNodesIDs.add(nodeIterated.getId());
             }
         }
