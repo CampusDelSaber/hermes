@@ -1,17 +1,15 @@
 name: Application Build 🏗️ 
 run-name: ${{ github.actor }} is executing the workflow ${{ github.workflow }}.
 
-# on:
-#   push:
-#     branches:
-#       - develop
-#       - main
-#   pull_request:
-#     types:
-#       - opened
-#       - synchronize
-
-on: [push]
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
   build:
@@ -59,7 +57,8 @@ jobs:
 
   publication:
     name: apk_distribution 
-    needs: [build]   
+    needs: [build, test]
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
@@ -87,6 +86,7 @@ jobs:
   code_linting:
     name: code_analysis
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
 
     steps:
       - name: Checkout code
@@ -97,7 +97,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17' 
-          cache: 'gradle'
 
       - name: PMD analysis
         uses: pmd/pmd-github-action@v1
