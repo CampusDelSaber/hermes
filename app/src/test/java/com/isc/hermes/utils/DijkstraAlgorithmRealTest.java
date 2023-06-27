@@ -3,11 +3,13 @@ package com.isc.hermes.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com.isc.hermes.controller.GraphController;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
-import com.isc.hermes.model.navigation.TransportationType;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +71,7 @@ public class DijkstraAlgorithmRealTest {
         graph.addNode(lanza_jordan);
 
         Map<String, Route> routesMap = dijkstraAlgorithm
-                .getPathAlternatives(graph, estebanArze_Sucre, jordan_sanMartin, TransportationType.CAR);
+                .getPathAlternatives(graph, estebanArze_Sucre, jordan_sanMartin);
 
         List<Node> routeA = Objects.requireNonNull(routesMap.get("Route A")).getPath();
         assertNotNull(routeA);
@@ -88,5 +90,33 @@ public class DijkstraAlgorithmRealTest {
         assertEquals(calama_25mayo, routeB.get(3));
         assertEquals(calama_sanMartin, routeB.get(4));
         assertEquals(jordan_sanMartin, routeB.get(5));
+
+        System.out.println(
+                dijkstraAlgorithm.getGeoJsonRoutes(graph, estebanArze_Sucre, jordan_sanMartin));
+    }
+
+    @Test
+    public void getRoutesRealGraph() throws JSONException {
+        LatLng start = new LatLng(-17.376973, -66.179360);
+        LatLng destination = new LatLng(-17.377594, -66.181011);
+        GraphController graphController = new GraphController(start, destination);
+        System.out.println(graphController.getGraph().getNodes().size());
+        graphController.buildGraph();
+        Graph graph = graphController.getGraph();
+
+        System.out.println(
+                dijkstraAlgorithm.getShortestPath(graph, graphController.getStartNode(), graphController.getDestinationNode()));
+    }
+
+    @Test
+    public void getRoutesRealGraph2() throws JSONException {
+        LatLng start = new LatLng(-17.376973, -66.179360);
+        LatLng destination = new LatLng(-17.377594, -66.181011);
+        GraphController graphController = new GraphController(start, destination);
+        graphController.buildGraph();
+        Graph graph = graphController.getGraph();
+
+        System.out.println(
+                dijkstraAlgorithm.getGeoJsonRoutes(graph, graphController.getStartNode(), graphController.getDestinationNode()));
     }
 }
