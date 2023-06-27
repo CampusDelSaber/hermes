@@ -7,74 +7,57 @@
     android:background="@color/white"
     tools:context=".EmailVerificationActivity">
 
-    <EditText
-        android:id="@+id/codeTextField6"
-        android:layout_width="50dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="20dp"
-        android:ems="10"
-        android:focusable="auto"
-        android:focusableInTouchMode="false"
-        android:inputType="number|numberSigned"
-        android:maxLength="1"
-        android:textIsSelectable="false"
-        app:layout_constraintBottom_toTopOf="@+id/resendClickableText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/codeTextField5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
     <ImageView
         android:id="@+id/emailImage"
         android:layout_width="150dp"
         android:layout_height="126dp"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="29dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintBottom_toTopOf="@+id/titleVerify"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/email_icon" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/titleVerify"
         android:layout_width="348dp"
         android:layout_height="36dp"
         android:text="@string/verifyEmailTittle"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="27sp"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailImage" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/MessageCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
         android:text="@string/emailVerificationSent"
         android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/titleVerify" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="@string/userEmail"
         android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.541"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCode" />
 
     <TextView
         android:id="@+id/textView5"
@@ -83,8 +66,8 @@
         android:text="@string/enterCodeLabel"
         android:textColor="#201313"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/codeTextField2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -97,11 +80,12 @@
         android:focusable="true"
         android:inputType="number|numberSigned"
         android:maxLength="2"
-        app:layout_constraintBottom_toTopOf="@+id/resendClickableText"
+        app:layout_constraintBottom_toTopOf="@+id/continueButton"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField2"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintVertical_bias="0.346" />
 
     <EditText
         android:id="@+id/codeTextField2"
@@ -113,10 +97,11 @@
         android:inputType="number|numberSigned"
         android:maxLength="2"
         android:textIsSelectable="false"
-        app:layout_constraintBottom_toTopOf="@+id/resendClickableText"
+        app:layout_constraintBottom_toTopOf="@+id/continueButton"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField3"
         app:layout_constraintStart_toEndOf="@+id/codeTextField1"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintVertical_bias="0.346" />
 
     <EditText
         android:id="@+id/codeTextField3"
@@ -128,10 +113,12 @@
         android:inputType="number|numberSigned"
         android:maxLength="2"
         android:textIsSelectable="false"
-        app:layout_constraintBottom_toTopOf="@+id/resendClickableText"
+        app:layout_constraintBottom_toTopOf="@+id/continueButton"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField4"
         app:layout_constraintStart_toEndOf="@+id/codeTextField2"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintVertical_bias="0.346" />
+
 
     <EditText
         android:id="@+id/codeTextField4"
@@ -143,10 +130,28 @@
         android:inputType="number|numberSigned"
         android:maxLength="2"
         android:textIsSelectable="false"
-        app:layout_constraintBottom_toTopOf="@+id/resendClickableText"
+        app:layout_constraintBottom_toTopOf="@+id/continueButton"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField5"
         app:layout_constraintStart_toEndOf="@+id/codeTextField3"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintVertical_bias="0.346" />
+
+    <EditText
+        android:id="@+id/codeTextField6"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:inputType="number|numberSigned"
+        android:maxLength="1"
+        android:textIsSelectable="false"
+        app:layout_constraintBottom_toTopOf="@+id/continueButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/codeTextField5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintVertical_bias="0.346" />
 
     <EditText
         android:id="@+id/codeTextField5"
@@ -158,33 +163,20 @@
         android:inputType="number|numberSigned"
         android:maxLength="2"
         android:textIsSelectable="false"
-        app:layout_constraintBottom_toTopOf="@+id/resendClickableText"
+        app:layout_constraintBottom_toTopOf="@+id/continueButton"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField6"
         app:layout_constraintStart_toEndOf="@+id/codeTextField4"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <TextView
-        android:id="@+id/resendClickableText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:text="@string/resendLabel"
-        android:textAlignment="center"
-        android:textColor="#127DAE"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/cancelButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/codeTextField2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintVertical_bias="0.346" />
 
     <Button
         android:id="@+id/cancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="58dp"
+        android:layout_width="168dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="236dp"
         android:foregroundGravity="center_horizontal"
-        android:text="cancel"
+        android:text="Continue General Account"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/continueButton"
@@ -192,13 +184,12 @@
 
     <Button
         android:id="@+id/continueButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="58dp"
-        android:text="continue"
+        android:layout_width="134dp"
+        android:layout_height="59dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="236dp"
+        android:text="Verify Account"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cancelButton" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
