@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
@@ -16,7 +17,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Handler;
 import com.isc.hermes.controller.FilterCategoriesController;
+import com.isc.hermes.controller.MapPolygonController;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.controller.PolygonOptionsController;
 import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -28,6 +31,9 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 
+import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.model.Utils.IncidentsUtils;
+import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.MapConfigure;
@@ -379,5 +385,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                 });
+    }
+
+    public void acceptNaturalDisasters(){
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(IncidentsUtils.getInstance().generateObjectId(),"Natural Disaster","Natural Disaster","2023-06-22T19:40:47.955Z", "2023-06-22T19:40:47.955Z" , GeometryType.POLYGON.getName(),MapPolygonController.getInstance(MapManager.getInstance().getMapboxMap(), context).getPolygonPoints().toString());
+        IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 }
