@@ -88,11 +88,5 @@ public class DijkstraAlgorithmRealTest {
         assertEquals(calama_25mayo, routeB.get(3));
         assertEquals(calama_sanMartin, routeB.get(4));
         assertEquals(jordan_sanMartin, routeB.get(5));
-
-        System.out.println(
-            dijkstraAlgorithm.getGeoJsonRoutes(
-                    graph, estebanArze_Sucre, jordan_sanMartin, TransportationType.CAR
-            )
-        );
     }
 }
