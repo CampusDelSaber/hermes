@@ -12,26 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
-import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
-import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.json.JSONException;
-
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import timber.log.Timber;
 
 
@@ -69,11 +59,9 @@ public class NavigationOptionsController {
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
         currentLocationButton = ((AppCompatActivity) context).findViewById(R.id.current_location_button);
         startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);
-        ;
         finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);
-        ;
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
-        infoRouteController = InfoRouteController.getInstance(context);
+        infoRouteController = InfoRouteController.getInstance(context, this);
         setNavOptionsUiComponents();
         setButtons();
         dijkstraAlgorithm = DijkstraAlgorithm.getInstance();
@@ -294,5 +282,9 @@ public class NavigationOptionsController {
 
         MapPolyline mapPolyline = new MapPolyline();
         infoRouteController.showInfoRoute(geoJson, mapPolyline);
+    }
+
+    public MapWayPointController getMapWayPointController() {
+        return mapWayPointController;
     }
 }

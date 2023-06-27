@@ -37,14 +37,11 @@ public class InfoRouteController {
     private ArrayList<Integer> colorsInfoRoutes;
     private MapPolyline mapPolyline;
    private ArrayList<JSONObject> jsonObjects;
+   private NavigationOptionsController navigationOptionsController;
    private NavigationDirectionController navigationDirectionController;
 
-    /**
-     * Constructs a new InfoRouteController object.
-     *
-     * @param context The context of the activity.
-     */
-    private InfoRouteController(Context context){
+
+    private InfoRouteController(Context context, NavigationOptionsController navigationOptionsController){
         layout = ((AppCompatActivity)context).findViewById(R.id.distance_time_view);
         cancelButton =  ((AppCompatActivity)context).findViewById(R.id.cancel_navigation_button);
         timeText = ((AppCompatActivity)context).findViewById(R.id.timeText);
@@ -54,6 +51,7 @@ public class InfoRouteController {
         buttonRouteA = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteOne);
         startNavigationButton = ((AppCompatActivity)context).findViewById(R.id.startNavegationButton);
         navigationDirectionController = new NavigationDirectionController(context);
+        this.navigationOptionsController = navigationOptionsController;
         colorsInfoRoutes = new ArrayList<>();
         isActive = false;
         colorsInfoRoutes.add(0XFF686C6C);
@@ -74,6 +72,7 @@ public class InfoRouteController {
             layout.setVisibility(View.GONE);
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
+            navigationOptionsController.getMapWayPointController().deleteMarks();
             isActive = false;
         });
 
@@ -92,9 +91,9 @@ public class InfoRouteController {
      * @param context The context of the activity.
      * @return The InfoRouteController instance.
      */
-    public static InfoRouteController getInstance(Context context){
+    public static InfoRouteController getInstance(Context context, NavigationOptionsController navigationOptionsController){
         if(instanceNavigationController == null){
-            instanceNavigationController = new InfoRouteController(context);
+            instanceNavigationController = new InfoRouteController(context, navigationOptionsController);
         }
         return instanceNavigationController;
     }
