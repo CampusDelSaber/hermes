@@ -8,6 +8,7 @@ import android.view.View;
 import com.isc.hermes.R;
 import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * A class that represents a popup dialog for deleting an account.
@@ -52,9 +53,9 @@ public class PopUpDeleteAccount extends PopUp{
     public void onClick(View v) {
         if (v == super.confirmButton){
             AccountInfoManager accountInfoManager = new AccountInfoManager();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 accountInfoManager.deleteUser(UserRepository.getInstance().getUserContained().getId());
-            } closeAuthentication();
+            closeAuthentication();
         } dismiss();
     }
 }

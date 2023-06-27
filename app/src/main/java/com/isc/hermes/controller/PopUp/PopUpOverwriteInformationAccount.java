@@ -7,6 +7,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * The class {@code PopUpEditAccount} extends {@code PopUp} and represents a specific type of pop-up

@@ -1,48 +1,53 @@
 package com.isc.hermes.model;
 
-import androidx.annotation.RequiresApi;
-
-import android.os.Build;
-
 import com.isc.hermes.database.VerificationCodesManager;
+import com.isc.hermes.model.User.User;
 
 /**
  * The Validator class is responsible for validating a verification code entered by the user.
  */
 public class Validator {
     private String code;
-    private User user;
+    private final User user;
     private String id;
-    private VerificationCodesManager verificationCodesManager;
+    private final VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
 
+    /**
+     * Creates a new Validator instance with the specified user.
+     *
+     * @param user The user associated with the validator.
+     */
     public Validator(User user) {
         this.user = user;
         this.verificationCodesManager = new VerificationCodesManager();
         getVerificationCode();
-        System.out.println("=======================================================0\nEMAIL: " + user.getEmail() +
-                "\nCODE: " + code + "\n=======================================================0\n");
     }
 
+    /**
+     * Obtains the verification code for the associated user.
+     *
+     * @throws RuntimeException if an error occurs while obtaining the verification code.
+     */
     public void obtainVerificationCode() {
         try {
-            if (user != null) {
+            if (user != null)
                 verificationCode = verificationCodesManager.getLastVerificationCode(user.getEmail());
-            } else {
-                throw new NullPointerException("User object is null");
-            }
+            else throw new NullPointerException("User object is null");
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
 
+    /**
+     * Retrieves the verification code for the associated user and sets it as the current code.
+     * If no verification code exists, a new one will be generated.
+     */
     public void getVerificationCode() {
         obtainVerificationCode();
-        if (verificationCode == null) {
-            verificationCodesManager.addVerificationCode(user.getEmail());
+        if (verificationCode == null) { verificationCodesManager.addVerificationCode(user.getEmail());
             getVerificationCode();
-        }
-        code = verificationCode.getVerificationCode();
+        } code = verificationCode.getVerificationCode();
         id = verificationCode.getId();
     }
 
@@ -56,14 +61,29 @@ public class Validator {
         return code.equals(userCode);
     }
 
+    /**
+     * Returns the current verification code.
+     *
+     * @return The current verification code.
+     */
     public String getCode() {
         return code;
     }
 
+    /**
+     * Returns the associated user.
+     *
+     * @return The associated user.
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Returns the ID of the current verification code.
+     *
+     * @return The ID of the current verification code.
+     */
     public String getId() {
         return id;
     }
