@@ -42,7 +42,7 @@ public class PointGeneratorTest {
     @Test
     public void validMultiPointGenerated() {
         int amountPoints = 15;
-        List<Double[]> multiPoints = generator.generate(
+        List<Double[]> multiPoints = generator.getMultiPoint(
                 referencePoint, Radium.FIFTY_METERS, amountPoints);
 
         assertNotNull(multiPoints);
