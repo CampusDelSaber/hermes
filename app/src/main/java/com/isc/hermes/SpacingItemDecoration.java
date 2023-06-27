@@ -34,8 +34,6 @@ public class SpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         if (parent.getChildAdapterPosition(view) == 0) {
             outRect.left = spacing;
-        }
-
-        outRect.right = spacing;
+        } outRect.right = spacing;
     }
 }

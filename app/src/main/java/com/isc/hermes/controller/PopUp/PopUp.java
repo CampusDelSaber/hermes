@@ -18,6 +18,7 @@ import com.isc.hermes.controller.authentication.GoogleAuthentication;
 public abstract class PopUp extends Dialog implements View.OnClickListener {
     protected boolean status;
     protected Button confirmButton;
+    protected Button betterNotButton;
     protected TextView deleteAccountText;
     protected TextView warningText;
     protected ImageView iconMessagePopUp;
@@ -47,6 +48,7 @@ public abstract class PopUp extends Dialog implements View.OnClickListener {
     public void assignValuesToComponents(PopUpStyle popUpStyle) {
         this.googleAuthentication = new GoogleAuthentication();
         this.warningText = findViewById(R.id.warningText);
+        this.betterNotButton = findViewById(R.id.betterNotButton);
         this.iconMessagePopUp = findViewById(R.id.iconMessagePopUp);
         this.deleteAccountText = findViewById(R.id.deleteAccountText);
         this.iconMessagePopUp.setImageResource(popUpStyle.getIconImagePopUp());
