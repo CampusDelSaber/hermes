@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
@@ -38,6 +42,8 @@ public class AccountInformation extends AppCompatActivity {
     private PopUpOverwriteInformationAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private StorageReference storageReference;
+    private static final String FOLDER_NAME = "Profile_images";
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -92,6 +98,7 @@ public class AccountInformation extends AppCompatActivity {
         assignValuesToComponentsView();
         generateActionToComboBox();
         updateComponentsByUserInformation();
+        storageReference = FirebaseStorage.getInstance().getReference();
         initializePopups();
     }
 
@@ -126,6 +133,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
@@ -141,6 +149,21 @@ public class AccountInformation extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
+            StorageReference filePath = storageReference.child(FOLDER_NAME).child(selectedImageUri.getLastPathSegment());
+            filePath.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String imageURL = uri.toString();
+                            System.out.println(imageURL);
+                        }
+                    });
+                    Toast.makeText(AccountInformation.this, "UPLOAD SUCCESSFUL", Toast.LENGTH_SHORT).show();
+                }
+            });
+            System.out.println();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
