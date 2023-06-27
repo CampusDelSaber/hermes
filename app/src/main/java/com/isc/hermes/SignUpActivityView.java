@@ -14,6 +14,8 @@ import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.model.User.User;
+import com.isc.hermes.model.User.UserRepository;
 
 import org.json.JSONException;
 
@@ -32,7 +34,6 @@ public class SignUpActivityView extends AppCompatActivity {
     private Map<AuthenticationServices, IAuthentication> authenticationServices;
     public static IAuthentication authenticator;
     private static final int REQUEST_CODE = 7;
-    public static String idUserLogged;
 
     /**
      * Method for creating the view and configuring it using the components xml.
@@ -116,15 +117,14 @@ public class SignUpActivityView extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void changeActivityDependingIsUserIsRegistered(User user) throws ExecutionException, InterruptedException, JSONException {
         AccountInfoManager accountInfoManager = new AccountInfoManager();
+        UserRepository.getInstance().setUserContained(user);
         Intent intent;
 
         if (accountInfoManager.verifyIfAccountIsRegistered(user.getEmail())) {
             intent = new Intent(this, MainActivity.class);
-            idUserLogged = accountInfoManager.getIdByEmail(user.getEmail());
-        } else {
-            intent = new Intent(this, UserSignUpCompletionActivity.class);
-            intent.putExtra("userObtained", user);
-        } startActivity(intent);
+            UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(user.getEmail()));
+        } else intent = new Intent(this, UserSignUpCompletionActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -143,8 +143,7 @@ public class SignUpActivityView extends AppCompatActivity {
         try {
             changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(data));
         } catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
-            Toast.makeText(SignUpActivityView.this,"Wait a moment ",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivityView.this,"Wait a moment ", Toast.LENGTH_SHORT).show();
             Timber.tag("LOG").e(e);
         }
     }

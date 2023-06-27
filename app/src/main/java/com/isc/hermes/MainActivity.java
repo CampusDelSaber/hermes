@@ -3,6 +3,7 @@ package com.isc.hermes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -16,14 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
 
-import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
-import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.model.User.User;
 
 import android.widget.SearchView;
 
@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean visibilityMenu = false;
     private SearchView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
-    private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
@@ -91,12 +90,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
-        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
         launcher = createActivityResult();
-        initShowIncidentsController();
         testPolyline(); // this is a test method that will be removed once the functionality has been verified.
     }
 
+
+    /**
+     * This is a test method that will be removed once the functionality has been verified.
+     * It tests the display of polylines on the map using saved coordinates and colors.
+     */
     public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
         Map<String, String> r = new HashMap<>();
         List<String> routes = new ArrayList<>();
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
+        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap,this));
     }
 
     /**
@@ -215,13 +217,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
         currentLocationController.initLocationButton();
-    }
-
-    /**
-     * This method init the form with all button to show incidents from database
-     */
-    private void initShowIncidentsController() {
-        viewIncidentsController = new ViewIncidentsController(this);
     }
 
     /**
@@ -380,24 +375,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         launcher.launch(intent);
     }
-
     /**
      * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
      *
      * @return The created {@link ActivityResultLauncher} object.
      */
     private ActivityResultLauncher<Intent> createActivityResult() {
-        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Bundle b = data.getExtras();
-                            mapDisplay.animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
-                            openSideMenu(null);
-                        }
-                    }
-
-                });
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK) { Intent data = result.getData();
+                if (data != null) {
+                    Bundle b = data.getExtras();
+                    mapDisplay.animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
+                    openSideMenu(null);}
+            }
+        });
     }
 }

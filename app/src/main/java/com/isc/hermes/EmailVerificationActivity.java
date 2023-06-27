@@ -1,6 +1,7 @@
 package com.isc.hermes;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,8 +10,10 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
 import com.isc.hermes.model.Validator;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * This class manages the email verification when the user declares themself as a Administrator.
@@ -18,9 +21,7 @@ import com.isc.hermes.model.Validator;
 public class EmailVerificationActivity extends AppCompatActivity {
 
     private EditText[] codeEditTexts;
-    private Button continueButton;
     private Validator validator;
-    private User user;
 
     /**
      * This method initiates the window whe its called.
@@ -30,32 +31,49 @@ public class EmailVerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_verification);
-        Intent intent = getIntent();
-        user = intent.getParcelableExtra("user");
-        System.out.println("USER ACCOUNT: " + user.getEmail() + "=============================================================");
-
-        validator = new Validator(user);
+        validator = new Validator(UserRepository.getInstance().getUserContained());
         initComponents();
     }
 
     /**
-     * This method calls the codeTextFields and groups those in a Array.
+     * Initializes the components and UI elements of the activity.
      */
-    private void initComponents(){
+    private void initComponents() {
+        initCodeEditTexts();
+        initContinueButton();
+        configureEditTexts();
+    }
+
+    /**
+     * Initializes the code EditText fields.
+     */
+    private void initCodeEditTexts() {
         codeEditTexts = new EditText[]{findViewById(R.id.codeTextField1), findViewById(R.id.codeTextField2),
-                findViewById(R.id.codeTextField3), findViewById(R.id.codeTextField4), findViewById(R.id.codeTextField5),
-                findViewById(R.id.codeTextField6)
+                findViewById(R.id.codeTextField3), findViewById(R.id.codeTextField4),
+                findViewById(R.id.codeTextField5), findViewById(R.id.codeTextField6)
         };
-        continueButton = findViewById(R.id.continueButton);
+    }
+
+    /**
+     * Initializes the Continue button and its click listener.
+     */
+    private void initContinueButton() {
+        Button continueButton = findViewById(R.id.continueButton);
         continueButton.setOnClickListener(v -> {
             Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
             String code = getCodeUser();
             if (validator.isCorrect(code)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
+                            UserRepository.getInstance().getUserContained().getFullName(),
+                            UserRepository.getInstance().getUserContained().getUserName(),
+                            UserRepository.getInstance().getUserContained().getTypeUser(),
+                            UserRepository.getInstance().getUserContained().getPathImageUser());
                 VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
                 verificationCodesManager.updateVerificationCode(validator.getId(), false);
                 startActivity(intent);
             } else changeColorCodeUser();
-        }); configureEditTexts();
+        });
     }
 
     /**
@@ -70,40 +88,48 @@ public class EmailVerificationActivity extends AppCompatActivity {
     }
 
     /**
-     * This method adds a TextChangedListener to every codeTextField.
-     * Puts an onTextChanged listener that reacts when a couple numbers are written on the editText
-     * And set the focus on the next or the previous depending on the number deleted or added.
-     * @param currentEditText the current editText.
-     * @param nextEditText the next editText to step on.
+     * Configures the TextWatcher for a specific EditText field.
+     *
+     * @param currentEditText The current EditText field.
+     * @param nextEditText    The next EditText field.
      */
     private void configureTextWatcher(final EditText currentEditText, final EditText nextEditText) {
-
         currentEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 2 && nextEditText != null){
-                    String lastCharacter = s.toString().substring(1);
-                    currentEditText.setText(s.subSequence(0,1));
-                    nextEditText.setFocusableInTouchMode(true);
-                    nextEditText.setText(lastCharacter);
-                    nextEditText.requestFocus();
-                    nextEditText.setSelection(nextEditText.getText().length());
-                    currentEditText.setFocusableInTouchMode(false);
-                }
-                else if (s.length() == 0 && currentEditText != codeEditTexts[0]){
-                    EditText previousEditText =  getPreviousEditText(currentEditText);
-                    previousEditText.setFocusableInTouchMode(true);
-                    previousEditText.requestFocus();
-                    previousEditText.setSelection(previousEditText.getText().length());
-                    currentEditText.setFocusableInTouchMode(false);
-                }
+                handleTextChanged(s, currentEditText, nextEditText);
             }
             @Override
             public void afterTextChanged(Editable s) {}
         });
+    }
+
+    private void handleTextChanged(CharSequence s, EditText currentEditText, EditText nextEditText) {
+        if (s.length() == 2 && nextEditText != null) handleTwoDigitsEntered(s, currentEditText, nextEditText);
+        else if (s.length() == 0 && currentEditText != codeEditTexts[0]) handleEmptyInput(currentEditText);
+    }
+
+    private void handleTwoDigitsEntered(CharSequence s, EditText currentEditText, EditText nextEditText) {
+        String lastCharacter = s.toString().substring(1);
+        updateEditText(currentEditText, s.subSequence(0, 1), false);
+        updateEditText(nextEditText, lastCharacter, true);
+    }
+
+    private void handleEmptyInput(EditText currentEditText) {
+        EditText previousEditText = getPreviousEditText(currentEditText);
+        assert previousEditText != null;
+        updateEditText(previousEditText, previousEditText.getText(), true);
+    }
+
+    private void updateEditText(EditText editText, CharSequence text, boolean requestFocus) {
+        editText.setFocusableInTouchMode(true);
+        editText.setText(text);
+        if (requestFocus) {
+            editText.requestFocus();
+            editText.setSelection(editText.getText().length());
+        } editText.setFocusableInTouchMode(false);
     }
 
     /**
@@ -113,23 +139,18 @@ public class EmailVerificationActivity extends AppCompatActivity {
      */
     private EditText getPreviousEditText(EditText currentEditText) {
         for (int i = 1; i < codeEditTexts.length; i++) {
-            if (codeEditTexts[i] == currentEditText) {
-                return codeEditTexts[i - 1];
-            }
-        }
-        return null;
+            if (codeEditTexts[i] == currentEditText) return codeEditTexts[i - 1];
+        } return null;
     }
 
     private String getCodeUser() {
         StringBuilder code = new StringBuilder();
-        for (EditText codeEditText : codeEditTexts) {
-            code.append(codeEditText.getText());
-        } return code.toString();
+        for (EditText codeEditText : codeEditTexts) code.append(codeEditText.getText());
+        return code.toString();
     }
 
     private void changeColorCodeUser() {
-        for (EditText codeEditText : codeEditTexts) {
+        for (EditText codeEditText : codeEditTexts)
             codeEditText.setTextColor(getResources().getColor(R.color.redOriginal));
-        }
     }
 }

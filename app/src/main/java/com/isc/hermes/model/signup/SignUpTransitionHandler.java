@@ -8,9 +8,9 @@ import androidx.annotation.RequiresApi;
 
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.MainActivity;
-import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
+import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
 import org.json.JSONException;
 
@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutionException;
  * This class manages the transitions in the sign up process.
  */
 public class SignUpTransitionHandler {
-    private  User userRegistered;
 
     /**
      * Loads user data into the database.
@@ -34,10 +33,13 @@ public class SignUpTransitionHandler {
     private void loadUserDataInDB() {
         AccountInfoManager accountInfoManager = new AccountInfoManager();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            accountInfoManager.addUser(userRegistered.getEmail(), userRegistered.getFullName(),
-                    userRegistered.getUserName(), userRegistered.getTypeUser(), userRegistered.getPathImageUser());
+            accountInfoManager.addUser(UserRepository.getInstance().getUserContained().getEmail(),
+                    UserRepository.getInstance().getUserContained().getFullName(),
+                    UserRepository.getInstance().getUserContained().getUserName(),
+                    UserRepository.getInstance().getUserContained().getTypeUser(),
+                    UserRepository.getInstance().getUserContained().getPathImageUser());
         try {
-            SignUpActivityView.idUserLogged = accountInfoManager.getIdByEmail(userRegistered.getEmail());}
+            UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(UserRepository.getInstance().getUserContained().getEmail()));}
         catch (ExecutionException | InterruptedException | JSONException e) {
             throw new RuntimeException(e); }
     }
@@ -45,20 +47,20 @@ public class SignUpTransitionHandler {
     /**
      * Launch's another activity, based on a role.
      *
-     * @param user           UserRole such as Administrator or General
      * @param packageContext the context, so the activity can be launched.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void transitionBasedOnRole(User user, Context packageContext) {
-        this.userRegistered = user;
+    public void transitionBasedOnRole(Context packageContext) {
         Intent intent;
-        if (user.getTypeUser().equals("Administrator")) {
+        if (UserRepository.getInstance().getUserContained().getTypeUser().equals("Administrator")) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                sendVerificationCode(user.getTypeUser(), user.getEmail());
+                sendVerificationCode(UserRepository.getInstance().getUserContained().getTypeUser(),
+                        UserRepository.getInstance().getUserContained().getEmail());
             intent = new Intent(packageContext, EmailVerificationActivity.class);
-        }
-        else intent = new Intent(packageContext, MainActivity.class);
-        packageContext.startActivity(intent);
+        } else {
+            loadUserDataInDB();
+            intent = new Intent(packageContext, MainActivity.class);
+        } packageContext.startActivity(intent);
     }
 
     /**
@@ -71,7 +73,7 @@ public class SignUpTransitionHandler {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(String roles, String email) {
         if (roles.equals("Administrator")) {
-            Validator validator = new Validator(userRegistered);
+            Validator validator = new Validator(UserRepository.getInstance().getUserContained());
             validator.obtainVerificationCode();
             SendEmailManager sendEmailManager = new SendEmailManager();
             sendEmailManager.addEmail(email, validator.getCode());
