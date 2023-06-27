@@ -18,6 +18,8 @@ public class SearcherController {
     private final SearcherAdapterUpdater adapterUpdater;
     private final ExecutorService executorService;
 
+    private boolean isNetworkAvailable;
+
     /**
      * Constructs a new SearcherController.
      *
@@ -60,5 +62,10 @@ public class SearcherController {
      */
     public void shutdown() {
         executorService.shutdown();
+    }
+
+
+    public void setNetworkAvailable(boolean networkAvailable){
+        this.isNetworkAvailable = networkAvailable;
     }
 }

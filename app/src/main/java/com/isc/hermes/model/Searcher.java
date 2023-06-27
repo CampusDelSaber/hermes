@@ -48,13 +48,19 @@ public class Searcher {
      * @return A list of CarmenFeature objects representing the found suggestion features.
      * @throws IOException If an error occurs during the geocoding call execution.
      */
-    public List<CarmenFeature> getSuggestionsFeatures(CurrentLocationModel userLocation, String query) {
-        MapboxGeocoding client = buildGeocodingClient(userLocation, query, "BO");
-        Response<GeocodingResponse> geocodingResponse = executeGeocodingCall(client);
-
-        if (!isGeocodingResponseValid(geocodingResponse)) {
-            client = buildGeocodingClient(userLocation, query, null);
+    public List<CarmenFeature> getSuggestionsFeatures(CurrentLocationModel userLocation, String query, boolean isNetworkAvailable) {
+        Response<GeocodingResponse> geocodingResponse = null;
+        if(isNetworkAvailable){
+            MapboxGeocoding client = buildGeocodingClient(userLocation, query, "BO");
             geocodingResponse = executeGeocodingCall(client);
+
+            if (!isGeocodingResponseValid(geocodingResponse)) {
+                client = buildGeocodingClient(userLocation, query, null);
+                geocodingResponse = executeGeocodingCall(client);
+            }
+        }
+        else {
+
         }
 
         return getFeaturesFromGeocodingResponse(geocodingResponse);
@@ -126,12 +132,12 @@ public class Searcher {
      * @param query the consult of the searcher field text
      * @return the features list with the waypoint of the suggestions
      */
-    public List<WayPoint> getSearcherSuggestionsPlacesInfo(String query) {
+    public List<WayPoint> getSearcherSuggestionsPlacesInfo(String query, boolean isNetworkAvailable) {
         if (query.trim().isEmpty()) {
             return new ArrayList<>();
         }
         List<WayPoint> featuresInfoList = new ArrayList<>();
-        List<CarmenFeature> suggestions = getSuggestionsFeatures(currentLocationModel, query);
+        List<CarmenFeature> suggestions = getSuggestionsFeatures(currentLocationModel, query, isNetworkAvailable);
         for (CarmenFeature feature : suggestions) {
             featuresInfoList.add(instanceWaypointFeature(feature));
         }

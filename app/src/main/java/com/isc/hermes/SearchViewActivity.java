@@ -2,6 +2,8 @@ package com.isc.hermes;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -68,6 +70,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
      */
     private void setupSearchView() {
         searcherController = new SearcherController(searcher, adapterUpdater);
+        searcherController.setNetworkAvailable(isNetworkAvailable());
         searchView.setOnQueryTextListener(searcherController.getOnQueryTextListener());
 
         searchView.requestFocus();
@@ -107,5 +110,14 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
             searcherController.shutdown();
             finish();
         });
+    }
+
+    /**
+     * @return a boolean condition , true if exits an available internet network, else , false.
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

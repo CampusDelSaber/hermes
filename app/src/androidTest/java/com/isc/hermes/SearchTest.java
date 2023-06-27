@@ -18,7 +18,7 @@ public class SearchTest {
     @Test
     public void getSearchResultsByQuerySentExample1() {
         Searcher searcher = new Searcher();
-        List<WayPoint> actualSuggestions = searcher.getSearcherSuggestionsPlacesInfo("Cochabamba");
+        List<WayPoint> actualSuggestions = searcher.getSearcherSuggestionsPlacesInfo("Cochabamba",true);
 
         assertEquals(actualSuggestions.get(0).getPlaceName(), "Cochabamba, Cochabamba, Bolivia");
         assertEquals(actualSuggestions.get(1).getPlaceName(), "Cochabamba, Bolivia");
@@ -33,7 +33,7 @@ public class SearchTest {
     @Test
     public void getSearchSuggestionsFeaturesSizeByQuery() {
         Searcher searcher = new Searcher();
-        int actualSuggestionsListSize = searcher.getSearcherSuggestionsPlacesInfo("Coch").size();
+        int actualSuggestionsListSize = searcher.getSearcherSuggestionsPlacesInfo("Coch", true).size();
         int expectedSize = 5;
 
         assertEquals(expectedSize, actualSuggestionsListSize);
