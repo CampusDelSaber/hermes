@@ -53,8 +53,6 @@ public class DijkstraAlgorithmTest {
                 dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR).get("Route A")
                         .getPath();
 
-        System.out.println(dijkstraAlgorithm.getGeoJsonRoutes(graph, nodeA, nodeD, TransportationType.CAR));
-
         assertNotNull(shortestPath);
         // The shortest path should be [nodeA, nodeC, nodeD]
         assertEquals(3, shortestPath.size());
@@ -117,7 +115,6 @@ public class DijkstraAlgorithmTest {
                 dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR).get("Route A")
                         .getPath();
 
-        System.out.println(shortestPath);
         assertNotNull(shortestPath);
         // The shortest path should be [A, C, D]
         assertEquals(3, shortestPath.size());
@@ -148,8 +145,6 @@ public class DijkstraAlgorithmTest {
         Map<String, Route> routes =
                 dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR);
 
-        System.out.println(routes);
-
         // Check the fastest route
         List<Node> fastestRoute = routes.get("Route A").getPath();
 
@@ -171,7 +166,6 @@ public class DijkstraAlgorithmTest {
             dijkstraAlgorithm.getPathAlternatives(graph, source, destination, TransportationType.CAR);
         assertNotNull(shortestPathAlternatives);
         assertEquals(3, shortestPathAlternatives.size());
-        System.out.println(shortestPathAlternatives);
 
         // Assert the shortest alternative paths
         List<Node> alternative1 = shortestPathAlternatives.get("Route A").getPath();
