@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    private User userRegistered;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -351,22 +350,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findViewById(R.id.userAccountImage);
         if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
                 userRegistered.getPathImageUser())).into(userImage);
-    }
-
-    /**
-     * Retrieves user information from the database.
-     * This method fetches user details from the database based on the specified user ID.
-     * The retrieved user information is stored in the 'userRegistered' variable.
-     *
-     * @throws RuntimeException      If any other runtime exception occurs during the execution.
-     */
-    private void fetchUserFromDB() {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                userRegistered = new AccountInfoManager().getUserById(SignUpActivityView.idUserLogged);
-        } catch (JSONException | ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
