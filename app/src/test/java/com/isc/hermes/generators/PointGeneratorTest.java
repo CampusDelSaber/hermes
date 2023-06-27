@@ -1,16 +1,15 @@
 package com.isc.hermes.generators;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -31,7 +30,6 @@ public class PointGeneratorTest {
     public void validPointGenerated() {
         Double[] referencePoint = {-17.366472, -66.175682};
         pointCoordinate = generator.getStreetPoint(referencePoint, Radium.FIVE_HUNDRED_METERS);
-        System.out.print(pointCoordinate[0]+", "+pointCoordinate[1]);
         assertNotNull(pointCoordinate);
 
         Double longitude = pointCoordinate[1];
@@ -43,7 +41,7 @@ public class PointGeneratorTest {
     @Test
     public void validMultiPointGenerated() {
         int amountPoints = 15;
-        List<Double[]> multiPoints = generator.generate(
+        List<Double[]> multiPoints = generator.getMultiPoint(
                 referencePoint, Radium.FIFTY_METERS, amountPoints);
 
         assertNotNull(multiPoints);

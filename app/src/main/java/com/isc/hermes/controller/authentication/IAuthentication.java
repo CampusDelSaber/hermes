@@ -2,9 +2,8 @@ package com.isc.hermes.controller.authentication;
 
 import android.content.Context;
 import android.content.Intent;
-
 import com.google.android.gms.common.api.ApiException;
-import com.isc.hermes.model.User;
+import com.isc.hermes.model.User.User;
 
 /**
  * This is an Interface for authentication functionality.

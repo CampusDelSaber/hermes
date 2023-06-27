@@ -1,5 +1,6 @@
 package com.isc.hermes.generators;
 
+import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.GeometryType;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * This method has the responsibility to generate point coordinates data.
  */
-public class PointGenerator extends CoordinateGen implements IGeometryGenerator {
+public class PointGenerator extends CoordinateGen implements CoordinatesGenerable {
 
     private final int MAX_ATTEMPTS = 500;
 
@@ -50,6 +51,23 @@ public class PointGenerator extends CoordinateGen implements IGeometryGenerator 
     }
 
     /**
+     * Method to generate a point close to another using an angle for displacement.
+     *
+     * @param referencePoint to found others points.
+     * @param radium the size radium valid to found a coordinates.
+     * @param angle for horizontal and vertical displacement.
+     * @return near point.
+     */
+    public Double[] getNearPoint(Double[] referencePoint, Radium radium, double angle) {
+        double distance = radium.getValue();
+        Double[] coordinate = new Double[2];
+        coordinate[0] = referencePoint[0] + distance * Math.cos(angle);
+        coordinate[1] = referencePoint[1] + distance * Math.sin(angle);
+        return coordinate;
+    }
+
+
+    /**
      * This method generate a multi points coordinates list on a limit area.
      *
      * @param referencePoint to get the main point of limit area.
@@ -57,8 +75,7 @@ public class PointGenerator extends CoordinateGen implements IGeometryGenerator 
      * @param amountPoints are the amount the points to found.
      * @return multi points coordinates.
      */
-    @Override
-    public List<Double[]> generate(
+    public List<Double[]> getMultiPoint(
             Double[] referencePoint,
             Radium radium,
             int amountPoints
@@ -76,6 +93,24 @@ public class PointGenerator extends CoordinateGen implements IGeometryGenerator 
             }
         }
         return coordinatesGenerated;
+    }
+
+    /**
+     * This method generates coordinates that form geometric objects.
+     *
+     * @param referencePoint to get the main point reference of limited range.
+     * @param radium to get the radium using the reference point.
+     * @param amountPoints It is used depending on the type of implementation and type of figure to be built.
+     */
+    @Override
+    public List<Double[]> generate(
+            Double[] referencePoint,
+            Radium radium,
+            int amountPoints
+    ) {
+        List<Double[]> points = new ArrayList<>();
+        points.add(getNearPoint(referencePoint, radium));
+        return points;
     }
 
     /**

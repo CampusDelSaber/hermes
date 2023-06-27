@@ -20,7 +20,6 @@ public class IncidentsDataProcessorTest {
     @Test
     public void testGetAllIncidents() throws ExecutionException, InterruptedException {
         JSONArray incidentsArray = incidentsDataProcessor.getAllIncidents();
-        System.out.println(incidentsArray);
         assertNotNull(incidentsArray);
     }
 

@@ -2,16 +2,16 @@ package com.isc.hermes.utils;
 
 import com.isc.hermes.model.graph.*;
 import com.isc.hermes.model.navigation.Route;
+import com.isc.hermes.model.navigation.TransportationType;
 
 import java.util.*;
 
 /**
- * This class implements Dijkstra's algorithm for
- * finding the shortest path between two nodes in a graph.
+ * This class implements Dijkstra's algorithm for finding the shortest path between two nodes in a graph.
  */
 public class DijkstraAlgorithm {
     private static DijkstraAlgorithm instance;
-    private GeoJsonUtils geoJsonUtils;
+    private final GeoJsonUtils geoJsonUtils;
     private static final int MAX_ROUTE_ALTERNATIVES = 3;
 
     /**
@@ -25,24 +25,24 @@ public class DijkstraAlgorithm {
     /**
      * Retrieves the GeoJSON routes between a source and a destination node in a graph.
      *
-     * @param graph       the graph containing the nodes and edges
-     * @param source      the source node
-     * @param destination the destination node
+     * @param graph               the graph containing the nodes and edges
+     * @param source              the source node
+     * @param destination         the destination node
+     * @param transportationType  the type of transportation to be used
      * @return a map of route names to their respective GeoJSON representations
      */
-    public Map<String, String> getGeoJsonRoutes(Graph graph, Node source, Node destination){
+    public Map<String, String> getGeoJsonRoutes(
+            Graph graph, Node source, Node destination, TransportationType transportationType
+    ){
         Map<String, String> geoJsonRoutes = new HashMap<>();
-        Map<String, Route> routeAlternatives = getPathAlternatives(graph, source, destination);
-        for (String key:routeAlternatives.keySet()){
-            geoJsonRoutes.put(key, geoJsonUtils.generateGeoJson(routeAlternatives.get(key)));
+        Map<String, Route> routeAlternatives =
+                getPathAlternatives(graph, source, destination, transportationType);
+        for (String key : routeAlternatives.keySet()) {
+            geoJsonRoutes.put(
+                    key,
+                    geoJsonUtils.generateGeoJson(routeAlternatives.get(key))
+            );
         }
-
-        Map<String, String> r = new HashMap<>();
-        r.put("Route A", "{}");
-        r.put("Route B", "{}");
-        r.put("Route C", "{}");
-
-        String jsonA = r.get("Route A");
 
         return geoJsonRoutes;
     }
@@ -50,16 +50,19 @@ public class DijkstraAlgorithm {
     /**
      * Calculates the shortest path from the source node to the destination node in the given graph.
      *
-     * @param graph       The graph in which to find the shortest path.
-     * @param source      The source node.
-     * @param destination The destination node.
+     * @param graph               The graph in which to find the shortest path.
+     * @param source              The source node.
+     * @param destination         The destination node.
+     * @param transportationType  The type of transportation to be used.
      * @return A map with route alternatives as keys and their corresponding list of nodes as values.
      */
-    public Map<String, Route> getPathAlternatives(Graph graph, Node source, Node destination) {
+    public Map<String, Route> getPathAlternatives(
+            Graph graph, Node source, Node destination, TransportationType transportationType
+    ) {
         Map<String, Route> routeAlternatives = new HashMap<>();
         PriorityQueue<Route> routeQueue =
-                new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalDistance));
-        routeQueue.add(new Route(getShortestPath(graph, source, destination)));
+                new PriorityQueue<>(Comparator.comparingDouble(Route::getTotalEstimatedDistance));
+        routeQueue.add(new Route(getShortestPath(graph, source, destination), transportationType));
         routeQueue.add(new Route(source));
 
         while (!routeQueue.isEmpty() && routeAlternatives.size() < MAX_ROUTE_ALTERNATIVES) {
@@ -69,7 +72,7 @@ public class DijkstraAlgorithm {
                 routeAlternatives.put(getRouteKey(routeAlternatives.size()), currentRoute);
                 continue;
             }
-            exploreNeighbors(currentRoute, routeQueue);
+            exploreNeighbors(currentRoute, routeQueue, transportationType);
         }
 
         return routeAlternatives;
@@ -94,11 +97,12 @@ public class DijkstraAlgorithm {
     /**
      * Explores the neighbors of the current node in the graph and adds new routes to the routeQueue.
      *
-     * @param currentRoute  The current route being evaluated.
-     * @param routeQueue    The priority queue of routes.
+     * @param currentRoute        The current route being evaluated.
+     * @param routeQueue          The priority queue of routes.
+     * @param transportationType  The type of transportation to be used.
      */
     private void exploreNeighbors(
-            Route currentRoute, PriorityQueue<Route> routeQueue
+            Route currentRoute, PriorityQueue<Route> routeQueue, TransportationType transportationType
     ) {
         Node currentNode = currentRoute.getCurrentNode();
 
@@ -107,7 +111,7 @@ public class DijkstraAlgorithm {
             double edgeWeight = edge.getWeight();
 
             if (!currentRoute.visitedNode(nextNode)) {
-                Route newRoute = new Route(currentRoute);
+                Route newRoute = new Route(currentRoute, transportationType);
                 newRoute.addNode(nextNode, edgeWeight);
                 routeQueue.add(newRoute);
             }
@@ -210,23 +214,9 @@ public class DijkstraAlgorithm {
     }
 
     /**
-     * Removes the edges of the nodes in the given shortest path from the graph.
-     *
-     * @param graph       The graph from which to remove the edges.
-     * @param shortestPath The shortest path with nodes whose edges should be removed.
-     */
-    private void removeEdgesFromGraph(Graph graph, List<Node> shortestPath) {
-        for (int i = 0; i < shortestPath.size() - 1; i++) {
-            Node currentNode = shortestPath.get(i);
-            Node nextNode = shortestPath.get(i + 1);
-            currentNode.removeEdgeTo(nextNode);
-        }
-    }
-
-    /**
      * Gets the singleton instance of the DijkstraAlgorithm class.
      *
-     * @return the instance of DijkstraAlgorithm.
+     * @return The instance of DijkstraAlgorithm.
      */
     public static DijkstraAlgorithm getInstance() {
         if (instance == null) {
