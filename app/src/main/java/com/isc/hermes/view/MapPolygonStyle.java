@@ -4,7 +4,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.Polygon;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -19,11 +19,12 @@ import java.util.List;
  */
 public class MapPolygonStyle implements Style.OnStyleLoaded {
     private final List<List<Point>> allPolygonsPoints;
+    private final String polygonColorHexCode;
 
-
-    public MapPolygonStyle(MapboxMap mapboxMap,List<List<Point>> allPolygonsPoints){
+    public MapPolygonStyle(MapboxMap mapboxMap,List<List<Point>> allPolygonsPoints,String polygonColorHexCode){
+        this.polygonColorHexCode = polygonColorHexCode;
         this.allPolygonsPoints = allPolygonsPoints;
-        mapboxMap.setStyle(MapClickEventsManager.getInstance().getMapboxMap().getStyle().getUri(),this);
+        mapboxMap.setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri(),this);
     }
 
     /**
@@ -33,7 +34,7 @@ public class MapPolygonStyle implements Style.OnStyleLoaded {
     public void onStyleLoaded(@NonNull Style style) {
         style.addSource(new GeoJsonSource("source-id", Polygon.fromLngLats(allPolygonsPoints)));
         style.addLayerBelow(new FillLayer("layer-id", "source-id").withProperties(
-                        fillColor(Color.parseColor("#3bb2d0")),
+                        fillColor(Color.parseColor(polygonColorHexCode)),
                         fillOpacity(0.5f)
                 ), "settlement-label"
         );

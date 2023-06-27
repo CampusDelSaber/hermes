@@ -32,14 +32,14 @@
                 android:layout_marginStart="6dp"
                 android:layout_marginEnd="3dp"
                 android:tag="@string/default_style"
-                android:src="@drawable/default_style"
+                android:src="@drawable/img_default_style"
                 android:onClick="changeMapStyle">
             </ImageButton>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/default_style"
+                android:text="Default"
                 android:textColor="@color/white"
                 android:textSize="18sp">
             </TextView>
@@ -60,14 +60,14 @@
                 android:layout_marginStart="3dp"
                 android:layout_marginEnd="3dp"
                 android:tag="@string/satellite_style"
-                android:src="@drawable/satellite_style"
+                android:src="@drawable/img_satellite_style"
                 android:onClick="changeMapStyle">
             </ImageButton>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/satellite_style"
+                android:text="Satellite"
                 android:textColor="@color/white"
                 android:textSize="18sp">
             </TextView>
@@ -87,7 +87,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginStart="3dp"
                 android:layout_marginEnd="6dp"
-                android:src="@drawable/dark_style"
+                android:src="@drawable/img_dark_style"
                 android:tag="@string/dark_style"
                 android:onClick="changeMapStyle">
             </ImageButton>
@@ -95,7 +95,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dark_style"
+                android:text="Dark"
                 android:textColor="@color/white"
                 android:textSize="18sp">
             </TextView>

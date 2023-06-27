@@ -8,7 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.utils.Animations;
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.utils.MapManager;
 
 /**
  * Class on controller function to initialise all components in natural disaster form
@@ -68,9 +68,9 @@ public class PolygonOptionsController {
      * Method to change map controller to its original configuration with waypoints
      */
     private void resetMapConfiguration(){
-        MapClickEventsManager.getInstance().removeCurrentClickController();
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(MapClickEventsManager.getInstance().getMapboxMap(), this.context));
-        MapClickEventsManager.getInstance().getMapboxMap().setStyle(MapClickEventsManager.getInstance().getMapboxMap().getStyle().getUri());
+        MapManager.getInstance().removeCurrentClickController();
+        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(MapManager.getInstance().getMapboxMap(), this.context));
+        MapManager.getInstance().getMapboxMap().setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri());
     }
 
     /**

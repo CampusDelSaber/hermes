@@ -13,6 +13,10 @@
     <color name="jet">#2c2c2c</color>
     <color name="blueLogo">#489ce4</color>
 
+    <color name="routeA">#FF6E26</color>
+    <color name="routeB">#2350A3</color>
+    <color name="routeC">#686C6C</color>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

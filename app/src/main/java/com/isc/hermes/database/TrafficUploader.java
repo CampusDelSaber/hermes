@@ -4,6 +4,7 @@ import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
+import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import java.util.Map;
 
@@ -36,14 +37,15 @@ public class TrafficUploader extends IncidentsUploader {
         String routeSelected = "Route A";
 
         Node destiny = new Node("Point 2", lastClickedPoint.getLatitude(), lastClickedPoint.getLongitude());
-        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null, null).getCurrentLocationModel();
+        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null).getCurrentLocationModel();
         Node location = new Node("Point 1", currentLocation.getLatitude(), currentLocation.getLongitude());
 
         //TODO: This part must be replaced by the network that will be generated with real data when it is ready.
         graph.addNode(destiny);
         graph.addNode(location);
 
-        Map<String, String> trafficLine = dijkstraAlgorithm.getGeoJsonRoutes(graph, destiny, location);
+        Map<String, String> trafficLine =
+                dijkstraAlgorithm.getGeoJsonRoutes(graph, destiny, location, TransportationType.CAR);
         String route = trafficLine.get(routeSelected);
         int indexCoordinates = route.indexOf("coordinates");
         String coordinates = route.substring(indexCoordinates);
