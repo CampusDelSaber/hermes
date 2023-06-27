@@ -26,6 +26,7 @@ import java.io.IOException;
 
 
 import com.isc.hermes.controller.PopUp.PopUp;
+import com.isc.hermes.model.SaveProfileImage;
 import com.isc.hermes.model.User.UserRepository;
 
 /**
@@ -42,8 +43,7 @@ public class AccountInformation extends AppCompatActivity {
     private PopUpOverwriteInformationAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
     private static final int PICK_IMAGE_REQUEST = 1;
-    private StorageReference storageReference;
-    private static final String FOLDER_NAME = "Profile_images";
+    private SaveProfileImage saveProfileImage;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -98,7 +98,7 @@ public class AccountInformation extends AppCompatActivity {
         assignValuesToComponentsView();
         generateActionToComboBox();
         updateComponentsByUserInformation();
-        storageReference = FirebaseStorage.getInstance().getReference();
+        saveProfileImage = new SaveProfileImage();
         initializePopups();
     }
 
@@ -149,21 +149,7 @@ public class AccountInformation extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
-            StorageReference filePath = storageReference.child(FOLDER_NAME).child(selectedImageUri.getLastPathSegment());
-            filePath.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String imageURL = uri.toString();
-                            System.out.println(imageURL);
-                        }
-                    });
-                    Toast.makeText(AccountInformation.this, "UPLOAD SUCCESSFUL", Toast.LENGTH_SHORT).show();
-                }
-            });
-            System.out.println();
+            saveProfileImage.saveProfileImage(selectedImageUri, AccountInformation.this);
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
