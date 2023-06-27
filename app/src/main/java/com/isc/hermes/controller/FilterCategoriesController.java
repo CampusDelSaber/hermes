@@ -93,8 +93,6 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
             categories.add(new CategoryFilter(place.getImageResource(), place.getDisplayName()));
         }
 
-        categories.add(new CategoryFilter(R.drawable.navigation, "Special"));
-
         return categories;
     }
 
@@ -104,11 +102,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     @Override
     public void onLocationCategoryClick(CategoryFilter locationCategory) {
-        if (locationCategory.getNameCategory().equals("Special")) {
-            // TODO: Implement Filter Controller here
-        } else {
-            searchPlacesByTag(locationCategory.getNameCategory());
-        }
+        searchPlacesByTag(locationCategory.getNameCategory());
     }
 
     /**
