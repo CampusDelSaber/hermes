@@ -52,7 +52,6 @@ public class IncidentsGetterController {
      */
     public void getNearIncidentsWithinRadius(Context context) {
         incidentsPointView = IncidentPointVisualizationController.getInstance(mapboxMap, context);
-        //mapboxMap.addOnCameraIdleListener(() -> loadNearIncidents(mapboxMap, context));
         loadNearIncidents(context);
     }
 
