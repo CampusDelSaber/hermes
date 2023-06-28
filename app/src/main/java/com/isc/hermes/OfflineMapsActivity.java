@@ -267,6 +267,13 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         }
     }
 
+    /**
+     * This method saves the changes in the metadata of the selected region.
+     *
+     * @param context the current activity
+     * @param targetRegion the region selected to make the changes
+     * @param newMetadata the new data metadata to be added to the selected region
+     */
     private void saveMetadataOfflineRegion(Context context, OfflineRegion targetRegion, byte[] newMetadata){
         targetRegion.updateMetadata(newMetadata,new OfflineRegion.OfflineRegionUpdateMetadataCallback() {
             @Override
@@ -280,6 +287,12 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         });
     }
 
+    /**
+     * This method changes the local data of the downloaded maps to save the changes in the metadata of one of the regions.
+     *
+     * @param targetRegion the region selected to make the changes
+     * @param previousName the previous name of the selected region before changing its metadata.
+     */
     private void setChangesToApplicationData( OfflineRegion targetRegion, String previousName){
         MapboxOfflineManager.getInstance(this).getOfflineRegions().put(OfflineUtils.getRegionName(targetRegion), targetRegion);
         MapboxOfflineManager.getInstance(this).getOfflineRegions().remove(previousName);
