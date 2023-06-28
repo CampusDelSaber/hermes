@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/distance_time_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="gone">
 
     <LinearLayout
         android:layout_width="401dp"
@@ -24,6 +25,7 @@
             android:background="@drawable/rerouting_button_background">
 
             <ImageView
+                android:id="@+id/reloadTheWayButton"
                 android:layout_width="50dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"

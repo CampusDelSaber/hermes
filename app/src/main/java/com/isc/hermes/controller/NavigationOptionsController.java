@@ -42,6 +42,7 @@ public class NavigationOptionsController {
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
+    private LatLng destination;
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
@@ -318,6 +319,7 @@ public class NavigationOptionsController {
             startPoint = CurrentLocationModel.getInstance().getLatLng();
         LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
+        this.destination = destination;
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
 
@@ -327,6 +329,23 @@ public class NavigationOptionsController {
         progressDialog = builder.create();
         progressDialog.show();
 
+        manageGraphBuilding(graphController);
+    }
+
+    /**
+     * This method handles the actions performed when the accept button is clicked.
+     */
+    public void handleReloadButtonClick(boolean state) {
+        if (state)
+            startPoint = CurrentLocationModel.getInstance().getLatLng();
+        LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
+        GraphController graphController = new GraphController(start, destination);
+        markStartEndPoint(start, destination);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(R.layout.loader_route_dialog);
+        builder.setCancelable(false);
+        progressDialog = builder.create();
+        progressDialog.show();
         manageGraphBuilding(graphController);
     }
 
