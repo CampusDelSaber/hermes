@@ -144,4 +144,37 @@ public class GraphManager {
 
         return nearbyNodesIDs;
     }
+
+    public boolean isOnStreet(Node pointA, Node pointB, Point pointX) {
+        double latA = pointA.getLatitude();
+        double latB = pointB.getLatitude();
+        double latX = pointX.latitude();
+        double lngA = pointA.getLongitude();
+        double lngB = pointB.getLongitude();
+        double lngX = pointX.longitude();
+
+        //relative position
+        double fraction = ((latX - latA) * (latB - latA) + (lngX - lngA) * (lngB - lngA)) /
+                ((latB - latA) * (latB - latA) + (lngB - lngA) * (lngB - lngA));
+
+        return fraction >= 0 && fraction <= 1;
+    }
+
+    public void disconnectBlockedStreets(LatLng origin, LatLng destination) throws JSONException, ExecutionException, InterruptedException {
+        JSONArray incidents = searchIncidentsOnTheGraph(origin, destination);
+        IncidentsDataProcessor incidentsDataProcessor = IncidentsDataProcessor.getInstance();
+
+        for (int i = 0; i <= incidents.length(); i++) {
+            List<String> nearbyNodes = searchNodesNearby((Point) incidents.get(i));
+            for (int j = 0; j < nearbyNodes.size(); j++) {
+                for (int k = j + 1; k < nearbyNodes.size(); k++) {
+                    if (isOnStreet(graph.getNode(nearbyNodes.get(j)), graph.getNode(nearbyNodes.get(k)), (Point) incidents.get(i))) {
+                        graph.getNode(nearbyNodes.get(j)).removeEdgeTo(graph.getNode(nearbyNodes.get(k)));
+                        graph.getNode(nearbyNodes.get(k)).removeEdgeTo(graph.getNode(nearbyNodes.get(j)));
+                        System.out.println(nearbyNodes.get(j) + " disconnect from " + nearbyNodes.get(k));
+                    }
+                }
+            }
+        }
+    }
 }
