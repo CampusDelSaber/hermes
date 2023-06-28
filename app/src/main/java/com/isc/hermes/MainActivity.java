@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void changeSearchView() {
         addMapboxSearcher();
         searchView.setOnClickListener(v -> {
+            resetMarkersAndSearch();
             new Handler().post(() -> {
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
                 startActivity(intent);
@@ -381,11 +382,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setText(resetSearch);
-                markerManager.removeAllMarkers(mapView);
-                buttonClear.setVisibility(View.GONE);
+                resetMarkersAndSearch();
             }
         });
+    }
+
+    /**
+     * Resets the markers and search view.
+     * This method sets the text of the search view to the specified reset search value,
+     * removes all markers from the map view using the marker manager,
+     * and hides the clear button.
+     */
+    public void resetMarkersAndSearch() {
+        searchView.setText(resetSearch);
+        markerManager.removeAllMarkers(mapView);
+        buttonClear.setVisibility(View.GONE);
     }
 
     /*
