@@ -104,7 +104,7 @@ public class DijkstraAlgorithmRealTest {
         LatLng start = new LatLng(-17.376973, -66.179360);
         LatLng destination = new LatLng(-17.377594, -66.181011);
         GraphController graphController = new GraphController(start, destination);
-        graphController.buildGraph();
+        graphController.buildGraph(TransportationType.CAR);
         Graph graph = graphController.getGraph();
 
         System.out.println(
