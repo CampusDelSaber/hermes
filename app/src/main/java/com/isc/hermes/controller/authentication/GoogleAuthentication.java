@@ -20,6 +20,7 @@ import java.util.Objects;
  */
 public class GoogleAuthentication implements IAuthentication {
     private GoogleSignInClient googleSignInClient;
+    private GoogleSignInAccount userSignIn;
 
 
     /**
@@ -95,7 +96,8 @@ public class GoogleAuthentication implements IAuthentication {
      * This method verifies if a user has already logged in with a google account to the application.
      */
     public boolean checkUserSignIn(Context context) {
-        return GoogleSignIn.getLastSignedInAccount(context) != null;
+        userSignIn = GoogleSignIn.getLastSignedInAccount(context);
+        return userSignIn != null;
     }
 
     /**
@@ -123,5 +125,14 @@ public class GoogleAuthentication implements IAuthentication {
         GoogleSignInAccount account;
         account = completedTask.getResult(ApiException.class);
         return getUserByAccount(account);
+    }
+    /**
+     * This method retrieves the user object associated with the signed-in account.
+     *
+     * @return The User object representing the signed-in account.
+     */
+    @Override
+    public User getUserSignIn() {
+        return getUserByAccount(userSignIn);
     }
 }
