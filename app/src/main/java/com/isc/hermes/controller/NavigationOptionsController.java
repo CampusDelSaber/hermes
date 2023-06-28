@@ -20,6 +20,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import org.json.JSONException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
@@ -32,16 +33,17 @@ import timber.log.Timber;
 public class NavigationOptionsController {
     static boolean isActive, isCurrentLocationSelected;
     private final Context context;
-    private final RelativeLayout navOptionsForm;
-    private final Button cancelButton, startButton, chooseStartPointButton,
-            startPointButton, finalPointButton, currentLocationButton;
-    private final LinearLayout transportationTypesContainer;
+    private RelativeLayout navOptionsForm;
+    private Button cancelButton, startButton, chooseStartPointButton, startPointButton,
+            finalPointButton, currentLocationButton;
+    private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
     private TransportationType transportationType;
+    private Map<String, TransportationType> transportationTypeMap;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -54,18 +56,41 @@ public class NavigationOptionsController {
         isCurrentLocationSelected = true;
         this.mapWayPointController = mapWayPointController;
         transportationType = TransportationType.CAR;
-        navOptionsForm = ((AppCompatActivity) context).findViewById(R.id.navOptions_form);
-        cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
-        startButton = ((AppCompatActivity) context).findViewById(R.id.start_button_nav);
-        chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
-        currentLocationButton = ((AppCompatActivity) context).findViewById(R.id.current_location_button);
-        startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);
-        finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);
-        transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
+        setNavigationViewComponents();
         infoRouteController = InfoRouteController.getInstance(context, this);
         setNavOptionsUiComponents();
         setButtons();
         dijkstraAlgorithm = DijkstraAlgorithm.getInstance();
+        setTransportationTypeOptions();
+    }
+
+    /**
+     * Sets the transportations types map to get the one selected later
+     */
+    private void setTransportationTypeOptions(){
+        transportationTypeMap = new HashMap<>();
+        transportationTypeMap.put(TransportationType.CAR.getName(), TransportationType.CAR);
+        transportationTypeMap.put(TransportationType.BIKE.getName(), TransportationType.BIKE);
+        transportationTypeMap.put(TransportationType.WALK.getName(), TransportationType.WALK);
+        transportationTypeMap.put(
+                TransportationType.MOTORCYCLE.getName(), TransportationType.MOTORCYCLE
+        );
+    }
+
+    /**
+     * Sets the navigation view ui components by its id
+     */
+    private void setNavigationViewComponents(){
+        AppCompatActivity activity = ((AppCompatActivity) context);
+        navOptionsForm = activity.findViewById(R.id.navOptions_form);
+        cancelButton = activity.findViewById(R.id.cancel_navOptions_button);
+        startButton = activity.findViewById(R.id.start_button_nav);
+        chooseStartPointButton = activity.findViewById(R.id.choose_startPoint_button);
+        currentLocationButton = activity.findViewById(R.id.current_location_button);
+        startPointButton = activity.findViewById(R.id.startPoint_button);
+        finalPointButton = activity.findViewById(R.id.finalPoint_Button);
+        transportationTypesContainer = activity.findViewById(R.id.transportationTypesContainer);
+
     }
 
     /**
@@ -154,10 +179,9 @@ public class NavigationOptionsController {
     private void setTransportationButtonBehavior(Button button) {
         if (button != null) {
             button.setOnClickListener(v -> {
-                if (button.getText().equals(TransportationType.CAR.getName())) transportationType = TransportationType.CAR;
-                else if (button.getText().equals(TransportationType.BIKE.getName())) transportationType = TransportationType.BIKE;
-                else if (button.getText().equals(TransportationType.WALK.getName())) transportationType = TransportationType.WALK;
-                else if (button.getText().equals(TransportationType.MOTORCYCLE.getName())) transportationType = TransportationType.MOTORCYCLE;
+                transportationType = transportationTypeMap.getOrDefault(
+                        button.getText(), TransportationType.CAR
+                );
             });
         }
     }
