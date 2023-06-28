@@ -70,14 +70,23 @@ public class TextInputPopup {
      * This method validates the input text from the TextInputPopup.
      */
     private void validateInput() {
-        String text = inputText.getText().toString();
-        if (TextUtils.isEmpty(text)) {
+        String text = inputText.getText().toString().trim();
+        if (TextUtils.isEmpty(text) || validateSpaceInput(text)) {
             setErrorMessage("This field is required");
-        } else if (text.length() > 20) {
+        } else if (text.length() > 15) {
             setErrorMessage("Max 15 characters allowed");
         } else {
             handleValidInput(text);
         }
+    }
+
+    /**
+     * This method validates if the string inserted is filled for all spaces
+     *
+     * @return boolean validate
+     */
+    private boolean validateSpaceInput(String regionName) {
+        return TextUtils.isEmpty(regionName.replace(" ",""));
     }
 
     /**
