@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    /*
+    /**
      * This method used for open a new activity, offline settings.
      *
      * @param view view
