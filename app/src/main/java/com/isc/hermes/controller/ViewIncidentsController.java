@@ -3,22 +3,12 @@ package com.isc.hermes.controller;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LATITUDE;
-import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LONGITUDE;
-import static com.isc.hermes.ActivitySelectRegion.ZOOM_LEVEL;
-
-import com.isc.hermes.ActivitySelectRegion;
 import com.isc.hermes.R;
 import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.view.IncidentViewNavigation;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-
-import org.json.JSONException;
 
 /**
  * Class to manage all view elements in view incidents form
@@ -34,7 +24,11 @@ public class ViewIncidentsController{
     private final CheckBox streetIncident;
     private final NaturalDisasterRequesting requesting;
 
-
+    /**
+     * Constructor for ViewIncidentsController.
+     *
+     * @param activity The activity associated with the controller.
+     */
     public ViewIncidentsController(AppCompatActivity activity){
         this.activity = activity;
         this.requesting = new NaturalDisasterRequesting();
@@ -46,13 +40,12 @@ public class ViewIncidentsController{
         traffic = activity.findViewById(R.id.checkBoxTraffic);
         streetIncident = activity.findViewById(R.id.checkBoxStreetIncident);
         showIncidentsScreen();
-        mostrar();
+        showIncidentOptions();
     }
 
     /**
-     * Method to init the action about click on a single button on show incidents form
+     * Initializes the action when the display incidents button is clicked.
      */
-
     private void showIncidentsScreen() {
         IncidentViewNavigation.getInstance(activity)
                 .initIncidentButtonFunctionality(displayIncidentsButton, displayIncidents);
@@ -60,14 +53,20 @@ public class ViewIncidentsController{
     }
 
     /**
-     * This method hides the incident generation selection menu.
+     * This method hides the screen Display IncidentsButton screen.
      */
     public void hideOptions(){
         displayIncidents.setVisibility(View.GONE);
     }
 
-    private void mostrar(){
+    /**
+     * Performs the necessary actions when the OK button is clicked.
+     * Displays incidents based on the selected checkboxes and hides
+     * the screen Display IncidentsButton.
+     */
+    private void showIncidentOptions(){
         okButton.setOnClickListener(v -> {
+            MapManager.getInstance().getMapboxMap().clear();
                 if (naturalDisasters.isChecked()) {
                     PolygonVisualizationController
                             .getInstance()
@@ -76,18 +75,10 @@ public class ViewIncidentsController{
                             );
                 }
                 if (traffic.isChecked()) {
-                    try {
-                        ShowTrafficController.getInstance().showTraffic(MapManager.getInstance().getMapboxMap());
-                    } catch (JSONException e) {
-                        Toast.makeText(activity, "Failure to get the incidents data. Please, try again", Toast.LENGTH_SHORT).show();
-                    }
+                    ShowTrafficController.getInstance().getTraffic(activity);
                 }
                 if (streetIncident.isChecked()) {
-                    IncidentsGetterController
-                            .getInstance()
-                            .getNearIncidentsWithinRadius(
-                                    MapManager.getInstance().getMapboxMap(), activity
-                            );
+                    IncidentsGetterController.getInstance().getNearIncidentsWithinRadius(activity);
                 }
             hideOptions();
         });

@@ -9,6 +9,7 @@ import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.model.incidents.PointIncident;
 import com.isc.hermes.model.incidents.IncidentGetterModel;
 import com.isc.hermes.utils.ISO8601Converter;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
@@ -32,6 +33,7 @@ public class IncidentsGetterController {
     private IncidentGetterModel incidentGetterModel;
     private final ExecutorService executorService;
     private IncidentPointVisualizationController incidentsPointView;
+    private MapboxMap mapboxMap;
 
     /**
      * Constructs an instance of IncidentsGetterController.
@@ -41,19 +43,20 @@ public class IncidentsGetterController {
         this.incidentsDataProcessor = IncidentsDataProcessor.getInstance();
         this.incidentGetterModel = new IncidentGetterModel();
         this.executorService = Executors.newSingleThreadExecutor();
+        mapboxMap = MapManager.getInstance().getMapboxMap();
     }
 
     /**
      * Retrieves incidentsPointView near the specified location within a radius.
      *
-     * @param mapboxMap The Mapbox map instance.
      */
-    public void getNearIncidentsWithinRadius(MapboxMap mapboxMap, Context context) {
+    public void getNearIncidentsWithinRadius(Context context) {
         incidentsPointView = IncidentPointVisualizationController.getInstance(mapboxMap, context);
-        mapboxMap.addOnCameraIdleListener(() -> getLazyLoadingIncidents(mapboxMap, context));
+        //mapboxMap.addOnCameraIdleListener(() -> loadNearIncidents(mapboxMap, context));
+        loadNearIncidents(context);
     }
 
-    private void getLazyLoadingIncidents(MapboxMap mapboxMap, Context context){
+    private void loadNearIncidents(Context context){
         executorService.execute(() -> {
             LatLng cameraFocus = mapboxMap.getCameraPosition().target;
             int cameraZoom = (int) mapboxMap.getCameraPosition().zoom;
@@ -65,7 +68,7 @@ public class IncidentsGetterController {
                 incidentsPointView.displayPoint(incidentGetterModel.getIncidentList());
             } catch (JSONException e) {
                 Toast.makeText(
-                        context, "Failure to get the incidents data. Please, try again",
+                        context, R.string.incidents_fail_to_load,
                         Toast.LENGTH_SHORT
                 ).show();
             }
