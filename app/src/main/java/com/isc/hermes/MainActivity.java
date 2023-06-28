@@ -4,28 +4,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import android.os.Handler;
 
 import com.isc.hermes.controller.FilterCategoriesController;
+import com.bumptech.glide.Glide;
+import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-
+import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.MarkerManager;
@@ -36,12 +45,11 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
-
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     public static Context context;
     private MapView mapView;
@@ -52,8 +60,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
-    private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -78,6 +88,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initFilterAdvancedView();
         launcher = createActivityResult();
         initCurrentLocationController();
+        initializeBurgerButtonToolBar();
+        initializeFunctionalityOfTheBurgerButton();
+        try {
+            setTheUserInformationInTheDropMenu();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
     /**
      * Set up the SearchView and set the text color to black.
@@ -128,21 +145,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
-     *
-     * @param view Helps build the view.
+     * This method initialize the drop down menu
      */
-    public void openSideMenu(View view) {
-        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
-        if (!visibilityMenu) {
-            lateralMenu.setVisibility(View.VISIBLE);
-            visibilityMenu = true;
-            setMapScrollGesturesEnabled(false);
-        } else {
-            lateralMenu.setVisibility(View.GONE);
-            visibilityMenu = false;
-            setMapScrollGesturesEnabled(true);
-        }
+    private void initializeBurgerButtonToolBar(){
+        this.drawerLayout = findViewById(R.id.drawerLayout);
+        this.navigationView = findViewById(R.id.dropdown_menu);
+        this.toolbar = findViewById(R.id.dropdown_menu_toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    /**
+     * This method initialize the functionalities of the dropdown menu
+     */
+    private void initializeFunctionalityOfTheBurgerButton(){
+        navigationView.bringToFront();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,
+                toolbar, R.string.close, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.burger_button);
     }
 
     /**
@@ -186,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this);
         currentLocationController.initLocationButton();
+        currentLocationController.initLocation();
     }
 
     /**
@@ -286,15 +311,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     public void openStylesMenu(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
-        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
-        isStyleOptionsVisible = !isStyleOptionsVisible;
-
-        if (isStyleOptionsVisible) {
-            lateralMenu.setVisibility(View.GONE);
-            styleOptionsWindow.setVisibility(View.VISIBLE);
-            setMapScrollGesturesEnabled(true);
-            visibilityMenu = false;
-        } else styleOptionsWindow.setVisibility(View.GONE);
+        styleOptionsWindow.setVisibility(View.VISIBLE);
+        setMapScrollGesturesEnabled(true);
     }
 
     /**
@@ -305,10 +323,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void changeMapStyle(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
         styleOptionsWindow.setVisibility(View.GONE);
-
         mapStyle = ((ImageButton) view).getTag().toString();
         MapManager.getInstance().getMapboxMap().setStyle(mapStyle);
-        isStyleOptionsVisible = false;
+    }
+
+    /**
+     * This method set the information of the user in the header of the drop down menu
+     */
+    private void setTheUserInformationInTheDropMenu(){
+        TextView userNameText = navigationView.getHeaderView(0)
+                .findViewById(R.id.userNameText);
+        userNameText.setText(UserRepository.getInstance().getUserContained().getUserName());
+        TextView userEmailText = navigationView.getHeaderView(0)
+                .findViewById(R.id.userEmailText);
+        userEmailText.setText(UserRepository.getInstance().getUserContained().getEmail());
+        ImageView userImage = navigationView.getHeaderView(0)
+                .findViewById(R.id.userAccountImage);
+        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
+            Glide.with(this).load(Uri.parse(
+                UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
     }
 
     /**
@@ -366,9 +399,43 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (data != null) {
                             Bundle b = data.getExtras();
                             MapManager.getInstance().animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
-                            openSideMenu(null);
                         }
                     }
                 });
+    }
+
+    /**
+     * This method analyzes the option that the user wants to perform and activates it.
+     *
+     * @param item The selected item
+     * @return a boolean if all is correct
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.logOut:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                logOut(new View(context));
+                return true;
+            case R.id.mapStyle:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                openStylesMenu(new View(context));
+                return true;
+            case R.id.offlineMaps:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                goOfflineMaps(new View(context));
+                return true;
+            case R.id.userAccount:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                goToAccountInformation(new View(context));
+                return true;
+            case R.id.thirdDimensionMode:
+                //TODO: Implement the third dimension mode;
+                return true;
+            case R.id.changeDisplayMode:
+                //TODO: Implement the change dimension mode;
+                return true;
+        }
+        return true;
     }
 }
