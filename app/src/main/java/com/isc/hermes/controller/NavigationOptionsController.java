@@ -41,6 +41,7 @@ public class NavigationOptionsController {
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
+    private TransportationType transportationType;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -53,6 +54,7 @@ public class NavigationOptionsController {
         isLocationStartChosen = true;
         isCurrentLocationSelected = true;
         this.mapWayPointController = mapWayPointController;
+        transportationType = TransportationType.CAR;
         navOptionsForm = ((AppCompatActivity) context).findViewById(R.id.navOptions_form);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button_nav);
@@ -138,13 +140,29 @@ public class NavigationOptionsController {
                 navOptionTypeIcons.length == navOptionsTypes.length) {
             for (int i = 0; i < navOptionsTypes.length; i++) {
                 Button button = IncidentTypeButton.getIncidentTypeButton(context, navOptionsTypes[i].toLowerCase(),
-                        Color.parseColor((String) navOptionTypeColors[i]), navOptionTypeIcons[i]);
+                        Color.parseColor(navOptionTypeColors[i]), navOptionTypeIcons[i]);
+                setTransportationButtonBehavior(button);
                 transportationTypesContainer.addView(button);
             }
             transportationTypesContainer.removeViews(0,
                     transportationTypesContainer.getChildCount() - 4);
         } else {
             Timber.i(String.valueOf(R.string.array_size_text_timber));
+        }
+    }
+
+    /**
+     * Method to manage the transportation type button behavior to select a type
+     * @param button transport type button
+     */
+    private void setTransportationButtonBehavior(Button button) {
+        if (button != null) {
+            button.setOnClickListener(v -> {
+                if (button.getText().equals(TransportationType.CAR.getName())) transportationType = TransportationType.CAR;
+                else if (button.getText().equals(TransportationType.BIKE.getName())) transportationType = TransportationType.BIKE;
+                else if (button.getText().equals(TransportationType.WALK.getName())) transportationType = TransportationType.WALK;
+                else if (button.getText().equals(TransportationType.MOTORCYCLE.getName())) transportationType = TransportationType.MOTORCYCLE;
+            });
         }
     }
 
@@ -272,7 +290,7 @@ public class NavigationOptionsController {
             graphController.buildGraph();
             routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
                     graphController.getGraph(), graphController.getStartNode(),
-                    graphController.getDestinationNode(), TransportationType.CAR
+                    graphController.getDestinationNode(), transportationType
             );
         } catch (JSONException e) {
             e.printStackTrace();
