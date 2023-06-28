@@ -80,7 +80,6 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
                 if (status.isComplete() && !isDownloadComplete) {
                     isDownloadComplete = true;
                     completeDownload(offlineRegion);
-                    System.out.println("ITS FINISHED");
                     return;
                 } else if (status.isRequiredResourceCountPrecise()) {
                     progressManager.updateProgress((int) Math.round(percentage));
