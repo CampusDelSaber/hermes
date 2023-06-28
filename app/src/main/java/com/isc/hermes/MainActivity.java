@@ -377,6 +377,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void onActionButtonClear() {
+        buttonClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.setText(resetSearch);
+                markerManager.removeAllMarkers(mapView);
+                buttonClear.setVisibility(View.GONE);
+            }
+        });
+    }
+
     /*
      * This method used for open a new activity, offline settings.
      *
