@@ -30,7 +30,7 @@ import timber.log.Timber;
  * Setting methods to render and manage the different ui component's behaviour
  */
 public class NavigationOptionsController {
-    static boolean isActive, isLocationStartChosen, isCurrentLocationSelected;
+    static boolean isActive, isCurrentLocationSelected;
     private final Context context;
     private final RelativeLayout navOptionsForm;
     private final Button cancelButton, startButton, chooseStartPointButton,
@@ -51,7 +51,6 @@ public class NavigationOptionsController {
      */
     public NavigationOptionsController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
-        isLocationStartChosen = true;
         isCurrentLocationSelected = true;
         this.mapWayPointController = mapWayPointController;
         transportationType = TransportationType.CAR;
@@ -84,7 +83,6 @@ public class NavigationOptionsController {
      */
     private void manageCancelButton() {
         cancelButton.setOnClickListener(v -> {
-            isLocationStartChosen = true;
             handleHiddeItemsView();
             isActive = false;
             mapWayPointController.setMarked(false);
@@ -97,7 +95,6 @@ public class NavigationOptionsController {
      */
     @SuppressLint("SetTextI18n")
     private void handleCurrentLocationChosen() {
-        isLocationStartChosen = true;
         isCurrentLocationSelected = true;
         startPointButton.setText("Your Location");
     }
@@ -107,7 +104,6 @@ public class NavigationOptionsController {
      */
     private void handleChooseStartPointButton() {
         isActive = true;
-        isLocationStartChosen = false;
         isCurrentLocationSelected = false;
         handleHiddeItemsView();
     }
@@ -172,7 +168,6 @@ public class NavigationOptionsController {
      * @param point The latitude and longitude coordinates of the start point.
      */
     public void setStartPoint(LatLng point) {
-        isLocationStartChosen = false;
         startPoint = point;
         isCurrentLocationSelected = false;
         updateUiPointsComponents();
@@ -231,7 +226,7 @@ public class NavigationOptionsController {
      * Otherwise, it displays a default text indicating that the final point is not selected.
      */
     private void setPointsButtonShownTexts() {
-        startPointButton.setText((!isLocationStartChosen) ?
+        startPointButton.setText((!isCurrentLocationSelected) ?
                 formatLatLng(startPoint.getLatitude(), startPoint.getLongitude()) : "Your Location");
         finalPointButton.setText((finalPoint != null) ?
                 formatLatLng(finalPoint.getLatitude(), finalPoint.getLongitude()) : "Not selected");

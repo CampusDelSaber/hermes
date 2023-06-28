@@ -50,14 +50,28 @@ public class CurrentLocationController {
     }
 
     /**
+     * Initializes the location functionality.
+     * It initializes the location button and enables the location component on the map.
+     */
+    public void initLocation(){
+        new Thread(() -> {
+            mapboxMap = MapManager.getInstance().getMapboxMap();
+            while (mapboxMap == null) {
+                mapboxMap = MapManager.getInstance().getMapboxMap();
+            }
+            activity.runOnUiThread(this::enableLocationComponent);
+        }).start();
+    }
+
+    /**
      * Method for initializing the location button and setting its click listener.
      */
     @SuppressLint("WrongViewCast")
     public void initLocationButton() {
         ImageButton locationButton = activity.findViewById(R.id.locationButton);
         locationButton.setOnClickListener(v -> {
-            Log.i("tag","sdfvsdvsdv");
             mapboxMap = MapManager.getInstance().getMapboxMap();
+            System.out.println(mapboxMap);
             enableLocationComponent();
         });
     }
