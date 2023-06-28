@@ -4,74 +4,66 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Handler;
 
+import com.isc.hermes.controller.FilterCategoriesController;
+import com.bumptech.glide.Glide;
+import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.offline.OfflineDataRepository;
-import com.isc.hermes.model.RegionData;
-import com.isc.hermes.model.User;
-
-import android.widget.SearchView;
-
+import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.model.Utils.MapPolyline;
-
-import com.isc.hermes.utils.MapClickEventsManager;
-import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.utils.MapManager;
+import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
-import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
-
-import java.util.HashMap;
-
-import java.util.Map;
-import java.util.Objects;
-
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     public static Context context;
     private MapView mapView;
-    private MapDisplay mapDisplay;
     private String mapStyle;
     private CurrentLocationController currentLocationController;
-    private User userRegistered;
+    private FilterCategoriesController filterCategoriesController;
     private boolean visibilityMenu = false;
-    private SearchView searchView;
+    private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
-    private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -87,35 +79,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
         initMapView();
         this.mapStyle = "Default";
-        mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
-        mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
-        getUserInformation();
-        initCurrentLocationController();
         mapView.getMapAsync(this);
-        searchView = findViewById(R.id.searchView);
+        setupSearchView();
         changeSearchView();
         addIncidentGeneratorButton();
         MarkerManager.getInstance(this).removeSavedMarker();
+        initFilterAdvancedView();
         launcher = createActivityResult();
-        testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+        initCurrentLocationController();
+        initializeBurgerButtonToolBar();
+        initializeFunctionalityOfTheBurgerButton();
+        setTheUserInformationInTheDropMenu();
     }
-
-    public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
-        Map<String, String> r = new HashMap<>();
-
-        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
-        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
-        r.put("Route C", "{}");
-
-        String jsonA = r.get("Route A");
-        String jsonB = r.get("Route B");
-        String jsonC = r.get("Route C");
-
-        MapPolyline mapPolyline = new MapPolyline(mapView);
-        //mapPolyline.displaySavedCoordinates(jsonB, Color.RED);
-        mapPolyline.displaySavedCoordinates(jsonA, Color.BLUE);
-
+    /**
+     * Set up the SearchView and set the text color to black.
+     */
+    private void setupSearchView() {
+        searchView = findViewById(R.id.searchView);
+        searchView.setTextColor(Color.BLACK);
     }
 
     /**
@@ -127,6 +109,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     * Method to initialize the filters advanced view.
+     */
+    private void initFilterAdvancedView() {
+        filterCategoriesController = new FilterCategoriesController(this);
+        filterCategoriesController.initComponents();
+    }
+
+    /**
      * Called when the map is ready to be used.
      */
     @Override
@@ -134,24 +124,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FilterController filterController = new FilterController(mapboxMap, this);
         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                filterController.initComponents();
-            }
+            public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
-        MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap,this));
-    }
-
-
-    /**
-     * Sends a User object to another activity using an Intent.
-     *
-     * @param user The User object to be sent to the other activity.
-     */
-    private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, AccountInformation.class);
-        intent.putExtra("userObtained", user);
-        startActivity(intent);
+        MapManager.getInstance().setMapboxMap(mapboxMap);
+        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
     }
 
     /**
@@ -160,25 +136,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param view Helps build the view
      */
     public void goToAccountInformation(View view) {
-        sendUserBetweenActivities(userRegistered);
+        Intent intent = new Intent(this, AccountInformation.class);
+        startActivity(intent);
     }
 
     /**
-     * This function helps to give functionality to the side menu, so that it can be visible and hidden, when necessary.
-     *
-     * @param view Helps build the view.
+     * This method initialize the drop down menu
      */
-    public void openSideMenu(View view) {
-        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
-        if (!visibilityMenu) {
-            lateralMenu.setVisibility(View.VISIBLE);
-            visibilityMenu = true;
-            setMapScrollGesturesEnabled(false);
-        } else {
-            lateralMenu.setVisibility(View.GONE);
-            visibilityMenu = false;
-            setMapScrollGesturesEnabled(true);
-        }
+    private void initializeBurgerButtonToolBar(){
+        this.drawerLayout = findViewById(R.id.drawerLayout);
+        this.navigationView = findViewById(R.id.dropdown_menu);
+        this.toolbar = findViewById(R.id.dropdown_menu_toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    /**
+     * This method initialize the functionalities of the dropdown menu
+     */
+    private void initializeFunctionalityOfTheBurgerButton(){
+        navigationView.bringToFront();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,
+                toolbar, R.string.close, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.burger_button);
     }
 
     /**
@@ -220,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * This method will init the current location controller to get the real time user location
      */
     private void initCurrentLocationController() {
-        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
+        currentLocationController = CurrentLocationController.getControllerInstance(this);
         currentLocationController.initLocationButton();
     }
 
@@ -246,14 +230,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.mapView);
     }
 
-
     /**
      * Method for starting the MapView object instance.
      */
     @Override
     protected void onStart() {
         super.onStart();
-        mapDisplay.onStart();
     }
 
     /**
@@ -262,14 +244,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        mapDisplay.onResume();
         SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
         if (!nameServiceUsed.equals("default")) {
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
-        }
-
-        addMarkers();
+        } addMarkers();
     }
 
     /**
@@ -278,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPause() {
         super.onPause();
-        mapDisplay.onPause();
         SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         if (SignUpActivityView.authenticator != null) {
@@ -293,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStop() {
         super.onStop();
-        mapDisplay.onStop();
     }
 
     /**
@@ -302,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mapDisplay.onLowMemory();
     }
 
     /**
@@ -311,7 +287,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mapDisplay.onDestroy();
     }
 
     /**
@@ -322,16 +297,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        mapDisplay.onSaveInstanceState(outState);
-    }
-
-    /**
-     * Retrieves the user information passed through the intent.
-     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
-     */
-    private void getUserInformation() {
-        Intent intent = getIntent();
-        userRegistered = intent.getParcelableExtra("userObtained");
     }
 
     /**
@@ -341,17 +306,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     public void openStylesMenu(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
-        LinearLayout lateralMenu = findViewById(R.id.lateralMenu);
-        isStyleOptionsVisible = !isStyleOptionsVisible;
-
-        if (isStyleOptionsVisible) {
-            lateralMenu.setVisibility(View.GONE);
-            styleOptionsWindow.setVisibility(View.VISIBLE);
-            setMapScrollGesturesEnabled(true);
-            visibilityMenu = false;
-        } else {
-            styleOptionsWindow.setVisibility(View.GONE);
-        }
+        styleOptionsWindow.setVisibility(View.VISIBLE);
+        setMapScrollGesturesEnabled(true);
     }
 
     /**
@@ -362,35 +318,69 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void changeMapStyle(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
         styleOptionsWindow.setVisibility(View.GONE);
-
         mapStyle = ((ImageButton) view).getTag().toString();
-        mapDisplay.setMapStyle(mapStyle);
-        isStyleOptionsVisible = false;
+        MapManager.getInstance().getMapboxMap().setStyle(mapStyle);
     }
 
     /**
-     * Adds markers to the map based on the shared searcher preferences.
-     * The markers are added using the MarkerManager instance.
+     * This method set the information of the user in the header of the drop down menu
+     */
+    private void setTheUserInformationInTheDropMenu(){
+        TextView userNameText = navigationView.getHeaderView(0)
+                .findViewById(R.id.userNameText);
+        userNameText.setText(UserRepository.getInstance().getUserContained().getUserName());
+        TextView userEmailText = navigationView.getHeaderView(0)
+                .findViewById(R.id.userEmailText);
+        userEmailText.setText(UserRepository.getInstance().getUserContained().getEmail());
+        ImageView userImage = navigationView.getHeaderView(0)
+                .findViewById(R.id.userAccountImage);
+        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
+            Glide.with(this).load(Uri.parse(
+                UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
+    }
+
+    /**
+     * Adds markers to the map based on the current place preferences.
      */
     private void addMarkers() {
-        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
+        WayPoint place = new WayPoint(sharedSearcherPreferencesManager.getPlaceName(),
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
+        addMarkerToMap(place);
+        if (place.getPlaceName() != null)
+            searchView.setText(place.getPlaceName());
+        else {
+            String resetSearch = "Search...";
+            searchView.setText(resetSearch);
+        }
     }
 
     /**
+     * Adds a marker to the map for the given WayPoint if it has a valid place name.
+     *
+     * @param place The WayPoint representing the place to add the marker for.
+     */
+    private void addMarkerToMap(WayPoint place) {
+        if (place.getPlaceName() != null) {
+            markerManager.addMarkerToMap(mapView, place.getPlaceName(), place.getLatitude(), place.getLongitude());
+        }
+    }
+
+
+    /*
      * This method used for open a new activity, offline settings.
      *
      * @param view view
      */
     public void goOfflineMaps(View view) {
         Intent intent = new Intent(MainActivity.this, OfflineMapsActivity.class);
-        intent.putExtra("lat", mapDisplay.getMapboxMap().getCameraPosition().target.getLatitude());
-        intent.putExtra("long", mapDisplay.getMapboxMap().getCameraPosition().target.getLongitude());
-        intent.putExtra("zoom", mapDisplay.getMapboxMap().getCameraPosition().zoom);
+        intent.putExtra("lat", MapManager.getInstance().getMapboxMap().getCameraPosition().target.getLatitude());
+        intent.putExtra("long", MapManager.getInstance().getMapboxMap().getCameraPosition().target.getLongitude());
+        intent.putExtra("zoom", MapManager.getInstance().getMapboxMap().getCameraPosition().zoom);
 
         launcher.launch(intent);
     }
+
     /**
      * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
      *
@@ -403,11 +393,44 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Intent data = result.getData();
                         if (data != null) {
                             Bundle b = data.getExtras();
-                            mapDisplay.animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
-                            openSideMenu(null);
+                            MapManager.getInstance().animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
                         }
                     }
-
                 });
+    }
+
+    /**
+     * This method analyzes the option that the user wants to perform and activates it.
+     *
+     * @param item The selected item
+     * @return a boolean if all is correct
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.logOut:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                logOut(new View(context));
+                return true;
+            case R.id.mapStyle:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                openStylesMenu(new View(context));
+                return true;
+            case R.id.offlineMaps:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                goOfflineMaps(new View(context));
+                return true;
+            case R.id.userAccount:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                goToAccountInformation(new View(context));
+                return true;
+            case R.id.thirdDimensionMode:
+                //TODO: Implement the third dimension mode;
+                return true;
+            case R.id.changeDisplayMode:
+                //TODO: Implement the change dimension mode;
+                return true;
+        }
+        return true;
     }
 }

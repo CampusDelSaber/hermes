@@ -5,11 +5,14 @@ import static com.mapbox.geojson.constants.GeoJsonConstants.MAX_LONGITUDE;
 import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LATITUDE;
 import static com.mapbox.geojson.constants.GeoJsonConstants.MIN_LONGITUDE;
 
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
-import com.mapbox.api.geocoding.v5.models.CarmenContext;
-import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import android.graphics.PointF;
 
-import java.util.Objects;
+import com.isc.hermes.utils.MapManager;
+import com.mapbox.geojson.Feature;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+
+import java.util.List;
 
 /**
  * This class has the responsibility to validate a coordinates to know if are belong a
@@ -17,13 +20,13 @@ import java.util.Objects;
  */
 public class StreetValidator {
 
-    private ReverseGeocoding reverseGeocoding;
+    private MapboxMap mapboxMap;
 
     /**
      * This is the constructor method to initialize the reverse geocoding.
      */
     public StreetValidator() {
-        this.reverseGeocoding = new ReverseGeocoding();
+        this.mapboxMap = MapManager.getInstance().getMapboxMap();
     }
 
     /**
@@ -34,8 +37,7 @@ public class StreetValidator {
      * @return boolean to know if the point coordinate is a street.
      */
     public boolean isPointStreet(double longitude, double latitude) {
-        return hasStreetContext(reverseGeocoding.getPointInfo(
-                        longitude, latitude, GeocodingCriteria.TYPE_ADDRESS));
+        return hasStreetContext(new LatLng(longitude, latitude));
     }
 
     /**
@@ -53,24 +55,18 @@ public class StreetValidator {
     /**
      * This method validate if a place information has a street context.
      *
-     * @param placeInformation is the response of reverse geocoding.
+     * @param point is the point to know if is a street point.
      * @return boolean to know if the place has a street context.
      */
-    private boolean hasStreetContext(CarmenFeature placeInformation) {
-        if (placeInformation != null) {
-            for (CarmenContext context : Objects.requireNonNull(placeInformation.context())) {
-                if (Objects.requireNonNull(context.id()).startsWith("place.")
-                        || context.id().startsWith("postcode.")
-                        || context.id().startsWith("neighborhood.")
-                        || context.id().startsWith("locality.")
-                        || context.id().startsWith("region.")
-                        || context.id().startsWith("country.")
-                        || context.id().startsWith("street.")
-                        || context.id().startsWith("intersection.")
-                        || context.id().startsWith("address."))
-                    return true;
-            }
+    public boolean hasStreetContext(LatLng point) {
+        if (mapboxMap != null) {
+            PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
+            List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);
+            return (!features.isEmpty() &&
+                    (features.get(0).geometry().type().equals("MultiLineString") ||
+                            features.get(0).geometry().type().equals("LineString")));
         }
-        return false;
+
+        return true;
     }
 }

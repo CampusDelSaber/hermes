@@ -4,26 +4,34 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.Animations;
-import com.isc.hermes.utils.MapClickEventsManager;
+import com.isc.hermes.utils.MapManager;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
  */
 public class WaypointOptionsController {
+
+    private StreetValidator streetValidator;
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
+    private final LinearLayout reportIncidentsView;
     private final Button navigateButton;
-    private final TrafficAutomaticFormController trafficAutomaticFormController;
+    private TrafficAutomaticFormController trafficAutomaticFormController;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
     private final Button reportNaturalDisasterButton;
     private final Context context;
+    private TextView placeName;
 
     /**
      * This is the constructor method. Init all the components of UI.
@@ -33,6 +41,8 @@ public class WaypointOptionsController {
      */
     public WaypointOptionsController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
+        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
+        streetValidator = new StreetValidator();
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = new IncidentFormController(context, mapWayPointController);
         navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
@@ -41,6 +51,8 @@ public class WaypointOptionsController {
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);
+        placeName = ((AppCompatActivity) context).findViewById(R.id.place_name);
+        reportIncidentsView = ((AppCompatActivity) context).findViewById(R.id.report_incidents);
         setButtonsOnClick();
     }
 
@@ -60,11 +72,10 @@ public class WaypointOptionsController {
             incidentFormController.getIncidentForm().startAnimation(Animations.entryAnimation);
             incidentFormController.getIncidentForm().setVisibility(View.VISIBLE);
             waypointOptions.setVisibility(View.GONE);
-            incidentFormController.getMapController().deleteMarks();
-
         });
 
         reportTrafficButton.setOnClickListener(v -> {
+
             waypointOptions.startAnimation(Animations.exitAnimation);
 
 
@@ -84,11 +95,12 @@ public class WaypointOptionsController {
             waypointOptions.setVisibility(View.GONE);
             incidentFormController.getMapController().deleteMarks();
 
+
         });
 
         reportNaturalDisasterButton.setOnClickListener(v->{
-            MapClickEventsManager.getInstance().removeCurrentClickController();
-            MapClickEventsManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapClickEventsManager.getInstance().getMapboxMap(), this.context));
+            MapManager.getInstance().removeCurrentClickController();
+            MapManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapManager.getInstance().getMapboxMap(), this.context));
             waypointOptions.startAnimation(Animations.exitAnimation);
             waypointOptions.setVisibility(View.GONE);
         });
@@ -116,5 +128,16 @@ public class WaypointOptionsController {
      */
     public NavigationOptionsController getNavOptionsFormController() {
         return navigationOptionsFormController;
+    }
+
+    /**
+     * This method set the report incident status view if the point market is a street.
+     *
+     * @param point is the coordinate point market.
+     */
+    public void setReportIncidentStatus(LatLng point) {
+        if (!streetValidator.hasStreetContext(point))
+            reportIncidentsView.setVisibility(View.GONE);
+        else reportIncidentsView.setVisibility(View.VISIBLE);
     }
 }

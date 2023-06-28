@@ -1,55 +1,82 @@
 package com.isc.hermes.model.Utils;
 
-import android.graphics.Color;
 
+import com.isc.hermes.utils.MapManager;
+import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Feature;
-import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
-import com.mapbox.mapboxsdk.style.sources.Source;
-
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * This class will be in charge of displaying the Polyline.
  */
 public class MapPolyline {
+    private final MapboxMap mapboxMap;
+    private List<List<Point>> allPoints;
+    private ArrayList<GeoJsonSource> idPolyLinesList;
 
-    private MapView mapView;
 
     /**
      * Constructor method
-     * @param mapView
      */
-    public MapPolyline(MapView mapView) {
-        this.mapView = mapView;
+    public MapPolyline() {
+        mapboxMap = MapManager.getInstance().getMapboxMap();
+        this.allPoints = new ArrayList<>();
+        idPolyLinesList = new ArrayList<>();
     }
 
     /**
      * This method will display the line with the coordinates.
      * @param geoJson coordinates.
-     * @param color line color.
+     *
+     * @param colors line color.
      */
-    public void displaySavedCoordinates(String geoJson, int color){
+    public void displaySavedCoordinates(List<String> geoJson, List<Integer> colors){
+        List<List<Point>> coordinates = new ArrayList<>();
+        extractCoordinates(coordinates, geoJson);
+
+        MapPolyline mapPolyline = new MapPolyline();
+        mapPolyline.drawPolyline(coordinates,colors);
+    }
+
+    /**
+     * This method extracts the coordinates from the list and geoJson
+     */
+    private void extractCoordinates(List<List<Point>> coordinates, List<String> geoJson){
+        for (String json : geoJson){
+            List<Point> coordinatesRoute = new ArrayList<>();
+            for (Point point : initializeCoordinates(json)){
+                coordinatesRoute.add(Point.fromLngLat(point.longitude(), point.latitude()));
+            }
+            coordinates.add(coordinatesRoute);
+        }
+    }
+
+    /**
+     * This method will extract coordinates form geoJson.
+     * @param geoJson coordinates.
+     * @return
+     */
+    public List<Point> initializeCoordinates(String geoJson){
         Feature feature = Feature.fromJson(geoJson);
         LineString lineString = (LineString) feature.geometry();
         List<Point> coordinates = getCoordinates(lineString);
-        List<Point> coordinatesDisplayed = new ArrayList<>();
-
-        for (Point point : coordinates) {
-            System.out.println("Latitude: " + point.latitude());
-            System.out.println("Longitude: " + point.longitude());
-            coordinatesDisplayed.add(Point.fromLngLat(point.longitude(), point.latitude()));
-        }
-        MapPolyline mapPolyline = new MapPolyline(mapView);
-        mapPolyline.drawPolyline(coordinatesDisplayed, color);
+        return coordinates;
     }
+
+    /**
+     * This methodo will return and array list with coordinates
+     * @param lineString geographic point.
+     * @return
+     */
     public List<Point> getCoordinates(LineString lineString){
         List<Point> lngLatAlts = lineString.coordinates();
 
@@ -58,24 +85,81 @@ public class MapPolyline {
 
     /**
      * This method will plot the line on the map with a certain style and color.
-     * @param pointList list with coordinates.
-     * @param color polyline color.
+     * @param colors polyline color.
      */
-    public void drawPolyline(List<Point> pointList, int color) {
-        mapView.getMapAsync(mapboxMap -> {
-            mapboxMap.getStyle(style -> {
-                LineString lineString = LineString.fromLngLats(pointList);
-                Feature feature = Feature.fromGeometry(lineString);
-                Source polylineSource = new GeoJsonSource("polyline-source", feature);
-                style.addSource(polylineSource);
 
-                LineLayer polylineLayer = new LineLayer("polyline-layer", "polyline-source");
-                polylineLayer.setProperties(
-                        PropertyFactory.lineColor(color),
-                        PropertyFactory.lineWidth(4f)
-                );
-                style.addLayer(polylineLayer);
-            });
+    public void drawPolyline(List<List<Point>> points, List<Integer> colors){
+        mapboxMap.getStyle(style -> {
+            List<LineString> polyLineGeoJson = getPointsList(points, colors, style);
+            List<Feature> features = setFeatures(polyLineGeoJson);
+            FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
+            for (int i = 0; i < features.size(); i++){
+                GeoJsonSource polylineSource =
+                        new GeoJsonSource("polyline" + i + "-source", featureCollection);
+                idPolyLinesList.add(polylineSource);
+                style.addSource(polylineSource);
+                polylineSource.setGeoJson(features.get(i));
+            }
         });
+    }
+
+
+    /**
+     * This method will hide all the polylines in the map
+     */
+    public void hidePolylines() {
+        mapboxMap.setStyle(mapboxMap.getStyle().getUri());
+    }
+    /**
+     * This method will get the points list
+     * @param points
+     * @param colors
+     * @param style
+     * @return
+     */
+    private List<LineString> getPointsList(
+            List<List<Point>> points, List<Integer> colors, Style style
+    ){
+        List<LineString> polyLineGeoJson = new ArrayList<>();
+        for (int i = 0; i < points.size(); i++){
+            List<Point> pointList = points.get(i);
+            polyLineGeoJson.add(LineString.fromLngLats(pointList));
+            verifyPolylineNull(
+                    pointList,
+                    "polyline" + i + "-layer",
+                    "polyline" + i + "-source",
+                    colors, i, style);
+        }
+        return polyLineGeoJson;
+    }
+
+    /**
+     * This method will set the features with the polylines.
+     *
+     * @return list of features.
+     */
+    public  List<Feature> setFeatures(List<LineString> polylineList){
+        List<Feature> features = new ArrayList<>();
+        for (LineString lineString : polylineList){
+            features.add(Feature.fromGeometry(lineString));
+        }
+        return features;
+    }
+
+    /**
+     * This method will set the style for polylines.
+     *
+     * @param polylinePoints list of polylines
+     * @param colors list of colors
+     */
+    public void verifyPolylineNull(List<Point> polylinePoints, String layerID, String sourceID, List<Integer> colors, int count, Style style){
+        if(polylinePoints != null){
+            LineLayer polylineLayer = new LineLayer(layerID, sourceID);
+            polylineLayer.setProperties(
+                    PropertyFactory.lineColor(colors.get(count)),
+                    PropertyFactory.lineWidth(4.5f)
+            );
+            style.addLayer(polylineLayer);
+        }
     }
 }

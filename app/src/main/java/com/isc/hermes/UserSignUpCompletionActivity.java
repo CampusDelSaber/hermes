@@ -1,8 +1,8 @@
 package com.isc.hermes;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
-import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.model.User;
+import com.isc.hermes.model.signup.SignUpTransitionHandler;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -32,7 +32,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private TextInputLayout comboBoxTextField;
     private Button buttonRegister;
     private ImageView imgUser;
-    private User userRegistered;
 
     /**
      * Assigns values to the components view.
@@ -53,9 +52,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * Sets the name, username, and email of the user to the respective TextView and AutoCompleteTextView components.
      */
     private void loadInformationAboutUserInTextFields(){
-        textNameComplete.setText(userRegistered.getFullName());
-        textFieldUserName.setText(userRegistered.getUserName());
-        textFieldEmail.setText(userRegistered.getEmail());
+        textNameComplete.setText(UserRepository.getInstance().getUserContained().getFullName());
+        textFieldUserName.setText(UserRepository.getInstance().getUserContained().getUserName());
+        textFieldEmail.setText(UserRepository.getInstance().getUserContained().getEmail());
     }
 
     /**
@@ -81,22 +80,10 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private void generateActionToComboBox() {
         generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
             String item = parent.getItemAtPosition(position).toString();
-            userRegistered.setTypeUser(item);
+            UserRepository.getInstance().getUserContained().setTypeUser(item);
             Toast.makeText(getApplicationContext(), "Item: " + item,
                     Toast.LENGTH_SHORT).show();
         });
-    }
-
-
-    /**
-     * Sends a User object to another activity using an Intent.
-     *
-     * @param user The User object to be sent to the other activity.
-     */
-    private void sendUserBetweenActivities(User user) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("userObtained", user);
-        startActivity(intent);
     }
 
     /**
@@ -104,13 +91,11 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * Sets a click listener on the "Register" button, which saves the user's information to the database
      * and navigates the user to the main activity.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void generateActionToButtonSignUp() {
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
         buttonRegister.setOnClickListener(v -> {
-            if (userRegistered.getTypeUser() != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    accountInfoManager.addUser(userRegistered.getEmail(),userRegistered.getFullName(),userRegistered.getUserName(),userRegistered.getTypeUser());
-                sendUserBetweenActivities(userRegistered);
+            if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
+                new  SignUpTransitionHandler().transitionBasedOnRole(this);
             } else comboBoxTextField.setHelperText("Required");
         });
     }
@@ -120,17 +105,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * If the user has a path to their profile image, it uses Glide to load the image into the ImageView.
      */
     private void loadUserImageInView(){
-        if (userRegistered.getPathImageUser() != null) Glide.with(this).load(Uri.parse(
-                    userRegistered.getPathImageUser())).into(imgUser);
-    }
-
-    /**
-     * Retrieves the user information passed through the intent.
-     * Gets the Parcelable "userObtained" extra from the intent and assigns it to the userRegistered variable.
-     */
-    private void getUserInformation() {
-        Intent intent = getIntent();
-        userRegistered = intent.getParcelableExtra("userObtained");
+        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
+            Glide.with(this).load(Uri.parse(
+                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(imgUser);
     }
 
     /**
@@ -138,11 +115,11 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      *
      * @param savedInstanceState the saved state of the instance
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_sign_up_completion_view);
-        getUserInformation();
         generateActionToComboBox();
         assignValuesToComponentsView();
         generateActionToButtonSignUp();
