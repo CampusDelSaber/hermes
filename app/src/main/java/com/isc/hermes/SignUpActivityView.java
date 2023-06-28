@@ -130,8 +130,7 @@ public class SignUpActivityView extends AppCompatActivity {
             } catch (ExecutionException | InterruptedException | JSONException e) {
                 throw new RuntimeException(e);
             }
-        }
-        return user;
+        } return user;
     }
 
     /**

@@ -22,21 +22,21 @@ import java.io.IOException;
 
 
 import com.isc.hermes.controller.PopUp.PopUp;
+import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
  */
 public class AccountInformation extends AppCompatActivity {
-
-    private Button buttonSaveInformation;
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldFullName;
     private AutoCompleteTextView comboBoxField;
     private AutoCompleteTextView textFieldEmail;
+    private Button buttonSaveInformation;
+    private PopUp popUpDialogDelete;
     private ImageView imageView;
     private PopUpOverwriteInformationAccount popUpDialogEdit;
-    private PopUp popUpDialogDelete;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     /**
@@ -47,8 +47,8 @@ public class AccountInformation extends AppCompatActivity {
      * @return The generated AutoCompleteTextView for the combo box.
      */
     private AutoCompleteTextView generateComponentsToComboBox() {
-        String[] items = {"Administrator", "General"};
-        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, items);
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item,
+                TypeUser.getArrayTypeUsers());
         comboBoxField.setAdapter(adapterItems);
         return comboBoxField;
     }
@@ -90,8 +90,8 @@ public class AccountInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
         assignValuesToComponentsView();
-        generateActionToComboBox();
         updateComponentsByUserInformation();
+        generateActionToComboBox();
         initializePopups();
     }
 

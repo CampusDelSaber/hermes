@@ -85,7 +85,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="RtlHardcoded" />
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -123,7 +124,7 @@
                     android:id="@+id/textFieldFullName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="LabelFor,TextContrastCheck,VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Space
@@ -141,7 +142,7 @@
                     android:id="@+id/textFieldUserName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="LabelFor,TextContrastCheck,VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Space
@@ -160,7 +161,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="LabelFor,TextContrastCheck,VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -181,7 +182,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/typeUser"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -207,7 +209,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/buttonEditInformation"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlHardcoded" />
 
                 <Button
                     android:id="@+id/buttonEditInformation"
@@ -223,7 +226,8 @@
                     app:layout_constraintEnd_toStartOf="@+id/buttonDeleteAccount"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlHardcoded" />
 
                 <Button
                     android:id="@+id/buttonSaveInformation"
@@ -240,7 +244,8 @@
                     app:layout_constraintEnd_toEndOf="@+id/buttonEditInformation"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="@id/buttonEditInformation"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlHardcoded" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
