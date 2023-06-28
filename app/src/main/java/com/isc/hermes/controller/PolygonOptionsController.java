@@ -101,7 +101,7 @@ public class PolygonOptionsController {
         String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated= "0000-00-00T00:00:00.000+00:00", deathDate = "0000-00-00T00:00:00.000+00:00";
         String coordinates = MapPolygonController.getInstance(this.polygonController.getMapboxMap(), context).getPolygonPoints().toString();
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,"Natural Disaster","Natural Disaster",dateCreated, deathDate , GeometryType.POLYGON.getName(),coordinates);
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident("Natural Disaster","Natural Disaster",dateCreated, deathDate , GeometryType.POLYGON.getName(),coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 

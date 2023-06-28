@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,6 +43,7 @@ public class IncidentFormController {
     private final TextView incidentText;
     private final TextInputLayout reasonTextField;
     public static String incidentType;
+    private String incidentTypeReported;
     private final MapWayPointController mapWayPointController;
 
     /**
@@ -96,19 +98,14 @@ public class IncidentFormController {
      * This method handles the actions performed when the accept button is clicked.
      */
     private void handleAcceptButtonClick() {
+        IncidentsUploader uploader = new IncidentsUploader();
+        uploader.uploadIncident(uploader.generateJsonIncident(
+                incidentTypeReported,reasonTextField.getEditText().getText().toString(),
+                IncidentsUtils.getInstance().generateCurrentDateCreated(),
+                IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime()),
+                "Point",
+                IncidentsUploader.getInstance().getCoordinates()));
         handleCancelButtonClick();
-        AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... voids) {
-                return uploadIncidentDataBase();
-            }
-
-            @Override
-            protected void onPostExecute(Integer responseCode) {
-                handleUploadResponse(responseCode);
-            }
-        };
-        task.execute();
     }
     /**
      * This method handles the response received after uploading the incident to the database.
@@ -237,6 +234,9 @@ public class IncidentFormController {
     private void setIncidentButtonAction(Button typeButton) {
         typeButton.setOnClickListener(
                 v -> {
+                    incidentTypeReported = typeButton.getText().toString();
+                    Log.i("tag",reasonTextField.getEditText().getText().toString());
+
                     IncidentFormController.incidentType = typeButton.getText().toString();
                     changeTypeTitle("PointIncidet Type: " + typeButton.getText());
                 }
@@ -283,7 +283,7 @@ public class IncidentFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,getIncidentType(),"Reason",dateCreated, deathDate ,GeometryType.POINT.getName(),coordinates);
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(getIncidentType(),"Reason",dateCreated, deathDate ,GeometryType.POINT.getName(),coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 

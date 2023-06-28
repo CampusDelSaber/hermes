@@ -110,7 +110,7 @@ public class GenerateRandomIncidentController {
         for (Incident currentIncident : incidents) {
             String dateCreated = simpleDateFormat.format(currentIncident.getDateCreated());
             String dateDeath = simpleDateFormat.format(currentIncident.getDeathDate());
-            String jsonString = incidentsUploader.generateJsonIncident(IncidentsUtils.getInstance().generateObjectId(),
+            String jsonString = incidentsUploader.generateJsonIncident(
                     currentIncident.getType(),
                     currentIncident.getReason(),
                     dateCreated,
