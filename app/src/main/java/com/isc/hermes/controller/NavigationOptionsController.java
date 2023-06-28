@@ -306,6 +306,9 @@ public class NavigationOptionsController {
      */
     private void getRouteOptionsFromAlgorithm(GraphController graphController) {
         try {
+            if (transportationType.equals(TransportationType.WALK)&& routeOptions != null){
+                transportationType = TransportationType.CAR;
+            }
             graphController.buildGraph(transportationType);
             routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
                     graphController.getGraph(), graphController.getStartNode(),
@@ -320,12 +323,15 @@ public class NavigationOptionsController {
      * Renders the routes on the map
      */
     private void showRoutes() {
-        String jsonA = routeOptions.getOrDefault("Route A", "{coordinates: []}");
-        String jsonB = routeOptions.getOrDefault("Route B", "{coordinates: []}");
-        String jsonC = routeOptions.getOrDefault("Route C", "{coordinates: []}");
-        ArrayList<String> geoJson = new ArrayList<>(List.of(jsonC, jsonB, jsonA));
-        MapPolyline mapPolyline = new MapPolyline();
-        infoRouteController.showInfoRoute(geoJson, mapPolyline);
+        if (routeOptions == null){
+            String jsonA = routeOptions.getOrDefault("Route A", "{coordinates: []}");
+            String jsonB = routeOptions.getOrDefault("Route B", "{coordinates: []}");
+            String jsonC = routeOptions.getOrDefault("Route C", "{coordinates: []}");
+            ArrayList<String> geoJson = new ArrayList<>(List.of(jsonC, jsonB, jsonA));
+            MapPolyline mapPolyline = new MapPolyline();
+            infoRouteController.showInfoRoute(geoJson, mapPolyline);
+        }
+
     }
 
     /**
