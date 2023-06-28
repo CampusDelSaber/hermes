@@ -77,7 +77,35 @@ public class NavigationOptionsController {
         currentLocationButton.setOnClickListener(v -> handleCurrentLocationChosen());
         manageCancelButton();
         startButton.setOnClickListener(v -> handleAcceptButtonClick());
+        for (int i = 0; i < transportationTypesContainer.getChildCount(); i++) {
+            Button button = (Button) transportationTypesContainer.getChildAt(i);
+            button.setOnClickListener(buttonClickListener);
+        }
     }
+
+    /**
+     * Handles the action when a transportation type button is clicked.
+     */
+    private void handleTransportationTypeButtonClick(Button clickedButton) {
+        for (int i = 0; i < transportationTypesContainer.getChildCount(); i++) {
+            Button button = (Button) transportationTypesContainer.getChildAt(i);
+            if (button == clickedButton) {
+                button.setAlpha(1.0f);
+            } else {
+                button.setAlpha(0.5f);
+            }
+        }
+    }
+
+    /**
+     * Creates an OnClickListener for the transportation type buttons.
+     */
+    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            handleTransportationTypeButtonClick((Button) view);
+        }
+    };
 
     /**
      * Method to manage the cancel button behavior

@@ -36,6 +36,7 @@ public class InfoRouteController {
    private ArrayList<JSONObject> jsonObjects;
    private NavigationOptionsController navigationOptionsController;
    private NavigationDirectionController navigationDirectionController;
+    private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
 
 
     /**
@@ -57,6 +58,9 @@ public class InfoRouteController {
         this.navigationOptionsController = navigationOptionsController;
         colorsInfoRoutes = new ArrayList<>();
         isActive = false;
+        isRouteASelected = false;
+        isRouteBSelected = false;
+        isRouteCSelected = false;
         colorsInfoRoutes.add(0XFF686C6C);
         colorsInfoRoutes.add(0xFF2350A3);
         colorsInfoRoutes.add(0XFFFF6E26);
@@ -79,13 +83,40 @@ public class InfoRouteController {
             isActive = false;
         });
 
-        buttonRouteA.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(2)));
-        buttonRouteB.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(1)));
-        buttonRouteC.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(0)));
+        buttonRouteA.setOnClickListener(v -> {
+            setTimeAndDistanceInformation(jsonObjects.get(2));
+            isRouteASelected = true;
+            isRouteBSelected = false;
+            isRouteCSelected = false;
+            updateButtonVisibility();
+        });
+        buttonRouteB.setOnClickListener(v -> {
+            setTimeAndDistanceInformation(jsonObjects.get(1));
+            isRouteASelected = false;
+            isRouteBSelected = true;
+            isRouteCSelected = false;
+            updateButtonVisibility();
+        });
+        buttonRouteC.setOnClickListener(v -> {
+            setTimeAndDistanceInformation(jsonObjects.get(0));
+            isRouteASelected = false;
+            isRouteBSelected = false;
+            isRouteCSelected = true;
+            updateButtonVisibility();
+        });
         startNavigationButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         });
+    }
+
+    /**
+     * This method sets the visibility of the button.
+     */
+    private void updateButtonVisibility() {
+        buttonRouteA.setAlpha(isRouteASelected ? 1f : 0.3f);
+        buttonRouteB.setAlpha(isRouteBSelected ? 1f : 0.3f);
+        buttonRouteC.setAlpha(isRouteCSelected ? 1f : 0.3f);
     }
 
     /**
