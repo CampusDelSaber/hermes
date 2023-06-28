@@ -37,25 +37,9 @@ public class SaveProfileImage {
         filePath.putFile(uri).addOnSuccessListener(taskSnapshot -> {
             filePath.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                 String imageURL = downloadUri.toString();
-                setPathImage(imageURL);
+                UserRepository.getInstance().getUserContained().setPathImageUser(imageURL);
             });
-            Toast.makeText(context, MESSAGE, Toast.LENGTH_SHORT).show();
         });
-    }
-
-
-
-    /**
-     * Sets the path of the profile image for the current user and updates the user information.
-     *
-     * @param path The path of the profile image.
-     */
-    private void setPathImage(String path) {
-        UserRepository.getInstance().getUserContained().setPathImageUser(path);
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            accountInfoManager.editUser(UserRepository.getInstance().getUserContained());
-        }
     }
 
 }

@@ -120,19 +120,6 @@ public class AccountInfoManager {
     }
 
     /**
-     * Updates the local user information using the email as a reference.
-     */
-    public void updateUserInformationLocal() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            try {
-                UserRepository.getInstance().setUserContained(getUserById(UserRepository.getInstance().getUserContained().getId()));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        }
-    }
-
-    /**
      Edits a user's information.
      @param user the user will be used to update their information in db.
      @requiresApi(api = Build.VERSION_CODES.O) Requires API level O or higher

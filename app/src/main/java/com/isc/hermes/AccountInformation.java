@@ -32,6 +32,7 @@ import com.isc.hermes.model.User.UserRepository;
 public class AccountInformation extends AppCompatActivity {
 
     private Button buttonSaveInformation;
+    private Button buttonUploadImage;
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldFullName;
     private AutoCompleteTextView comboBoxField;
@@ -166,6 +167,7 @@ public class AccountInformation extends AppCompatActivity {
         textFieldFullName.setEnabled(true);
         comboBoxField.setEnabled(true);
         textFieldUserName.setEnabled(true);
+        buttonUploadImage.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -184,8 +186,8 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void saveAccountInformationAction(View view) {
         updateInformationUser();
-        popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField);
+        popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
+                textFieldUserName, comboBoxField, buttonUploadImage);
         popUpDialogEdit.show();
     }
 
@@ -204,6 +206,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     private void  assignValuesToComponentsView() {
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
+        buttonUploadImage = findViewById(R.id.buttonUploadImage);
         imageView = findViewById(R.id.imageUpload);
         comboBoxField = findViewById(R.id.textFieldUserType);
         textFieldFullName = findViewById(R.id.textFieldFullName);
