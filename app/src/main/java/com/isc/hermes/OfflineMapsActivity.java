@@ -3,6 +3,7 @@ package com.isc.hermes;
 import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LATITUDE;
 import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LONGITUDE;
 import static com.isc.hermes.ActivitySelectRegion.ZOOM_LEVEL;
+import static com.isc.hermes.utils.offline.OfflineUtils.JSON_FIELD_REGION_NAME;
 
 import android.content.Context;
 import android.content.Intent;
@@ -244,7 +245,6 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         }else{
             textInputPopup.closePopup();
             uploadNameRegion(selectedNameDownloadedRegion,text);
-            update();
         }
     }
 
@@ -255,13 +255,11 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
      * @param newName the new name for the selected map
      */
     private void uploadNameRegion(String previousName, String newName){
-        OfflineRegion targetRegion = MapboxOfflineManager.getInstance(this).getOfflineRegion(previousName);
         try {
-            JSONObject jsonMetadata = new JSONObject(new String(OfflineUtils.createMetadata(previousName), OfflineUtils.JSON_CHARSET));
-            jsonMetadata.put(OfflineUtils.JSON_FIELD_REGION_NAME, newName);
-            saveMetadataOfflineRegion(this,targetRegion,jsonMetadata.toString().getBytes(OfflineUtils.JSON_CHARSET));
-            setChangesToApplicationData(targetRegion,previousName);
-        } catch (JSONException | UnsupportedEncodingException e) {
+            OfflineRegion targetRegion = MapboxOfflineManager.getInstance(this).getOfflineRegion(previousName);
+            saveMetadataOfflineRegion(this,targetRegion,OfflineUtils.updateMetadata(newName, targetRegion.getMetadata()));
+            setChangesToApplicationData(targetRegion,previousName,newName);
+        } catch (UnsupportedEncodingException | JSONException e) {
             e.printStackTrace();
             Toast.makeText(this, "An error occurred while updating the map", Toast.LENGTH_SHORT).show();
         }
@@ -279,6 +277,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
             @Override
             public void onUpdate(byte[] updatedMetadata) {
                 Toast.makeText(context, "Map name has been updated", Toast.LENGTH_SHORT).show();
+                loadRegions();
             }
             @Override
             public void onError(String error) {
@@ -292,9 +291,10 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
      *
      * @param targetRegion the region selected to make the changes
      * @param previousName the previous name of the selected region before changing its metadata.
+     * @param newName the new name of the selected region
      */
-    private void setChangesToApplicationData( OfflineRegion targetRegion, String previousName){
-        MapboxOfflineManager.getInstance(this).getOfflineRegions().put(OfflineUtils.getRegionName(targetRegion), targetRegion);
+    private void setChangesToApplicationData( OfflineRegion targetRegion, String previousName, String newName){
+        MapboxOfflineManager.getInstance(this).getOfflineRegions().put(newName, targetRegion);
         MapboxOfflineManager.getInstance(this).getOfflineRegions().remove(previousName);
     }
 }
