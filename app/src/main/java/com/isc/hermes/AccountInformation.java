@@ -99,7 +99,6 @@ public class AccountInformation extends AppCompatActivity {
         assignValuesToComponentsView();
         generateActionToComboBox();
         updateComponentsByUserInformation();
-        saveProfileImage = new SaveProfileImage();
         initializePopups();
     }
 
@@ -216,5 +215,6 @@ public class AccountInformation extends AppCompatActivity {
         textFieldFullName.setEnabled(false);
         textFieldUserName.setEnabled(false);
         comboBoxField.setEnabled(false);
+        saveProfileImage = new SaveProfileImage();
     }
 }

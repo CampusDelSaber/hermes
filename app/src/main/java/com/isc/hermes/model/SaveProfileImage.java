@@ -36,20 +36,16 @@ public class SaveProfileImage {
      */
     public void saveProfileImage(Uri uri, Context context) {
         StorageReference filePath = storageReference.child(FOLDER_NAME).child(uri.getLastPathSegment());
-        filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String imageURL = uri.toString();
-                        setPathImage(imageURL);
-                    }
-                });
-                Toast.makeText(context, MESSAGE, Toast.LENGTH_SHORT).show();
-            }
+        filePath.putFile(uri).addOnSuccessListener(taskSnapshot -> {
+            filePath.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                String imageURL = downloadUri.toString();
+                setPathImage(imageURL);
+            });
+            Toast.makeText(context, MESSAGE, Toast.LENGTH_SHORT).show();
         });
     }
+
+
 
     /**
      * Sets the path of the profile image for the current user and updates the user information.
