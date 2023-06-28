@@ -1,8 +1,6 @@
 package com.isc.hermes;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +18,6 @@ import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.utils.offline.NetworkManager;
-
 import org.json.JSONException;
 
 import java.util.HashMap;
@@ -141,7 +138,6 @@ public class SignUpActivityView extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
 
     /**
      * This method allows the user to register the user
