@@ -33,7 +33,7 @@ import com.mapbox.mapboxsdk.offline.OfflineRegion;
  * This class represents the Offline Mode Settings UI.
  */
 public class OfflineMapsActivity extends AppCompatActivity implements RegionObserver {
-    private static final int RENAME = R.id.rename, NAVIGATE_TO = R.id.navigateTo, DELETE = R.id.delete;
+    private static final int RENAME = R.id.rename, NAVIGATE_TO = R.id.navigateTo, DELETE = R.id.delete, UPDATE = R.id.update;
     private LinearLayout vBoxDownloadedMaps;
     private OfflineCardView offlineCardView;
     private ActivityResultLauncher<Intent> launcher;
@@ -146,7 +146,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         MapboxOfflineManager.getInstance(this)
                 .deleteRegion(
                         regionName,
-                        new RegionDeleter(this, regionName)
+                        new RegionDeleter(this, regionName,true)
                 );
     }
 
@@ -191,9 +191,21 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
             case DELETE:
                 deleteRegion(nameItem);
                 return true;
+            case UPDATE:
+                updateRegion(nameItem);
+                return true;
             default:
                 return false;
         }
+    }
+
+    /**
+     * This method update a region downloaded.
+     * @param regionName this is the name of the region to update.
+     */
+    public void updateRegion(String regionName){
+        MapboxOfflineManager.getInstance(this)
+                .updateOfflineRegion(regionName,new RegionDownloader(this, "Updating ... "));
     }
 
     /**

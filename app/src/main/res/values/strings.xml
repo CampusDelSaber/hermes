@@ -146,4 +146,5 @@
     <string name="your_name_map">Your name map</string>
     <string name="verify_account">Verify Account</string>
     <string name="continue_general_account">Continue General Account</string>
+    <string name="update">Update</string>
 </resources>
