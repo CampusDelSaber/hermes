@@ -4,10 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
@@ -290,14 +294,39 @@ public class NavigationOptionsController {
     private void handleAcceptButtonClick() {
         handleHiddeItemsView();
         isActive = false;
-        if (isCurrentLocationSelected) startPoint = CurrentLocationModel.getInstance().getLatLng();
+        if (isCurrentLocationSelected)
+            startPoint = CurrentLocationModel.getInstance().getLatLng();
         LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         GraphController graphController = new GraphController(start, destination);
 
         markStartEndPoint(start, destination);
-        executeGraphBuild(graphController);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(R.layout.loader_route_dialog);
+        builder.setCancelable(false);
+        final AlertDialog progressDialog = builder.create();
+        progressDialog.show();
+
+        try {
+            executeGraphBuild(graphController);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
+                }
+            }, 3000);
+        } catch (NullPointerException e) {
+            progressDialog.dismiss();
+            Toast.makeText(context, "Error: NullPointerException occurred", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            progressDialog.dismiss();
+            Toast.makeText(context, "Error: Failed to calculate route", Toast.LENGTH_SHORT).show();
+        }
     }
+
 
     /**
      * Method to mark the start and destination point on map
