@@ -170,6 +170,11 @@ public class AccountInformation extends AppCompatActivity {
         UserRepository.getInstance().getUserContained().setFullName(String.valueOf(textFieldFullName.getText()));
     }
 
+    /**
+     * Verifies if the user is an administrator user and performs corresponding actions.
+     * The user is not an administrator, the comboBoxField is enabled.
+     * The user is an administrator, the comboBoxField is set to display the user's type.
+     */
     private void verifyAdministratorUser() {
         if (!UserRepository.getInstance().getUserContained().getTypeUser().
                 equals("Administrator")) comboBoxField.setEnabled(true);
