@@ -1,7 +1,6 @@
 package com.isc.hermes.controller.offline;
 
 import android.app.Activity;
-import android.widget.Toast;
 
 import com.isc.hermes.utils.offline.MapboxOfflineManager;
 import com.isc.hermes.utils.offline.OfflineUtils;
@@ -35,7 +34,6 @@ public class RegionLoader implements OfflineManager.ListOfflineRegionsCallback {
     @Override
     public void onList(OfflineRegion[] offlineRegions) {
         if (offlineRegions == null || offlineRegions.length == 0) {
-            Toast.makeText(activity, "THERE IS NO REGIONS DOWNLOADED YET", Toast.LENGTH_SHORT).show();
             return;
         }
         String regionName;
