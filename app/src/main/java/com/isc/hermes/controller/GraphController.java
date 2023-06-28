@@ -122,8 +122,8 @@ public class GraphController {
 
             for (int i = 0; i < intersections.length(); i++) {
                 Node node = new Node(String.valueOf(intersections.getJSONObject(i).get("id")),
-                        (Double) intersections.getJSONObject(i).get("lat"),
-                        (Double) intersections.getJSONObject(i).get("lon"));
+                        (Double) intersections.getJSONObject(i).getDouble("lat"),
+                        (Double) intersections.getJSONObject(i).getDouble("lon"));
                 graph.addNode(node);
             }
 
