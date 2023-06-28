@@ -377,6 +377,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    /**
+     * Sets up the action for the clear button.
+     * Clears the search view, removes all markers from the map, and hides the clear button.
+     */
     private void onActionButtonClear() {
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
