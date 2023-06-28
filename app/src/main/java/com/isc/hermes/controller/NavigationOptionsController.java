@@ -3,6 +3,7 @@ package com.isc.hermes.controller;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -11,25 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
-import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.json.JSONException;
-
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import timber.log.Timber;
 
 
@@ -49,6 +41,7 @@ public class NavigationOptionsController {
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
+    private TransportationType transportationType;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -61,17 +54,16 @@ public class NavigationOptionsController {
         isLocationStartChosen = true;
         isCurrentLocationSelected = true;
         this.mapWayPointController = mapWayPointController;
+        transportationType = TransportationType.CAR;
         navOptionsForm = ((AppCompatActivity) context).findViewById(R.id.navOptions_form);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button_nav);
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
         currentLocationButton = ((AppCompatActivity) context).findViewById(R.id.current_location_button);
         startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);
-        ;
         finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);
-        ;
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
-        infoRouteController = InfoRouteController.getInstance(context);
+        infoRouteController = InfoRouteController.getInstance(context, this);
         setNavOptionsUiComponents();
         setButtons();
         dijkstraAlgorithm = DijkstraAlgorithm.getInstance();
@@ -96,6 +88,7 @@ public class NavigationOptionsController {
             handleHiddeItemsView();
             isActive = false;
             mapWayPointController.setMarked(false);
+            mapWayPointController.deleteMarks();
         });
     }
 
@@ -147,13 +140,29 @@ public class NavigationOptionsController {
                 navOptionTypeIcons.length == navOptionsTypes.length) {
             for (int i = 0; i < navOptionsTypes.length; i++) {
                 Button button = IncidentTypeButton.getIncidentTypeButton(context, navOptionsTypes[i].toLowerCase(),
-                        Color.parseColor((String) navOptionTypeColors[i]), navOptionTypeIcons[i]);
+                        Color.parseColor(navOptionTypeColors[i]), navOptionTypeIcons[i]);
+                setTransportationButtonBehavior(button);
                 transportationTypesContainer.addView(button);
             }
             transportationTypesContainer.removeViews(0,
                     transportationTypesContainer.getChildCount() - 4);
         } else {
             Timber.i(String.valueOf(R.string.array_size_text_timber));
+        }
+    }
+
+    /**
+     * Method to manage the transportation type button behavior to select a type
+     * @param button transport type button
+     */
+    private void setTransportationButtonBehavior(Button button) {
+        if (button != null) {
+            button.setOnClickListener(v -> {
+                if (button.getText().equals(TransportationType.CAR.getName())) transportationType = TransportationType.CAR;
+                else if (button.getText().equals(TransportationType.BIKE.getName())) transportationType = TransportationType.BIKE;
+                else if (button.getText().equals(TransportationType.WALK.getName())) transportationType = TransportationType.WALK;
+                else if (button.getText().equals(TransportationType.MOTORCYCLE.getName())) transportationType = TransportationType.MOTORCYCLE;
+            });
         }
     }
 
@@ -239,27 +248,53 @@ public class NavigationOptionsController {
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         GraphController graphController = new GraphController(start, destination);
 
+        markStartEndPoint(start, destination);
         executeGraphBuild(graphController);
+    }
+
+    /**
+     * Method to mark the start and destination point on map
+     * @param start start point to init route
+     * @param destination destination final point's route
+     */
+    private void markStartEndPoint(LatLng start, LatLng destination) {
+        mapWayPointController.setMarkerOnMap(start);
+        mapWayPointController.setMarkerOnMap(destination);
     }
 
     /**
      * Executes the graph build async to load the graph before render it
      * @param graphController the graph controller to build the graph
      */
+    @SuppressLint("StaticFieldLeak")
     private void executeGraphBuild(GraphController graphController){
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(() -> {
-            try {
-                graphController.buildGraph();
-                routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
-                        graphController.getGraph(), graphController.getStartNode(),
-                        graphController.getDestinationNode(), TransportationType.CAR
-                );
-                ((AppCompatActivity) context).runOnUiThread(this::showRoutes);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        new AsyncTask<Void, Void, Map<String, String>>() {
+            @Override
+            protected Map<String, String> doInBackground(Void... voids) {
+                getRouteOptionsFromAlgorithm(graphController);
+                return null;
             }
-        });
+            @Override
+            protected void onPostExecute(Map<String, String> routes) {
+                showRoutes();
+            }
+        }.execute();
+    }
+
+    /**
+     * Method to get the routes' options from the algorithm for the route's suggestions
+     * @param graphController  the graph's controller class
+     */
+    private void getRouteOptionsFromAlgorithm(GraphController graphController) {
+        try {
+            graphController.buildGraph();
+            routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
+                    graphController.getGraph(), graphController.getStartNode(),
+                    graphController.getDestinationNode(), transportationType
+            );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -269,10 +304,16 @@ public class NavigationOptionsController {
         String jsonA = routeOptions.getOrDefault("Route A", "{coordinates: []}");
         String jsonB = routeOptions.getOrDefault("Route B", "{coordinates: []}");
         String jsonC = routeOptions.getOrDefault("Route C", "{coordinates: []}");
-
         ArrayList<String> geoJson = new ArrayList<>(List.of(jsonC, jsonB, jsonA));
-
         MapPolyline mapPolyline = new MapPolyline();
         infoRouteController.showInfoRoute(geoJson, mapPolyline);
+    }
+
+    /**
+     * Method to get the waypoint controller
+     * @return map waypoint controller
+     */
+    public MapWayPointController getMapWayPointController() {
+        return mapWayPointController;
     }
 }
