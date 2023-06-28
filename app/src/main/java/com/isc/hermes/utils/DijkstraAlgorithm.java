@@ -34,6 +34,7 @@ public class DijkstraAlgorithm {
     public Map<String, String> getGeoJsonRoutes(
             Graph graph, Node source, Node destination, TransportationType transportationType
     ){
+        long startTime = System.currentTimeMillis();
         Map<String, String> geoJsonRoutes = new HashMap<>();
         Map<String, Route> routeAlternatives =
                 getPathAlternatives(graph, source, destination, transportationType);
@@ -43,7 +44,10 @@ public class DijkstraAlgorithm {
                     geoJsonUtils.generateGeoJson(routeAlternatives.get(key))
             );
         }
-
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("DURATION getGeoJsonRoutes");
+        System.out.println("Execution time: " + executionTime + " milliseconds");
         return geoJsonRoutes;
     }
 

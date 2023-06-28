@@ -30,7 +30,7 @@ public class MapPolyline {
     public MapPolyline() {
         mapboxMap = MapManager.getInstance().getMapboxMap();
         this.allPoints = new ArrayList<>();
-        idPolyLinesList = new ArrayList<>();
+        this.idPolyLinesList = new ArrayList<>();
     }
 
     /**
@@ -40,11 +40,17 @@ public class MapPolyline {
      * @param colors line color.
      */
     public void displaySavedCoordinates(List<String> geoJson, List<Integer> colors){
+        long startTime = System.currentTimeMillis();
         List<List<Point>> coordinates = new ArrayList<>();
         extractCoordinates(coordinates, geoJson);
 
         MapPolyline mapPolyline = new MapPolyline();
         mapPolyline.drawPolyline(coordinates,colors);
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("DURATION displaySavedCoordinates");
+        System.out.println("Execution time: " + executionTime + " milliseconds");
+
     }
 
     /**
@@ -89,6 +95,7 @@ public class MapPolyline {
      */
 
     public void drawPolyline(List<List<Point>> points, List<Integer> colors){
+        long startTime = System.currentTimeMillis();
         mapboxMap.getStyle(style -> {
             List<LineString> polyLineGeoJson = getPointsList(points, colors, style);
             List<Feature> features = setFeatures(polyLineGeoJson);
@@ -101,6 +108,10 @@ public class MapPolyline {
                 polylineSource.setGeoJson(features.get(i));
             }
         });
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("DRAW POLYLINE");
+        System.out.println("Execution time: " + executionTime + " milliseconds");
     }
 
 

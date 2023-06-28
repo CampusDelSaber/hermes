@@ -60,9 +60,14 @@ public class GraphController {
      * @throws JSONException If there is an issue with parsing the JSON data.
      */
     public void buildGraph() throws JSONException {
+        long startTime = System.currentTimeMillis();
+        System.out.println("DURATION buildGraph");
         int radius = (int) (getRadius() * 1000) + 200;
         loadIntersections(intersectionRequest.getIntersections(midpoint.getLatitude(), midpoint.getLongitude(), radius));
         loadEdges(wayRequest.getEdges(midpoint.getLatitude(), midpoint.getLongitude(), radius));
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        System.out.println("Execution time: " + executionTime + " milliseconds");
     }
 
     /**
