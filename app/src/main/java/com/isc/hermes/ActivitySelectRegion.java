@@ -163,4 +163,8 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
             sendData(text);
         }
     }
+
+    public MapboxMap getMapboxMap() {
+        return mapboxMap;
+    }
 }

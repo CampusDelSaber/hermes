@@ -1,5 +1,7 @@
 package com.isc.hermes;
 
+import static com.mongodb.assertions.Assertions.assertNotNull;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +34,13 @@ import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
+import com.isc.hermes.controller.offline.OfflineDataRepository;
+import com.isc.hermes.database.IncidentsDataProcessor;
+import com.isc.hermes.model.RegionData;
+
+
+import android.widget.SearchView;
+
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.model.User.UserRepository;
