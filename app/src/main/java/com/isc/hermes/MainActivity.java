@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String mapStyle;
     private CurrentLocationController currentLocationController;
     private FilterCategoriesController filterCategoriesController;
-    private boolean visibilityMenu = false;
     private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private ViewIncidentsController viewIncidentsController;
@@ -74,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private ImageButton buttonClear;
+    private final String resetSearchText = "Search...";
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -104,12 +105,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initializeFunctionalityOfTheBurgerButton();
         setTheUserInformationInTheDropMenu();
     }
+
     /**
-     * Set up the SearchView and set the text color to black.
+     * Sets up the search view and clear button.
+     * Initializes the search view, sets the text color to black,
+     * and hides the clear button initially.
      */
     private void setupSearchView() {
         searchView = findViewById(R.id.searchView);
         searchView.setTextColor(Color.BLACK);
+        buttonClear = findViewById(R.id.buttonClear);
+        buttonClear.setVisibility(View.GONE);
     }
 
     /**
@@ -190,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void changeSearchView() {
         addMapboxSearcher();
         searchView.setOnClickListener(v -> {
+            resetMarkersAndSearch();
             new Handler().post(() -> {
                 Intent intent = new Intent(MainActivity.this, SearchViewActivity.class);
                 startActivity(intent);
@@ -274,7 +281,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
         if (!nameServiceUsed.equals("default")) {
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
-        } addMarkers();
+        }
+        addMarkers();
+        onActionButtonClear();
     }
 
     /**
@@ -373,12 +382,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
         addMarkerToMap(place);
-        if (place.getPlaceName() != null)
+        if (place.getPlaceName() != null){
+            buttonClear.setVisibility(View.VISIBLE);
             searchView.setText(place.getPlaceName());
-        else {
-            String resetSearch = "Search...";
-            searchView.setText(resetSearch);
-        }
+        } else
+            searchView.setText(resetSearchText);
     }
 
     /**
@@ -392,6 +400,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    /**
+     * Sets up the action for the clear button.
+     * Clears the search view, removes all markers from the map, and hides the clear button.
+     */
+    private void onActionButtonClear() {
+        buttonClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetMarkersAndSearch();
+            }
+        });
+    }
+
+    /**
+     * Resets the markers and search view.
+     * This method sets the text of the search view to the specified reset search value,
+     * removes all markers from the map view using the marker manager,
+     * and hides the clear button.
+     */
+    public void resetMarkersAndSearch() {
+        searchView.setText(resetSearchText);
+        markerManager.removeAllMarkers(mapView);
+        buttonClear.setVisibility(View.GONE);
+    }
 
     /**
      * This method used for open a new activity, offline settings.
