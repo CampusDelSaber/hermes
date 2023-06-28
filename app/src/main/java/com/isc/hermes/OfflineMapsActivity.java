@@ -256,27 +256,45 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
      */
     private void uploadNameRegion(String previousName, String newName){
         OfflineRegion targetRegion = MapboxOfflineManager.getInstance(this).getOfflineRegion(previousName);
-
         try {
             JSONObject jsonMetadata = new JSONObject(new String(OfflineUtils.createMetadata(previousName), OfflineUtils.JSON_CHARSET));
             jsonMetadata.put(OfflineUtils.JSON_FIELD_REGION_NAME, newName);
-
-            Context context = this;
-            targetRegion.updateMetadata(jsonMetadata.toString().getBytes(OfflineUtils.JSON_CHARSET),new OfflineRegion.OfflineRegionUpdateMetadataCallback() {
-                @Override
-                public void onUpdate(byte[] updatedMetadata) {
-                    Toast.makeText(context, "Map name has been updated", Toast.LENGTH_SHORT).show();
-                }
-                @Override
-                public void onError(String error) {
-                    Toast.makeText(context, "Error:%s" + error, Toast.LENGTH_SHORT).show();
-                }
-            });
-            MapboxOfflineManager.getInstance(this).getOfflineRegions().put(newName, targetRegion);
-            MapboxOfflineManager.getInstance(this).getOfflineRegions().remove(previousName);
+            saveMetadataOfflineRegion(this,targetRegion,jsonMetadata.toString().getBytes(OfflineUtils.JSON_CHARSET));
+            setChangesToApplicationData(targetRegion,previousName);
         } catch (JSONException | UnsupportedEncodingException e) {
             e.printStackTrace();
             Toast.makeText(this, "An error occurred while updating the map", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * This method saves the changes in the metadata of the selected region.
+     *
+     * @param context the current activity
+     * @param targetRegion the region selected to make the changes
+     * @param newMetadata the new data metadata to be added to the selected region
+     */
+    private void saveMetadataOfflineRegion(Context context, OfflineRegion targetRegion, byte[] newMetadata){
+        targetRegion.updateMetadata(newMetadata,new OfflineRegion.OfflineRegionUpdateMetadataCallback() {
+            @Override
+            public void onUpdate(byte[] updatedMetadata) {
+                Toast.makeText(context, "Map name has been updated", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onError(String error) {
+                Toast.makeText(context, "Error:%s" + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * This method changes the local data of the downloaded maps to save the changes in the metadata of one of the regions.
+     *
+     * @param targetRegion the region selected to make the changes
+     * @param previousName the previous name of the selected region before changing its metadata.
+     */
+    private void setChangesToApplicationData( OfflineRegion targetRegion, String previousName){
+        MapboxOfflineManager.getInstance(this).getOfflineRegions().put(OfflineUtils.getRegionName(targetRegion), targetRegion);
+        MapboxOfflineManager.getInstance(this).getOfflineRegions().remove(previousName);
     }
 }
