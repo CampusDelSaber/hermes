@@ -2,16 +2,8 @@ package com.isc.hermes.controller.PopUp;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.LinearLayout;
-
-import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
-import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.model.User.UserRepository;
 
 /**
  * The class extends {@code PopUp} and represents a specific type of popup window. In case the end
@@ -35,8 +27,7 @@ public class PopUpWarningIncorrectData extends PopUp{
             @Override
             public int getIconImagePopUp() {
                 return R.drawable.baseline_error_24; }
-        });
-        updateButtons();
+        }); updateButtons();
     }
 
 
