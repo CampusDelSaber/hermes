@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.Route;
+import com.isc.hermes.model.navigation.TransportationType;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,10 +50,8 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from nodeA to nodeD
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A")
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR).get("Route A")
                         .getPath();
-
-        System.out.println(dijkstraAlgorithm.getGeoJsonRoutes(graph, nodeA, nodeD));
 
         assertNotNull(shortestPath);
         // The shortest path should be [nodeA, nodeC, nodeD]
@@ -82,7 +81,7 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from nodeA to nodeD
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeD, nodeA).get("Route A")
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeD, nodeA, TransportationType.CAR).get("Route A")
                         .getPath();
 
         assertNotNull(shortestPath);
@@ -113,10 +112,9 @@ public class DijkstraAlgorithmTest {
 
         // Find the shortest path from Plaza Principal to Plaza 14 de Septiembre
         List<Node> shortestPath =
-                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD).get("Route A")
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR).get("Route A")
                         .getPath();
 
-        System.out.println(shortestPath);
         assertNotNull(shortestPath);
         // The shortest path should be [A, C, D]
         assertEquals(3, shortestPath.size());
@@ -144,9 +142,8 @@ public class DijkstraAlgorithmTest {
         graph.addNode(nodeD);
 
         // Calculate the routes
-        Map<String, Route> routes = dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD);
-
-        System.out.println(routes);
+        Map<String, Route> routes =
+                dijkstraAlgorithm.getPathAlternatives(graph, nodeA, nodeD, TransportationType.CAR);
 
         // Check the fastest route
         List<Node> fastestRoute = routes.get("Route A").getPath();
@@ -166,10 +163,9 @@ public class DijkstraAlgorithmTest {
         Node destination = graph.getNode("F");
 
         Map<String, Route> shortestPathAlternatives =
-                dijkstraAlgorithm.getPathAlternatives(graph, source, destination);
+            dijkstraAlgorithm.getPathAlternatives(graph, source, destination, TransportationType.CAR);
         assertNotNull(shortestPathAlternatives);
         assertEquals(3, shortestPathAlternatives.size());
-        System.out.println(shortestPathAlternatives);
 
         // Assert the shortest alternative paths
         List<Node> alternative1 = shortestPathAlternatives.get("Route A").getPath();
@@ -190,12 +186,11 @@ public class DijkstraAlgorithmTest {
 
         List<Node> alternative3 = shortestPathAlternatives.get("Route C").getPath();
         assertNotNull(alternative3);
-        assertEquals(5, alternative3.size());
+        assertEquals(4, alternative3.size());
         assertEquals(source, alternative3.get(0));
-        assertEquals(graph.getNode("B"), alternative3.get(1));
-        assertEquals(graph.getNode("D"), alternative3.get(2));
-        assertEquals(graph.getNode("E"), alternative3.get(3));
-        assertEquals(destination, alternative3.get(4));
+        assertEquals(graph.getNode("C"), alternative3.get(1));
+        assertEquals(graph.getNode("E"), alternative3.get(2));
+        assertEquals(destination, alternative3.get(3));
     }
 
     private Graph createGraph() {
@@ -220,6 +215,7 @@ public class DijkstraAlgorithmTest {
         // POSSIBLE ROUTES
         // A - B - D - F
         // A - C - D - F
+        // A - C - E - F
         // A - B - D - E - F
         // A - C - D - E - F
 

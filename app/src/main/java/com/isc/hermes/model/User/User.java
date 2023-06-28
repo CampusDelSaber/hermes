@@ -1,7 +1,4 @@
-package com.isc.hermes.model;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package com.isc.hermes.model.User;
 
 import com.isc.hermes.model.Utils.Utils;
 
@@ -9,7 +6,7 @@ import com.isc.hermes.model.Utils.Utils;
  * The `User` class represents a user in the application. It stores information about the user, such as their full name,
  * email, username, profile image path, user type, and ID.
  */
-public class User implements Parcelable {
+public class User {
     private String fullName;
     private String email;
     private String userName;
@@ -31,74 +28,40 @@ public class User implements Parcelable {
     }
 
     /**
-     * Constructs a User object from a Parcel.
-     *
-     * @param in The Parcel from which to read the User object.
-     */
-    protected User(Parcel in) {
-        fullName = in.readString();
-        email = in.readString();
-        userName = in.readString();
-        pathImageUser = in.readString();
-        typeUser = in.readString();
-        id = in.readString();
-    }
-
-    /**
      * Constructs a new User object with the specified email, full name, username, and type of user.
      *
      * @param email     The email address of the user.
      * @param fullName  The full name of the user.
      * @param userName  The username of the user.
      * @param typeUser  The type of user.
+     * @param pathImageUser the image of the user
      */
-    public User(String email, String fullName, String userName, String typeUser) {
+    public User(String email, String fullName, String userName, String typeUser, String pathImageUser) {
         this.fullName = fullName;
         this.email = email;
         this.userName = userName;
         this.typeUser = typeUser;
+        this.pathImageUser = pathImageUser;
     }
 
     /**
-     * Writes the User object to a Parcel.
+     * Constructs a User object with the specified email, full name, username, user type, and ID.
      *
-     * @param dest  The Parcel in which to write the User object.
-     * @param flags Additional flags about how the object should be written.
+     * @param email     the email address of the user
+     * @param fullName  the full name of the user
+     * @param userName  the username of the user
+     * @param typeUser  the type of user
+     * @param id        the ID of the user
+     * @param pathImageUser the image of the user
      */
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(fullName);
-        dest.writeString(email);
-        dest.writeString(userName);
-        dest.writeString(pathImageUser);
-        dest.writeString(typeUser);
-        dest.writeString(id);
+    public User(String email, String fullName, String userName, String typeUser, String id, String pathImageUser) {
+        this.fullName = fullName;
+        this.email = email;
+        this.userName = userName;
+        this.typeUser = typeUser;
+        this.id = id;
+        this.pathImageUser = pathImageUser;
     }
-
-    /**
-     * Describes the contents of the User object.
-     *
-     * @return A bitmask indicating the set of special object types marshaled by this Parcelable object instance.
-     */
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    /**
-     * Creator for the User class, which creates a User object from a Parcel.
-     */
-    public static final Creator<User> CREATOR = new Creator<>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 
     /**
      * Returns the full name of the user.
@@ -193,5 +156,31 @@ public class User implements Parcelable {
      */
     public void setFullName(String fullName){
         this.fullName = fullName;
+    }
+
+    /**
+     * Sets the email for the user.
+     * @param email the new email for the user
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Sets the image path for the user.
+     *
+     * @param pathImageUser the new image path for the user.
+     */
+    public void setPathImageUser(String pathImageUser) {
+        this.pathImageUser = pathImageUser;
+    }
+
+    /**
+     * This method is used to set the is of user.
+     *
+     * @param id The id will be use to replace.
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 }

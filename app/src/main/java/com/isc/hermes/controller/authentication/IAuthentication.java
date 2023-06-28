@@ -2,9 +2,8 @@ package com.isc.hermes.controller.authentication;
 
 import android.content.Context;
 import android.content.Intent;
-
 import com.google.android.gms.common.api.ApiException;
-import com.isc.hermes.model.User;
+import com.isc.hermes.model.User.User;
 
 /**
  * This is an Interface for authentication functionality.
@@ -58,4 +57,10 @@ public interface IAuthentication {
      * @return an account with user information.
      */
     User getUserBySignInResult(Intent data) throws ApiException;
+
+    /**
+     * This method is for obtain the User already SignIn.
+     * @return User Sign In
+     */
+    User getUserSignIn();
 }

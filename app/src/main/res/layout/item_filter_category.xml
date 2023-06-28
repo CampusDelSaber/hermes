@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:id="@+id/categoryItem"
+    android:background="@drawable/selector_item_category"
+    android:padding="6dp"
+    android:alpha="0.7">
+
+    <ImageView
+        android:id="@+id/locationImage"
+        android:layout_width="18dp"
+        android:layout_height="20dp"
+
+        />
+
+    <TextView
+        android:id="@+id/locationText"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginStart="8dp"
+        android:textColor="#000"
+        android:textSize="14sp"
+        android:shadowColor="#000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2" />
+</LinearLayout>

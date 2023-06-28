@@ -4,8 +4,8 @@ package com.isc.hermes.model.navigation;
  * Enum Class to represent the different transportation types of the navigation options
  */
 public enum TransportationType {
-    CAR("CAR",12.0), BIKE("BIKE",13.0),
-    WALK("WALK",5.0), MOTORCYCLE("MOTORCYCLE",16.0);
+    CAR("CAR",20.0), BIKE("BIKE",12.0),
+    WALK("WALK",5.0), MOTORCYCLE("MOTORCYCLE",25.0);
 
     private final double velocity;
     private final String name;
