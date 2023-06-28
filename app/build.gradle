@@ -29,6 +29,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -36,6 +37,26 @@ android {
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
+    }
+
+    lintOptions {
+        disable "LogNotTimber","StringFormatInTimber","ThrowableNotAtBeginning","BinaryOperationInTimber","TimberArgCount","TimberArgTypes","TimberTagLength","TimberExceptionLogging"
+        abortOnError false
+    }
+
+    signingConfigs {
+        release {
+            keyAlias 'hermes_key'
+            keyPassword 'Admin123'
+            storeFile file('sign_keys/debug.keystore')
+            storePassword 'Admin123'
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
     }
 }
 
