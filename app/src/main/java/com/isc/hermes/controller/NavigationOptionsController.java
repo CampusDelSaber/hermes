@@ -25,7 +25,6 @@ import org.json.JSONException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
@@ -108,8 +107,10 @@ public class NavigationOptionsController {
         startButton.setOnClickListener(v -> handleAcceptButtonClick());
         for (int i = 0; i < transportationTypesContainer.getChildCount(); i++) {
             Button button = (Button) transportationTypesContainer.getChildAt(i);
+            if (i != 0) button.setAlpha(0.3f);
             button.setOnClickListener(buttonClickListener);
         }
+
     }
 
     /**
@@ -289,6 +290,11 @@ public class NavigationOptionsController {
                 formatLatLng(finalPoint.getLatitude(), finalPoint.getLongitude()) : "Not selected");
     }
 
+    /**
+     * This method mange the graph building.
+     *
+     * @param graphController is the graph.
+     */
     private void manageGraphBuilding(GraphController graphController){
         try {
             executeGraphBuild(graphController);
@@ -370,6 +376,9 @@ public class NavigationOptionsController {
         }
     }
 
+    /**
+     * This method show a Toast when don't have routes.
+     */
     private void handleErrorLoadingRoutes(){
         Toast.makeText(context, "Not possible to get the routes", Toast.LENGTH_SHORT).show();
     }
@@ -390,6 +399,11 @@ public class NavigationOptionsController {
         renderMapRoutes(geoJson);
     }
 
+    /**
+     * This method render the routes on the map.
+     *
+     * @param geoJson is the routes.
+     */
     private void renderMapRoutes(ArrayList<String> geoJson){
         if (geoJson.size() > 0){
             MapPolyline mapPolyline = new MapPolyline();
