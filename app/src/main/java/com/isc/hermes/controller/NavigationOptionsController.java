@@ -2,7 +2,6 @@ package com.isc.hermes.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
@@ -14,12 +13,11 @@ import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
-import com.isc.hermes.view.MapDisplay;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -39,7 +37,6 @@ public class NavigationOptionsController {
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
     private InfoRouteController infoRouteController;
-
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -244,7 +241,7 @@ public class NavigationOptionsController {
         geoJson.add(jsonB);
         geoJson.add(jsonC);
 
-        MapPolyline mapPolyline = new MapPolyline(MapDisplay.getInstance(context,null,null).getMapView());
+        MapPolyline mapPolyline = new MapPolyline();
         infoRouteController.showInfoRoute(geoJson, mapPolyline);
     }
 }

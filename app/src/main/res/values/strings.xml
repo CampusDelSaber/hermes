@@ -16,6 +16,11 @@
     <string name="access_token">sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA</string>
     <string name="web_client_id">628551362001-osi4l1rcdiqt00got5n0hvn1akoc2una.apps.googleusercontent.com</string>
     <string name="get_location_text">Get Location</string>
+    <string name="userEmail"> sebastian.faustino@example.com</string>
+    <string name="enterCodeLabel"> Please enter the code here</string>
+    <string name="resendLabel"> did not get an email ? Resend</string>
+    <string name="verifyEmailTittle">Verify admin user request </string>
+    <string name="emailVerificationSent"> An email with verification code has been sent to</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
     <string name="delete_account_question_text">Are you sure you want to delete your account?</string>
@@ -34,8 +39,6 @@
     <string name="edit_profile">Upload Profile</string>
     <string name="complete_name">Full Name</string>
     <string name="delete_account">Delete Account</string>
-
-
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="close">Close</string>
@@ -44,16 +47,15 @@
     <string name="google">GOOGLE</string>
     <string name="save_authentication_state">authentication_state</string>
 
-
     <string name="incidents_uploaded">Incident uploaded successfully.</string>
     <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
     <string name="incidents_api_url">https://api-rest-hermes.onrender.com/pointIncidets</string>
     <string name="traffic_uploaded">Traffic uploaded successfully.</string>
     <string name="traffic_not_uploaded">Traffic could not be uploaded.</string>
     <string name="styles_menu">Customization</string>
-    <string name="satellite_style">Satellite</string>
-    <string name="default_style">Default</string>
-    <string name="dark_style">Dark</string>
+    <string name="satellite_style">mapbox://styles/mapbox/satellite-streets-v11</string>
+    <string name="default_style">mapbox://styles/mapbox/streets-v11</string>
+    <string name="dark_style">mapbox://styles/mapbox/dark-v10</string>
     <string-array name="incidents_type">
         <item>Accident</item>
         <item>Obstruction</item>
@@ -109,7 +111,6 @@
         <item>moto_navoption_type</item>
     </string-array>
 
-
     <!-- Geocoding -->
     <string name="latitude">latitude</string>
     <string name="longitude">longitude</string>
@@ -124,8 +125,6 @@
     <string name="search_a_city">Search a City</string>
     <string name="array_size_text_timber">The arrays about colors, icons and the type buttons have a different size</string>
 
-
-
     <!--  Offline Maps Settings  -->
     <string name="downloaded_maps">Downloaded Maps</string>
     <string name="from_your_location_history">From your Location History</string>
@@ -139,4 +138,17 @@
     <string name="download_button_text">Download\n</string>
     <string name="tittle_region_popup">Give a name to your map</string>
     <string name="your_name_map">Your name map</string>
+
+    <!--  Dropdown Menu  -->
+    <string name="tools">Tools</string>
+    <string name="profile">Profile</string>
+    <string name="offline_mode">Offline maps</string>
+    <string name="change_display_mode">Change display mode</string>
+    <string name="map_style">Map style</string>
+    <string name="third_dimension_mode">3D mode</string>
+    <string name="user_account">User account</string>
+    <string name="log_out">Log out</string>
+
+    <string name="verify_account">Verify Account</string>
+    <string name="continue_general_account">Continue General Account</string>
 </resources>

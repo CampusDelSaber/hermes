@@ -43,6 +43,12 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     public FilterCategoriesController(Activity activity) {
         this.activity = activity;
+    }
+
+    /**
+     * Generates the categories locations
+     */
+    public void initComponents() {
         markerManager = MarkerManager.getInstance(activity);
         createItemsUI();
     }
@@ -93,8 +99,6 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
             categories.add(new CategoryFilter(place.getImageResource(), place.getDisplayName()));
         }
 
-        categories.add(new CategoryFilter(R.drawable.navigation, "Special"));
-
         return categories;
     }
 
@@ -104,11 +108,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     @Override
     public void onLocationCategoryClick(CategoryFilter locationCategory) {
-        if (locationCategory.getNameCategory().equals("Special")) {
-            // TODO: Implement Filter Controller here
-        } else {
-            searchPlacesByTag(locationCategory.getNameCategory());
-        }
+        searchPlacesByTag(locationCategory.getNameCategory());
     }
 
     /**

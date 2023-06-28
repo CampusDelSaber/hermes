@@ -70,7 +70,7 @@
         <LinearLayout
             android:id="@+id/verticalBox"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="143dp"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
@@ -101,7 +101,7 @@
                     tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/emailTextView"
                     android:layout_width="273dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="100dp"
