@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private ImageButton buttonClear;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -98,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setupSearchView() {
         searchView = findViewById(R.id.searchView);
         searchView.setTextColor(Color.BLACK);
+        buttonClear = findViewById(R.id.buttonClear);
+        buttonClear.setVisibility(View.GONE);
     }
 
     /**
@@ -248,7 +251,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
         if (!nameServiceUsed.equals("default")) {
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
-        } addMarkers();
+        }
+        addMarkers();
+        onActionButtonClear();
     }
 
     /**
@@ -339,10 +344,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
     }
 
+    String resetSearch = "Search...";
     /**
      * Adds markers to the map based on the current place preferences.
      */
     private void addMarkers() {
+        buttonClear.setVisibility(View.VISIBLE);
         WayPoint place = new WayPoint(sharedSearcherPreferencesManager.getPlaceName(),
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
@@ -350,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (place.getPlaceName() != null)
             searchView.setText(place.getPlaceName());
         else {
-            String resetSearch = "Search...";
+
             searchView.setText(resetSearch);
         }
     }
@@ -365,7 +372,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             markerManager.addMarkerToMap(mapView, place.getPlaceName(), place.getLatitude(), place.getLongitude());
         }
     }
-
 
     /*
      * This method used for open a new activity, offline settings.
