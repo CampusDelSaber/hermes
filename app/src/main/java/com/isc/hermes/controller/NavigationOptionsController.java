@@ -48,6 +48,7 @@ public class NavigationOptionsController {
     private Map<String, String> routeOptions;
     private TransportationType transportationType;
     private Map<String, TransportationType> transportationTypeMap;
+    private AlertDialog progressDialog;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -305,25 +306,19 @@ public class NavigationOptionsController {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(R.layout.loader_route_dialog);
         builder.setCancelable(false);
-        final AlertDialog progressDialog = builder.create();
+        progressDialog = builder.create();
         progressDialog.show();
 
         try {
             executeGraphBuild(graphController);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    progressDialog.dismiss();
-                    Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
-                }
+            new Handler().postDelayed(() -> {
+                progressDialog.dismiss();
+                Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
             }, 3000);
-        } catch (NullPointerException e) {
-            progressDialog.dismiss();
-            Toast.makeText(context, "Error: NullPointerException occurred", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            progressDialog.dismiss();
-            Toast.makeText(context, "Error: Failed to calculate route", Toast.LENGTH_SHORT).show();
+            System.out.println("USE 1");
+            handleErrorLoadingRoutes();
         }
     }
 
@@ -369,20 +364,42 @@ public class NavigationOptionsController {
                     graphController.getDestinationNode(), transportationType
             );
         } catch (JSONException e) {
-            e.printStackTrace();
+            System.out.println("USE 2");
+            handleErrorLoadingRoutes();
         }
+    }
+
+    private void handleErrorLoadingRoutes(){
+        Toast.makeText(context, "Not possible to get the routes", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * Renders the routes on the map
      */
     private void showRoutes() {
-        String jsonA = routeOptions.getOrDefault("Route A", "{coordinates: []}");
-        String jsonB = routeOptions.getOrDefault("Route B", "{coordinates: []}");
-        String jsonC = routeOptions.getOrDefault("Route C", "{coordinates: []}");
-        ArrayList<String> geoJson = new ArrayList<>(List.of(jsonC, jsonB, jsonA));
-        MapPolyline mapPolyline = new MapPolyline();
-        infoRouteController.showInfoRoute(geoJson, mapPolyline);
+        String jsonA = routeOptions.getOrDefault("Route A", "");
+        String jsonB = routeOptions.getOrDefault("Route B", "");
+        String jsonC = routeOptions.getOrDefault("Route C", "");
+
+        String[] routes = {jsonC, jsonB, jsonA};
+        ArrayList<String> geoJson = new ArrayList<>();
+        for (String route : routes) {
+            if (!route.isEmpty()) geoJson.add(route);
+        }
+
+        if (geoJson.size() > 0){
+            MapPolyline mapPolyline = new MapPolyline();
+            try{
+                infoRouteController.showInfoRoute(geoJson, mapPolyline);
+            } catch (Exception e){
+                System.out.println("USE 3");
+                e.printStackTrace();
+                handleErrorLoadingRoutes();
+            }
+        } else {
+            System.out.println("USE 4");
+            handleErrorLoadingRoutes();
+        }
     }
 
     /**

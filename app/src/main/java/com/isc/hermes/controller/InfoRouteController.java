@@ -1,5 +1,6 @@
 package com.isc.hermes.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
@@ -46,14 +47,7 @@ public class InfoRouteController {
      * @param navigationOptionsController route navigation's options controller
      */
     private InfoRouteController(Context context, NavigationOptionsController navigationOptionsController){
-        layout = ((AppCompatActivity)context).findViewById(R.id.distance_time_view);
-        cancelButton =  ((AppCompatActivity)context).findViewById(R.id.cancel_navigation_button);
-        timeText = ((AppCompatActivity)context).findViewById(R.id.timeText);
-        distanceText = ((AppCompatActivity)context).findViewById(R.id.distanceText);
-        buttonRouteC = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteThree);
-        buttonRouteB = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteTwo);
-        buttonRouteA = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteOne);
-        startNavigationButton = ((AppCompatActivity)context).findViewById(R.id.startNavegationButton);
+        setViewComponents(context);
         navigationDirectionController = new NavigationDirectionController(context);
         this.navigationOptionsController = navigationOptionsController;
         colorsInfoRoutes = new ArrayList<>();
@@ -61,11 +55,34 @@ public class InfoRouteController {
         isRouteASelected = false;
         isRouteBSelected = false;
         isRouteCSelected = false;
-        colorsInfoRoutes.add(0XFF686C6C);
-        colorsInfoRoutes.add(0xFF2350A3);
-        colorsInfoRoutes.add(0XFFFF6E26);
         jsonObjects = new ArrayList<>();
         setActionButtons();
+    }
+
+    private void setViewComponents(Context context){
+        Activity activity = ((AppCompatActivity) context);
+        layout = activity.findViewById(R.id.distance_time_view);
+        cancelButton =  activity.findViewById(R.id.cancel_navigation_button);
+        timeText = activity.findViewById(R.id.timeText);
+        distanceText = activity.findViewById(R.id.distanceText);
+        buttonRouteC = activity.findViewById(R.id.ButtonRouteThree);
+        buttonRouteB = activity.findViewById(R.id.ButtonRouteTwo);
+        buttonRouteA = activity.findViewById(R.id.ButtonRouteOne);
+        startNavigationButton = activity.findViewById(R.id.startNavegationButton);
+
+    }
+
+    private void setColorsInfoRoutes(int size){
+        colorsInfoRoutes.clear();
+        if (size > 1){
+            colorsInfoRoutes.add(0XFF686C6C);
+            colorsInfoRoutes.add(0xFF2350A3);
+            colorsInfoRoutes.add(0XFFFF6E26);
+        } else {
+            colorsInfoRoutes.add(0XFFFF6E26);
+            colorsInfoRoutes.add(0xFF2350A3);
+            colorsInfoRoutes.add(0XFF686C6C);
+        }
     }
 
     /**
@@ -84,12 +101,13 @@ public class InfoRouteController {
         });
 
         buttonRouteA.setOnClickListener(v -> {
-            setTimeAndDistanceInformation(jsonObjects.get(2));
+            setTimeAndDistanceInformation(jsonObjects.get(jsonObjects.size() - 1));
             isRouteASelected = true;
             isRouteBSelected = false;
             isRouteCSelected = false;
             updateButtonVisibility();
         });
+
         buttonRouteB.setOnClickListener(v -> {
             setTimeAndDistanceInformation(jsonObjects.get(1));
             isRouteASelected = false;
@@ -146,11 +164,20 @@ public class InfoRouteController {
         try {
             for(String currentJson : jsonCoordinates)
                 jsonObjects.add(new JSONObject(currentJson));
+            setColorsInfoRoutes(jsonCoordinates.size());
+            setTimeAndDistanceInformation(jsonObjects.get(jsonObjects.size() - 1));
+            mapPolyline.displaySavedCoordinates(jsonCoordinates, colorsInfoRoutes);
+
+            if (jsonObjects.size() < 2){
+                buttonRouteB.setVisibility(View.GONE);
+            } else buttonRouteB.setVisibility(View.VISIBLE);
+            if (jsonObjects.size() < 2)
+                buttonRouteC.setVisibility(View.GONE);
+            else buttonRouteC.setVisibility(View.VISIBLE);
+
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        setTimeAndDistanceInformation(jsonObjects.get(2));
-        mapPolyline.displaySavedCoordinates(jsonCoordinates, colorsInfoRoutes);
     }
 
     /**
