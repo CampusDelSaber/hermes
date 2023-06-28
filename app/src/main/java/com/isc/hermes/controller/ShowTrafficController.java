@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -96,20 +97,15 @@ public class ShowTrafficController {
      * @param polylineOptions is the polyline Options.
      */
     private void polylineStyle(String trafficType, PolylineOptions polylineOptions) {
-        int color = 0;
-        switch (trafficType) {
-            case "Normal Traffic":
-                color = Color.parseColor("#FFA500");
-                break;
-            case "Low Traffic":
-                color = Color.GREEN;
-                break;
-            case "High Traffic":
-                color = Color.RED;
-                break;
-        }
-        polylineOptions.color(color);
-    }
+        HashMap<String, Integer> colorMap = new HashMap<>();
+        colorMap.put("Normal Traffic", Color.parseColor("#FFA500"));
+        colorMap.put("Low Traffic", Color.GREEN);
+        colorMap.put("High Traffic", Color.RED);
 
+        Integer color = colorMap.get(trafficType);
+        if (color != null) {
+            polylineOptions.color(color);
+        }
+    }
 
 }
