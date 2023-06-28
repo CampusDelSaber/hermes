@@ -15,6 +15,7 @@ import java.util.List;
 public class Route {
     private List<Node> path;
     private double totalEstimatedDistance;
+    private TransportationType transportationType;
     private int totalEstimatedArrivalTime;
 
     /**
@@ -59,6 +60,7 @@ public class Route {
      * @param transportationType the transportation to be used
      */
     private void setTotalEstimatedArrivalTime(TransportationType transportationType) {
+        this.transportationType = transportationType;
         totalEstimatedArrivalTime =
                 (int) Math.ceil(((totalEstimatedDistance / transportationType.getVelocity()) * 60));
     }
@@ -131,5 +133,16 @@ public class Route {
     public boolean equals(@Nullable Object obj) {
         if (!(obj instanceof Route route)) return false;
         return this.path.containsAll(route.path);
+    }
+
+    public void updateEstimatedArrivalTime() {
+        if (transportationType != null){
+            totalEstimatedArrivalTime =
+                    (int) Math.ceil(((totalEstimatedDistance / transportationType.getVelocity()) * 60));
+        }
+    }
+
+    public void updateDistance(double traveledDistance) {
+        this.totalEstimatedDistance = totalEstimatedDistance - traveledDistance;
     }
 }

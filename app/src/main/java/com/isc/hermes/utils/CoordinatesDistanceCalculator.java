@@ -43,6 +43,24 @@ public class CoordinatesDistanceCalculator {
     }
 
     /**
+     * This method calculates the distance between two points overloading the
+     * calculateDistance(Node, Node) method.
+     *
+     * @param source coords of the source point
+     * @param target coords of the target point
+     * @return the distance between the nodes in kilometers
+     */
+    public double calculateDistance(MapCoordsRecord source, MapCoordsRecord target) {
+        double dlon = target.getLongitudeAsRadians() - source.getLongitudeAsRadians();
+        double dlat = target.getLatitudeAsRadians() - source.getLatitudeAsRadians();
+
+        double angularDistance = getAngularDistance(source.getLatitudeAsRadians(), target.getLatitudeAsRadians(), dlon, dlat);
+        double centralAngle = getCentralAngle(angularDistance);
+
+        return EARTH_RADIUS * centralAngle;
+    }
+
+    /**
      * Calculates the angular distance based on the given latitude and longitude differences.
      *
      * @param lat1  the latitude of the first point in radians
