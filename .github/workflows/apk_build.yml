@@ -1,0 +1,117 @@
+name: Application Build 🏗️ 
+run-name: ${{ github.actor }} is executing the workflow ${{ github.workflow }}.
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - develop
+      - main
+
+jobs:
+  build:
+    name: build
+    runs-on:  ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17' 
+          cache: 'gradle'
+
+      - name: Build
+        working-directory: ${{ github.workspace }}
+        run: |
+          ./scripts/check_env.sh
+          ./gradlew build -x test --no-daemon
+
+  test:
+    name: test
+    needs: build
+    runs-on:  ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17' 
+          cache: 'gradle'
+
+      - name: Run Tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          ./scripts/check_env.sh
+          ./gradlew test --no-daemon
+
+  publication:
+    name: apk_distribution 
+    needs: [build, test]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17' 
+          cache: 'gradle'
+
+      - name: Assemble
+        working-directory: ${{ github.workspace }}
+        run: ./gradlew assembleRelease --no-daemon
+        
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: hermes_${{ github.sha }}.apk
+          path: 'app/build/outputs/apk/release/*.apk'
+          retention-days: 10
+      
+  code_linting:
+    name: code_analysis
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17' 
+
+      - name: PMD analysis
+        uses: pmd/pmd-github-action@v1
+        id: pmd
+        with:
+          version: '6.40.0'
+          sourcePath: 'app/src/main/java'
+          rulesets: 'rulesets/java/quickstart.xml'
+          analyzeModifiedFilesOnly: false
+          createGitHubAnnotations: false
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: pmd-report.sarif

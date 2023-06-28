@@ -105,13 +105,11 @@ public class PolygonOptionsController {
     private Integer uploadNaturalDisasterDataBase(){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated= simpleDateFormat.format(calendar.getTime());
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         String deathDate =  simpleDateFormat.format(calendar.getTime());;
         String coordinates = MapPolygonController.getInstance(this.polygonController.getMapboxMap(), context).getStringWithPolygonPoint();
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(id,"Natural Disaster","Natural Disaster",dateCreated, deathDate , GeometryType.POLYGON.getName(),coordinates);
-        Log.i("GABU", JsonString);
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident("Natural Disaster","Natural Disaster",dateCreated, deathDate , GeometryType.POLYGON.getName(),coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 

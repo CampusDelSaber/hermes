@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".EmailVerificationActivity">
+
+    <ImageView
+        android:id="@+id/emailImage"
+        android:layout_width="150dp"
+        android:layout_height="126dp"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="131dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/titleVerify"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.42000002"
+        app:srcCompat="@drawable/email_icon" />
+
+    <TextView
+        android:id="@+id/MessageCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="18dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="@string/emailVerificationSent"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/emailTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleVerify" />
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="84dp"
+        android:text="@string/userEmail"
+        android:textColor="@color/blueLogo"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCode" />
+
+    <TextView
+        android:id="@+id/MessageCodeHer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="111dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="112dp"
+        android:text="@string/enterCodeLabel"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailTextView" />
+
+    <EditText
+        android:id="@+id/codeTextField1"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:focusable="true"
+        android:inputType="number|numberSigned"
+        android:maxLength="2"
+        android:paddingTop="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/codeTextField2"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
+
+    <EditText
+        android:id="@+id/codeTextField2"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:inputType="number|numberSigned"
+        android:maxLength="2"
+        android:paddingTop="10dp"
+        android:textIsSelectable="false"
+        app:layout_constraintEnd_toStartOf="@+id/codeTextField3"
+        app:layout_constraintStart_toEndOf="@+id/codeTextField1"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
+
+    <EditText
+        android:id="@+id/codeTextField3"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:inputType="number|numberSigned"
+        android:maxLength="2"
+        android:paddingTop="10dp"
+        android:textIsSelectable="false"
+        app:layout_constraintEnd_toStartOf="@+id/codeTextField4"
+        app:layout_constraintStart_toEndOf="@+id/codeTextField2"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
+
+    <EditText
+        android:id="@+id/codeTextField4"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:inputType="number|numberSigned"
+        android:maxLength="2"
+        android:paddingTop="10dp"
+        android:textIsSelectable="false"
+        app:layout_constraintEnd_toStartOf="@+id/codeTextField5"
+        app:layout_constraintStart_toEndOf="@+id/codeTextField3"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
+
+    <EditText
+        android:id="@+id/codeTextField6"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:inputType="number|numberSigned"
+        android:maxLength="1"
+        android:textIsSelectable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/codeTextField5"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
+
+    <EditText
+        android:id="@+id/codeTextField5"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:inputType="number|numberSigned"
+        android:maxLength="2"
+        android:paddingTop="10dp"
+        android:textIsSelectable="false"
+        app:layout_constraintEnd_toStartOf="@+id/codeTextField6"
+        app:layout_constraintStart_toEndOf="@+id/codeTextField4"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="168dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginBottom="164dp"
+        android:backgroundTint="@color/mapboxRedDark"
+        android:foregroundGravity="center_horizontal"
+        android:onClick="continueLikeGeneralUser"
+        android:text="@string/GeneralAccount"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.361"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
+
+    <Button
+        android:id="@+id/continueButton"
+        android:layout_width="159dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="164dp"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:onClick="continueVerification"
+        android:text="@string/VerifyAccount"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.642"
+        app:layout_constraintStart_toEndOf="@+id/cancelButton"
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
+
+    <TextView
+        android:id="@+id/titleVerify"
+        android:layout_width="348dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="11dp"
+        android:text="@string/verifyEmailTittle"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/MessageCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

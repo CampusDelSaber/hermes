@@ -3,6 +3,7 @@ package com.isc.hermes.controller.offline;
 import android.app.Activity;
 import android.widget.Toast;
 
+import com.isc.hermes.controller.PopUp.ProgressDialogManager;
 import com.isc.hermes.utils.offline.MapboxOfflineManager;
 import com.isc.hermes.utils.offline.OfflineUtils;
 import com.mapbox.mapboxsdk.offline.OfflineManager;
@@ -11,12 +12,14 @@ import com.mapbox.mapboxsdk.offline.OfflineRegionError;
 import com.mapbox.mapboxsdk.offline.OfflineRegionStatus;
 
 import timber.log.Timber;
+
 /**
  * This class  is responsible for downloading offline regions.
  * It implements the OfflineManager.CreateOfflineRegionCallback interface.
  */
 public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallback {
     private final Activity activity;
+    private final ProgressDialogManager progressManager;
 
     /**
      * Constructs a new RegionDownloader object.
@@ -25,6 +28,7 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
      */
     public RegionDownloader(Activity activity) {
         this.activity = activity;
+        progressManager = new ProgressDialogManager(activity, "Downloading ...");
     }
 
     /**
@@ -54,26 +58,20 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
      * @param offlineRegion The region to download.
      */
     private void launchDownload(OfflineRegion offlineRegion) {
-        Toast.makeText(activity, "THE DOWNLOAD HAS STARTED", Toast.LENGTH_SHORT).show();
+        progressManager.showProgressDialog();
         offlineRegion.setObserver(new OfflineRegion.OfflineRegionObserver() {
             @Override
             public void onStatusChanged(OfflineRegionStatus status) {
+                double percentage = status.getRequiredResourceCount() >= 0
+                        ? (100.0 * status.getCompletedResourceCount() / status.getRequiredResourceCount()) :
+                        0.0;
                 if (status.isComplete()) {
-                    MapboxOfflineManager.getInstance(activity).addOfflineRegion(
-                            OfflineUtils.getRegionName(offlineRegion),
-                            offlineRegion
-                    );
-                    CardViewHandler.getInstance().notifyObservers();
-                    Toast.makeText(activity, "REGION DOWNLOADED", Toast.LENGTH_SHORT).show();
+                    completeDownload(offlineRegion);
                     return;
                 } else if (status.isRequiredResourceCountPrecise()) {
-                    // download status
+                    progressManager.updateProgress((int) Math.round(percentage));
                 }
-
-                Timber.d("%s/%s resources; %s bytes downloaded.",
-                        String.valueOf(status.getCompletedResourceCount()),
-                        String.valueOf(status.getRequiredResourceCount()),
-                        String.valueOf(status.getCompletedResourceSize()));
+                printLogStatus(status);
             }
 
             @Override
@@ -90,5 +88,31 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
         });
 
         offlineRegion.setDownloadState(OfflineRegion.STATE_ACTIVE);
+    }
+
+    /**
+     * This method print the Download status in the logcat
+     *
+     * @param status offline download status.
+     */
+    private void printLogStatus(OfflineRegionStatus status) {
+        Timber.d("%s/%s resources; %s bytes downloaded.",
+                String.valueOf(status.getCompletedResourceCount()),
+                String.valueOf(status.getRequiredResourceCount()),
+                String.valueOf(status.getCompletedResourceSize()));
+    }
+
+    /**
+     * This method manage the state when a download is finished.
+     *
+     * @param offlineRegion offline downloaded.
+     */
+    private void completeDownload(OfflineRegion offlineRegion) {
+        MapboxOfflineManager.getInstance(activity).addOfflineRegion(
+                OfflineUtils.getRegionName(offlineRegion),
+                offlineRegion
+        );
+        CardViewHandler.getInstance().notifyObservers();
+        progressManager.dismissProgressDialog();
     }
 }
