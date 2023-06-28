@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private AccountInfoManager accountInfoManager;
     private ImageButton buttonClear;
     private final String resetSearchText = "Search...";
-    private AccountInfoManager accountInfoManager;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
