@@ -185,10 +185,20 @@ public class User {
         this.id = id;
     }
 
+    /**
+     * Sets the registration status of the object.
+     *
+     * @param registered the registration status to be set
+     */
     public void setRegistered(boolean registered) {
         isRegistered = registered;
     }
 
+    /**
+     * Returns the registration status of the object.
+     *
+     * @return isRegistered true if the object is registered, false otherwise
+     */
     public boolean isRegistered() {
         return isRegistered;
     }

@@ -11,7 +11,6 @@ import androidx.annotation.RequiresApi;
 
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
-import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
@@ -50,12 +49,13 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     /**
      * Handles the click event for the view.
      *
-     * @param v The view that was clicked.
+     * @param view The view that was clicked.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void onClick(View v) {
-        if (v == super.confirmButton) {
-            updateUserInformation();
+    public void onClick(View view) {
+        if (view == super.confirmButton) {
+            updateTypeUser();
             button.setVisibility(View.INVISIBLE);
             fullName.setEnabled(false);
             username.setEnabled(false);
@@ -63,6 +63,10 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         } dismiss();
     }
 
+    /**
+     * Updates the type of user if the user's type is "Administrator" and the object is not modifiable.
+     * It sends an email and starts the EmailVerificationActivity for further verification.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateTypeUser() {
         if (UserRepository.getInstance().getUserContained().getTypeUser().
@@ -74,6 +78,11 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         }
     }
 
+    /**
+     * Sends an email containing a verification code to the user's email address.
+     * The email is sent using the SendEmailManager class.
+     * The verification code is obtained from the Validator class.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void sendEmail(){
         Validator validator = new Validator(UserRepository.getInstance().getUserContained());
@@ -81,18 +90,6 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         SendEmailManager sendEmailManager = new SendEmailManager();
         sendEmailManager.addEmail(UserRepository.getInstance().getUserContained().getEmail(),
                 validator.getCode());
-    }
-
-    /**
-     * Updates the user information.
-     * This method is responsible for updating the user information by calling the `editUser()` method
-     * of the `AccountInfoManager` class.
-     *
-     * @throws UnsupportedOperationException if the device's SDK version is lower than Android Oreo.
-     */
-    private void updateUserInformation(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            new AccountInfoManager().editUser(UserRepository.getInstance().getUserContained());
     }
 
     /**
@@ -111,6 +108,11 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         this.comboBoxField = comboBoxField;
     }
 
+    /**
+     * Sets the modifiability status of the object.
+     *
+     * @param modifiable the modifiability status to be set
+     */
     public void setIsModifiable(boolean modifiable) {
         isModifiable = modifiable;
     }
