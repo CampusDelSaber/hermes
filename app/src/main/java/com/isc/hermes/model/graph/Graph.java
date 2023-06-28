@@ -1,6 +1,7 @@
 package com.isc.hermes.model.graph;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,5 +44,25 @@ public class Graph {
         return nodes;
     }
 
-
+    /**
+     * Prints the relationships between nodes in the graph.
+     */
+    public void printGraph() {
+        System.out.println("Graph:");
+        for (Node node : nodes.values()) {
+            System.out.println("Node: " + node.getId());
+            List<Edge> edges = node.getEdges();
+            if (edges.isEmpty()) {
+                System.out.println("  No edges");
+            } else {
+                System.out.println("  Edges:");
+                for (Edge edge : edges) {
+                    System.out.println("    --");
+                    System.out.println("    Source: " + edge.getSource().getId());
+                    System.out.println("    Destination: " + edge.getDestination().getId());
+                    System.out.println("    Weight: " + edge.getWeight());
+                }
+            }
+        }
+    }
 }

@@ -1,23 +1,21 @@
 package com.isc.hermes.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.utils.Animations;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * The InfoRouteController class is responsible for managing the information related to routes,
@@ -37,30 +35,58 @@ public class InfoRouteController {
     private ArrayList<Integer> colorsInfoRoutes;
     private MapPolyline mapPolyline;
    private ArrayList<JSONObject> jsonObjects;
+   private NavigationOptionsController navigationOptionsController;
    private NavigationDirectionController navigationDirectionController;
+    private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
+
 
     /**
      * Constructs a new InfoRouteController object.
      *
      * @param context The context of the activity.
+     * @param navigationOptionsController route navigation's options controller
      */
-    private InfoRouteController(Context context){
-        layout = ((AppCompatActivity)context).findViewById(R.id.distance_time_view);
-        cancelButton =  ((AppCompatActivity)context).findViewById(R.id.cancel_navigation_button);
-        timeText = ((AppCompatActivity)context).findViewById(R.id.timeText);
-        distanceText = ((AppCompatActivity)context).findViewById(R.id.distanceText);
-        buttonRouteA = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteOne);
-        buttonRouteB = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteTwo);
-        buttonRouteC = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteThree);
-        startNavigationButton = ((AppCompatActivity)context).findViewById(R.id.startNavegationButton);
+    private InfoRouteController(Context context, NavigationOptionsController navigationOptionsController){
+        setViewComponents(context);
         navigationDirectionController = new NavigationDirectionController(context);
+        this.navigationOptionsController = navigationOptionsController;
         colorsInfoRoutes = new ArrayList<>();
         isActive = false;
-        colorsInfoRoutes.add(0XFFFF6E26);
-        colorsInfoRoutes.add(0xFF2350A3);
-        colorsInfoRoutes.add(0XFF686C6C);
+        isRouteASelected = false;
+        isRouteBSelected = false;
+        isRouteCSelected = false;
         jsonObjects = new ArrayList<>();
         setActionButtons();
+    }
+
+    /**
+     * This method set the view of the components.
+     *
+     * @param context is the contex.
+     */
+    private void setViewComponents(Context context){
+        Activity activity = ((AppCompatActivity) context);
+        layout = activity.findViewById(R.id.distance_time_view);
+        cancelButton =  activity.findViewById(R.id.cancel_navigation_button);
+        timeText = activity.findViewById(R.id.timeText);
+        distanceText = activity.findViewById(R.id.distanceText);
+        buttonRouteC = activity.findViewById(R.id.ButtonRouteThree);
+        buttonRouteB = activity.findViewById(R.id.ButtonRouteTwo);
+        buttonRouteA = activity.findViewById(R.id.ButtonRouteOne);
+        buttonRouteB.setAlpha(0.3f);
+        buttonRouteC.setAlpha(0.3f);
+        startNavigationButton = activity.findViewById(R.id.startNavegationButton);
+    }
+
+    /**
+     * This method set the routes' color
+     * @param size is the size of the route.
+     */
+    private void setColorsInfoRoutes(int size){
+        colorsInfoRoutes.clear();
+        colorsInfoRoutes.add(size > 1 ? 0XFF686C6C : 0XFFFF6E26);
+        colorsInfoRoutes.add(0xFF2350A3);
+        colorsInfoRoutes.add(size > 1 ? 0XFFFF6E26 : 0XFF686C6C);
     }
 
     /**
@@ -74,16 +100,41 @@ public class InfoRouteController {
             layout.setVisibility(View.GONE);
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
+            navigationOptionsController.getMapWayPointController().deleteMarks();
             isActive = false;
         });
 
-        buttonRouteA.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(0)));
-        buttonRouteB.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(1)));
-        buttonRouteC.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(2)));
+        buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
+                true, false, false));
+        buttonRouteB.setOnClickListener(v -> setRouteInformation(1,
+                false, true, false));
+        buttonRouteC.setOnClickListener(v -> setRouteInformation(0,
+                false, false, true));
+
         startNavigationButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         });
+    }
+
+    /**
+     * This method shows which route is selected
+     */
+    private void setRouteInformation(int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected) {
+        setTimeAndDistanceInformation(jsonObjects.get(index));
+        this.isRouteASelected = isRouteASelected;
+        this.isRouteBSelected = isRouteBSelected;
+        this.isRouteCSelected = isRouteCSelected;
+        updateButtonVisibility();
+    }
+
+    /**
+     * This method sets the visibility of the button.
+     */
+    private void updateButtonVisibility() {
+        buttonRouteA.setAlpha(isRouteASelected ? 1f : 0.3f);
+        buttonRouteB.setAlpha(isRouteBSelected ? 1f : 0.3f);
+        buttonRouteC.setAlpha(isRouteCSelected ? 1f : 0.3f);
     }
 
     /**
@@ -92,9 +143,9 @@ public class InfoRouteController {
      * @param context The context of the activity.
      * @return The InfoRouteController instance.
      */
-    public static InfoRouteController getInstance(Context context){
+    public static InfoRouteController getInstance(Context context, NavigationOptionsController navigationOptionsController){
         if(instanceNavigationController == null){
-            instanceNavigationController = new InfoRouteController(context);
+            instanceNavigationController = new InfoRouteController(context, navigationOptionsController);
         }
         return instanceNavigationController;
     }
@@ -113,11 +164,26 @@ public class InfoRouteController {
         try {
             for(String currentJson : jsonCoordinates)
                 jsonObjects.add(new JSONObject(currentJson));
+            setColorsInfoRoutes(jsonCoordinates.size());
+            setTimeAndDistanceInformation(jsonObjects.get(jsonObjects.size() - 1));
+            mapPolyline.displaySavedCoordinates(jsonCoordinates, colorsInfoRoutes);
+
+            setButtonsVisibility();
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        setTimeAndDistanceInformation(jsonObjects.get(0));
-        mapPolyline.displaySavedCoordinates(jsonCoordinates, colorsInfoRoutes);
+    }
+
+    /**
+     * This method will set the buttons visibility depending on the routes size
+     */
+    private void setButtonsVisibility(){
+        if (jsonObjects.size() < 2){
+            buttonRouteB.setVisibility(View.GONE);
+        } else buttonRouteB.setVisibility(View.VISIBLE);
+        if (jsonObjects.size() < 2)
+            buttonRouteC.setVisibility(View.GONE);
+        else buttonRouteC.setVisibility(View.VISIBLE);
     }
 
     /**

@@ -90,7 +90,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
-        setTheUserInformationInTheDropMenu();
+        try {
+            setTheUserInformationInTheDropMenu();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
     /**
      * Set up the SearchView and set the text color to black.
@@ -206,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this);
         currentLocationController.initLocationButton();
+        currentLocationController.initLocation();
     }
 
     /**

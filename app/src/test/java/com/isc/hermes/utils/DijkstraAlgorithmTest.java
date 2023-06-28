@@ -163,7 +163,7 @@ public class DijkstraAlgorithmTest {
         Node destination = graph.getNode("F");
 
         Map<String, Route> shortestPathAlternatives =
-            dijkstraAlgorithm.getPathAlternatives(graph, source, destination, TransportationType.CAR);
+                dijkstraAlgorithm.getPathAlternatives(graph, source, destination, TransportationType.CAR);
         assertNotNull(shortestPathAlternatives);
         assertEquals(3, shortestPathAlternatives.size());
 

@@ -128,7 +128,7 @@ public class SignUpActivityView extends AppCompatActivity {
                 user =  manager.getUserById(id);
                 DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
             } catch (ExecutionException | InterruptedException | JSONException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
         return user;
