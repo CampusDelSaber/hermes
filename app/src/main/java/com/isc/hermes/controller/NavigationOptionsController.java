@@ -366,7 +366,7 @@ public class NavigationOptionsController {
      */
     private void getRouteOptionsFromAlgorithm(GraphController graphController) {
         try {
-            graphController.buildGraph();
+            graphController.buildGraph(transportationType);
             routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
                     graphController.getGraph(), graphController.getStartNode(),
                     graphController.getDestinationNode(), transportationType
