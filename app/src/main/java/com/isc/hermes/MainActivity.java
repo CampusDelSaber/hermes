@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private Toolbar toolbar;
     private ImageButton buttonClear;
-    private String resetSearch = "Search...";
+    private final String resetSearchText = "Search...";
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             buttonClear.setVisibility(View.VISIBLE);
             searchView.setText(place.getPlaceName());
         } else
-            searchView.setText(resetSearch);
+            searchView.setText(resetSearchText);
     }
 
     /**
@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * and hides the clear button.
      */
     public void resetMarkersAndSearch() {
-        searchView.setText(resetSearch);
+        searchView.setText(resetSearchText);
         markerManager.removeAllMarkers(mapView);
         buttonClear.setVisibility(View.GONE);
     }
