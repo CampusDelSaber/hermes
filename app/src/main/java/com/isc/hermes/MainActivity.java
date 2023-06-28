@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String mapStyle;
     private CurrentLocationController currentLocationController;
     private FilterCategoriesController filterCategoriesController;
-    private boolean visibilityMenu = false;
     private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private MarkerManager markerManager;
@@ -65,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private Toolbar toolbar;
     private ImageButton buttonClear;
+    private String resetSearch = "Search...";
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -93,8 +93,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initializeFunctionalityOfTheBurgerButton();
         setTheUserInformationInTheDropMenu();
     }
+
     /**
-     * Set up the SearchView and set the text color to black.
+     * Sets up the search view and clear button.
+     * Initializes the search view, sets the text color to black,
+     * and hides the clear button initially.
      */
     private void setupSearchView() {
         searchView = findViewById(R.id.searchView);
@@ -344,22 +347,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
     }
 
-    String resetSearch = "Search...";
     /**
      * Adds markers to the map based on the current place preferences.
      */
     private void addMarkers() {
-        buttonClear.setVisibility(View.VISIBLE);
         WayPoint place = new WayPoint(sharedSearcherPreferencesManager.getPlaceName(),
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
         addMarkerToMap(place);
-        if (place.getPlaceName() != null)
+        if (place.getPlaceName() != null){
+            buttonClear.setVisibility(View.VISIBLE);
             searchView.setText(place.getPlaceName());
-        else {
-
+        } else
             searchView.setText(resetSearch);
-        }
     }
 
     /**
