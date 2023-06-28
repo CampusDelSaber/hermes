@@ -50,7 +50,7 @@ public class GenerateRandomIncidentView {
     }
 
     private void initGenerateIncidentButtonFunctionality() {
-        IncidentView.getInstance(activity)
+        IncidentViewNavigation.getInstance(activity)
                 .initIncidentButtonFunctionality(generateIncidentButton, layout);
     }
 

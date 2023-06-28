@@ -16,6 +16,11 @@
     <string name="access_token">sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA</string>
     <string name="web_client_id">628551362001-osi4l1rcdiqt00got5n0hvn1akoc2una.apps.googleusercontent.com</string>
     <string name="get_location_text">Get Location</string>
+    <string name="userEmail"> sebastian.faustino@example.com</string>
+    <string name="enterCodeLabel"> Please enter the code here</string>
+    <string name="resendLabel"> did not get an email ? Resend</string>
+    <string name="verifyEmailTittle">Verify admin user request </string>
+    <string name="emailVerificationSent"> An email with verification code has been sent to</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
     <string name="delete_account_question_text">Are you sure you want to delete your account?</string>
@@ -51,9 +56,9 @@
     <string name="traffic_uploaded">Traffic uploaded successfully.</string>
     <string name="traffic_not_uploaded">Traffic could not be uploaded.</string>
     <string name="styles_menu">Customization</string>
-    <string name="satellite_style">Satellite</string>
-    <string name="default_style">Default</string>
-    <string name="dark_style">Dark</string>
+    <string name="satellite_style">mapbox://styles/mapbox/satellite-streets-v11</string>
+    <string name="default_style">mapbox://styles/mapbox/streets-v11</string>
+    <string name="dark_style">mapbox://styles/mapbox/dark-v10</string>
     <string-array name="incidents_type">
         <item>Accident</item>
         <item>Obstruction</item>
@@ -142,4 +147,6 @@
     <string name="display_incidents">Display Incidents</string>
     <string name="select_an_option">Select an Option</string>
     <string name="generate_incidents">Generate Incidents</string>
+    <string name="verify_account">Verify Account</string>
+    <string name="continue_general_account">Continue General Account</string>
 </resources>

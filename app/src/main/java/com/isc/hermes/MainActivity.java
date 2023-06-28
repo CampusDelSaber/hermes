@@ -4,62 +4,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Handler;
-
-import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapWayPointController;
 import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
-
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.offline.OfflineDataRepository;
-import com.isc.hermes.model.RegionData;
-import com.isc.hermes.model.User;
-
-import android.widget.SearchView;
-
+import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.model.Utils.MapPolyline;
-
-import com.isc.hermes.utils.MapClickEventsManager;
-import com.isc.hermes.utils.MapConfigure;
+import com.isc.hermes.utils.MapManager;
+import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.SharedSearcherPreferencesManager;
-import com.isc.hermes.view.IncidentView;
-import com.isc.hermes.view.MapDisplay;
-import com.isc.hermes.view.MapPolygonStyle;
+import com.isc.hermes.view.IncidentViewNavigation;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
@@ -69,12 +42,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public static Context context;
     private MapView mapView;
-    private MapDisplay mapDisplay;
     private String mapStyle;
     private CurrentLocationController currentLocationController;
-    private User userRegistered;
     private boolean visibilityMenu = false;
-    private SearchView searchView;
+    private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
@@ -95,45 +66,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
         initMapView();
         this.mapStyle = "Default";
-        mapDisplay = MapDisplay.getInstance(this, mapView, new MapConfigure());
-        mapDisplay.onCreate(savedInstanceState);
         addMapboxSearcher();
-        initCurrentLocationController();
         mapView.getMapAsync(this);
-        searchView = findViewById(R.id.searchView);
+        setupSearchView();
         changeSearchView();
         addIncidentGeneratorButton();
         incidentViewButton();
-        MarkerManager.getInstance(this).removeSavedMarker();
-        FilterCategoriesController filterCategoriesController = new FilterCategoriesController(this);
-        launcher = createActivityResult();
         initShowIncidentsController();
-        testPolyline(); // this is a test method that will be removed once the functionality has been verified.
+        MarkerManager.getInstance(this).removeSavedMarker();
+        launcher = createActivityResult();
+        initCurrentLocationController();
     }
-
-    public void testPolyline() { // this is a test method that will be removed once the functionality has been verified.
-        Map<String, String> r = new HashMap<>();
-        List<String> routes = new ArrayList<>();
-        List<Integer> colors = new ArrayList<>();
-
-        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
-        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
-        r.put("Route C", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.159019, -17.398311],[-66.154399, -17.397043],[-66.151315, -17.398656],[-66.147585, -17.400585],[-66.142978, -17.401595]]}}");
-
-        String jsonA = r.get("Route A");
-        String jsonB = r.get("Route B");
-        String jsonC = r.get("Route C");
-
-        routes.add(jsonA);
-        routes.add(jsonB);
-        routes.add(jsonC);
-
-        colors.add(0xFF2867DC);
-        colors.add(0XFFC5D9FD);
-        colors.add(0XFFC5D9FD);
-
-        MapPolyline mapPolyline = new MapPolyline(mapView);
-        mapPolyline.displaySavedCoordinates(routes, colors);
+    /**
+     * Set up the SearchView and set the text color to black.
+     */
+    private void setupSearchView() {
+        searchView = findViewById(R.id.searchView);
+        searchView.setTextColor(Color.BLACK);
     }
 
     /**
@@ -152,12 +101,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FilterController filterController = new FilterController(mapboxMap, this);
         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                filterController.initComponents();
-            }
+            public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
-        MapClickEventsManager.getInstance().setMapboxMap(mapboxMap);
-        MapClickEventsManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
+        MapManager.getInstance().setMapboxMap(mapboxMap);
+        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
     }
 
     /**
@@ -227,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * This method will init the current location controller to get the real time user location
      */
     private void initCurrentLocationController() {
-        currentLocationController = CurrentLocationController.getControllerInstance(this, mapDisplay);
+        currentLocationController = CurrentLocationController.getControllerInstance(this);
         currentLocationController.initLocationButton();
     }
 
@@ -247,10 +194,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * This method adds the button for incident generation.
+     * This method is the incident view button
      */
     private void incidentViewButton() {
-        IncidentView.getInstance(this);
+        IncidentViewNavigation.getInstance(this);
     }
 
     /**
@@ -267,14 +214,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapView = findViewById(R.id.mapView);
     }
 
-
     /**
      * Method for starting the MapView object instance.
      */
     @Override
     protected void onStart() {
         super.onStart();
-        mapDisplay.onStart();
     }
 
     /**
@@ -283,14 +228,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        mapDisplay.onResume();
         SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         String nameServiceUsed = sharedPref.getString(getString(R.string.save_authentication_state), "default");
         if (!nameServiceUsed.equals("default")) {
             SignUpActivityView.authenticator = AuthenticationFactory.createAuthentication(AuthenticationServices.valueOf(nameServiceUsed));
-        }
-
-        addMarkers();
+        } addMarkers();
     }
 
     /**
@@ -299,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPause() {
         super.onPause();
-        mapDisplay.onPause();
         SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         if (SignUpActivityView.authenticator != null) {
@@ -314,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStop() {
         super.onStop();
-        mapDisplay.onStop();
     }
 
     /**
@@ -323,7 +263,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mapDisplay.onLowMemory();
     }
 
     /**
@@ -332,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mapDisplay.onDestroy();
     }
 
     /**
@@ -343,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        mapDisplay.onSaveInstanceState(outState);
     }
 
     /**
@@ -361,9 +298,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             styleOptionsWindow.setVisibility(View.VISIBLE);
             setMapScrollGesturesEnabled(true);
             visibilityMenu = false;
-        } else {
-            styleOptionsWindow.setVisibility(View.GONE);
-        }
+        } else styleOptionsWindow.setVisibility(View.GONE);
     }
 
     /**
@@ -376,30 +311,47 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         styleOptionsWindow.setVisibility(View.GONE);
 
         mapStyle = ((ImageButton) view).getTag().toString();
-        mapDisplay.setMapStyle(mapStyle);
+        MapManager.getInstance().getMapboxMap().setStyle(mapStyle);
         isStyleOptionsVisible = false;
     }
 
     /**
-     * Adds markers to the map based on the shared searcher preferences.
-     * The markers are added using the MarkerManager instance.
+     * Adds markers to the map based on the current place preferences.
      */
     private void addMarkers() {
-        markerManager.addMarkerToMap(mapView, sharedSearcherPreferencesManager.getPlaceName(),
+        WayPoint place = new WayPoint(sharedSearcherPreferencesManager.getPlaceName(),
                 sharedSearcherPreferencesManager.getLatitude(),
                 sharedSearcherPreferencesManager.getLongitude());
+        addMarkerToMap(place);
+        if (place.getPlaceName() != null)
+            searchView.setText(place.getPlaceName());
+        else {
+            String resetSearch = "Search...";
+            searchView.setText(resetSearch);
+        }
     }
 
     /**
+     * Adds a marker to the map for the given WayPoint if it has a valid place name.
+     *
+     * @param place The WayPoint representing the place to add the marker for.
+     */
+    private void addMarkerToMap(WayPoint place) {
+        if (place.getPlaceName() != null) {
+            markerManager.addMarkerToMap(mapView, place.getPlaceName(), place.getLatitude(), place.getLongitude());
+        }
+    }
+
+    /*
      * This method used for open a new activity, offline settings.
      *
      * @param view view
      */
     public void goOfflineMaps(View view) {
         Intent intent = new Intent(MainActivity.this, OfflineMapsActivity.class);
-        intent.putExtra("lat", mapDisplay.getMapboxMap().getCameraPosition().target.getLatitude());
-        intent.putExtra("long", mapDisplay.getMapboxMap().getCameraPosition().target.getLongitude());
-        intent.putExtra("zoom", mapDisplay.getMapboxMap().getCameraPosition().zoom);
+        intent.putExtra("lat", MapManager.getInstance().getMapboxMap().getCameraPosition().target.getLatitude());
+        intent.putExtra("long", MapManager.getInstance().getMapboxMap().getCameraPosition().target.getLongitude());
+        intent.putExtra("zoom", MapManager.getInstance().getMapboxMap().getCameraPosition().zoom);
 
         launcher.launch(intent);
     }
@@ -416,11 +368,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Intent data = result.getData();
                         if (data != null) {
                             Bundle b = data.getExtras();
-                            mapDisplay.animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
+                            MapManager.getInstance().animateCameraPosition(b.getParcelable("center"), b.getDouble("zoom"));
                             openSideMenu(null);
                         }
                     }
-
                 });
     }
 }
