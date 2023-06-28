@@ -1,29 +1,27 @@
 package com.isc.hermes.model.navigation;
 
-import com.isc.hermes.model.CurrentLocationModel;
-import com.isc.hermes.model.graph.Node;
-import com.isc.hermes.utils.CoordinatesDistanceCalculator;
-import com.isc.hermes.utils.MapCoordsRecord;
+import com.isc.hermes.model.location.LocationIntervals;
 
 public class RouteEstimatesManager {
-    private Route route;
-    private final CoordinatesDistanceCalculator distanceCalculator;
+    private final Route route;
+    private final UserRouteTracker userRouteTracker;
 
-    public RouteEstimatesManager(Route route) {
+    public RouteEstimatesManager(Route route, UserRouteTracker userRouteTracker) {
         this.route = route;
-        distanceCalculator = CoordinatesDistanceCalculator.getInstance();
+        this.userRouteTracker = userRouteTracker;
     }
 
-    public void updateEstimates(CurrentLocationModel userLocation){
-        Node currentNode = route.getCurrentNode();
-        route.updateDistance(measurePartialDistance(currentNode, userLocation));
-        route.updateEstimatedArrivalTime();
-    }
+    public void startEstimatesTrack() {
+        while (!userRouteTracker.hasUserArrived()) {
+            route.updateDistance(userRouteTracker.getPartialSegmentDistance());
+            route.updateEstimatedArrivalTime();
 
-    private double measurePartialDistance(Node node, CurrentLocationModel userLocation){
-       return distanceCalculator.calculateDistance(
-               new MapCoordsRecord(node.getLatitude(), node.getLongitude()),
-               new MapCoordsRecord(userLocation.getLatitude(), userLocation.getLongitude())
-       );
+            try {
+                Thread.currentThread().wait((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
+            } catch (InterruptedException e) {
+                // TODO: Handle exception properly.
+                e.printStackTrace();
+            }
+        }
     }
 }

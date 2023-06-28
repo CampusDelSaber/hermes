@@ -7,18 +7,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.isc.hermes.R;
+import com.isc.hermes.model.navigation.TestRouteBuilder;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.graph.Node;
+import com.isc.hermes.model.navigation.Route;
+import com.isc.hermes.model.navigation.RouteEstimatesManager;
+import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -41,7 +44,7 @@ public class NavigationOptionsController {
     /**
      * This is the constructor method. Init all the necessary components.
      *
-     * @param context Is the context application.
+     * @param context               Is the context application.
      * @param mapWayPointController Is the controller of the map.
      */
     public NavigationOptionsController(Context context, MapWayPointController mapWayPointController) {
@@ -49,13 +52,15 @@ public class NavigationOptionsController {
         isActive = false;
         isLocationStartChosen = true;
         this.mapWayPointController = mapWayPointController;
-        navOptionsForm = ((AppCompatActivity)context).findViewById(R.id.navOptions_form);
+        navOptionsForm = ((AppCompatActivity) context).findViewById(R.id.navOptions_form);
         cancelButton = ((AppCompatActivity) context).findViewById(R.id.cancel_navOptions_button);
         startButton = ((AppCompatActivity) context).findViewById(R.id.start_button_nav);
         chooseStartPointButton = ((AppCompatActivity) context).findViewById(R.id.choose_startPoint_button);
         currentLocationButton = ((AppCompatActivity) context).findViewById(R.id.current_location_button);
-        startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);;
-        finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);;
+        startPointButton = ((AppCompatActivity) context).findViewById(R.id.startPoint_button);
+        ;
+        finalPointButton = ((AppCompatActivity) context).findViewById(R.id.finalPoint_Button);
+        ;
         transportationTypesContainer = ((AppCompatActivity) context).findViewById(R.id.transportationTypesContainer);
         infoRouteController = InfoRouteController.getInstance(context);
         setNavOptionsUiComponents();
@@ -117,8 +122,8 @@ public class NavigationOptionsController {
      * This method assigns values to the incident components.
      *
      * <p>
-     *     This method assign values and views to the incident components such as the incident type
-     *     spinner, incident estimated time spinner and incident estimated time number picker.
+     * This method assign values and views to the incident components such as the incident type
+     * spinner, incident estimated time spinner and incident estimated time number picker.
      * </p>
      */
     public void setNavOptionsUiComponents() {
@@ -134,7 +139,7 @@ public class NavigationOptionsController {
                 transportationTypesContainer.addView(button);
             }
             transportationTypesContainer.removeViews(0,
-                    transportationTypesContainer.getChildCount()-4);
+                    transportationTypesContainer.getChildCount() - 4);
         } else {
             Timber.i(String.valueOf(R.string.array_size_text_timber));
         }
@@ -204,10 +209,10 @@ public class NavigationOptionsController {
      * Otherwise, it displays a default text indicating that the final point is not selected.
      */
     private void setPointsButtonShownTexts() {
-        startPointButton.setText((!isLocationStartChosen)?
-                formatLatLng(startPoint.getLatitude(),startPoint.getLongitude()):"Your Location");
-        finalPointButton.setText((finalPoint != null)?
-                formatLatLng(finalPoint.getLatitude(),finalPoint.getLongitude()):"Not selected");
+        startPointButton.setText((!isLocationStartChosen) ?
+                formatLatLng(startPoint.getLatitude(), startPoint.getLongitude()) : "Your Location");
+        finalPointButton.setText((finalPoint != null) ?
+                formatLatLng(finalPoint.getLatitude(), finalPoint.getLongitude()) : "Not selected");
     }
 
     /**
@@ -216,32 +221,32 @@ public class NavigationOptionsController {
     private void handleAcceptButtonClick() {
         handleHiddeItemsView();
         isActive = false;
-        Node startPointNode = (startPoint != null) ? new Node("01",startPoint.getLatitude(),
-                startPoint.getLatitude()): null;
-        Node finalPointNode = (startPoint != null) ? new Node("02",finalPoint.getLatitude(),
-                finalPoint.getLatitude()): null;
+        Node startPointNode = (startPoint != null) ? new Node("01", startPoint.getLatitude(),
+                startPoint.getLatitude()) : null;
+        Node finalPointNode = (startPoint != null) ? new Node("02", finalPoint.getLatitude(),
+                finalPoint.getLatitude()) : null;
         // TODO: Navigation Route between these two nodes
         navOptionsForm.setVisibility(View.GONE);
-        showRoutes();
+
+        startTravel(startPointNode, finalPointNode);
 
     }
 
-    private void showRoutes(){
-        Map<String, String> r = new HashMap<>();
-
-        r.put("Route A", "{\"type\":\"Feature\",\"distance\":0.5835077072636502,\"time\":10,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.154149,-17.393858],[-66.15306,-17.393682],[-66.15291,-17.394716],[-66.153965,-17.394903]]}}");
-        r.put("Route B", "{\"type\":\"Feature\",\"distance\":0.5961126697414532,\"time\":12,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.156338,-17.394251],[-66.155208,-17.394064],[-66.155045,-17.39503],[-66.154875,-17.396151],[-66.153754,-17.395951],[-66.153965,-17.394903]]}}");
-        r.put("Route C", "{\"type\":\"Feature\",\"distance\":1.6061126697414532,\"time\":15,\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[-66.159019, -17.398311],[-66.154399, -17.397043],[-66.151315, -17.398656],[-66.147585, -17.400585],[-66.142978, -17.401595]]}}");
-        String jsonA = r.get("Route A");
-        String jsonB = r.get("Route B");
-        String jsonC = r.get("Route C");
-
-        ArrayList<String> geoJson = new ArrayList<>();
-        geoJson.add(jsonA);
-        geoJson.add(jsonB);
-        geoJson.add(jsonC);
-
+    private void startTravel(Node source, Node destiny) {
+        TestRouteBuilder testRouteBuilder = new TestRouteBuilder();
         MapPolyline mapPolyline = new MapPolyline();
-        infoRouteController.showInfoRoute(geoJson, mapPolyline);
+
+        testRouteBuilder.cookRoute();
+        Route routeA = testRouteBuilder.getRouteA();
+        UserRouteTracker userRouteTracker = new UserRouteTracker(routeA);
+
+        startRouteEstimatesManager(routeA, userRouteTracker);
+        infoRouteController.showInfoRoute(testRouteBuilder.exportToGeoJSON(), mapPolyline);
+    }
+
+    private void startRouteEstimatesManager(Route route, UserRouteTracker tracker){
+        Runnable routeEstimatesManager = () -> new RouteEstimatesManager(route, tracker).startEstimatesTrack();
+        Thread estimatesThread = new Thread(routeEstimatesManager, "Estimates Thread");
+        estimatesThread.start();
     }
 }
