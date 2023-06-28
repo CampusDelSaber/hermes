@@ -103,6 +103,20 @@ public class MapPolygonController implements MapClickConfigurationController {
         return polygonPoints;
     }
 
+    public String getStringWithPolygonPoint(){
+        StringBuilder stringBuilder = new StringBuilder("[");
+        if(coordinates.size() > 1){
+            for (Double[] currentCoordinate : coordinates){
+                stringBuilder.append("["+currentCoordinate[0]+", "+currentCoordinate[1]+"],");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.toString().length()-1);
+            stringBuilder.append("]");
+        }else {
+            stringBuilder.append(coordinates.get(0)[0]+", "+coordinates.get(0)[1]+"]");
+        }
+        return stringBuilder.toString();
+    }
+
     public static MapPolygonController getInstance(MapboxMap mapboxMap, Context context ) {
         if (instance == null) instance = new MapPolygonController(mapboxMap, context);
         return instance;
