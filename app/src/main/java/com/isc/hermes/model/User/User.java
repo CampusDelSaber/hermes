@@ -13,6 +13,7 @@ public class User {
     private String pathImageUser;
     private String typeUser;
     private String id;
+    private boolean isRegistered;
 
     /**
      * Constructs a User object with the specified email, path to the user's image, and ID.
@@ -182,5 +183,13 @@ public class User {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setRegistered(boolean registered) {
+        isRegistered = registered;
+    }
+
+    public boolean isRegistered() {
+        return isRegistered;
     }
 }

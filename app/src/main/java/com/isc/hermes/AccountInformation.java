@@ -38,6 +38,7 @@ public class AccountInformation extends AppCompatActivity {
     private PopUpOverwriteInformationAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private boolean isModifiable;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -90,8 +91,8 @@ public class AccountInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
         assignValuesToComponentsView();
-        generateActionToComboBox();
         updateComponentsByUserInformation();
+        generateActionToComboBox();
         initializePopups();
     }
 
@@ -156,8 +157,8 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void editAccountAction(View view) {
         buttonSaveInformation.setVisibility(View.VISIBLE);
+        verifyAdministratorUser();
         textFieldFullName.setEnabled(true);
-        comboBoxField.setEnabled(true);
         textFieldUserName.setEnabled(true);
     }
 
@@ -168,6 +169,13 @@ public class AccountInformation extends AppCompatActivity {
         UserRepository.getInstance().getUserContained().setTypeUser(String.valueOf(comboBoxField.getText()));
         UserRepository.getInstance().getUserContained().setUserName(String.valueOf(textFieldUserName.getText()));
         UserRepository.getInstance().getUserContained().setFullName(String.valueOf(textFieldFullName.getText()));
+    }
+
+    private void verifyAdministratorUser() {
+        if (!UserRepository.getInstance().getUserContained().getTypeUser().
+                equals("Administrator")) comboBoxField.setEnabled(true);
+        else
+            comboBoxField.setText(UserRepository.getInstance().getUserContained().getTypeUser());
     }
 
     /**
@@ -187,6 +195,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     private void initializePopups(){
         this.popUpDialogEdit = new PopUpOverwriteInformationAccount(this);
+        this.popUpDialogEdit.setIsModifiable(isModifiable);
         this.popUpDialogDelete = new PopUpDeleteAccount(this);
     }
 
@@ -196,9 +205,11 @@ public class AccountInformation extends AppCompatActivity {
      * and disables the text fields initially.
      */
     private void  assignValuesToComponentsView() {
+        isModifiable = UserRepository.getInstance().getUserContained().getTypeUser().equals("Administrator");
+        UserRepository.getInstance().getUserContained().setRegistered(true);
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
         imageView = findViewById(R.id.imageUpload);
-        comboBoxField = findViewById(R.id.textFieldUserType);
+        comboBoxField = findViewById(R.id.textFieldUserTypeUpdate);
         textFieldFullName = findViewById(R.id.textFieldFullName);
         textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldUserName = findViewById(R.id.textFieldUserName);

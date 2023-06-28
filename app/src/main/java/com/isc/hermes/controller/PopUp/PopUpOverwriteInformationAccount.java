@@ -1,13 +1,20 @@
 package com.isc.hermes.controller.PopUp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+
+import androidx.annotation.RequiresApi;
+
+import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.Validator;
 
 /**
  * The class {@code PopUpEditAccount} extends {@code PopUp} and represents a specific type of pop-up
@@ -19,6 +26,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     private AutoCompleteTextView fullName;
     private AutoCompleteTextView username;
     private AutoCompleteTextView comboBoxField;
+    private boolean isModifiable;
 
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
@@ -36,7 +44,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
             @Override
             public int getIconImagePopUp() {
                 return R.drawable.img_edit_icon_blue; }
-        });
+        }); isModifiable = true;
     }
 
     /**
@@ -53,6 +61,26 @@ public class PopUpOverwriteInformationAccount extends PopUp{
             username.setEnabled(false);
             comboBoxField.setEnabled(false);
         } dismiss();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updateTypeUser() {
+        if (UserRepository.getInstance().getUserContained().getTypeUser().
+                equals("Administrator") && !isModifiable) {
+            UserRepository.getInstance().getUserContained().setTypeUser("Administrator");
+            sendEmail();
+            Intent intent = new Intent(activity, EmailVerificationActivity.class);
+            activity.startActivity(intent);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void sendEmail(){
+        Validator validator = new Validator(UserRepository.getInstance().getUserContained());
+        validator.obtainVerificationCode();
+        SendEmailManager sendEmailManager = new SendEmailManager();
+        sendEmailManager.addEmail(UserRepository.getInstance().getUserContained().getEmail(),
+                validator.getCode());
     }
 
     /**
@@ -81,5 +109,9 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         this.fullName = fullName;
         this.username = username;
         this.comboBoxField = comboBoxField;
+    }
+
+    public void setIsModifiable(boolean modifiable) {
+        isModifiable = modifiable;
     }
 }

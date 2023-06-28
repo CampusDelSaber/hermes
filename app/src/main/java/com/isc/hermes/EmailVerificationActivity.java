@@ -176,12 +176,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
             codeEditText.setTextColor(getResources().getColor(R.color.redOriginal));
     }
 
-    /**
-     * Continues the email verification process and performs the necessary actions if the entered code is correct.
-     *
-     * @param view The View that triggered the method call.
-     */
-    public void continueVerification(View view) {
+    private void addAdministratorUser() {
         Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
@@ -189,14 +184,45 @@ public class EmailVerificationActivity extends AppCompatActivity {
                 new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
                         UserRepository.getInstance().getUserContained().getFullName(), UserRepository.getInstance().getUserContained().getUserName(),
                         UserRepository.getInstance().getUserContained().getTypeUser(), UserRepository.getInstance().getUserContained().getPathImageUser());
-            VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
-            verificationCodesManager.updateVerificationCode(validator.getId(), false);
-            startActivity(intent);
+            verificationCode(intent);
         } else {
-            changeColorCodeUser();
-            warningPopUp.show();
+            visualizedWarningPop();
         }
     }
+
+    private void updateToAdministratorUser() {
+        Intent intent = new Intent(EmailVerificationActivity.this, AccountInformation.class);
+        String code = getCodeUser();
+        if (validator.isCorrect(code)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                new AccountInfoManager().editUser(UserRepository.getInstance().getUserContained());
+            verificationCode(intent);
+        } else {
+            visualizedWarningPop();
+        }
+    }
+
+    private void visualizedWarningPop(){
+        changeColorCodeUser();
+        warningPopUp.show();
+    }
+
+    private void verificationCode(Intent intent){
+        VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
+        verificationCodesManager.updateVerificationCode(validator.getId(), false);
+        startActivity(intent);
+    }
+
+    /**
+     * Continues the email verification process and performs the necessary actions if the entered code is correct.
+     *
+     * @param view The View that triggered the method call.
+     */
+    public void continueVerification(View view) {
+        if (!UserRepository.getInstance().getUserContained().isRegistered()) addAdministratorUser();
+        else updateToAdministratorUser();
+    }
+
 
 
     /**
