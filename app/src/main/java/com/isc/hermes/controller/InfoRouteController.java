@@ -4,20 +4,17 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.utils.Animations;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * The InfoRouteController class is responsible for managing the information related to routes,
@@ -37,28 +34,32 @@ public class InfoRouteController {
     private ArrayList<Integer> colorsInfoRoutes;
     private MapPolyline mapPolyline;
    private ArrayList<JSONObject> jsonObjects;
+   private NavigationOptionsController navigationOptionsController;
    private NavigationDirectionController navigationDirectionController;
+
 
     /**
      * Constructs a new InfoRouteController object.
      *
      * @param context The context of the activity.
+     * @param navigationOptionsController route navigation's options controller
      */
-    private InfoRouteController(Context context){
+    private InfoRouteController(Context context, NavigationOptionsController navigationOptionsController){
         layout = ((AppCompatActivity)context).findViewById(R.id.distance_time_view);
         cancelButton =  ((AppCompatActivity)context).findViewById(R.id.cancel_navigation_button);
         timeText = ((AppCompatActivity)context).findViewById(R.id.timeText);
         distanceText = ((AppCompatActivity)context).findViewById(R.id.distanceText);
-        buttonRouteA = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteOne);
-        buttonRouteB = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteTwo);
         buttonRouteC = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteThree);
+        buttonRouteB = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteTwo);
+        buttonRouteA = ((AppCompatActivity)context).findViewById(R.id.ButtonRouteOne);
         startNavigationButton = ((AppCompatActivity)context).findViewById(R.id.startNavegationButton);
         navigationDirectionController = new NavigationDirectionController(context);
+        this.navigationOptionsController = navigationOptionsController;
         colorsInfoRoutes = new ArrayList<>();
         isActive = false;
-        colorsInfoRoutes.add(0XFFFF6E26);
-        colorsInfoRoutes.add(0xFF2350A3);
         colorsInfoRoutes.add(0XFF686C6C);
+        colorsInfoRoutes.add(0xFF2350A3);
+        colorsInfoRoutes.add(0XFFFF6E26);
         jsonObjects = new ArrayList<>();
         setActionButtons();
     }
@@ -74,12 +75,13 @@ public class InfoRouteController {
             layout.setVisibility(View.GONE);
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
+            navigationOptionsController.getMapWayPointController().deleteMarks();
             isActive = false;
         });
 
-        buttonRouteA.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(0)));
+        buttonRouteA.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(2)));
         buttonRouteB.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(1)));
-        buttonRouteC.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(2)));
+        buttonRouteC.setOnClickListener(v -> setTimeAndDistanceInformation(jsonObjects.get(0)));
         startNavigationButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
@@ -92,9 +94,9 @@ public class InfoRouteController {
      * @param context The context of the activity.
      * @return The InfoRouteController instance.
      */
-    public static InfoRouteController getInstance(Context context){
+    public static InfoRouteController getInstance(Context context, NavigationOptionsController navigationOptionsController){
         if(instanceNavigationController == null){
-            instanceNavigationController = new InfoRouteController(context);
+            instanceNavigationController = new InfoRouteController(context, navigationOptionsController);
         }
         return instanceNavigationController;
     }
@@ -116,7 +118,7 @@ public class InfoRouteController {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        setTimeAndDistanceInformation(jsonObjects.get(0));
+        setTimeAndDistanceInformation(jsonObjects.get(2));
         mapPolyline.displaySavedCoordinates(jsonCoordinates, colorsInfoRoutes);
     }
 
