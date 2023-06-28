@@ -3,14 +3,22 @@ package com.isc.hermes.controller;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LATITUDE;
+import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LONGITUDE;
+import static com.isc.hermes.ActivitySelectRegion.ZOOM_LEVEL;
 
-
+import com.isc.hermes.ActivitySelectRegion;
 import com.isc.hermes.R;
 import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
+import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.view.IncidentViewNavigation;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+
+import org.json.JSONException;
 
 /**
  * Class to manage all view elements in view incidents form
@@ -68,9 +76,18 @@ public class ViewIncidentsController{
                             );
                 }
                 if (traffic.isChecked()) {
+                    try {
+                        ShowTrafficController.getInstance().showTraffic(MapManager.getInstance().getMapboxMap());
+                    } catch (JSONException e) {
+                        Toast.makeText(activity, "Failure to get the incidents data. Please, try again", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 if (streetIncident.isChecked()) {
-
+                    IncidentsGetterController
+                            .getInstance()
+                            .getNearIncidentsWithinRadius(
+                                    MapManager.getInstance().getMapboxMap(), activity
+                            );
                 }
             hideOptions();
         });

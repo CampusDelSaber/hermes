@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Hermes</string>
     <string name="welcomeApp">Welcome to Hermes App</string>
     <string name="userType">User Type</string>

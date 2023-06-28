@@ -1,7 +1,9 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.widget.Toast;
 
+import com.isc.hermes.R;
 import com.isc.hermes.controller.incidents.IncidentPointVisualizationController;
 import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.model.incidents.PointIncident;
@@ -48,18 +50,24 @@ public class IncidentsGetterController {
      */
     public void getNearIncidentsWithinRadius(MapboxMap mapboxMap, Context context) {
         incidentsPointView = IncidentPointVisualizationController.getInstance(mapboxMap, context);
+        mapboxMap.addOnCameraIdleListener(() -> getLazyLoadingIncidents(mapboxMap, context));
+    }
+
+    private void getLazyLoadingIncidents(MapboxMap mapboxMap, Context context){
         executorService.execute(() -> {
             LatLng cameraFocus = mapboxMap.getCameraPosition().target;
             int cameraZoom = (int) mapboxMap.getCameraPosition().zoom;
             int zoom = cameraZoom > 40 ? 40 : Math.max(cameraZoom, 12);
-
             JSONArray incidentsArray = incidentsDataProcessor.getNearIncidents(cameraFocus, zoom);
 
             incidentGetterModel.setIncidentList(parseIncidentResponse(incidentsArray));
             try {
                 incidentsPointView.displayPoint(incidentGetterModel.getIncidentList());
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                Toast.makeText(
+                        context, "Failure to get the incidents data. Please, try again",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
     }
