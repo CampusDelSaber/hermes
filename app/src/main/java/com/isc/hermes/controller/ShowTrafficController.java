@@ -95,19 +95,21 @@ public class ShowTrafficController {
      * @param trafficType It is the traffic Type .
      * @param polylineOptions is the polyline Options.
      */
-    private void polylineStyle(String trafficType,PolylineOptions polylineOptions){
+    private void polylineStyle(String trafficType, PolylineOptions polylineOptions) {
         int color = 0;
-        if (trafficType.equals("Normal Traffic")) {
-            color = Color.parseColor("#FFA500");
-        }
-        if (trafficType.equals("Low Traffic")) {
-            color = Color.GREEN;
-        }
-        if (trafficType.equals("High Traffic")) {
-            color = Color.RED;
+        switch (trafficType) {
+            case "Normal Traffic":
+                color = Color.parseColor("#FFA500");
+                break;
+            case "Low Traffic":
+                color = Color.GREEN;
+                break;
+            case "High Traffic":
+                color = Color.RED;
+                break;
         }
         polylineOptions.color(color);
-
     }
+
 
 }
