@@ -21,6 +21,7 @@ public class TextInputPopup {
     private Button ok;
     private Button close;
     private EditText inputText;
+    private static final int MAX_LENGTH_TEXT = 15;
 
     /**
      * Constructs a new TextInputPopup with the specified activity and dialog listener.
@@ -73,7 +74,7 @@ public class TextInputPopup {
         String text = inputText.getText().toString().trim();
         if (TextUtils.isEmpty(text) || validateSpaceInput(text)) {
             setErrorMessage("This field is required");
-        } else if (text.length() > 15) {
+        } else if (text.length() > MAX_LENGTH_TEXT) {
             setErrorMessage("Max 15 characters allowed");
         } else {
             handleValidInput(text);
