@@ -283,7 +283,7 @@ public class IncidentFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime());
         String coordinates = IncidentsUploader.getInstance().getCoordinates();
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(getIncidentType(),"Reason",dateCreated, deathDate ,GeometryType.POINT.getName(),coordinates);
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(getIncidentType(),reason,dateCreated, deathDate ,GeometryType.POINT.getName(),coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 
