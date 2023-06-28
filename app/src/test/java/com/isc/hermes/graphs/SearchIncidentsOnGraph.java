@@ -18,13 +18,17 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class SearchIncidentsOnGraph {
+    /**
+     * This method can failed if the incident on data base is deleted for the block or area defined
+     * in the coordinates.
+     */
     @Test
     public void searchIncidentsInsideGraphArea() {
         GraphManager graphManager = GraphManager.getInstance();
         try {
             assertTrue(graphManager.searchIncidentsOnTheGraph(
-                    new LatLng(-17.330695, -66.196680),
-                    new LatLng(-17.335127, -66.191737)).length() > 1);
+                    new LatLng(-17.364397, -66.178736),
+                    new LatLng(-17.369301, -66.174047)).length() > 1);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -134,15 +138,55 @@ public class SearchIncidentsOnGraph {
         GraphManager graphManager = GraphManager.getInstance();
         graphManager.setGraph(graph);
 
-        /*
         List<String> streetsIds = graphManager.searchNodesNearby(Point.fromLngLat(-66.177801, -17.374063));
         assertTrue(streetsIds.contains(street12.getId()));
         assertTrue(streetsIds.contains(street13.getId()));
 
         List<String> streetsIds2 = graphManager.searchNodesNearby(Point.fromLngLat(-66.175905, -17.372612));
         assertTrue(streetsIds2.contains(street4.getId()));
-        assertTrue(streetsIds2.contains(street7.getId()));*/
+        assertTrue(streetsIds2.contains(street7.getId()));
+    }
 
-        //graphManager.disconnectBlockedStreets();
+    @Test
+    public void disconnectBlockedStreetsTest() {
+        Graph graph = new Graph();
+        Node street1 = new Node("Street1", -17.364560, -66.178414);
+        Node street2 = new Node("Street2", -17.364693, -66.178060);
+        Node street3 = new Node("Street3", -17.365202, -66.176555);
+        Node street4 = new Node("Street4", -17.365526, -66.175201);
+        Node street5 = new Node("Street5", -17.365765, -66.173407);
+        Node street6 = new Node("Street6", -17.366585, -66.173614);
+        Node street7 = new Node("Street7", -17.366741, -66.175495);
+        Node street8 = new Node("Street8", -17.366399, -66.176762);
+
+        graph.addNode(street1);
+        graph.addNode(street2);
+        graph.addNode(street3);
+        graph.addNode(street4);
+        graph.addNode(street5);
+        graph.addNode(street6);
+        graph.addNode(street7);
+        graph.addNode(street8);
+
+        graph.getNode("Street1").addBidirectionalEdge(graph.getNode("Street2"));
+        graph.getNode("Street2").addBidirectionalEdge(graph.getNode("Street3"));
+        graph.getNode("Street3").addBidirectionalEdge(graph.getNode("Street4"));
+        graph.getNode("Street4").addBidirectionalEdge(graph.getNode("Street5"));
+        graph.getNode("Street5").addBidirectionalEdge(graph.getNode("Street6"));
+        graph.getNode("Street6").addBidirectionalEdge(graph.getNode("Street7"));
+        graph.getNode("Street7").addBidirectionalEdge(graph.getNode("Street8"));
+
+        GraphManager graphManager = GraphManager.getInstance();
+        graphManager.setGraph(graph);
+        try {
+            graphManager.disconnectBlockedStreets(new LatLng(-17.364397, -66.178736),
+                    new LatLng(-17.366757, -66.175569));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -145,6 +145,14 @@ public class GraphManager {
         return nearbyNodesIDs;
     }
 
+    /**
+     * This method verify if an point x is between two points (A and B)
+     *
+     * @param pointA usually is an intersection street so is one node on the graph
+     * @param pointB usually is an intersection street so is one node on the graph
+     * @param pointX is the incident.
+     * @return true if the incidents is between both.
+     */
     public boolean isOnStreet(Node pointA, Node pointB, Point pointX) {
         double latA = pointA.getLatitude();
         double latB = pointB.getLatitude();
@@ -160,18 +168,32 @@ public class GraphManager {
         return fraction >= 0 && fraction <= 1;
     }
 
+    /**
+     * This method get all incidents that are inside the graph,
+     * and search for the intersections of the street to disconnect there.
+     *
+     * TODO: Look for a better way to do this algorithm, it has many looping iterations.
+     *
+     * @param origin the beginning of the graph on latitude and longitude point.
+     * @param destination the final of the graph on latitude and longitude point
+     */
     public void disconnectBlockedStreets(LatLng origin, LatLng destination) throws JSONException, ExecutionException, InterruptedException {
         JSONArray incidents = searchIncidentsOnTheGraph(origin, destination);
-        IncidentsDataProcessor incidentsDataProcessor = IncidentsDataProcessor.getInstance();
 
-        for (int i = 0; i <= incidents.length(); i++) {
-            List<String> nearbyNodes = searchNodesNearby((Point) incidents.get(i));
+        for (int i = 0; i < incidents.length(); i++) {
+            JSONArray incidentGeometry =
+                    incidents.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+            Point incident = Point.fromLngLat(
+                    incidentGeometry.getDouble(0),
+                    incidentGeometry.getDouble(1));
+            List<String> nearbyNodes = searchNodesNearby(incident);
             for (int j = 0; j < nearbyNodes.size(); j++) {
                 for (int k = j + 1; k < nearbyNodes.size(); k++) {
-                    if (isOnStreet(graph.getNode(nearbyNodes.get(j)), graph.getNode(nearbyNodes.get(k)), (Point) incidents.get(i))) {
-                        graph.getNode(nearbyNodes.get(j)).removeEdgeTo(graph.getNode(nearbyNodes.get(k)));
-                        graph.getNode(nearbyNodes.get(k)).removeEdgeTo(graph.getNode(nearbyNodes.get(j)));
-                        System.out.println(nearbyNodes.get(j) + " disconnect from " + nearbyNodes.get(k));
+                    if (isOnStreet(graph.getNode(nearbyNodes.get(j)), graph.getNode(nearbyNodes.get(k)), incident)) {
+                        if (graph.getNode(nearbyNodes.get(j)).removeEdgeTo(graph.getNode(nearbyNodes.get(k))) &&
+                        graph.getNode(nearbyNodes.get(k)).removeEdgeTo(graph.getNode(nearbyNodes.get(j)))) {
+                            System.out.println(nearbyNodes.get(j) + " disconnect from " + nearbyNodes.get(k));
+                        }
                     }
                 }
             }
