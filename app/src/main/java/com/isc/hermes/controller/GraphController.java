@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import com.isc.hermes.model.graph.Graph;
+import com.isc.hermes.model.graph.GraphManager;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.requests.overpass.IntersectionRequest;
@@ -10,6 +11,8 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * This is the controller class for the graph.
@@ -63,6 +66,15 @@ public class GraphController {
         int radius = (int) (getRadius() * 1000) + 200;
         loadIntersections(intersectionRequest.getIntersections(midpoint.getLatitude(), midpoint.getLongitude(), radius));
         loadEdges(wayRequest.getEdges(midpoint.getLatitude(), midpoint.getLongitude(), radius));
+        GraphManager graphManager = GraphManager.getInstance();
+        graphManager.setGraph(graph);
+        try {
+            graphManager.disconnectBlockedStreets(start, destination);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
