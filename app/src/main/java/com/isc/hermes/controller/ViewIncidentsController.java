@@ -5,14 +5,16 @@ import static com.mongodb.assertions.Assertions.assertNotNull;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 
 import com.isc.hermes.ActivitySelectRegion;
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
+import com.isc.hermes.view.IncidentViewNavigation;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,41 +27,33 @@ import java.util.concurrent.ExecutionException;
  * Class to manage all view elements in view incidents form
  */
 public class ViewIncidentsController{
-    private final LinearLayout incidentsVisualizationForm;
-    private final ImageButton viewIncidentsFormButton;
-    private final Button viewTrafficButton;
-    private final Button viewSocialEventButton;
-    private final Button viewNaturalDisasterButton;
-    private boolean buttonMarked;
+    private AppCompatActivity activity;
+    private final Button displayIncidentsButton;
+    private Button okButton;
+    private final Button cancelButton;
+    private final ConstraintLayout displayIncidents;
     private final NaturalDisasterRequesting requesting;
     private boolean isTrafficVisible = false;
     private ShowTrafficController showTrafficController = new ShowTrafficController();
 
 
-
-    public ViewIncidentsController(AppCompatActivity activity,ActivitySelectRegion mapDisplay){
+    public ViewIncidentsController(AppCompatActivity activity){
+        this.activity = activity;
         this.requesting = new NaturalDisasterRequesting();
-        this.incidentsVisualizationForm = activity.findViewById(R.id.viewIncidentsForm);
-        this.viewIncidentsFormButton = activity.findViewById(R.id.viewIncidentsButton);
-        this.viewTrafficButton = activity.findViewById(R.id.viewTrafficButton);
-        this.viewSocialEventButton = activity.findViewById(R.id.viewSocialIncidentsButton);
-        this.viewNaturalDisasterButton = activity.findViewById(R.id.viewNaturalDisasterButton);
-        initEyeButtonFunctionality();
-        initViewDifferentIncidentsTypeButton(mapDisplay);
+        displayIncidentsButton = activity.findViewById(R.id.displayIncidentsButton);
+        displayIncidents = activity.findViewById(R.id.display_incidents);
+        okButton = activity.findViewById(R.id.okButton);
+        cancelButton = activity.findViewById(R.id.cancelButton);
+        showIncidentsScreen();
     }
-
 
     /**
-     * Method to init the button with eye functionality
+     *This method displays the incidents screen.
+     *
+     * The types of incidents that you have in the application will
+     * be displayed where you can mark or unmark the incidents that
+     * you want to be shown.
      */
-    private void initEyeButtonFunctionality() {
-        viewIncidentsFormButton.setOnClickListener(v -> {
-            if (!buttonMarked) incidentsVisualizationForm.setVisibility(View.VISIBLE);
-            else incidentsVisualizationForm.setVisibility(View.GONE);
-            buttonMarked = !buttonMarked;
-        });
-    }
-
     /**
      * Method to init the action about click on a single button on show incidents form
      */
@@ -88,12 +82,16 @@ public class ViewIncidentsController{
             disappearForm();
         });
     }
+    private void showIncidentsScreen() {
+        IncidentViewNavigation.getInstance(activity)
+                .initIncidentButtonFunctionality(displayIncidentsButton, displayIncidents);
+        cancelButton.setOnClickListener(v -> hideOptions());
+    }
 
     /**
-     * Method to make buttons form invisible
+     * This method hides the incident generation selection menu.
      */
-    private void disappearForm(){
-        incidentsVisualizationForm.setVisibility(View.GONE);
-        buttonMarked = !buttonMarked;
+    public void hideOptions(){
+        displayIncidents.setVisibility(View.GONE);
     }
 }
