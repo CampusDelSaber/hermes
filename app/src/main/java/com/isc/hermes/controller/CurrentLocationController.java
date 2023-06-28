@@ -71,7 +71,6 @@ public class CurrentLocationController {
         ImageButton locationButton = activity.findViewById(R.id.locationButton);
         locationButton.setOnClickListener(v -> {
             mapboxMap = MapManager.getInstance().getMapboxMap();
-            System.out.println(mapboxMap);
             enableLocationComponent();
         });
     }
