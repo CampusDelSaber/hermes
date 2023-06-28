@@ -3,7 +3,7 @@ package com.isc.hermes.model.navigation;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.graph.Node;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
-import com.isc.hermes.utils.MapCoordsRecord;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class UserRouteTracker {
     private RouteSegmentRecord currentRouteSegmentRecord;
     private final ListIterator<RouteSegmentRecord> availableSegments;
 
-    private final MapCoordsRecord destination;
+    private final LatLng destination;
 
 
     public UserRouteTracker(Route route) {
@@ -26,22 +26,21 @@ public class UserRouteTracker {
         currentLocation = CurrentLocationModel.getInstance();
         availableSegments = makeRouteSegments().listIterator();
         Node lastNode = route.getCurrentNode();
-        destination = new MapCoordsRecord(lastNode.getLatitude(), lastNode.getLongitude());
+        destination = new LatLng(lastNode.getLatitude(), lastNode.getLongitude());
     }
 
     public double getPartialSegmentDistance() {
-        MapCoordsRecord userLocation = new MapCoordsRecord(currentLocation.getLatitude(), currentLocation.getLongitude());
-        
+        LatLng userLocation = currentLocation.getLatLng();
         if (!isUserInSegment(userLocation)) {
             updateCurrentRouteSegment(userLocation);
         }
         return distanceCalculator.calculateDistance(
-                new MapCoordsRecord(userLocation.getLatitude(), userLocation.getLongitude()),
+                userLocation,
                 currentRouteSegmentRecord.getEnd()
         );
     }
 
-    private void updateCurrentRouteSegment(MapCoordsRecord userLocation) {
+    private void updateCurrentRouteSegment(LatLng userLocation) {
         if (availableSegments.hasNext()) {
             currentRouteSegmentRecord = availableSegments.next();
             if (!NavigationTrackerTools.isInsideSegment(currentRouteSegmentRecord, userLocation)){
@@ -58,8 +57,8 @@ public class UserRouteTracker {
             Node source = path.get(index);
             Node target = path.get(index + 1);
 
-            MapCoordsRecord sourceCoords = new MapCoordsRecord(source.getLatitude(), source.getLongitude());
-            MapCoordsRecord targetCoords = new MapCoordsRecord(target.getLatitude(), target.getLongitude());
+            LatLng sourceCoords = new LatLng(source.getLatitude(), source.getLongitude());
+            LatLng targetCoords = new LatLng(target.getLatitude(), target.getLongitude());
 
             routeSegments.add(new RouteSegmentRecord(sourceCoords, targetCoords));
         }
@@ -68,10 +67,10 @@ public class UserRouteTracker {
     }
 
     public boolean hasUserArrived() {
-        return NavigationTrackerTools.isPointReached(destination, new MapCoordsRecord(currentLocation.getLatitude(), currentLocation.getLatitude()));
+        return NavigationTrackerTools.isPointReached(destination, currentLocation.getLatLng());
     }
 
-    public boolean isUserInSegment(MapCoordsRecord userLocation){
+    public boolean isUserInSegment(LatLng userLocation){
         boolean isInsideSegment = NavigationTrackerTools.isInsideSegment(currentRouteSegmentRecord, userLocation);
         boolean isEndReached = NavigationTrackerTools.isPointReached(currentRouteSegmentRecord.getEnd(), userLocation);
 

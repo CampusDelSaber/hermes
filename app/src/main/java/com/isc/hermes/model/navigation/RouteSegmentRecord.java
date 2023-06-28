@@ -1,21 +1,21 @@
 package com.isc.hermes.model.navigation;
 
-import com.isc.hermes.utils.MapCoordsRecord;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 public class RouteSegmentRecord {
-    private final MapCoordsRecord start;
-    private final MapCoordsRecord end;
+    private final LatLng start;
+    private final LatLng end;
 
-    public RouteSegmentRecord(MapCoordsRecord start, MapCoordsRecord end) {
+    public RouteSegmentRecord(LatLng start, LatLng end) {
         this.start = start;
         this.end = end;
     }
 
-    public MapCoordsRecord getStart() {
+    public LatLng getStart() {
         return start;
     }
 
-    public MapCoordsRecord getEnd() {
+    public LatLng getEnd() {
         return end;
     }
 
