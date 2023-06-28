@@ -4,10 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
@@ -21,7 +25,6 @@ import org.json.JSONException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
@@ -44,6 +47,7 @@ public class NavigationOptionsController {
     private Map<String, String> routeOptions;
     private TransportationType transportationType;
     private Map<String, TransportationType> transportationTypeMap;
+    private AlertDialog progressDialog;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -101,7 +105,37 @@ public class NavigationOptionsController {
         currentLocationButton.setOnClickListener(v -> handleCurrentLocationChosen());
         manageCancelButton();
         startButton.setOnClickListener(v -> handleAcceptButtonClick());
+        for (int i = 0; i < transportationTypesContainer.getChildCount(); i++) {
+            Button button = (Button) transportationTypesContainer.getChildAt(i);
+            if (i != 0) button.setAlpha(0.3f);
+            button.setOnClickListener(buttonClickListener);
+        }
+
     }
+
+    /**
+     * Handles the action when a transportation type button is clicked.
+     */
+    private void handleTransportationTypeButtonClick(Button clickedButton) {
+        for (int i = 0; i < transportationTypesContainer.getChildCount(); i++) {
+            Button button = (Button) transportationTypesContainer.getChildAt(i);
+            if (button == clickedButton) {
+                button.setAlpha(1.0f);
+            } else {
+                button.setAlpha(0.5f);
+            }
+        }
+    }
+
+    /**
+     * Creates an OnClickListener for the transportation type buttons.
+     */
+    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            handleTransportationTypeButtonClick((Button) view);
+        }
+    };
 
     /**
      * Method to manage the cancel button behavior
@@ -257,19 +291,45 @@ public class NavigationOptionsController {
     }
 
     /**
+     * This method mange the graph building.
+     *
+     * @param graphController is the graph.
+     */
+    private void manageGraphBuilding(GraphController graphController){
+        try {
+            executeGraphBuild(graphController);
+
+            new Handler().postDelayed(() -> {
+                progressDialog.dismiss();
+                Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
+            }, 3000);
+        } catch (Exception e) {
+            handleErrorLoadingRoutes();
+        }
+    }
+
+    /**
      * This method handles the actions performed when the accept button is clicked.
      */
     private void handleAcceptButtonClick() {
         handleHiddeItemsView();
         isActive = false;
-        if (isCurrentLocationSelected) startPoint = CurrentLocationModel.getInstance().getLatLng();
+        if (isCurrentLocationSelected)
+            startPoint = CurrentLocationModel.getInstance().getLatLng();
         LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         GraphController graphController = new GraphController(start, destination);
-
         markStartEndPoint(start, destination);
-        executeGraphBuild(graphController);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(R.layout.loader_route_dialog);
+        builder.setCancelable(false);
+        progressDialog = builder.create();
+        progressDialog.show();
+
+        manageGraphBuilding(graphController);
     }
+
 
     /**
      * Method to mark the start and destination point on map
@@ -312,20 +372,49 @@ public class NavigationOptionsController {
                     graphController.getDestinationNode(), transportationType
             );
         } catch (JSONException e) {
-            e.printStackTrace();
+            handleErrorLoadingRoutes();
         }
+    }
+
+    /**
+     * This method show a Toast when don't have routes.
+     */
+    private void handleErrorLoadingRoutes(){
+        Toast.makeText(context, "Not possible to get the routes", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * Renders the routes on the map
      */
     private void showRoutes() {
-        String jsonA = routeOptions.getOrDefault("Route A", "{coordinates: []}");
-        String jsonB = routeOptions.getOrDefault("Route B", "{coordinates: []}");
-        String jsonC = routeOptions.getOrDefault("Route C", "{coordinates: []}");
-        ArrayList<String> geoJson = new ArrayList<>(List.of(jsonC, jsonB, jsonA));
-        MapPolyline mapPolyline = new MapPolyline();
-        infoRouteController.showInfoRoute(geoJson, mapPolyline);
+        String jsonA = routeOptions.getOrDefault("Route A", "");
+        String jsonB = routeOptions.getOrDefault("Route B", "");
+        String jsonC = routeOptions.getOrDefault("Route C", "");
+
+        String[] routes = {jsonC, jsonB, jsonA};
+        ArrayList<String> geoJson = new ArrayList<>();
+        for (String route : routes)
+            if (!route.isEmpty()) geoJson.add(route);
+
+        renderMapRoutes(geoJson);
+    }
+
+    /**
+     * This method render the routes on the map.
+     *
+     * @param geoJson is the routes.
+     */
+    private void renderMapRoutes(ArrayList<String> geoJson){
+        if (geoJson.size() > 0){
+            MapPolyline mapPolyline = new MapPolyline();
+            try{
+                infoRouteController.showInfoRoute(geoJson, mapPolyline);
+            } catch (Exception e){
+                handleErrorLoadingRoutes();
+            }
+        } else {
+            handleErrorLoadingRoutes();
+        }
     }
 
     /**
