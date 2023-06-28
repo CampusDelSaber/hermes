@@ -26,11 +26,14 @@
         android:id="@+id/MessageCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="37dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="36dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="18dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:text="@string/emailVerificationSent"
+        android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/emailTextView"
@@ -43,26 +46,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="84dp"
-        android:layout_marginBottom="10dp"
         android:text="@string/userEmail"
         android:textColor="@color/blueLogo"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MessageCode" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/MessageCodeHer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="111dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="22dp"
         android:layout_marginEnd="112dp"
         android:text="@string/enterCodeLabel"
-        android:textColor="#201313"
+        android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +84,7 @@
         app:layout_constraintEnd_toStartOf="@+id/codeTextField2"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
 
     <EditText
         android:id="@+id/codeTextField2"
@@ -98,7 +100,7 @@
         android:textIsSelectable="false"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField3"
         app:layout_constraintStart_toEndOf="@+id/codeTextField1"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
 
     <EditText
         android:id="@+id/codeTextField3"
@@ -114,7 +116,7 @@
         android:textIsSelectable="false"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField4"
         app:layout_constraintStart_toEndOf="@+id/codeTextField2"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
 
     <EditText
         android:id="@+id/codeTextField4"
@@ -130,7 +132,7 @@
         android:textIsSelectable="false"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField5"
         app:layout_constraintStart_toEndOf="@+id/codeTextField3"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
 
     <EditText
         android:id="@+id/codeTextField6"
@@ -146,7 +148,7 @@
         android:textIsSelectable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/codeTextField5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
 
     <EditText
         android:id="@+id/codeTextField5"
@@ -162,47 +164,46 @@
         android:textIsSelectable="false"
         app:layout_constraintEnd_toStartOf="@+id/codeTextField6"
         app:layout_constraintStart_toEndOf="@+id/codeTextField4"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
 
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="168dp"
         android:layout_height="59dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="150dp"
         android:layout_marginEnd="160dp"
         android:layout_marginBottom="164dp"
         android:backgroundTint="@color/mapboxRedDark"
         android:foregroundGravity="center_horizontal"
-
         android:onClick="continueLikeGeneralUser"
-        android:text="Continue General Account"
+        android:text="@string/GeneralAccount"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.361"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
 
     <Button
         android:id="@+id/continueButton"
         android:layout_width="159dp"
         android:layout_height="59dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="150dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="164dp"
         android:backgroundTint="@android:color/holo_green_dark"
         android:onClick="continueVerification"
-        android:text="Verify Account"
+        android:text="@string/VerifyAccount"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.642"
         app:layout_constraintStart_toEndOf="@+id/cancelButton"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/MessageCodeHer" />
 
     <TextView
         android:id="@+id/titleVerify"
         android:layout_width="348dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="31dp"
         android:layout_marginBottom="11dp"
