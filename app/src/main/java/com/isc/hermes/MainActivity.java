@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,7 +18,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Handler;
 
 import com.isc.hermes.controller.FilterCategoriesController;
+import com.isc.hermes.controller.MapPolygonController;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.controller.PolygonOptionsController;
+import com.isc.hermes.controller.ViewIncidentsController;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
@@ -26,6 +30,9 @@ import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 
+import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.model.Utils.IncidentsUtils;
+import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
 import com.isc.hermes.utils.MarkerManager;
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean visibilityMenu = false;
     private TextView searchView;
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
     private boolean isStyleOptionsVisible = false;
     private ActivityResultLauncher<Intent> launcher;
@@ -77,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
         initFilterAdvancedView();
         launcher = createActivityResult();
+        initShowIncidentsController();
         initCurrentLocationController();
     }
     /**
@@ -186,6 +195,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this);
         currentLocationController.initLocationButton();
+    }
+
+    /**
+     * This method init the form with all button to show incidents from database
+     */
+    private void initShowIncidentsController() {
+        viewIncidentsController = new ViewIncidentsController(this);
     }
 
     /**
@@ -370,5 +386,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                 });
+    }
+
+    public void acceptNaturalDisasters(){
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident(IncidentsUtils.getInstance().generateObjectId(),"Natural Disaster","Natural Disaster","2023-06-22T19:40:47.955Z", "2023-06-22T19:40:47.955Z" , GeometryType.POLYGON.getName(),MapPolygonController.getInstance(MapManager.getInstance().getMapboxMap(), context).getPolygonPoints().toString());
+        IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 }

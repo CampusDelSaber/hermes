@@ -3,6 +3,7 @@ package com.isc.hermes.controller;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
+import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.generators.CoordinateParser;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.geojson.Point;
@@ -28,6 +29,7 @@ public class MapPolygonController implements MapClickConfigurationController {
     private final List<Double[]> coordinates;
     private final CoordinateParser coordinateParser;
     private final GeometryFactory geometryFactory;
+    private static MapPolygonController instance;
 
     public MapPolygonController(MapboxMap mapboxMap, Context context ) {
         this.mapboxMap = mapboxMap;
@@ -91,5 +93,18 @@ public class MapPolygonController implements MapClickConfigurationController {
         for (Marker marker:mapboxMap.getMarkers()) {
             mapboxMap.removeMarker(marker);
         }
+    }
+
+    public MapboxMap getMapboxMap() {
+        return mapboxMap;
+    }
+
+    public List<Point> getPolygonPoints() {
+        return polygonPoints;
+    }
+
+    public static MapPolygonController getInstance(MapboxMap mapboxMap, Context context ) {
+        if (instance == null) instance = new MapPolygonController(mapboxMap, context);
+        return instance;
     }
 }
