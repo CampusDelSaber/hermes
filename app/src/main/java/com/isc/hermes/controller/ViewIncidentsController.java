@@ -8,14 +8,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.isc.hermes.ActivitySelectRegion;
 import com.isc.hermes.R;
 import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
-import com.isc.hermes.view.MapDisplay;
-import com.mapbox.mapboxsdk.annotations.Polyline;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +37,7 @@ public class ViewIncidentsController{
 
 
 
-    public ViewIncidentsController(AppCompatActivity activity,MapDisplay mapDisplay){
+    public ViewIncidentsController(AppCompatActivity activity,ActivitySelectRegion mapDisplay){
         this.requesting = new NaturalDisasterRequesting();
         this.incidentsVisualizationForm = activity.findViewById(R.id.viewIncidentsForm);
         this.viewIncidentsFormButton = activity.findViewById(R.id.viewIncidentsButton);
@@ -66,7 +63,7 @@ public class ViewIncidentsController{
     /**
      * Method to init the action about click on a single button on show incidents form
      */
-    private void initViewDifferentIncidentsTypeButton(MapDisplay mapDisplay) {
+    private void initViewDifferentIncidentsTypeButton(ActivitySelectRegion mapDisplay) {
         viewTrafficButton.setOnClickListener(v -> {
             try {
                 if (isTrafficVisible) {

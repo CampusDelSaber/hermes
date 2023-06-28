@@ -4,8 +4,9 @@ import static com.mongodb.assertions.Assertions.assertNotNull;
 
 import android.graphics.Color;
 
+import com.isc.hermes.ActivitySelectRegion;
 import com.isc.hermes.database.IncidentsDataProcessor;
-import com.isc.hermes.view.MapDisplay;
+
 import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -30,7 +31,7 @@ public class ShowTrafficController {
      * This method will hide the incidents if the user does not want to see them.
      * @param mapDisplay It is the map which will be shown .
      */
-    public void hideTraffic(MapDisplay mapDisplay) {
+    public void hideTraffic(ActivitySelectRegion mapDisplay) {
         for (Polyline polyline : trafficPolylines) {
             mapDisplay.getMapboxMap().removePolyline(polyline);
         }
@@ -41,7 +42,7 @@ public class ShowTrafficController {
      * This method will show the incidents if the user want to see them.
      * @param mapDisplay It is the map which will be shown .
      */
-    public void showTraffic(MapDisplay mapDisplay) throws JSONException {
+    public void showTraffic(ActivitySelectRegion mapDisplay) throws JSONException {
         JSONArray incidentsArrayNormal = incidentsDataProcessor.getAllIncidentsByType("Normal Traffic");
         JSONArray incidentsArrayLow = incidentsDataProcessor.getAllIncidentsByType("Low Traffic");
         JSONArray incidentsArrayHigh = incidentsDataProcessor.getAllIncidentsByType("High Traffic");
@@ -71,7 +72,7 @@ public class ShowTrafficController {
      * @param mapDisplay It is the map which will be shown .
      * @param incidentObject is the JSON file to extract the data .
      */
-    private Polyline createTrafficPolyline(MapDisplay mapDisplay, JSONObject incidentObject, String trafficType) throws JSONException {
+    private Polyline createTrafficPolyline(ActivitySelectRegion mapDisplay, JSONObject incidentObject, String trafficType) throws JSONException {
         JSONObject geometryObject = incidentObject.getJSONObject("geometry");
         JSONArray coordinatesArray = geometryObject.getJSONArray("coordinates");
         PolylineOptions polylineOptions = new PolylineOptions();

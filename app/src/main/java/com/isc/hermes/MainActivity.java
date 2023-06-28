@@ -37,7 +37,7 @@ import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.controller.offline.OfflineDataRepository;
 import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.model.RegionData;
-import com.isc.hermes.model.User;
+
 
 import android.widget.SearchView;
 
@@ -215,13 +215,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initCurrentLocationController() {
         currentLocationController = CurrentLocationController.getControllerInstance(this);
         currentLocationController.initLocationButton();
-    }
-
-    /**
-     * This method init the form with all button to show incidents from database
-     */
-    private void initShowIncidentsController(){
-        viewIncidentsController = new ViewIncidentsController(this,mapDisplay);
     }
 
     /**
