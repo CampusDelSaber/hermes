@@ -151,10 +151,14 @@ public class GraphController {
                     lastNode = graph.getNode(String.valueOf(edges.getJSONObject(i).getJSONArray("nodes").get(j-1)));
                     currentNode = graph.getNode(String.valueOf(edges.getJSONObject(i).getJSONArray("nodes").get(j)));
                     if (currentNode != null && lastNode != null) {
-                        if (transportationType.equals(TransportationType.WALK)) {
-                            lastNode.addBidirectionalEdge(currentNode, calculator.calculateDistance(lastNode, currentNode));
-                        }
-                        lastNode.addUnidirectionalEdge(currentNode, calculator.calculateDistance(lastNode, currentNode));
+                        if (transportationType.equals(TransportationType.WALK))
+                            lastNode.addBidirectionalEdge(
+                                currentNode, calculator.calculateDistance(lastNode, currentNode)
+                            );
+                        else
+                            lastNode.addUnidirectionalEdge(
+                                currentNode, calculator.calculateDistance(lastNode, currentNode)
+                            );
                     }
 
                 }
