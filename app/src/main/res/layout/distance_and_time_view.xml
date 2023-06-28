@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/distance_time_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:visibility="gone">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="401dp"
-        android:layout_height="129dp"
+        android:layout_height="185dp"
         android:background="#FFFFFF"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,8 +18,23 @@
         app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/rerouting_button_background">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/reload_icon" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="392dp"
             android:layout_height="40dp"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             android:paddingStart="5dp">
 
@@ -99,6 +113,7 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:text="( 123 Km )"
+                android:textColor="@color/black"
                 android:textAlignment="viewStart"
                 android:textSize="25dp"
                 app:layout_constraintBottom_toBottomOf="parent"
