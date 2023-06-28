@@ -20,7 +20,7 @@ import timber.log.Timber;
 public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallback {
     private final Activity activity;
     private final ProgressDialogManager progressManager;
-
+    boolean isDownloadComplete;
     /**
      * Constructs a new RegionDownloader object.
      *
@@ -32,6 +32,17 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
     }
 
     /**
+     * Constructs a new RegionDownloader object.
+     *
+     * @param activity The activity in which the download operation is performed.
+     * @param message  this message is displayed when the downloading is in progress.
+     */
+    public RegionDownloader(Activity activity, String message) {
+        this.activity = activity;
+        progressManager = new ProgressDialogManager(activity, message);
+    }
+
+    /**
      * This method is called when the offline region is created successfully.
      * It launches the download of the region.
      *
@@ -39,6 +50,7 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
      */
     @Override
     public void onCreate(OfflineRegion offlineRegion) {
+        isDownloadComplete = false;
         launchDownload(offlineRegion);
     }
 
@@ -65,8 +77,10 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
                 double percentage = status.getRequiredResourceCount() >= 0
                         ? (100.0 * status.getCompletedResourceCount() / status.getRequiredResourceCount()) :
                         0.0;
-                if (status.isComplete()) {
+                if (status.isComplete() && !isDownloadComplete) {
+                    isDownloadComplete = true;
                     completeDownload(offlineRegion);
+                    System.out.println("ITS FINISHED");
                     return;
                 } else if (status.isRequiredResourceCountPrecise()) {
                     progressManager.updateProgress((int) Math.round(percentage));
@@ -108,11 +122,21 @@ public class RegionDownloader implements OfflineManager.CreateOfflineRegionCallb
      * @param offlineRegion offline downloaded.
      */
     private void completeDownload(OfflineRegion offlineRegion) {
-        MapboxOfflineManager.getInstance(activity).addOfflineRegion(
-                OfflineUtils.getRegionName(offlineRegion),
-                offlineRegion
-        );
+        String regionName = OfflineUtils.getRegionName(offlineRegion);
+        if (MapboxOfflineManager.getInstance(activity).getOfflineRegions().containsKey(regionName)) {replaceRegion(regionName);}
+        MapboxOfflineManager.getInstance(activity).addOfflineRegion(regionName, offlineRegion);
         CardViewHandler.getInstance().notifyObservers();
         progressManager.dismissProgressDialog();
+    }
+
+    /**
+     * This method eliminates Offline Regions duplicates.
+     * @param regionName this is the region name duplicated
+     */
+
+    private void replaceRegion(String regionName){
+        OfflineRegion offlineRegion = MapboxOfflineManager.getInstance(activity).getOfflineRegion(regionName);
+        MapboxOfflineManager.getInstance(activity).addOfflineRegion(regionName, null);
+        offlineRegion.delete( new RegionDeleter(activity,regionName,false));
     }
 }
