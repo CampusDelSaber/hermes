@@ -5,10 +5,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.UserRepository;
 

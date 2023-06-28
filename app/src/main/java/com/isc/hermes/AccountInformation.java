@@ -1,6 +1,5 @@
 package com.isc.hermes;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,22 +12,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
-
-import java.io.IOException;
-
-
-import com.isc.hermes.controller.PopUp.PopUp;
-import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.SaveProfileImage;
 import com.isc.hermes.model.User.UserRepository;
+
+import java.io.IOException;
 
 /**
  * This class represents the AccountInformation activity, which displays information about the account.

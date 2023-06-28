@@ -77,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        accountInfoManager = new AccountInfoManager();
+        accountInfoManager.updateUserInformationLocal();
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
@@ -92,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
-        accountInfoManager = new AccountInfoManager();
-        accountInfoManager.updateUserInformationLocal();
         setTheUserInformationInTheDropMenu();
     }
     /**
