@@ -34,6 +34,7 @@ import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private AccountInfoManager accountInfoManager;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -90,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
+        accountInfoManager = new AccountInfoManager();
+        accountInfoManager.updateUserInformationLocal();
         setTheUserInformationInTheDropMenu();
     }
     /**

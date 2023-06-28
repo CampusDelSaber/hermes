@@ -78,8 +78,6 @@ public class AccountInformation extends AppCompatActivity {
      * Sets the user's username, full name, email, and type in their respective text fields.
      */
     private void updateComponentsByUserInformation() {
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
-        accountInfoManager.updateUserInformationLocal(UserRepository.getInstance().getUserContained().getEmail());
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
                     UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);
@@ -139,6 +137,7 @@ public class AccountInformation extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
+
 
     /**
      * Handles the result of the activity for selecting an image from the gallery.
