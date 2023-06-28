@@ -50,7 +50,8 @@ public class MapWayPointController implements MapClickConfigurationController {
         if (NavigationOptionsController.isActive) {
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
             markPointBehavior(point);
-        } else if (!InfoRouteController.getInstance(context).isActive()) {
+        } else if (!InfoRouteController.getInstance(context,
+                waypointOptionsController.getNavOptionsFormController()).isActive()) {
             Log.i("Mau","Entre a dibuajr unb");
             doMarkOnMapAction(point);
             waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
@@ -117,7 +118,7 @@ public class MapWayPointController implements MapClickConfigurationController {
     /**
      * Method to render a marker on map
      */
-    private void setMarkerOnMap(LatLng point) {
+    public void setMarkerOnMap(LatLng point) {
         MarkerOptions markerOptions = new MarkerOptions().position(point);
         mapboxMap.addMarker(markerOptions);
     }
