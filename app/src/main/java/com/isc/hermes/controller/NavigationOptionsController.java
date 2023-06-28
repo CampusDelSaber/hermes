@@ -289,6 +289,19 @@ public class NavigationOptionsController {
                 formatLatLng(finalPoint.getLatitude(), finalPoint.getLongitude()) : "Not selected");
     }
 
+    private void manageGraphBuilding(GraphController graphController){
+        try {
+            executeGraphBuild(graphController);
+
+            new Handler().postDelayed(() -> {
+                progressDialog.dismiss();
+                Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
+            }, 3000);
+        } catch (Exception e) {
+            handleErrorLoadingRoutes();
+        }
+    }
+
     /**
      * This method handles the actions performed when the accept button is clicked.
      */
@@ -300,7 +313,6 @@ public class NavigationOptionsController {
         LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         GraphController graphController = new GraphController(start, destination);
-
         markStartEndPoint(start, destination);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -309,17 +321,7 @@ public class NavigationOptionsController {
         progressDialog = builder.create();
         progressDialog.show();
 
-        try {
-            executeGraphBuild(graphController);
-
-            new Handler().postDelayed(() -> {
-                progressDialog.dismiss();
-                Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
-            }, 3000);
-        } catch (Exception e) {
-            System.out.println("USE 1");
-            handleErrorLoadingRoutes();
-        }
+        manageGraphBuilding(graphController);
     }
 
 
@@ -364,7 +366,6 @@ public class NavigationOptionsController {
                     graphController.getDestinationNode(), transportationType
             );
         } catch (JSONException e) {
-            System.out.println("USE 2");
             handleErrorLoadingRoutes();
         }
     }
@@ -383,21 +384,21 @@ public class NavigationOptionsController {
 
         String[] routes = {jsonC, jsonB, jsonA};
         ArrayList<String> geoJson = new ArrayList<>();
-        for (String route : routes) {
+        for (String route : routes)
             if (!route.isEmpty()) geoJson.add(route);
-        }
 
+        renderMapRoutes(geoJson);
+    }
+
+    private void renderMapRoutes(ArrayList<String> geoJson){
         if (geoJson.size() > 0){
             MapPolyline mapPolyline = new MapPolyline();
             try{
                 infoRouteController.showInfoRoute(geoJson, mapPolyline);
             } catch (Exception e){
-                System.out.println("USE 3");
-                e.printStackTrace();
                 handleErrorLoadingRoutes();
             }
         } else {
-            System.out.println("USE 4");
             handleErrorLoadingRoutes();
         }
     }

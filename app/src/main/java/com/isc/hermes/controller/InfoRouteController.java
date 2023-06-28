@@ -69,20 +69,13 @@ public class InfoRouteController {
         buttonRouteB = activity.findViewById(R.id.ButtonRouteTwo);
         buttonRouteA = activity.findViewById(R.id.ButtonRouteOne);
         startNavigationButton = activity.findViewById(R.id.startNavegationButton);
-
     }
 
     private void setColorsInfoRoutes(int size){
         colorsInfoRoutes.clear();
-        if (size > 1){
-            colorsInfoRoutes.add(0XFF686C6C);
-            colorsInfoRoutes.add(0xFF2350A3);
-            colorsInfoRoutes.add(0XFFFF6E26);
-        } else {
-            colorsInfoRoutes.add(0XFFFF6E26);
-            colorsInfoRoutes.add(0xFF2350A3);
-            colorsInfoRoutes.add(0XFF686C6C);
-        }
+        colorsInfoRoutes.add(size > 1 ? 0XFF686C6C : 0XFFFF6E26);
+        colorsInfoRoutes.add(0xFF2350A3);
+        colorsInfoRoutes.add(size > 1 ? 0XFFFF6E26 : 0XFF686C6C);
     }
 
     /**
@@ -100,32 +93,22 @@ public class InfoRouteController {
             isActive = false;
         });
 
-        buttonRouteA.setOnClickListener(v -> {
-            setTimeAndDistanceInformation(jsonObjects.get(jsonObjects.size() - 1));
-            isRouteASelected = true;
-            isRouteBSelected = false;
-            isRouteCSelected = false;
-            updateButtonVisibility();
-        });
+        buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1, true, false, false));
+        buttonRouteB.setOnClickListener(v -> setRouteInformation(1, false, true, false));
+        buttonRouteC.setOnClickListener(v -> setRouteInformation(0, false, false, true));
 
-        buttonRouteB.setOnClickListener(v -> {
-            setTimeAndDistanceInformation(jsonObjects.get(1));
-            isRouteASelected = false;
-            isRouteBSelected = true;
-            isRouteCSelected = false;
-            updateButtonVisibility();
-        });
-        buttonRouteC.setOnClickListener(v -> {
-            setTimeAndDistanceInformation(jsonObjects.get(0));
-            isRouteASelected = false;
-            isRouteBSelected = false;
-            isRouteCSelected = true;
-            updateButtonVisibility();
-        });
         startNavigationButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         });
+    }
+
+    private void setRouteInformation(int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected) {
+        setTimeAndDistanceInformation(jsonObjects.get(index));
+        this.isRouteASelected = isRouteASelected;
+        this.isRouteBSelected = isRouteBSelected;
+        this.isRouteCSelected = isRouteCSelected;
+        updateButtonVisibility();
     }
 
     /**
