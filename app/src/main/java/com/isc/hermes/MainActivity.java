@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initializeFunctionalityOfTheBurgerButton();
         setTheUserInformationInTheDropMenu();
     }
-
+    
     /**
      * Set up the SearchView and set the text color to black.
      */
@@ -127,7 +127,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         FilterController filterController = new FilterController(mapboxMap, this);
-        mapboxMap.setStyle(Style.MAPBOX_STREETS, style -> filterController.initComponents());
+        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
+        });
         MapManager.getInstance().setMapboxMap(mapboxMap);
         MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
     }
@@ -157,7 +160,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void initializeFunctionalityOfTheBurgerButton(){
         navigationView.bringToFront();
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar, R.string.close, R.string.close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,
+                toolbar, R.string.close, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -319,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void changeMapStyle(View view) {
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
         styleOptionsWindow.setVisibility(View.GONE);
-        mapStyle = view.getTag().toString();
+        mapStyle = ((ImageButton) view).getTag().toString();
         MapManager.getInstance().getMapboxMap().setStyle(mapStyle);
     }
 
@@ -345,9 +349,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void addMarkers() {
         WayPoint place = new WayPoint(sharedSearcherPreferencesManager.getPlaceName(),
-                sharedSearcherPreferencesManager.getLatitude(), sharedSearcherPreferencesManager.getLongitude());
+                sharedSearcherPreferencesManager.getLatitude(),
+                sharedSearcherPreferencesManager.getLongitude());
         addMarkerToMap(place);
-        if (place.getPlaceName() != null) searchView.setText(place.getPlaceName());
+        if (place.getPlaceName() != null)
+            searchView.setText(place.getPlaceName());
         else {
             String resetSearch = "Search...";
             searchView.setText(resetSearch);
@@ -366,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    /**
+    /*
      * This method used for open a new activity, offline settings.
      *
      * @param view view
@@ -404,7 +410,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param item The selected item
      * @return a boolean if all is correct
      */
-    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -430,6 +435,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.changeDisplayMode:
                 //TODO: Implement the change dimension mode;
                 return true;
-        } return true;
+        }
+        return true;
     }
 }
