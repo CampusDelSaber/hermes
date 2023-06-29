@@ -1,7 +1,6 @@
 package com.isc.hermes.controller.offline;
 
 import com.isc.hermes.model.RegionData;
-import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 
 import java.util.HashMap;
 import java.util.Map;

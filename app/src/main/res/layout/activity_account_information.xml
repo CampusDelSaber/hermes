@@ -80,6 +80,7 @@
             android:onClick="uploadImageProfileAction"
             android:text="@string/edit_profile"
             android:textSize="13sp"
+            android:visibility="gone"
             app:cornerRadius="20dp"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintEnd_toEndOf="parent"
