@@ -153,7 +153,7 @@ public class MapPolyline {
      * @param colors list of colors
      */
     public void verifyPolylineNull(List<Point> polylinePoints, String layerID, String sourceID, List<Integer> colors, int count, Style style){
-        if(polylinePoints != null){
+        if(polylinePoints != null && colors.get(count) != null){
             LineLayer polylineLayer = new LineLayer(layerID, sourceID);
             polylineLayer.setProperties(
                     PropertyFactory.lineColor(colors.get(count)),

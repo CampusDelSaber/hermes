@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Class to get the turn by turn directions from the route chosen
+ */
 public class NavigationDirectionController {
     private final Context context;
     private final RelativeLayout directionsForm;
@@ -60,31 +63,38 @@ public class NavigationDirectionController {
      * @param coordinates The array of coordinates.
      */
     private void processCoordinates(JSONArray coordinates) {
-        List<String> directions = new ArrayList<>();
-
         try {
             JSONArray startPoint = coordinates.getJSONArray(0);
             double prevLatitude = startPoint.getDouble(1);
             double prevLongitude = startPoint.getDouble(1);
-
-            for (int i = 1; i < coordinates.length(); i++) {
-                JSONArray currentPoint = coordinates.getJSONArray(i);
-                double latitude = currentPoint.getDouble(1);
-                double longitude = currentPoint.getDouble(0);
-
-                String streetName = getStreetNameForCoordinates(latitude, longitude);
-                String direction = determineDirection(prevLatitude, prevLongitude, latitude, longitude);
-                String directionWithStreet = direction + " on " + streetName;
-                directions.add(directionWithStreet);
-
-                prevLatitude = latitude;
-                prevLongitude = longitude;
-            }
-
-            displayDirections(directions);
+            setDirectionsArray(coordinates, prevLatitude, prevLongitude);
         } catch (JSONException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Sets the directions array based on the provided coordinates.
+     *
+     * @param coordinates  the JSONArray containing the coordinates
+     * @param prevLatitude the latitude of the previous point
+     * @param prevLongitude the longitude of the previous point
+     * @throws JSONException if there is an error while parsing the coordinates
+     */
+    private void setDirectionsArray(JSONArray coordinates, double prevLatitude, double prevLongitude) throws JSONException {
+        List<String> directions = new ArrayList<>();
+        for (int i = 1; i < coordinates.length(); i++) {
+            JSONArray currentPoint = coordinates.getJSONArray(i);
+            double latitude = currentPoint.getDouble(1);
+            double longitude = currentPoint.getDouble(0);
+            String streetName = getStreetNameForCoordinates(latitude, longitude);
+            String direction = determineDirection(prevLatitude, prevLongitude, latitude, longitude);
+            String directionWithStreet = direction + " on " + streetName;
+            directions.add(directionWithStreet);
+            prevLatitude = latitude;
+            prevLongitude = longitude;
+        }
+        displayDirections(directions);
     }
 
     /**
@@ -94,7 +104,6 @@ public class NavigationDirectionController {
      * @param longitude The longitude of the coordinates.
      * @return The street name associated with the coordinates.
      */
-
     private String getStreetNameForCoordinates(double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(context);
         String streetName = "";
