@@ -37,7 +37,7 @@ public class NavigationOptionsController {
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
     private InfoRouteController infoRouteController;
-    private PolylineDrawer polylineDrawer;
+    private PolylineRouteUpdater polylineRouteUpdater;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -82,7 +82,7 @@ public class NavigationOptionsController {
             handleHiddeItemsView();
             isActive = false;
             mapWayPointController.setMarked(false);
-            polylineDrawer.setStartPoint(finalPoint);
+            polylineRouteUpdater.setStartPoint(finalPoint);
         });
     }
 
@@ -245,7 +245,7 @@ public class NavigationOptionsController {
 
         MapPolyline mapPolyline = new MapPolyline();
         infoRouteController.showInfoRoute(geoJson, mapPolyline);
-        polylineDrawer = new PolylineDrawer(startPoint, finalPoint, infoRouteController, mapPolyline);
-        polylineDrawer.drawPolylineEverySecond();
+        polylineRouteUpdater = new PolylineRouteUpdater(startPoint, finalPoint, mapPolyline);
+        polylineRouteUpdater.drawPolylineEverySecond();
     }
 }

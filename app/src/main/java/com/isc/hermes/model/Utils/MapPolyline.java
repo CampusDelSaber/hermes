@@ -1,6 +1,8 @@
 package com.isc.hermes.model.Utils;
 
 
+import android.graphics.Color;
+
 import com.isc.hermes.utils.MapManager;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
@@ -165,12 +167,19 @@ public class MapPolyline {
         }
     }
 
+    /**
+     * Displays a polyline on the map between two given points.
+     *
+     * @param point1 The first point of the polyline.
+     * @param point2 The second point of the polyline.
+     */
     public void displayPolyline(LatLng point1, LatLng point2) {
         if (mapboxMap != null) {
             mapboxMap.addPolyline(new PolylineOptions()
                     .add(point1, point2)
-                    .color(0xFF0000FF) // Blue color for the polyline
-                    .width(5)); // Width of the polyline
+                    .color(Color.GRAY)
+                    .width(5));
         }
     }
+
 }
