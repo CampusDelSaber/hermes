@@ -13,6 +13,8 @@ public class User {
     private String pathImageUser;
     private String typeUser;
     private String id;
+    private boolean isAdministrator;
+    private boolean isRegistered;
 
     /**
      * Constructs a User object with the specified email, path to the user's image, and ID.
@@ -182,5 +184,44 @@ public class User {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * Sets the registration status of the object.
+     *
+     * @param administrator the registration status to be set
+     */
+    public void setAdministrator(boolean administrator) {
+        isAdministrator = administrator;
+    }
+
+    /**
+     * Returns the registration status of the object.
+     *
+     * @return isAdministrator true if the object is registered, false otherwise
+     */
+    public boolean isAdministrator() {
+        return isAdministrator;
+    }
+    public boolean isRegistered() {
+        return isRegistered;
+    }
+
+    public void setRegistered(boolean registered) {
+        isRegistered = registered;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", userName='" + userName + '\'' +
+                ", pathImageUser='" + pathImageUser + '\'' +
+                ", typeUser='" + typeUser + '\'' +
+                ", id='" + id + '\'' +
+                ", isAdministrator=" + isAdministrator +
+                ", isRegistered=" + isRegistered +
+                '}';
     }
 }

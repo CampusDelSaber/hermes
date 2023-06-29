@@ -1,5 +1,6 @@
 package com.isc.hermes;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,7 +12,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
@@ -39,6 +39,7 @@ public class AccountInformation extends AppCompatActivity {
     private PopUpOverwriteInformationAccount popUpDialogEdit;
     private static final int PICK_IMAGE_REQUEST = 1;
     private SaveProfileImage saveProfileImage;
+    private boolean isModifiable;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -161,8 +162,8 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void editAccountAction(View view) {
         buttonSaveInformation.setVisibility(View.VISIBLE);
+        verifyAdministratorUser();
         textFieldFullName.setEnabled(true);
-        comboBoxField.setEnabled(true);
         textFieldUserName.setEnabled(true);
         buttonUploadImage.setVisibility(View.VISIBLE);
     }
@@ -174,6 +175,18 @@ public class AccountInformation extends AppCompatActivity {
         UserRepository.getInstance().getUserContained().setTypeUser(String.valueOf(comboBoxField.getText()));
         UserRepository.getInstance().getUserContained().setUserName(String.valueOf(textFieldUserName.getText()));
         UserRepository.getInstance().getUserContained().setFullName(String.valueOf(textFieldFullName.getText()));
+    }
+
+    /**
+     * Verifies if the user is an administrator user and performs corresponding actions.
+     * The user is not an administrator, the comboBoxField is enabled.
+     * The user is an administrator, the comboBoxField is set to display the user's type.
+     */
+    private void verifyAdministratorUser() {
+        if (!UserRepository.getInstance().getUserContained().getTypeUser().
+                equals("Administrator")) comboBoxField.setEnabled(true);
+        else
+            comboBoxField.setText(UserRepository.getInstance().getUserContained().getTypeUser());
     }
 
     /**
@@ -193,6 +206,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     private void initializePopups(){
         this.popUpDialogEdit = new PopUpOverwriteInformationAccount(this);
+        this.popUpDialogEdit.setIsModifiable(isModifiable);
         this.popUpDialogDelete = new PopUpDeleteAccount(this);
     }
 
@@ -202,10 +216,12 @@ public class AccountInformation extends AppCompatActivity {
      * and disables the text fields initially.
      */
     private void  assignValuesToComponentsView() {
+        isModifiable = UserRepository.getInstance().getUserContained().getTypeUser().equals("Administrator");
+        UserRepository.getInstance().getUserContained().setAdministrator(true);
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
         buttonUploadImage = findViewById(R.id.buttonUploadImage);
         imageView = findViewById(R.id.imageUpload);
-        comboBoxField = findViewById(R.id.textFieldUserType);
+        comboBoxField = findViewById(R.id.textFieldUserTypeUpdate);
         textFieldFullName = findViewById(R.id.textFieldFullName);
         textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldUserName = findViewById(R.id.textFieldUserName);

@@ -37,20 +37,6 @@ public class PopUpContinueLikeGeneralUser extends PopUp{
     }
 
     /**
-     * Uploads the general user information to the database.
-     * Sets the user type to "General" and adds the user to the AccountInfoManager.
-     */
-    private void uploadGeneralUserToDB() {
-        UserRepository.getInstance().getUserContained().setTypeUser(TypeUser.GENERAL.getTypeUser());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
-                    UserRepository.getInstance().getUserContained().getFullName(),
-                    UserRepository.getInstance().getUserContained().getUserName(),
-                    TypeUser.GENERAL.getTypeUser(), UserRepository.getInstance().getUserContained().getPathImageUser());
-        }
-    }
-
-    /**
      * Handles the click event for the view.
      *
      * @param v The view that was clicked.
@@ -59,7 +45,6 @@ public class PopUpContinueLikeGeneralUser extends PopUp{
     public void onClick(View v) {
         if (v == super.confirmButton){
             Intent intent = new Intent(this.activity, MainActivity.class);
-            uploadGeneralUserToDB();
             this.activity.startActivity(intent);
         } dismiss();
     }
