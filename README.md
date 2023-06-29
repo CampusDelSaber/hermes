@@ -232,7 +232,6 @@ user wishes to search for, such as restaurants, hotels, parks, etc.
 
 ![Navigation](https://i.postimg.cc/vHQJBHgK/Screenshot-from-2023-06-29-00-23-21.png)
 
-=======
 ### Map Creation
 After sign up or log in, the map displays with streets, avenues, 
 certified places, its names and every country information.
@@ -252,4 +251,69 @@ bicycle or on foot, the trip is traced from your position to the indicated posit
 ### Offline Mode
 Offline mode appears when there's no internet on the mobile, zones of the map can be downloaded,
 for use it later when there's no internet, downloaded zones can be renamed and deleted.
->>>>>>> 952aeacbb2cd620464bfef626cae5b99daa1ad1a
+
+
+### Dependencies
+
+The project has the following dependencies:
+
+- `Java 17:`
+
+The project uses Java 17 to compile and run.
+
+- `Mapbox Android SDK (version 9.7.1):`
+
+The Mapbox SDK is used for integrating maps into the Android application.
+
+- `Glide (version 4.15.1):`
+
+Glide is used for image loading and display in the Android application.
+
+- `Google Play Services Auth (version 20.5.0):`
+
+Google Play Services Auth is used for authentication in the Android application.
+
+- `MongoDB (version 4.5.0):`
+
+MongoDB is used as the database for the project.
+
+
+### Contributors
+
+Teams that contributed to the project:
+
+- ## Team A:
+
+ - Carlos Antonio Ballester Paniagua
+ - Cristian Sebastian Barra Zurita
+ - Camila Bustos Valverde
+ - Karina Aguirre Janco
+ - Jhael Katherine Arce Chavez
+ - Axel Javier Ayala Siles
+ - Juan Pablo David Arequipa
+ - Elvis Jose Castro Huanca
+ - Santiago Caballero Manzaneda
+
+- ## Team B:
+
+ - Victor Alejandro Cespedes Cartagena
+ - Gabriel Santiago Concha Saavedra
+ - Jeferson Jhovani Coronel Lavadenz
+ - Samuel Alejandro Escalera Herrera
+ - Daniel Pablo Espinoza Escalera
+ - Diego Hernan Figueroa Sevillano
+ - Emanuel Javier Galindo Corpa
+ - Denis Jorge Gandarillas Delgado
+ - Gabriela Garcia Villalobos
+
+- ## Team C:
+
+ - Gaston Gutierrez Condori
+ - Salet Yasmin Gutierrez Nava
+ - Jorge Ignacio Heredia Bazoalto
+ - Leonardo Alberto Herrera Rosales
+ - Juan Carlos Hidalgo Sosa
+ - Luiggy Mamani Condori
+ - Fernando Mauricio Mamani Navarro
+ - Fabian Romero Claros
+ - Victor Leon Villca Silva
