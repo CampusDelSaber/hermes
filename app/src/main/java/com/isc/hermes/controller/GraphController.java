@@ -65,10 +65,10 @@ public class GraphController {
      *
      * @throws JSONException If there is an issue with parsing the JSON data.
      */
-    public void buildGraph() throws JSONException {
+    public void buildGraph(TransportationType transportationType) throws JSONException {
         int radius = (int) (getRadius() * 1000) + 200;
         loadIntersections(intersectionRequest.getIntersections(midpoint.getLatitude(), midpoint.getLongitude(), radius));
-        loadEdges(wayRequest.getEdges(midpoint.getLatitude(), midpoint.getLongitude(), radius));
+        loadEdges(wayRequest.getEdges(midpoint.getLatitude(), midpoint.getLongitude(), radius), transportationType);
         GraphManager graphManager = GraphManager.getInstance();
         graphManager.setGraph(graph);
         try {
@@ -79,6 +79,7 @@ public class GraphController {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+       
     }
 
     /**
@@ -155,7 +156,7 @@ public class GraphController {
      * @param edgesJson Contain the ways data.
      * @throws JSONException If there is an issue with parsing the JSON data.
      */
-    private void loadEdges(String edgesJson) throws JSONException {
+    private void loadEdges(String edgesJson, TransportationType transportationType) throws JSONException {
         if (edgesJson != null) {
             JSONObject json = new JSONObject(edgesJson);
             JSONArray edges = json.getJSONArray("elements");
@@ -166,9 +167,17 @@ public class GraphController {
                 for (int j = 1 ; j< edges.getJSONObject(i).getJSONArray("nodes").length() ; j++) {
                     lastNode = graph.getNode(String.valueOf(edges.getJSONObject(i).getJSONArray("nodes").get(j-1)));
                     currentNode = graph.getNode(String.valueOf(edges.getJSONObject(i).getJSONArray("nodes").get(j)));
-                    if(currentNode != null && lastNode != null) {
-                        lastNode.addUnidirectionalEdge(currentNode, calculator.calculateDistance(lastNode, currentNode));
+                    if (currentNode != null && lastNode != null) {
+                        if (transportationType.equals(TransportationType.WALK))
+                            lastNode.addBidirectionalEdge(
+                                currentNode, calculator.calculateDistance(lastNode, currentNode)
+                            );
+                        else
+                            lastNode.addUnidirectionalEdge(
+                                currentNode, calculator.calculateDistance(lastNode, currentNode)
+                            );
                     }
+
                 }
             }
         }
