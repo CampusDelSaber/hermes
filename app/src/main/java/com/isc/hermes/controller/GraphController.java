@@ -70,6 +70,7 @@ public class GraphController {
         graphManager.setGraph(graph);
         try {
             graphManager.disconnectBlockedStreets(start, destination);
+            graph = graphManager.getGraph();
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

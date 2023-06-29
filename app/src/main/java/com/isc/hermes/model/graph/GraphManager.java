@@ -51,6 +51,14 @@ public class GraphManager {
     }
 
     /**
+     * This method return the graph managed for this class.
+     * @return graph class
+     */
+    public Graph getGraph() {
+        return graph;
+    }
+
+    /**
      * This method search all incidents that are inside on the graph.
      *
      * @param origin the beginning of the graph on latitude and longitude point.
