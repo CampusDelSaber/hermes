@@ -16,7 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.navigation.RouteEstimatesManager;
 import com.isc.hermes.model.navigation.TransportationType;
+import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
@@ -49,6 +51,8 @@ public class NavigationOptionsController {
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
+
+    private Thread routeEstimationManagerThread;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -106,6 +110,7 @@ public class NavigationOptionsController {
         currentLocationButton.setOnClickListener(v -> handleCurrentLocationChosen());
         manageCancelButton();
         startButton.setOnClickListener(v -> handleAcceptButtonClick());
+
         for (int i = 0; i < transportationTypesContainer.getChildCount(); i++) {
             Button button = (Button) transportationTypesContainer.getChildAt(i);
             if (i != 0) button.setAlpha(0.3f);
@@ -148,6 +153,7 @@ public class NavigationOptionsController {
             mapWayPointController.setMarked(false);
             mapWayPointController.deleteMarks();
             polylineRouteUpdaterController.setStartPoint(finalPoint);
+            routeEstimationManagerThread.interrupt();
         });
     }
 
@@ -398,6 +404,9 @@ public class NavigationOptionsController {
         for (String route : routes)
             if (!route.isEmpty()) geoJson.add(route);
 
+
+        // TODO: Use the best available route
+        startRouteEstimationManager(jsonA);
         renderMapRoutes(geoJson);
     }
 
@@ -434,6 +443,14 @@ public class NavigationOptionsController {
      */
     private void updateNavigatedRoute() {
         polylineRouteUpdaterController.drawPolylineEverySecond();
+    }
+
+    private void startRouteEstimationManager(String JSONRoute){
+        UserRouteTracker tracker = new UserRouteTracker(JSONRoute);
+        routeEstimationManagerThread = new Thread(
+                () -> new RouteEstimatesManager(tracker, infoRouteController, transportationType).startUpdatingEstimations(),
+                "Estimation Thread");
+        routeEstimationManagerThread.start();
     }
 
 }
