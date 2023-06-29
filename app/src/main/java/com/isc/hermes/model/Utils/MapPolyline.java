@@ -6,6 +6,8 @@ import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Feature;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
@@ -160,6 +162,15 @@ public class MapPolyline {
                     PropertyFactory.lineWidth(4.5f)
             );
             style.addLayer(polylineLayer);
+        }
+    }
+
+    public void displayPolyline(LatLng point1, LatLng point2) {
+        if (mapboxMap != null) {
+            mapboxMap.addPolyline(new PolylineOptions()
+                    .add(point1, point2)
+                    .color(0xFF0000FF) // Blue color for the polyline
+                    .width(5)); // Width of the polyline
         }
     }
 }
