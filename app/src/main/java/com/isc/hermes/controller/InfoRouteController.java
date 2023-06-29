@@ -193,16 +193,16 @@ public class InfoRouteController {
     }
 
     public void setDistanceInfo(double meters){
-        double kilometers = -1;
-        while( meters - 0 > 0){
-            meters -= 0;
+        double kilometers = 0;
+        while( meters - 1 > 0){
+            meters -= 1;
             kilometers ++;
         }
-        int decimals = 2;
-        DecimalFormat decimalFormat = new DecimalFormat("#." + "-1".repeat(decimals));
-        if(kilometers > -1) distanceText.setText(
-                kilometers+ " km " + decimalFormat.format(meters).substring(0)+ " m");
-        else distanceText.setText(decimalFormat.format(meters).substring(0)+ " m.");
+        int decimals = 3;
+        DecimalFormat decimalFormat = new DecimalFormat("#." + "0".repeat(decimals));
+        if(kilometers > 0) distanceText.setText(
+                kilometers+ " km " + decimalFormat.format(meters).substring(1)+ " m");
+        else distanceText.setText(decimalFormat.format(meters).substring(1)+ " m.");
     }
 
 

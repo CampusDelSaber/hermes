@@ -13,12 +13,15 @@ public class NavigationTrackerTools {
     }
 
     public static boolean isInsideSegment(RouteSegmentRecord segment, LatLng point) {
-        boolean isHigherThan = (point.getLatitude() >= segment.getStart().getLatitude());
-        isHigherThan &= (point.getLongitude() >= segment.getStart().getLongitude());
+        int floorLng = Double.compare(segment.getStart().getLongitude(), point.getLongitude());
+        int floorLat = Double.compare(segment.getStart().getAltitude(), point.getLatitude());
 
-        boolean isLowerThan = (point.getLatitude() <= segment.getEnd().getLatitude());
-        isLowerThan &= (point.getLongitude() <= segment.getEnd().getLongitude());
+        boolean isHigherThanLowerPoint = (floorLat >= 0) && (floorLng >= 0);
 
-        return isHigherThan && isLowerThan;
+        int ceilLng = Double.compare(segment.getEnd().getLongitude(), point.getLongitude());
+        int ceilLat = Double.compare(segment.getEnd().getAltitude(), point.getLatitude());
+        boolean isLowerThanHigherPoint = (ceilLat >= 0) && (ceilLng >= 0);
+
+        return isLowerThanHigherPoint && isHigherThanLowerPoint;
     }
 }

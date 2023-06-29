@@ -41,6 +41,8 @@ public class NavigationOptionsController {
     private LatLng startPoint, finalPoint;
     private InfoRouteController infoRouteController;
 
+    private Thread routeEstimationsManagerThread;
+
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -86,6 +88,7 @@ public class NavigationOptionsController {
             handleHiddeItemsView();
             isActive = false;
             mapWayPointController.setMarked(false);
+            routeEstimationsManagerThread.interrupt();
         });
     }
 
@@ -246,7 +249,7 @@ public class NavigationOptionsController {
 
     private void startRouteEstimatesManager(Route route, UserRouteTracker tracker){
         Runnable routeEstimatesManager = () -> new RouteEstimatesManager(route, tracker, infoRouteController).startEstimatesTrack();
-        Thread estimatesThread = new Thread(routeEstimatesManager, "Estimates Thread");
-        estimatesThread.start();
+        routeEstimationsManagerThread = new Thread(routeEstimatesManager, "Estimates Thread");
+        routeEstimationsManagerThread.start();
     }
 }

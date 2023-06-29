@@ -3,10 +3,10 @@ package com.isc.hermes.model.navigation;
 import android.annotation.SuppressLint;
 
 import com.isc.hermes.model.graph.Node;
-import com.isc.hermes.model.navigation.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TestRouteBuilder {
@@ -32,7 +32,7 @@ public class TestRouteBuilder {
     }
 
     private ArrayList<Double[]> cookRoutePoints() {
-        ArrayList<Double[]> handMadeRoute = new ArrayList<>(6);
+        ArrayList<Double[]> handMadeRoute = new ArrayList<>();
         handMadeRoute.add(new Double[]{-66.156338, -17.394251});
         handMadeRoute.add(new Double[]{-66.155208, -17.394064});
         handMadeRoute.add(new Double[]{-66.154149, -17.393858});
@@ -45,12 +45,13 @@ public class TestRouteBuilder {
 
     @SuppressLint("DefaultLocale")
     private Route createRoute(ArrayList<Double[]> points) {
-        Route route = new Route(null);
+        List<Node> nodes = new ArrayList<>();
         for (int index = 0; index < points.size(); index++) {
             Double[] coords = points.get(index);
-            route.addNode(new Node(String.format("%d", index), coords[0], coords[1]), 10);
+            nodes.add(new Node(String.format("%d", index), coords[0], coords[1]));
         }
-        return route;
+
+        return new Route(nodes, TransportationType.CAR);
     }
 
     public ArrayList<String> exportToGeoJSON() {

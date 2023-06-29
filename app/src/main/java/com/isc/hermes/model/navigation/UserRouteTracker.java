@@ -27,6 +27,7 @@ public class UserRouteTracker {
         availableSegments = makeRouteSegments().listIterator();
         Node lastNode = route.getCurrentNode();
         destination = new LatLng(lastNode.getLatitude(), lastNode.getLongitude());
+        updateCurrentRouteSegment(currentLocation.getLatLng());
     }
 
     public double getPartialSegmentDistance() {
@@ -44,8 +45,7 @@ public class UserRouteTracker {
         if (availableSegments.hasNext()) {
             currentRouteSegmentRecord = availableSegments.next();
             if (!NavigationTrackerTools.isInsideSegment(currentRouteSegmentRecord, userLocation)){
-                // throw exception
-                System.out.println("segment error");
+                throw new UserOutsideRouteException(currentRouteSegmentRecord, userLocation);
             }
         }
     }

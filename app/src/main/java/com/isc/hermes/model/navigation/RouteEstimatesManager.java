@@ -23,7 +23,7 @@ public class RouteEstimatesManager {
             infoRouteController.setEstimatedTimeInfo(route.getTotalEstimatedArrivalTime());
 
             try {
-                Thread.currentThread().wait((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
+                Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
             } catch (InterruptedException e) {
                 // TODO: Handle exception properly.
                 e.printStackTrace();
