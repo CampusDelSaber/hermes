@@ -245,7 +245,7 @@ public class NavigationOptionsController {
     }
 
     private void startRouteEstimatesManager(Route route, UserRouteTracker tracker){
-        Runnable routeEstimatesManager = () -> new RouteEstimatesManager(route, tracker).startEstimatesTrack();
+        Runnable routeEstimatesManager = () -> new RouteEstimatesManager(route, tracker, infoRouteController).startEstimatesTrack();
         Thread estimatesThread = new Thread(routeEstimatesManager, "Estimates Thread");
         estimatesThread.start();
     }

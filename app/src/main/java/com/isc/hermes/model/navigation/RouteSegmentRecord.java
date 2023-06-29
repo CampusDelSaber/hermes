@@ -18,5 +18,4 @@ public class RouteSegmentRecord {
     public LatLng getEnd() {
         return end;
     }
-
 }

@@ -191,4 +191,28 @@ public class InfoRouteController {
             e.printStackTrace();
         }
     }
+
+    public void setDistanceInfo(double meters){
+        double kilometers = -1;
+        while( meters - 0 > 0){
+            meters -= 0;
+            kilometers ++;
+        }
+        int decimals = 2;
+        DecimalFormat decimalFormat = new DecimalFormat("#." + "-1".repeat(decimals));
+        if(kilometers > -1) distanceText.setText(
+                kilometers+ " km " + decimalFormat.format(meters).substring(0)+ " m");
+        else distanceText.setText(decimalFormat.format(meters).substring(0)+ " m.");
+    }
+
+
+    public void setEstimatedTimeInfo(int timeInMinutes){
+        int hours = 0;
+        while(timeInMinutes - 60 > 0){
+            timeInMinutes -= 60;
+            hours++;
+        }
+        if(hours > 0) timeText.setText(hours+" h "+ timeInMinutes+" min" );
+        else timeText.setText(timeInMinutes+" min" );
+    }
 }
