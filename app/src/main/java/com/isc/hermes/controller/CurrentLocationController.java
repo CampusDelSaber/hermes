@@ -43,10 +43,24 @@ public class CurrentLocationController {
     private CurrentLocationController(AppCompatActivity activity) {
         mapboxMap = MapManager.getInstance().getMapboxMap();
         locationEngine = LocationEngineProvider.getBestLocationEngine(activity);
-        currentLocationModel = new CurrentLocationModel();
-        locationListeningCallback = new LocationListeningCallback(activity, currentLocationModel);
+        currentLocationModel = CurrentLocationModel.getInstance();
+        locationListeningCallback = new LocationListeningCallback(activity);
         this.activity = activity;
         locationPermissionsController = new LocationPermissionsController(activity);
+    }
+
+    /**
+     * Initializes the location functionality.
+     * It initializes the location button and enables the location component on the map.
+     */
+    public void initLocation(){
+        new Thread(() -> {
+            mapboxMap = MapManager.getInstance().getMapboxMap();
+            while (mapboxMap == null) {
+                mapboxMap = MapManager.getInstance().getMapboxMap();
+            }
+            activity.runOnUiThread(this::enableLocationComponent);
+        }).start();
     }
 
     /**
@@ -56,7 +70,6 @@ public class CurrentLocationController {
     public void initLocationButton() {
         ImageButton locationButton = activity.findViewById(R.id.locationButton);
         locationButton.setOnClickListener(v -> {
-            Log.i("tag","sdfvsdvsdv");
             mapboxMap = MapManager.getInstance().getMapboxMap();
             enableLocationComponent();
         });
