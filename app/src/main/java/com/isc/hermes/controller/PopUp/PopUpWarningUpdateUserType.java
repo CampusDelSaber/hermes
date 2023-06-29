@@ -38,8 +38,8 @@ public class PopUpWarningUpdateUserType extends PopUp{
      */
     @SuppressLint("SetTextI18n")
     private void updateButtons() {
-        super.confirmButton.setText("Okay!");
-        super.betterNotButton.setText("Request Admin \nuser access");
+        super.confirmButton.setText("Edit User");
+        super.betterNotButton.setText("Okay!");
     }
 
     /**
@@ -54,5 +54,4 @@ public class PopUpWarningUpdateUserType extends PopUp{
             activity.startActivity(intent);
         } dismiss();
     }
-
 }
