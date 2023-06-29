@@ -3,6 +3,7 @@ package com.isc.hermes.controller;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
+import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.generators.CoordinateParser;
 import com.isc.hermes.utils.Animations;
 import com.mapbox.geojson.Point;
@@ -28,8 +29,9 @@ public class MapPolygonController implements MapClickConfigurationController {
     private final List<Double[]> coordinates;
     private final CoordinateParser coordinateParser;
     private final GeometryFactory geometryFactory;
+    private static MapPolygonController instance;
 
-    public MapPolygonController(MapboxMap mapboxMap, Context context ) {
+    private MapPolygonController(MapboxMap mapboxMap, Context context ) {
         this.mapboxMap = mapboxMap;
         polygonOptionsController = new PolygonOptionsController(context, this);
         polygonOptionsController.displayComponents();
@@ -91,5 +93,37 @@ public class MapPolygonController implements MapClickConfigurationController {
         for (Marker marker:mapboxMap.getMarkers()) {
             mapboxMap.removeMarker(marker);
         }
+    }
+
+    public MapboxMap getMapboxMap() {
+        return mapboxMap;
+    }
+
+    public List<Point> getPolygonPoints() {
+        return polygonPoints;
+    }
+
+    /**
+     * This method generate a string with the coordinates registered.
+     *
+     * @return String with coordinates.
+     */
+    public String getStringWithPolygonPoint(){
+        StringBuilder stringBuilder = new StringBuilder("[");
+        if(coordinates.size() > 1){
+            for (Double[] currentCoordinate : coordinates){
+                stringBuilder.append("["+currentCoordinate[0]+", "+currentCoordinate[1]+"],");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.toString().length()-1);
+            stringBuilder.append("]");
+        }else {
+            stringBuilder.append(coordinates.get(0)[0]+", "+coordinates.get(0)[1]+"]");
+        }
+        return stringBuilder.toString();
+    }
+
+    public static MapPolygonController getInstance(MapboxMap mapboxMap, Context context ) {
+        if (instance == null) instance = new MapPolygonController(mapboxMap, context);
+        return instance;
     }
 }

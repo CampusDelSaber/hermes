@@ -100,7 +100,7 @@ public class WaypointOptionsController {
 
         reportNaturalDisasterButton.setOnClickListener(v->{
             MapManager.getInstance().removeCurrentClickController();
-            MapManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapManager.getInstance().getMapboxMap(), this.context));
+            MapManager.getInstance().setMapClickConfiguration( MapPolygonController.getInstance(MapManager.getInstance().getMapboxMap(), this.context));
             waypointOptions.startAnimation(Animations.exitAnimation);
             waypointOptions.setVisibility(View.GONE);
         });

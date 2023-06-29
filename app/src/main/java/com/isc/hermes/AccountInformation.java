@@ -1,6 +1,5 @@
 package com.isc.hermes;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,15 +12,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
+import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
 
 import java.io.IOException;
 
-
-import com.isc.hermes.controller.PopUp.PopUp;
+import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.model.SaveProfileImage;
 import com.isc.hermes.model.User.UserRepository;
 
 /**
@@ -30,6 +32,7 @@ import com.isc.hermes.model.User.UserRepository;
 public class AccountInformation extends AppCompatActivity {
 
     private Button buttonSaveInformation;
+    private Button buttonUploadImage;
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldFullName;
     private AutoCompleteTextView comboBoxField;
@@ -38,6 +41,7 @@ public class AccountInformation extends AppCompatActivity {
     private PopUpOverwriteInformationAccount popUpDialogEdit;
     private PopUp popUpDialogDelete;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private SaveProfileImage saveProfileImage;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -71,6 +75,8 @@ public class AccountInformation extends AppCompatActivity {
      * Sets the user's username, full name, email, and type in their respective text fields.
      */
     private void updateComponentsByUserInformation() {
+        AccountInfoManager accountInfoManager = new AccountInfoManager();
+        accountInfoManager.updateUserInformationLocal();
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
                     UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);
@@ -126,6 +132,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
@@ -141,6 +148,7 @@ public class AccountInformation extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
+            saveProfileImage.saveProfileImage(selectedImageUri, AccountInformation.this);
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
@@ -159,6 +167,7 @@ public class AccountInformation extends AppCompatActivity {
         textFieldFullName.setEnabled(true);
         comboBoxField.setEnabled(true);
         textFieldUserName.setEnabled(true);
+        buttonUploadImage.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -177,8 +186,8 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void saveAccountInformationAction(View view) {
         updateInformationUser();
-        popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField);
+        popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
+                textFieldUserName, comboBoxField, buttonUploadImage);
         popUpDialogEdit.show();
     }
 
@@ -197,6 +206,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     private void  assignValuesToComponentsView() {
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
+        buttonUploadImage = findViewById(R.id.buttonUploadImage);
         imageView = findViewById(R.id.imageUpload);
         comboBoxField = findViewById(R.id.textFieldUserType);
         textFieldFullName = findViewById(R.id.textFieldFullName);
@@ -205,5 +215,6 @@ public class AccountInformation extends AppCompatActivity {
         textFieldFullName.setEnabled(false);
         textFieldUserName.setEnabled(false);
         comboBoxField.setEnabled(false);
+        saveProfileImage = new SaveProfileImage();
     }
 }
