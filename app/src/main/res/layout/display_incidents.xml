@@ -9,9 +9,6 @@
     android:visibility="gone" >
 
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
     android:layout_height="250dp"
     android:background="@drawable/popup_background"
@@ -41,7 +38,7 @@
             android:gravity="center"
             android:text="@string/display_incidents"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:typeface="normal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -100,7 +97,7 @@
             android:layout_width="95dp"
             android:layout_height="37dp"
             android:text="@string/cancel"
-            android:textSize="10sp"
+            android:textSize="12sp"
             app:cornerRadius="5sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +113,7 @@
             android:layout_height="37dp"
             android:backgroundTint="@color/blueOxford_app_theme"
             android:text="@string/ok"
-            android:textSize="10sp"
+            android:textSize="12sp"
             app:cornerRadius="5sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/cancelButton"

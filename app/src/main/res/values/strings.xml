@@ -151,9 +151,11 @@
     <string name="user_account">User account</string>
     <string name="log_out">Log out</string>
 
-    <string name="display_incidents">Display Incidents</string>
-    <string name="select_an_option">Select an Option</string>
-    <string name="generate_incidents">Generate Incidents</string>
+    <string name="display_incidents">Display</string>
+    <string name="incidents">Incidents</string>
+    <string name="generate_incidents">Generate</string>
     <string name="verify_account">Verify Account</string>
     <string name="continue_general_account">Continue General Account</string>
+    <string name="generate_incidents_title">GENERATE INCIDENTS</string>
+    <string name="generate">Generate</string>
 </resources>

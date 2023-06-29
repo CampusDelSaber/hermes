@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
  * Class to manage all view elements in view incidents form
  */
 public class ViewIncidentsController{
-    private AppCompatActivity activity;
+    private final AppCompatActivity activity;
     private final Button displayIncidentsButton;
     private Button okButton;
     private final Button cancelButton;
