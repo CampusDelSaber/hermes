@@ -2,8 +2,10 @@ package com.isc.hermes.controller.PopUp;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 
+import com.isc.hermes.AccountInformation;
 import com.isc.hermes.R;
 
 public class PopUpWarningUpdateUserType extends PopUp{
@@ -17,10 +19,10 @@ public class PopUpWarningUpdateUserType extends PopUp{
         super(activity, new PopUpStyle() {
             @Override
             public String getTittlePopUP() {
-                return "The provided code is invalid"; }
+                return "Action not allowed for a 'General User'"; }
             @Override
             public String getWarningPopUp() {
-                return "The error is due to the fact that the data has been entered incorrectly"; }
+                return "To report or generate incidents, please request Administrator user access"; }
             @Override
             public int getIconImagePopUp() {
                 return R.drawable.baseline_error_24; }
@@ -36,9 +38,8 @@ public class PopUpWarningUpdateUserType extends PopUp{
      */
     @SuppressLint("SetTextI18n")
     private void updateButtons() {
-        super.confirmButton.setX(170);
         super.confirmButton.setText("Okay!");
-        super.betterNotButton.setVisibility(View.INVISIBLE);
+        super.betterNotButton.setText("Request Admin \nuser access");
     }
 
     /**
@@ -48,7 +49,10 @@ public class PopUpWarningUpdateUserType extends PopUp{
      */
     @Override
     public void onClick(View v) {
-        if (v == super.confirmButton) dismiss();
+        if (v == super.confirmButton) {
+            Intent intent = new Intent(activity, AccountInformation.class);
+            activity.startActivity(intent);
+        } dismiss();
     }
 
 }
