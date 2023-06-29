@@ -1,13 +1,13 @@
 package com.isc.hermes.controller.PopUp;
 
 import android.app.Activity;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
 import com.isc.hermes.R;
+import com.isc.hermes.utils.regex.InputValidator;
 
 /**
  * This class represents a TextInputPopup, which is a popup dialog for inputting text.
@@ -19,6 +19,7 @@ public class TextInputPopup {
     private EditText inputText;
     private Button close;
     private Button ok;
+
 
 
     /**
@@ -70,9 +71,9 @@ public class TextInputPopup {
      */
     private void validateInput() {
         String text = inputText.getText().toString();
-        if (TextUtils.isEmpty(text)) setErrorMessage("This field is required");
-        else if (text.length() > 20) setErrorMessage("Max 15 characters allowed");
-        else handleValidInput(text);
+        if (InputValidator.validateInput(inputText,text)){
+            handleValidInput(text.trim());
+        }
     }
 
     /**

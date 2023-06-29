@@ -144,7 +144,7 @@
     <string name="download_button_text">Download\n</string>
     <string name="tittle_region_popup">Give a name to your map</string>
     <string name="your_name_map">Your name map</string>
-
+    <string name="update">Update</string>
     <!--  Dropdown Menu  -->
     <string name="tools">Tools</string>
     <string name="profile">Profile</string>

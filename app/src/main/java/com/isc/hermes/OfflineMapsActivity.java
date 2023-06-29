@@ -3,8 +3,10 @@ package com.isc.hermes;
 import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LATITUDE;
 import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LONGITUDE;
 import static com.isc.hermes.ActivitySelectRegion.ZOOM_LEVEL;
+import static com.isc.hermes.utils.offline.OfflineUtils.JSON_FIELD_REGION_NAME;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -17,11 +19,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.isc.hermes.controller.PopUp.DialogListener;
+import com.isc.hermes.controller.PopUp.TextInputPopup;
 import com.isc.hermes.controller.offline.OfflineDataRepository;
 import com.isc.hermes.model.RegionData;
 import com.isc.hermes.controller.offline.CardViewHandler;
 import com.isc.hermes.view.OfflineCardView;
 import com.isc.hermes.utils.offline.MapboxOfflineManager;
+import com.isc.hermes.utils.offline.OfflineUtils;
 import com.isc.hermes.controller.offline.RegionDeleter;
 import com.isc.hermes.controller.offline.RegionDownloader;
 import com.isc.hermes.controller.offline.RegionLoader;
@@ -29,15 +34,21 @@ import com.isc.hermes.controller.offline.RegionObserver;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * This class represents the Offline Mode Settings UI.
  */
-public class OfflineMapsActivity extends AppCompatActivity implements RegionObserver {
-    private static final int RENAME = R.id.rename, NAVIGATE_TO = R.id.navigateTo, DELETE = R.id.delete;
+public class OfflineMapsActivity extends AppCompatActivity implements RegionObserver , DialogListener{
+    private static final int RENAME = R.id.rename, NAVIGATE_TO = R.id.navigateTo, DELETE = R.id.delete, UPDATE = R.id.update;
     private LinearLayout vBoxDownloadedMaps;
     private OfflineCardView offlineCardView;
     private ActivityResultLauncher<Intent> launcher;
+    private TextInputPopup textInputPopup;
+    private String selectedNameDownloadedRegion;
 
     /**
      * Method for creating the activity configuration.
@@ -125,14 +136,16 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
     }
 
     /**
-     * Renames the selected downloaded map.
+     * Show Popup for Renames the selected downloaded map.
      */
-    protected void renameDownloadedMap() {
-
+    protected void displayPopupInputNewName() {
+         textInputPopup = new TextInputPopup(this, this);
+         textInputPopup.showPopup();
     }
 
     /**
      * Loads the available regions.
+     *
      */
     public void loadRegions() {
         MapboxOfflineManager.getInstance(this).listRegions(new RegionLoader(this));
@@ -147,7 +160,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         MapboxOfflineManager.getInstance(this)
                 .deleteRegion(
                         regionName,
-                        new RegionDeleter(this, regionName)
+                        new RegionDeleter(this, regionName,true)
                 );
     }
 
@@ -185,7 +198,8 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
     public boolean showPopupMenu(MenuItem item, String nameItem) {
         switch (item.getItemId()) {
             case RENAME:
-                renameDownloadedMap();
+                selectedNameDownloadedRegion = nameItem;
+                displayPopupInputNewName();
                 return true;
             case NAVIGATE_TO:
                 navigateToDownloadedMap(nameItem);
@@ -193,9 +207,21 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
             case DELETE:
                 deleteRegion(nameItem);
                 return true;
+            case UPDATE:
+                updateRegion(nameItem);
+                return true;
             default:
                 return false;
         }
+    }
+
+    /**
+     * This method update a region downloaded.
+     * @param regionName this is the name of the region to update.
+     */
+    public void updateRegion(String regionName){
+        MapboxOfflineManager.getInstance(this)
+                .updateOfflineRegion(regionName,new RegionDownloader(this, "Updating ... "));
     }
 
     /**
@@ -209,4 +235,68 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
                 .forEach((key, value) -> uploadRegionsDownloaded(key));
     }
 
+    /**
+     * This method the actions that the popup will take.
+     *
+     * @param text The text received from the dialog.
+     */
+    @Override
+    public void dialogClosed(String text) {
+        if(MapboxOfflineManager.getInstance(this).getOfflineRegions().containsKey(text)){
+            textInputPopup.setErrorMessage("That name already exists");
+        }else{
+            textInputPopup.closePopup();
+            uploadNameRegion(selectedNameDownloadedRegion,text);
+        }
+    }
+
+    /**
+     * This method changes the name of the downloaded map.
+     *
+     * @param previousName the current name of the selected map
+     * @param newName the new name for the selected map
+     */
+    private void uploadNameRegion(String previousName, String newName){
+        try {
+            OfflineRegion targetRegion = MapboxOfflineManager.getInstance(this).getOfflineRegion(previousName);
+            saveMetadataOfflineRegion(this,targetRegion,OfflineUtils.updateMetadata(newName, targetRegion.getMetadata()));
+            setChangesToApplicationData(targetRegion,previousName,newName);
+        } catch (UnsupportedEncodingException | JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "An error occurred while updating the map", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * This method saves the changes in the metadata of the selected region.
+     *
+     * @param context the current activity
+     * @param targetRegion the region selected to make the changes
+     * @param newMetadata the new data metadata to be added to the selected region
+     */
+    private void saveMetadataOfflineRegion(Context context, OfflineRegion targetRegion, byte[] newMetadata){
+        targetRegion.updateMetadata(newMetadata,new OfflineRegion.OfflineRegionUpdateMetadataCallback() {
+            @Override
+            public void onUpdate(byte[] updatedMetadata) {
+                Toast.makeText(context, "Map name has been updated", Toast.LENGTH_SHORT).show();
+                loadRegions();
+            }
+            @Override
+            public void onError(String error) {
+                Toast.makeText(context, "Error:%s" + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * This method changes the local data of the downloaded maps to save the changes in the metadata of one of the regions.
+     *
+     * @param targetRegion the region selected to make the changes
+     * @param previousName the previous name of the selected region before changing its metadata.
+     * @param newName the new name of the selected region
+     */
+    private void setChangesToApplicationData( OfflineRegion targetRegion, String previousName, String newName){
+        MapboxOfflineManager.getInstance(this).getOfflineRegions().put(newName, targetRegion);
+        MapboxOfflineManager.getInstance(this).getOfflineRegions().remove(previousName);
+    }
 }
