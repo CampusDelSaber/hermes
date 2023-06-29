@@ -104,6 +104,28 @@ public class IncidentsDataProcessor {
     }
 
     /**
+     * This method will filter and give me only the type of incident I want to show on the map.
+     *
+     * @param type the type of incident.
+     */
+    public JSONArray getAllIncidentsByType(String type) {
+        try{
+            Future<String> future = apiHandler.getFutureCollectionString( String.format(
+                    "%s?types=%s",
+                    INCIDENTS_COLLECTION_NAME, type
+            ) );
+            String futureResponse = future.get();
+            JSONArray incidentsArray = responseParser.getJSONArrayOnResult(futureResponse);
+
+            return incidentsArray;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new JSONArray();
+
+    }
+
+    /**
      * Retrieves the singleton instance of IncidentsDataProcessor.
      *
      * @return The singleton instance of IncidentsDataProcessor.

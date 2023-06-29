@@ -2,71 +2,85 @@ package com.isc.hermes.controller;
 
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.CheckBox;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
+import com.isc.hermes.utils.MapManager;
+import com.isc.hermes.view.IncidentViewNavigation;
 
 /**
  * Class to manage all view elements in view incidents form
  */
 public class ViewIncidentsController{
-    private final LinearLayout incidentsVisualizationForm;
-    private final ImageButton viewIncidentsFormButton;
-    private final Button viewTrafficButton;
-    private final Button viewSocialEventButton;
-    private final Button viewNaturalDisasterButton;
-    private boolean buttonMarked;
+    private AppCompatActivity activity;
+    private final Button displayIncidentsButton;
+    private Button okButton;
+    private final Button cancelButton;
+    private final ConstraintLayout displayIncidents;
+    private final CheckBox naturalDisasters;
+    private final CheckBox traffic;
+    private final CheckBox streetIncident;
     private final NaturalDisasterRequesting requesting;
 
+    /**
+     * Constructor for ViewIncidentsController.
+     *
+     * @param activity The activity associated with the controller.
+     */
     public ViewIncidentsController(AppCompatActivity activity){
+        this.activity = activity;
         this.requesting = new NaturalDisasterRequesting();
-        this.incidentsVisualizationForm = activity.findViewById(R.id.viewIncidentsForm);
-        this.viewIncidentsFormButton = activity.findViewById(R.id.viewIncidentsButton);
-        this.viewTrafficButton = activity.findViewById(R.id.viewTrafficButton);
-        this.viewSocialEventButton = activity.findViewById(R.id.viewSocialIncidentsButton);
-        this.viewNaturalDisasterButton = activity.findViewById(R.id.viewNaturalDisasterButton);
-        initEyeButtonFunctionality();
-        initViewDifferentIncidentsTypeButton();
-    }
-
-
-    /**
-     * Method to init the button with eye functionality
-     */
-    private void initEyeButtonFunctionality() {
-        viewIncidentsFormButton.setOnClickListener(v -> {
-            if (!buttonMarked) incidentsVisualizationForm.setVisibility(View.VISIBLE);
-            else incidentsVisualizationForm.setVisibility(View.GONE);
-            buttonMarked = !buttonMarked;
-        });
+        displayIncidentsButton = activity.findViewById(R.id.displayIncidentsButton);
+        displayIncidents = activity.findViewById(R.id.display_incidents);
+        okButton = activity.findViewById(R.id.okButton);
+        cancelButton = activity.findViewById(R.id.cancelButton);
+        naturalDisasters = activity.findViewById(R.id.checkBoxNaturalDisasters);
+        traffic = activity.findViewById(R.id.checkBoxTraffic);
+        streetIncident = activity.findViewById(R.id.checkBoxStreetIncident);
+        showIncidentsScreen();
+        showIncidentOptions();
     }
 
     /**
-     * Method to init the action about click on a single button on show incidents form
+     * Initializes the action when the display incidents button is clicked.
      */
-    private void initViewDifferentIncidentsTypeButton() {
-
-        viewTrafficButton.setOnClickListener(v -> {
-            disappearForm();
-        });
-
-        viewSocialEventButton.setOnClickListener(v -> {
-            disappearForm();
-        });
-
-        viewNaturalDisasterButton.setOnClickListener(v -> {
-            PolygonVisualizationController.getInstance().displayPointsPolygonOnMap(requesting.getAllPolygonPoints(),"#Ff0000");
-            disappearForm();
-        });
+    private void showIncidentsScreen() {
+        IncidentViewNavigation.getInstance(activity)
+                .initIncidentButtonFunctionality(displayIncidentsButton, displayIncidents);
+        cancelButton.setOnClickListener(v -> hideOptions());
     }
 
     /**
-     * Method to make buttons form invisible
+     * This method hides the screen Display IncidentsButton screen.
      */
-    private void disappearForm(){
-        incidentsVisualizationForm.setVisibility(View.GONE);
-        buttonMarked = !buttonMarked;
+    public void hideOptions(){
+        displayIncidents.setVisibility(View.GONE);
+    }
+
+    /**
+     * Performs the necessary actions when the OK button is clicked.
+     * Displays incidents based on the selected checkboxes and hides
+     * the screen Display IncidentsButton.
+     */
+    private void showIncidentOptions(){
+        okButton.setOnClickListener(v -> {
+            MapManager.getInstance().getMapboxMap().clear();
+                if (naturalDisasters.isChecked()) {
+                    PolygonVisualizationController
+                            .getInstance()
+                            .displayPointsPolygonOnMap(
+                                    requesting.getAllPolygonPoints(),"#Ff0000"
+                            );
+                }
+                if (traffic.isChecked()) {
+                    ShowTrafficController.getInstance().getTraffic(activity);
+                }
+                if (streetIncident.isChecked()) {
+                    IncidentsGetterController.getInstance().getNearIncidentsWithinRadius(activity);
+                }
+            hideOptions();
+        });
     }
 }
