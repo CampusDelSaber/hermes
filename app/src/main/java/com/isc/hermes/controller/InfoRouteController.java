@@ -115,6 +115,9 @@ public class InfoRouteController {
         setFunctionHideButton();
     }
 
+    /**
+     * This method defines what will happen when the cancel button is pressed.
+     */
     @SuppressLint("SetTextI18n")
     private void setFunctionCancelButton(){
         cancelButton.setOnClickListener(v -> {
@@ -129,6 +132,9 @@ public class InfoRouteController {
         });
     }
 
+    /**
+     * This method defines what will happen when the start button is pressed on the steps view.
+     */
     @SuppressLint("SetTextI18n")
     private void setFunctionStarNavButton(){
         startNavigationButton.setOnClickListener(v -> {
@@ -140,6 +146,9 @@ public class InfoRouteController {
         });
     }
 
+    /**
+     * This method defines what will happen when the hide button is pressed on the steps view.
+     */
     private void setFunctionHideButton(){
         hideButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
@@ -152,24 +161,26 @@ public class InfoRouteController {
      */
     private void setRouteInformation(int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected) {
         setTimeAndDistanceInformation(jsonObjects.get(index));
-        saveRouteSelected(jsonObjects.get(index));
+        routeSelected = jsonObjects.get(index);
         this.isRouteASelected = isRouteASelected;
         this.isRouteBSelected = isRouteBSelected;
         this.isRouteCSelected = isRouteCSelected;
         updateButtonVisibility();
     }
 
-    private void saveRouteSelected(JSONObject route){
-        // guardar la ruta elegida
-         routeSelected = route;
-    }
-
+    /**
+     * This method disables buttons
+     * @param buttons buttons that need to be disabled
+     */
     private void disableButtons(Button... buttons){
         for(Button button : buttons){
             button.setEnabled(false);
         }
     }
 
+    /**
+     * This method loads the selected route on the map
+     */
     private void loadOnlyMapSelected(){
         // ocultar todos los mapas
         mapPolyline.hidePolylines();
