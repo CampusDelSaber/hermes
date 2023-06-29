@@ -324,13 +324,11 @@ public class NavigationOptionsController {
         this.start = start;
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(R.layout.loader_route_dialog);
         builder.setCancelable(false);
         progressDialog = builder.create();
         progressDialog.show();
-
         manageGraphBuilding(graphController);
     }
 
@@ -338,13 +336,10 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     public void handleReloadButtonClick() {
-        if (isCurrentLocationSelected) {
-            startPoint = CurrentLocationModel.getInstance().getLatLng();
-            start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
-        }
+        mapWayPointController.deleteMarks();
 
         //HARD-CODE THE START POSITION TO A NEW POSITION
-        start = new LatLng(-66.15451, -17.39173);
+        //start = new LatLng(-17.392323816197262, -66.15327559536917);
 
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
