@@ -11,19 +11,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
 import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
-
 import java.io.IOException;
-
-
-import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.SaveProfileImage;

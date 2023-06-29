@@ -27,6 +27,7 @@ public class IncidentViewNavigation {
         initializeViews();
         initLocationButtonFunctionality();
     }
+
     /**
      * Initializes the views used by the IncidentViewNavigation.
      */
@@ -66,6 +67,7 @@ public class IncidentViewNavigation {
         displayIncidents.setVisibility(View.GONE);
         isOptionsVisible = false;
     }
+
     /**
      * Initializes the functionality of the incident button.
      *
