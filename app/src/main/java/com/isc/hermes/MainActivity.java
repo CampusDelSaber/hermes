@@ -1,5 +1,8 @@
 package com.isc.hermes;
 
+import static com.mongodb.assertions.Assertions.assertNotNull;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,18 +19,19 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import com.isc.hermes.controller.ViewIncidentsController;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.os.Handler;
-
 import com.isc.hermes.controller.FilterCategoriesController;
+import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
@@ -35,6 +39,9 @@ import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.database.AccountInfoManager;
+
+import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
@@ -52,18 +59,23 @@ import com.mapbox.mapboxsdk.maps.Style;
  */
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
-    public static Context context;
-    private MapView mapView;
-    private String mapStyle;
+    private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private CurrentLocationController currentLocationController;
     private FilterCategoriesController filterCategoriesController;
-    private TextView searchView;
-    private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
     private ActivityResultLauncher<Intent> launcher;
-    private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private TextView searchView;
+
+    private boolean visibilityMenu;
+
+    @SuppressLint("StaticFieldLeak")
+    public static Context context;
     private Toolbar toolbar;
+    private MapView mapView;
+    private String mapStyle;
     private AccountInfoManager accountInfoManager;
     private ImageButton buttonClear;
     private final String resetSearchText = "Search...";
@@ -89,18 +101,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setupSearchView();
         changeSearchView();
         addIncidentGeneratorButton();
+        incidentViewButton();
+        initShowIncidentsController();
         MarkerManager.getInstance(this).removeSavedMarker();
         initFilterAdvancedView();
         launcher = createActivityResult();
+        initShowIncidentsController();
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
-        try {
-            setTheUserInformationInTheDropMenu();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
+
 
     /**
      * Sets up the search view and clear button.
@@ -180,6 +191,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     * This method is the incident view button
+     */
+    private void incidentViewButton() {
+        IncidentViewNavigation.getInstance(this);
+    }
+
+    /**
      * This method is used to change the search view.
      */
     private void changeSearchView() {
@@ -222,6 +240,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         currentLocationController = CurrentLocationController.getControllerInstance(this);
         currentLocationController.initLocationButton();
         currentLocationController.initLocation();
+    }
+
+    /**
+     * This method init the form with all button to show incidents from database
+     */
+    private void initShowIncidentsController() {
+        viewIncidentsController = new ViewIncidentsController(this);
     }
 
     /**
@@ -354,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findViewById(R.id.userAccountImage);
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
-                UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
+                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
     }
 
     /**
@@ -408,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         buttonClear.setVisibility(View.GONE);
     }
 
-    /*
+    /**
      * This method used for open a new activity, offline settings.
      *
      * @param view view
@@ -473,5 +498,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
         }
         return true;
+    }
+
+    /**
+     * Accept natural disasters and upload a corresponding incident.
+     *
+     * Generates a JSON for the natural disaster incident and sends it to the server.
+     */
+    public void acceptNaturalDisasters(){
+        String JsonString = IncidentsUploader.getInstance()
+                .generateJsonIncident(
+                        "Natural Disaster",
+                        "Natural Disaster",
+                        "2023-06-22T19:40:47.955Z",
+                        "2023-06-22T19:40:47.955Z" ,
+                        GeometryType.POLYGON.getName(),
+                        MapPolygonController.getInstance(
+                                MapManager.getInstance().getMapboxMap(), context)
+                                .getPolygonPoints().toString()
+                );
+        IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 }

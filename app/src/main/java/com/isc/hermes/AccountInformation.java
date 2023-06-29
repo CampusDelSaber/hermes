@@ -11,17 +11,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
 import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
-
 import java.io.IOException;
-
+import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.SaveProfileImage;
 import com.isc.hermes.model.User.UserRepository;
@@ -37,9 +34,9 @@ public class AccountInformation extends AppCompatActivity {
     private AutoCompleteTextView textFieldFullName;
     private AutoCompleteTextView comboBoxField;
     private AutoCompleteTextView textFieldEmail;
+    private PopUp popUpDialogDelete;
     private ImageView imageView;
     private PopUpOverwriteInformationAccount popUpDialogEdit;
-    private PopUp popUpDialogDelete;
     private static final int PICK_IMAGE_REQUEST = 1;
     private SaveProfileImage saveProfileImage;
 
@@ -51,8 +48,8 @@ public class AccountInformation extends AppCompatActivity {
      * @return The generated AutoCompleteTextView for the combo box.
      */
     private AutoCompleteTextView generateComponentsToComboBox() {
-        String[] items = {"Administrator", "General"};
-        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, items);
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item,
+                TypeUser.getArrayTypeUsers());
         comboBoxField.setAdapter(adapterItems);
         return comboBoxField;
     }
@@ -96,8 +93,8 @@ public class AccountInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_information);
         assignValuesToComponentsView();
-        generateActionToComboBox();
         updateComponentsByUserInformation();
+        generateActionToComboBox();
         initializePopups();
     }
 

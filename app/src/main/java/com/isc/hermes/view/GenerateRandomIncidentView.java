@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.model.Radium;
+import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * This class is used to initialize the view to select how to generate incidents.
@@ -15,6 +17,8 @@ public class GenerateRandomIncidentView {
     private Spinner spinner;
     private EditText numberIncidentsEdit;
     private ConstraintLayout layout;
+    private Button generateIncidentButton;
+
 
     /**
      * Constructor, Initializes the view components
@@ -26,7 +30,9 @@ public class GenerateRandomIncidentView {
         layout = activity.findViewById(R.id.GenerateIncidentView);
         layout.setVisibility(View.GONE);
         numberIncidentsEdit = activity.findViewById(R.id.numberIncidentsElement);
+        generateIncidentButton = activity.findViewById(R.id.generateIncidentsButton);
         initSpinner();
+        showFunctionalityGeneratingIncidents();
         initButtons();
     }
 
@@ -35,26 +41,32 @@ public class GenerateRandomIncidentView {
      */
     private void initSpinner(){
         spinner = activity.findViewById(R.id.spinnerRadio);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, R.array.spinner_items_incidents_generate  , android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter
+                = ArrayAdapter
+                .createFromResource(
+                        activity, R.array.spinner_items_incidents_generate
+                        , android.R.layout.simple_spinner_item
+                );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+    }
+
+    /**
+     * Shows the screen with its functionality to generate incidents
+     */
+    private void showFunctionalityGeneratingIncidents() {
+        if (!UserRepository.getInstance().getUserContained().getTypeUser().equals(
+                TypeUser.GENERAL.getTypeUser()))
+            IncidentViewNavigation.getInstance(activity)
+                .initIncidentButtonFunctionality(generateIncidentButton, layout);
     }
 
     /**
      * Initializes the view buttons
      */
     private void initButtons(){
-        ImageButton locationButton = activity.findViewById(R.id.generateIncidentButton);
         Button cancelButton = activity.findViewById(R.id.cancel_generate);
         cancelButton.setOnClickListener(v -> hideOptions());
-        locationButton.setOnClickListener(v -> showOptions());
-    }
-
-    /**
-     * This method displays the incident generation selection menu.
-     */
-    private void showOptions(){
-        layout.setVisibility(View.VISIBLE);
     }
 
     /**

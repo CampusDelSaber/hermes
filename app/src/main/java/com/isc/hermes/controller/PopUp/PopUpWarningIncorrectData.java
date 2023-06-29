@@ -27,8 +27,7 @@ public class PopUpWarningIncorrectData extends PopUp{
             @Override
             public int getIconImagePopUp() {
                 return R.drawable.baseline_error_24; }
-        });
-        updateButtons();
+        }); updateButtons();
     }
 
 

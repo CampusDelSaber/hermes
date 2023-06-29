@@ -60,6 +60,22 @@ public class MapboxOfflineManager {
                 offlineRegionCallback);
     }
 
+
+    /**
+     * Updates an offline region using the provided region data and metadata.
+     *
+     * @param regionToUpdate         The region data contains the name to download a region.
+     * @param offlineRegionCallback   The callback for creating the offline region.
+     */
+    public void updateOfflineRegion(String regionToUpdate, OfflineManager.CreateOfflineRegionCallback offlineRegionCallback) {
+        OfflineRegion offlineRegion = offlineRegions.get(regionToUpdate);
+        if (offlineRegion==null)return;
+        offlineManager.createOfflineRegion(
+                offlineRegion.getDefinition(),
+                OfflineUtils.createMetadata(regionToUpdate),
+                offlineRegionCallback);
+    }
+
     /**
      * Retrieves the definition of a region.
      *

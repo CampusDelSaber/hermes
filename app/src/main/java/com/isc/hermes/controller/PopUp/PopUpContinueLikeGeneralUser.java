@@ -7,6 +7,7 @@ import android.view.View;
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 
 /**
@@ -40,12 +41,12 @@ public class PopUpContinueLikeGeneralUser extends PopUp{
      * Sets the user type to "General" and adds the user to the AccountInfoManager.
      */
     private void uploadGeneralUserToDB() {
-        UserRepository.getInstance().getUserContained().setTypeUser("General");
+        UserRepository.getInstance().getUserContained().setTypeUser(TypeUser.GENERAL.getTypeUser());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
                     UserRepository.getInstance().getUserContained().getFullName(),
                     UserRepository.getInstance().getUserContained().getUserName(),
-                    "General", UserRepository.getInstance().getUserContained().getPathImageUser());
+                    TypeUser.GENERAL.getTypeUser(), UserRepository.getInstance().getUserContained().getPathImageUser());
         }
     }
 
