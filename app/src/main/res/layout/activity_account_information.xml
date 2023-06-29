@@ -179,7 +179,7 @@
                 app:startIconDrawable="@drawable/baseline_type_user_24">
 
                 <AutoCompleteTextView
-                    android:id="@+id/textFieldUserTypeUpdate"
+                    android:id="@+id/textFieldUserType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/typeUser"

@@ -177,11 +177,11 @@ public class EmailVerificationActivity extends AppCompatActivity {
     }
 
     /**
-     * Adds an administrator user based on the provided email verification code.
-     * If the code is correct, the user is added using the AccountInfoManager class,
-     * and the verification code is updated. Otherwise, a warning pop-up is displayed.
+     * Continues the email verification process and performs the necessary actions if the entered code is correct.
+     *
+     * @param view The View that triggered the method call.
      */
-    private void addAdministratorUser() {
+    public void continueVerification(View view) {
         Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
@@ -189,61 +189,15 @@ public class EmailVerificationActivity extends AppCompatActivity {
                 new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
                         UserRepository.getInstance().getUserContained().getFullName(), UserRepository.getInstance().getUserContained().getUserName(),
                         UserRepository.getInstance().getUserContained().getTypeUser(), UserRepository.getInstance().getUserContained().getPathImageUser());
-            verificationCodeUpdate(intent);
-        } else visualizedWarningPop();
-    }
-
-    /**
-     * Updates the user to an administrator user based on the provided email verification code.
-     * If the code is correct, the user is updated using the AccountInfoManager class,
-     * and the verification code is updated. Otherwise, a warning pop-up is displayed.
-     */
-    private void updateToAdministratorUser() {
-        Intent intent = new Intent(EmailVerificationActivity.this, AccountInformation.class);
-        String code = getCodeUser();
-        if (validator.isCorrect(code)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                new AccountInfoManager().editUser(UserRepository.getInstance().getUserContained());
-            verificationCodeUpdate(intent);
-        } else visualizedWarningPop();
-    }
-
-    /**
-     * Displays the warning pop-up, including a color code change for the user.
-     * The warning pop-up is shown using the warningPopUp object.
-     */
-    private void visualizedWarningPop(){
-        changeColorCodeUser();
-        warningPopUp.show();
-    }
-
-    /**
-     * Performs the verification code update and starts the specified activity.
-     *
-     * @param intent the intent of the activity to be started
-     */
-    private void verificationCodeUpdate(Intent intent){
-        VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
-        verificationCodesManager.updateVerificationCode(validator.getId(), false);
-        startActivity(intent);
-    }
-
-    /**
-     * Continues the email verification process and performs the necessary actions if the entered code is correct.
-     *
-     * @param view The View that triggered the method call.
-     */
-    public void continueVerification(View view) {
-        System.out.println("2334");
-        if (!UserRepository.getInstance().getUserContained().isRegistered()){
-            System.out.println("edeed");
-            if (!UserRepository.getInstance().getUserContained().isAdministrator()){
-                addAdministratorUser();
-                System.out.println("666666");
-            }
-            else updateToAdministratorUser();
+            VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
+            verificationCodesManager.updateVerificationCode(validator.getId(), false);
+            startActivity(intent);
+        } else {
+            changeColorCodeUser();
+            warningPopUp.show();
         }
     }
+
 
     /**
      * Continues the process for a general user (non-administrator).

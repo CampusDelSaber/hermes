@@ -40,7 +40,6 @@ public class SignUpTransitionHandler {
                     UserRepository.getInstance().getUserContained().getTypeUser(),
                     UserRepository.getInstance().getUserContained().getPathImageUser());
         try {
-            UserRepository.getInstance().getUserContained().setRegistered(true);
             UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(UserRepository.getInstance().getUserContained().getEmail()));}
         catch (ExecutionException | InterruptedException | JSONException e) {
             throw new RuntimeException(e); }
