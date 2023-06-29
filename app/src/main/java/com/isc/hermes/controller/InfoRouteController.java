@@ -41,6 +41,7 @@ public class InfoRouteController {
    private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
     private ImageView hideButton;
+    private JSONObject routeSelected;
 
 
     /**
@@ -81,6 +82,7 @@ public class InfoRouteController {
         buttonRouteC.setAlpha(0.3f);
         startNavigationButton = activity.findViewById(R.id.startNavegationButton);
 
+
     }
 
     /**
@@ -98,6 +100,7 @@ public class InfoRouteController {
      * Sets the action listeners for the buttons.
      */
     private void setActionButtons(){
+        routeSelected = jsonObjects.get(jsonObjects.size() - 1);
         isActive = false;
         setFunctionCancelButton();
 
@@ -109,7 +112,7 @@ public class InfoRouteController {
                 false, false, true));
 
         setFunctionStarNavButton();
-        asignarFuncionOcultar();
+        setFunctionHideButton();
     }
 
     @SuppressLint("SetTextI18n")
@@ -131,11 +134,13 @@ public class InfoRouteController {
         startNavigationButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
+            disableButtons(buttonRouteA, buttonRouteB, buttonRouteC);
+            loadOnlyMapSelected();
             startNavigationButton.setText("Navigation Steps");
         });
     }
 
-    private void asignarFuncionOcultar(){
+    private void setFunctionHideButton(){
         hideButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
@@ -147,6 +152,7 @@ public class InfoRouteController {
      */
     private void setRouteInformation(int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected) {
         setTimeAndDistanceInformation(jsonObjects.get(index));
+        saveRouteSelected(jsonObjects.get(index));
         this.isRouteASelected = isRouteASelected;
         this.isRouteBSelected = isRouteBSelected;
         this.isRouteCSelected = isRouteCSelected;
@@ -154,7 +160,21 @@ public class InfoRouteController {
     }
 
     private void saveRouteSelected(JSONObject route){
+        // guardar la ruta elegida
+         routeSelected = route;
+    }
 
+    private void disableButtons(Button... buttons){
+        for(Button button : buttons){
+            button.setEnabled(false);
+        }
+    }
+
+    private void loadOnlyMapSelected(){
+        // ocultar todos los mapas
+        mapPolyline.hidePolylines();
+        // mostrar el mapa seleccionado
+        //mapPolyline.displayPolyline(routeSelected);
     }
 
     /**
