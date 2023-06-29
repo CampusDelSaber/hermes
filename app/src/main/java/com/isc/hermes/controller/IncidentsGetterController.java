@@ -1,12 +1,15 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.widget.Toast;
 
+import com.isc.hermes.R;
 import com.isc.hermes.controller.incidents.IncidentPointVisualizationController;
 import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.model.incidents.PointIncident;
 import com.isc.hermes.model.incidents.IncidentGetterModel;
 import com.isc.hermes.utils.ISO8601Converter;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
@@ -30,6 +33,7 @@ public class IncidentsGetterController {
     private IncidentGetterModel incidentGetterModel;
     private final ExecutorService executorService;
     private IncidentPointVisualizationController incidentsPointView;
+    private MapboxMap mapboxMap;
 
     /**
      * Constructs an instance of IncidentsGetterController.
@@ -39,27 +43,38 @@ public class IncidentsGetterController {
         this.incidentsDataProcessor = IncidentsDataProcessor.getInstance();
         this.incidentGetterModel = new IncidentGetterModel();
         this.executorService = Executors.newSingleThreadExecutor();
+        mapboxMap = MapManager.getInstance().getMapboxMap();
     }
 
     /**
      * Retrieves incidentsPointView near the specified location within a radius.
      *
-     * @param mapboxMap The Mapbox map instance.
      */
-    public void getNearIncidentsWithinRadius(MapboxMap mapboxMap, Context context) {
+    public void getNearIncidentsWithinRadius(Context context) {
         incidentsPointView = IncidentPointVisualizationController.getInstance(mapboxMap, context);
+        loadNearIncidents(context);
+    }
+
+    /**
+     * Load incidents according to how you scroll.
+     *
+     * @param context the context.
+     **/
+    private void loadNearIncidents(Context context){
         executorService.execute(() -> {
             LatLng cameraFocus = mapboxMap.getCameraPosition().target;
             int cameraZoom = (int) mapboxMap.getCameraPosition().zoom;
             int zoom = cameraZoom > 40 ? 40 : Math.max(cameraZoom, 12);
-
             JSONArray incidentsArray = incidentsDataProcessor.getNearIncidents(cameraFocus, zoom);
 
             incidentGetterModel.setIncidentList(parseIncidentResponse(incidentsArray));
             try {
                 incidentsPointView.displayPoint(incidentGetterModel.getIncidentList());
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                Toast.makeText(
+                        context, R.string.incidents_fail_to_load,
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
     }
