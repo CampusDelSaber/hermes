@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -328,10 +330,6 @@ public class NavigationOptionsController {
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         this.destination = destination;
         this.start = start;
-
-        System.out.println("lat: " + start.getLatitude() + "long: " + start.getLongitude());
-        System.out.println("lat: " + destination.getLatitude() + "long: " + destination.getLongitude());
-
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -346,14 +344,14 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     public void handleReloadButtonClick() {
-        mapWayPointController.deleteMarks();
+        infoRouteController.cancelButtonAction();
         if (isCurrentLocationSelected) {
             startPoint = CurrentLocationModel.getInstance().getLatLng();
             this.start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         }
 
         //HARD-CODE THE START POSITION TO A NEW POSITION
-        //start = new LatLng(-17.392323816197262, -66.15327559536917);
+        start = new LatLng(-17.388395706866092, -66.16068443101761);
 
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
