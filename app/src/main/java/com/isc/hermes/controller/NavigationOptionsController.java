@@ -318,8 +318,8 @@ public class NavigationOptionsController {
         isActive = false;
         if (isCurrentLocationSelected)
             startPoint = CurrentLocationModel.getInstance().getLatLng();
-        LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
-        LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
+        LatLng start = new LatLng(-17.39229, -66.15705);
+        LatLng destination = new LatLng(-17.39119, -66.1511);
         this.destination = destination;
         this.start = start;
         GraphController graphController = new GraphController(start, destination);
@@ -344,7 +344,7 @@ public class NavigationOptionsController {
         }
 
         //HARD-CODE THE START POSITION TO A NEW POSITION
-        start = new LatLng(-66.15451, -17.39173);
+        start = new LatLng(-17.39183, -66.1545);
 
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
