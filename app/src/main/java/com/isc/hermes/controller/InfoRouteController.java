@@ -5,13 +5,17 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.utils.Animations;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,7 @@ import java.util.List;
  * such as distance and estimated time, and displaying it in the user interface.
  */
 public class InfoRouteController {
+    private static InfoRouteController instanceNavigationController;
     private ConstraintLayout layout;
     private boolean isActive;
     private Button cancelButton;
@@ -31,22 +36,21 @@ public class InfoRouteController {
     private Button startNavigationButton;
     private TextView timeText;
     private TextView distanceText;
-    private static InfoRouteController instanceNavigationController;
     private ArrayList<Integer> colorsInfoRoutes;
     private MapPolyline mapPolyline;
-   private ArrayList<JSONObject> jsonObjects;
-   private NavigationOptionsController navigationOptionsController;
-   private NavigationDirectionController navigationDirectionController;
+    private ArrayList<JSONObject> jsonObjects;
+    private NavigationOptionsController navigationOptionsController;
+    private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
 
 
     /**
      * Constructs a new InfoRouteController object.
      *
-     * @param context The context of the activity.
+     * @param context                     The context of the activity.
      * @param navigationOptionsController route navigation's options controller
      */
-    private InfoRouteController(Context context, NavigationOptionsController navigationOptionsController){
+    private InfoRouteController(Context context, NavigationOptionsController navigationOptionsController) {
         setViewComponents(context);
         navigationDirectionController = new NavigationDirectionController(context);
         this.navigationOptionsController = navigationOptionsController;
@@ -60,14 +64,27 @@ public class InfoRouteController {
     }
 
     /**
+     * Retrieves an instance of InfoRouteController.
+     *
+     * @param context The context of the activity.
+     * @return The InfoRouteController instance.
+     */
+    public static InfoRouteController getInstance(Context context, NavigationOptionsController navigationOptionsController) {
+        if (instanceNavigationController == null) {
+            instanceNavigationController = new InfoRouteController(context, navigationOptionsController);
+        }
+        return instanceNavigationController;
+    }
+
+    /**
      * This method set the view of the components.
      *
      * @param context is the contex.
      */
-    private void setViewComponents(Context context){
+    private void setViewComponents(Context context) {
         Activity activity = ((AppCompatActivity) context);
         layout = activity.findViewById(R.id.distance_time_view);
-        cancelButton =  activity.findViewById(R.id.cancel_navigation_button);
+        cancelButton = activity.findViewById(R.id.cancel_navigation_button);
         timeText = activity.findViewById(R.id.timeText);
         distanceText = activity.findViewById(R.id.distanceText);
         buttonRouteC = activity.findViewById(R.id.ButtonRouteThree);
@@ -80,9 +97,10 @@ public class InfoRouteController {
 
     /**
      * This method set the routes' color
+     *
      * @param size is the size of the route.
      */
-    private void setColorsInfoRoutes(int size){
+    private void setColorsInfoRoutes(int size) {
         colorsInfoRoutes.clear();
         colorsInfoRoutes.add(size > 1 ? 0XFF686C6C : 0XFFFF6E26);
         colorsInfoRoutes.add(0xFF2350A3);
@@ -92,7 +110,7 @@ public class InfoRouteController {
     /**
      * Sets the action listeners for the buttons.
      */
-    private void setActionButtons(){
+    private void setActionButtons() {
         isActive = false;
         cancelButton.setOnClickListener(v -> {
             mapPolyline.hidePolylines();
@@ -138,31 +156,18 @@ public class InfoRouteController {
     }
 
     /**
-     * Retrieves an instance of InfoRouteController.
-     *
-     * @param context The context of the activity.
-     * @return The InfoRouteController instance.
-     */
-    public static InfoRouteController getInstance(Context context, NavigationOptionsController navigationOptionsController){
-        if(instanceNavigationController == null){
-            instanceNavigationController = new InfoRouteController(context, navigationOptionsController);
-        }
-        return instanceNavigationController;
-    }
-
-    /**
      * Shows the route information view, including distance and time.
      *
      * @param jsonCoordinates The list of JSON coordinates representing the routes.
-     * @param mapPolyline The MapPolyline object for displaying the routes.
+     * @param mapPolyline     The MapPolyline object for displaying the routes.
      */
-    public void showInfoRoute(List<String> jsonCoordinates, MapPolyline mapPolyline){
+    public void showInfoRoute(List<String> jsonCoordinates, MapPolyline mapPolyline) {
         this.mapPolyline = mapPolyline;
         isActive = true;
         layout.setVisibility(View.VISIBLE);
         jsonObjects = new ArrayList<>();
         try {
-            for(String currentJson : jsonCoordinates)
+            for (String currentJson : jsonCoordinates)
                 jsonObjects.add(new JSONObject(currentJson));
             setColorsInfoRoutes(jsonCoordinates.size());
             setTimeAndDistanceInformation(jsonObjects.get(jsonObjects.size() - 1));
@@ -177,8 +182,8 @@ public class InfoRouteController {
     /**
      * This method will set the buttons visibility depending on the routes size
      */
-    private void setButtonsVisibility(){
-        if (jsonObjects.size() < 2){
+    private void setButtonsVisibility() {
+        if (jsonObjects.size() < 2) {
             buttonRouteB.setVisibility(View.GONE);
         } else buttonRouteB.setVisibility(View.VISIBLE);
         if (jsonObjects.size() < 2)
@@ -200,7 +205,7 @@ public class InfoRouteController {
      *
      * @return true if the view is active, false otherwise.
      */
-    public boolean isActive(){
+    public boolean isActive() {
         return isActive;
     }
 
@@ -209,7 +214,7 @@ public class InfoRouteController {
      *
      * @param jsonObject The JSON object containing the distance and time information.
      */
-    private void setTimeAndDistanceInformation(JSONObject jsonObject){
+    private void setTimeAndDistanceInformation(JSONObject jsonObject) {
         setDistanceInfo(jsonObject);
         setEstimatedTimeInfo(jsonObject);
         navigationDirectionController.processRoute(jsonObject);
@@ -220,19 +225,19 @@ public class InfoRouteController {
      *
      * @param jsonObject The JSON object containing the distance information.
      */
-    private void setDistanceInfo(JSONObject jsonObject){
+    private void setDistanceInfo(JSONObject jsonObject) {
         try {
             double meters = jsonObject.getDouble("distance");
             double kilometers = 0;
-            while( meters - 1 > 0){
+            while (meters - 1 > 0) {
                 meters -= 1;
-                kilometers ++;
+                kilometers++;
             }
             int decimals = 3;
             DecimalFormat decimalFormat = new DecimalFormat("#." + "0".repeat(decimals));
-            if(kilometers > 0) distanceText.setText(
-                kilometers+ " km " + decimalFormat.format(meters).substring(1)+ " m");
-            else distanceText.setText(decimalFormat.format(meters).substring(1)+ " m.");
+            if (kilometers > 0) distanceText.setText(
+                    kilometers + " km " + decimalFormat.format(meters).substring(1) + " m");
+            else distanceText.setText(decimalFormat.format(meters).substring(1) + " m.");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -243,18 +248,51 @@ public class InfoRouteController {
      *
      * @param jsonObject The JSON object containing the estimated time information.
      */
-    private void setEstimatedTimeInfo(JSONObject jsonObject){
+    private void setEstimatedTimeInfo(JSONObject jsonObject) {
         try {
             int timeInMinutes = jsonObject.getInt("time");
             int hours = 0;
-            while(timeInMinutes - 60 > 0){
+            while (timeInMinutes - 60 > 0) {
                 timeInMinutes -= 60;
                 hours++;
             }
-            if(hours > 0) timeText.setText(hours+" h "+ timeInMinutes+" min" );
-            else timeText.setText(timeInMinutes+" min" );
+            if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
+            else timeText.setText(timeInMinutes + " min");
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Sets a given distance[m] to the view.
+     *
+     * @param meters The distance amount
+     */
+    public void setDistanceInfo(double meters) {
+        double kilometers = 0;
+        while (meters - 1 > 0) {
+            meters -= 1;
+            kilometers++;
+        }
+        int decimals = 3;
+        DecimalFormat decimalFormat = new DecimalFormat("#." + "0".repeat(decimals));
+        if (kilometers > 0) distanceText.setText(
+                kilometers + " km " + decimalFormat.format(meters).substring(1) + " m");
+        else distanceText.setText(decimalFormat.format(meters).substring(1) + " m.");
+    }
+
+    /**
+     * Sets a given time[min] to the view.
+     *
+     * @param timeInMinutes The amount of time to be set.
+     */
+    public void setEstimatedTimeInfo(int timeInMinutes) {
+        int hours = 0;
+        while (timeInMinutes - 60 > 0) {
+            timeInMinutes -= 60;
+            hours++;
+        }
+        if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
+        else timeText.setText(timeInMinutes + " min");
     }
 }
