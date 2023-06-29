@@ -48,6 +48,7 @@ public class NavigationOptionsController {
     private TransportationType transportationType;
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
+    private PolylineRouteUpdaterController polylineRouteUpdaterController;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -146,6 +147,7 @@ public class NavigationOptionsController {
             isActive = false;
             mapWayPointController.setMarked(false);
             mapWayPointController.deleteMarks();
+            polylineRouteUpdaterController.setStartPoint(finalPoint);
         });
     }
 
@@ -409,6 +411,7 @@ public class NavigationOptionsController {
             MapPolyline mapPolyline = new MapPolyline();
             try{
                 infoRouteController.showInfoRoute(geoJson, mapPolyline);
+                updateNavigatedRoute();
             } catch (Exception e){
                 handleErrorLoadingRoutes();
             }
@@ -424,4 +427,13 @@ public class NavigationOptionsController {
     public MapWayPointController getMapWayPointController() {
         return mapWayPointController;
     }
+
+    /**
+     * Method to update the navigated route by invoking the polylineRouteUpdaterController's
+     * drawPolylineEverySecond method.
+     */
+    private void updateNavigatedRoute() {
+        polylineRouteUpdaterController.drawPolylineEverySecond();
+    }
+
 }
