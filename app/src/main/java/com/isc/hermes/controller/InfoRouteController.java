@@ -123,7 +123,10 @@ public class InfoRouteController {
 
     private void setTheReloadWayButtonAction(){
         reloadTheWayButton.setOnClickListener(v -> {
-            navigationOptionsController.handleReloadButtonClick(true);
+            mapPolyline.hidePolylines();
+            layout.startAnimation(Animations.exitAnimation);
+            layout.setVisibility(View.GONE);
+            navigationOptionsController.handleReloadButtonClick();
             setActionButtons();
         });
     }

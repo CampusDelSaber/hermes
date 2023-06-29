@@ -43,6 +43,7 @@ public class NavigationOptionsController {
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
     private LatLng destination;
+    private LatLng start;
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
@@ -320,6 +321,7 @@ public class NavigationOptionsController {
         LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         this.destination = destination;
+        this.start = start;
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
 
@@ -335,10 +337,15 @@ public class NavigationOptionsController {
     /**
      * This method handles the actions performed when the accept button is clicked.
      */
-    public void handleReloadButtonClick(boolean state) {
-        if (state)
+    public void handleReloadButtonClick() {
+        if (isCurrentLocationSelected) {
             startPoint = CurrentLocationModel.getInstance().getLatLng();
-        LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
+            start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
+        }
+
+        //HARD-CODE THE START POSITION TO A NEW POSITION
+        start = new LatLng(-66.15451, -17.39173);
+
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
