@@ -5,6 +5,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
+import com.isc.hermes.controller.PopUp.PopUpWarningUpdateUserType;
 import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
@@ -19,6 +20,16 @@ public class GenerateRandomIncidentView {
     private ConstraintLayout layout;
     private Button generateIncidentButton;
 
+    /**
+     * Generates a pop-up depending on the type of user.
+     * If the user's type is GENERAL, a warning pop-up for updating the user type is shown.
+     */
+    private void generatePopUpDependingOnTypeUser() {
+        if (UserRepository.getInstance().getUserContained().getTypeUser().equals(
+                TypeUser.GENERAL.getTypeUser())) {
+            new PopUpWarningUpdateUserType(activity).show();
+        }
+    }
 
     /**
      * Constructor, Initializes the view components
@@ -56,10 +67,11 @@ public class GenerateRandomIncidentView {
      */
     private void showFunctionalityGeneratingIncidents() {
         if (!UserRepository.getInstance().getUserContained().getTypeUser().equals(
-                TypeUser.GENERAL.getTypeUser()))
+                TypeUser.GENERAL.getTypeUser())) {
+            generatePopUpDependingOnTypeUser();
             IncidentViewNavigation.getInstance(activity)
-                .initIncidentButtonFunctionality(generateIncidentButton, layout);
-    }
+                    .initIncidentButtonFunctionality(generateIncidentButton, layout);
+        }}
 
     /**
      * Initializes the view buttons
