@@ -1,6 +1,8 @@
 package com.isc.hermes.model.graph;
 
 
+import android.util.Log;
+
 import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.geojson.Point;
@@ -13,6 +15,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import timber.log.Timber;
 
 /**
  * This class manage the actions that an geo graph can do on the application.
@@ -186,6 +190,7 @@ public class GraphManager {
      * @param destination the final of the graph on latitude and longitude point
      */
     public void disconnectBlockedStreets(LatLng origin, LatLng destination) throws JSONException, ExecutionException, InterruptedException {
+        ArrayList<String> deleted = new ArrayList<>();
         JSONArray incidents = searchIncidentsOnTheGraph(origin, destination);
 
         for (int i = 0; i < incidents.length(); i++) {
@@ -200,7 +205,7 @@ public class GraphManager {
                     if (isOnStreet(graph.getNode(nearbyNodes.get(j)), graph.getNode(nearbyNodes.get(k)), incident)) {
                         if (graph.getNode(nearbyNodes.get(j)).removeEdgeTo(graph.getNode(nearbyNodes.get(k))) &&
                         graph.getNode(nearbyNodes.get(k)).removeEdgeTo(graph.getNode(nearbyNodes.get(j)))) {
-                            System.out.println(nearbyNodes.get(j) + " disconnect from " + nearbyNodes.get(k));
+                            Timber.tag("GraphManager").d("nearbyNodes.get(j) + \" disconnect from \" + nearbyNodes.get(k)");
                         }
                     }
                 }
