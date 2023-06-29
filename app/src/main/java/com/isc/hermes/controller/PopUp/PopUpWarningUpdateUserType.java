@@ -3,20 +3,17 @@ package com.isc.hermes.controller.PopUp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.View;
+
 import com.isc.hermes.R;
 
-/**
- * The class extends {@code PopUp} and represents a specific type of popup window. In case the end
- * user does not enter any verification number and wants to enter, this popup will appear
- */
-public class PopUpWarningIncorrectData extends PopUp{
+public class PopUpWarningUpdateUserType extends PopUp{
 
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
      *
      * @param activity The activity we were in before the popup opened
      */
-    public PopUpWarningIncorrectData(Activity activity) {
+    public PopUpWarningUpdateUserType(Activity activity) {
         super(activity, new PopUpStyle() {
             @Override
             public String getTittlePopUP() {
@@ -53,4 +50,5 @@ public class PopUpWarningIncorrectData extends PopUp{
     public void onClick(View v) {
         if (v == super.confirmButton) dismiss();
     }
+
 }
