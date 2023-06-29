@@ -1,7 +1,7 @@
 package com.isc.hermes.controller.offline;
 
 import android.app.Activity;
-import android.widget.Toast;
+import android.app.ProgressDialog;
 
 import com.isc.hermes.utils.offline.MapboxOfflineManager;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
@@ -16,16 +16,36 @@ public class RegionDeleter implements OfflineRegion.OfflineRegionDeleteCallback 
 
     private final Activity activity;
     private final String regionName;
+    private final boolean notifyDeleted;
+    private ProgressDialog progressDialog;
 
     /**
      * Constructs a new RegionDeleter object.
      *
-     * @param activity The activity in which the deletion operation is performed.
-     * @param regionName The name of the region to be deleted.
+     * @param activity      The activity in which the deletion operation is performed.
+     * @param regionName    The name of the region to be deleted.
+     * @param notifyDeleted this param decide if notify to the user when the delete process finish.
      */
-    public RegionDeleter(Activity activity, String regionName) {
+    public RegionDeleter(Activity activity, String regionName, boolean notifyDeleted) {
         this.activity = activity;
         this.regionName = regionName;
+        this.notifyDeleted = notifyDeleted;
+        initProgressDialog(notifyDeleted);
+    }
+
+    /**
+     * This method show the deleting process.
+     *
+     * @param notifyDeleted this boolean decide if the progress task  will be showed.
+     * TODO: Change this deprecated Progress Dialog
+     */
+    private void initProgressDialog(Boolean notifyDeleted) {
+        if (notifyDeleted) {
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Deleting ...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
     }
 
     /**
@@ -34,10 +54,11 @@ public class RegionDeleter implements OfflineRegion.OfflineRegionDeleteCallback 
      */
     @Override
     public void onDelete() {
-        MapboxOfflineManager.getInstance(activity).getOfflineRegions().remove(regionName);
-        CardViewHandler.getInstance().notifyObservers();
-        Toast.makeText(activity, "THE REGION HAS BEEN DELETED SUCCESSFULLY",
-                Toast.LENGTH_LONG).show();
+        if (notifyDeleted) {
+            MapboxOfflineManager.getInstance(activity).getOfflineRegions().remove(regionName);
+            CardViewHandler.getInstance().notifyObservers();
+            progressDialog.dismiss();
+        }
     }
 
     /**

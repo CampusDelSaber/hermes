@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class is for uploading incidents to the server.
@@ -21,30 +22,48 @@ public class IncidentsUploader {
      * @param incidentJsonString The JSON representation of the incident.
      * @return The HTTP response code indicating the status of the upload.
      */
-    public int uploadIncident(String incidentJsonString){
-        try {
-            URL url = new URL(URL_INCIDENTS_API);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    public int uploadIncident(final String incidentJsonString) {
+        final AtomicInteger responseCode = new AtomicInteger(-1);
 
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(URL_INCIDENTS_API);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            try (OutputStream outputStream = connection.getOutputStream()) {
-                byte[] payloadBytes = incidentJsonString.getBytes(StandardCharsets.UTF_8);
-                outputStream.write(payloadBytes, 0, payloadBytes.length);
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setDoOutput(true);
+
+                    try (OutputStream outputStream = connection.getOutputStream()) {
+                        byte[] payloadBytes = incidentJsonString.getBytes(StandardCharsets.UTF_8);
+                        outputStream.write(payloadBytes, 0, payloadBytes.length);
+                    }
+
+                    responseCode.set(connection.getResponseCode());
+                    connection.disconnect();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    responseCode.set(-1);
+                }
             }
+        });
 
-            return connection.getResponseCode();
-        } catch (IOException e) {
+        thread.start();
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
             e.printStackTrace();
-            return -1;
         }
+
+        return responseCode.get();
     }
     /**
      * This method generates a JSON String representation of an incident.
      *
-     * @param id          The incident ID.
+     *
      * @param type        The type of incident.
      * @param reason      The reason for the incident.
      * @param dateCreated The creation date of the incident.
@@ -53,8 +72,8 @@ public class IncidentsUploader {
      * @param coordinates The coordinates of the incident location.
      * @return The JSON representation of the incident.
      */
-    public String generateJsonIncident(String id, String type, String reason, String dateCreated, String deathDate, String typeFigure, String coordinates) {
-        return "{\"_id\": \"" + id + "\",\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \""+typeFigure+"\",\"coordinates\": " + coordinates + "}}";
+    public String generateJsonIncident(String type, String reason, String dateCreated, String deathDate, String typeFigure, String coordinates) {
+        return "{\"type\": \"" + type + "\",\"reason\": \"" + reason + "\",\"dateCreated\": \"" + dateCreated + "\",\"deathDate\": \"" + deathDate + "\",\"geometry\": {\"type\": \""+typeFigure+"\",\"coordinates\": " + coordinates + "}}";
     }
     /**
      * This method returns the last clicked point on the map.

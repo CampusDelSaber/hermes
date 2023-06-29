@@ -9,6 +9,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.controller.PopUp.PopUpWarningUpdateUserType;
+import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapManager;
@@ -100,7 +103,7 @@ public class WaypointOptionsController {
 
         reportNaturalDisasterButton.setOnClickListener(v->{
             MapManager.getInstance().removeCurrentClickController();
-            MapManager.getInstance().setMapClickConfiguration(new MapPolygonController(MapManager.getInstance().getMapboxMap(), this.context));
+            MapManager.getInstance().setMapClickConfiguration( MapPolygonController.getInstance(MapManager.getInstance().getMapboxMap(), this.context));
             waypointOptions.startAnimation(Animations.exitAnimation);
             waypointOptions.setVisibility(View.GONE);
         });
@@ -131,13 +134,26 @@ public class WaypointOptionsController {
     }
 
     /**
+     * Generates a pop-up depending on the type of user.
+     * If the user's type is GENERAL, a warning pop-up for updating the user type is shown.
+     */
+    private void generatePopUpDependingOnTypeUser() {
+        if (UserRepository.getInstance().getUserContained().getTypeUser().equals(
+                TypeUser.GENERAL.getTypeUser())) {
+            new PopUpWarningUpdateUserType((AppCompatActivity) context).show();
+        }
+    }
+
+    /**
      * This method set the report incident status view if the point market is a street.
      *
      * @param point is the coordinate point market.
      */
     public void setReportIncidentStatus(LatLng point) {
-        if (!streetValidator.hasStreetContext(point))
+        if (!streetValidator.hasStreetContext(point) || UserRepository.getInstance().
+                getUserContained().getTypeUser().equals(TypeUser.GENERAL.getTypeUser())) {
+            generatePopUpDependingOnTypeUser();
             reportIncidentsView.setVisibility(View.GONE);
-        else reportIncidentsView.setVisibility(View.VISIBLE);
+        } else reportIncidentsView.setVisibility(View.VISIBLE);
     }
 }

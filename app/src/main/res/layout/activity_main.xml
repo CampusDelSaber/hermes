@@ -109,7 +109,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapView"
@@ -119,6 +119,36 @@
             mapbox:mapbox_cameraTargetLat="-17.3895"
             mapbox:mapbox_cameraTargetLng="-66.1568"
             mapbox:mapbox_cameraZoom="12">
+
+            <LinearLayout
+                android:id="@+id/reroutingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/rerouting_button_background"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="30dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/reloadTheWayButton"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/reload_icon" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/rerouting_message"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="10dp"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    />
+            </LinearLayout>
 
     </com.mapbox.mapboxsdk.maps.MapView>
     <LinearLayout
@@ -186,26 +216,14 @@
                 android:orientation="vertical">
 
                 <ImageButton
-                    android:id="@+id/viewIncidentsButton"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/generateIncidentButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:background="@android:color/transparent"
                     android:importantForAccessibility="no"
-                    android:src="@drawable/eye_icon"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-                <ImageButton
-                    android:id="@+id/generateIncidentButton"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:background="@android:color/transparent"
                     mapbox:srcCompat="@drawable/img_icon_incident_generate"
-                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
-                    android:importantForAccessibility="no" />
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                 <ImageButton
                     android:id="@+id/locationButton"
@@ -240,7 +258,17 @@
             mapbox:layout_anchorGravity="center" />
 
         <include
+            layout="@layout/incident_view"
+            mapbox:layout_anchor="@+id/mapView"
+            mapbox:layout_anchorGravity="center" />
+
+        <include
             layout="@layout/incident_generate_view"
+            mapbox:layout_anchor="@+id/mapView"
+            mapbox:layout_anchorGravity="center" />
+
+        <include
+            layout="@layout/display_incidents"
             mapbox:layout_anchor="@+id/mapView"
             mapbox:layout_anchorGravity="center" />
 

@@ -7,12 +7,15 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -44,12 +47,16 @@ public class NavigationOptionsController {
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
+    private LatLng destination;
+    private LatLng start;
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
     private TransportationType transportationType;
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
+    private ImageView reroutingButton;
+    private LinearLayout reroutingLayout;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
 
     private Thread routeEstimationManagerThread;
@@ -99,7 +106,8 @@ public class NavigationOptionsController {
         startPointButton = activity.findViewById(R.id.startPoint_button);
         finalPointButton = activity.findViewById(R.id.finalPoint_Button);
         transportationTypesContainer = activity.findViewById(R.id.transportationTypesContainer);
-
+        reroutingLayout = activity.findViewById(R.id.reroutingLayout);
+        reroutingButton = activity.findViewById(R.id.reloadTheWayButton);
     }
 
     /**
@@ -116,6 +124,7 @@ public class NavigationOptionsController {
             if (i != 0) button.setAlpha(0.3f);
             button.setOnClickListener(buttonClickListener);
         }
+        reroutingLayout.setOnClickListener(v -> handleReloadButtonClick());
 
     }
 
@@ -321,20 +330,43 @@ public class NavigationOptionsController {
      */
     private void handleAcceptButtonClick() {
         handleHiddeItemsView();
+        reroutingLayout.setVisibility(View.VISIBLE);
         isActive = false;
         if (isCurrentLocationSelected)
             startPoint = CurrentLocationModel.getInstance().getLatLng();
         LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
+        this.destination = destination;
+        this.start = start;
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(R.layout.loader_route_dialog);
         builder.setCancelable(false);
         progressDialog = builder.create();
         progressDialog.show();
+        manageGraphBuilding(graphController);
+    }
 
+    /**
+     * This method handles the actions performed when the accept button is clicked.
+     */
+    public void handleReloadButtonClick() {
+        if (isCurrentLocationSelected) {
+            startPoint = CurrentLocationModel.getInstance().getLatLng();
+            this.start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
+        }
+
+        //HARD-CODE THE START POSITION TO A NEW POSITION
+        start = new LatLng(-17.388395706866092, -66.16068443101761);
+
+        GraphController graphController = new GraphController(start, destination);
+        markStartEndPoint(start, destination);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(R.layout.loader_route_dialog);
+        builder.setCancelable(false);
+        progressDialog = builder.create();
+        progressDialog.show();
         manageGraphBuilding(graphController);
     }
 

@@ -1,5 +1,6 @@
 package com.isc.hermes.controller.PopUp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.view.Gravity;
@@ -26,13 +27,14 @@ public class ProgressDialogManager {
         this.activity = activity;
         createProgressDialog(message);
     }
-    /**
-     * This method creates a new AlertDialog with a progress bar and percentage text.
-     */
-    private void createProgressDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setCancelable(false);
 
+    /**
+     * Creates the components for the progress dialog and assigns them to variables.
+     *
+     * @param message The message to be displayed in the loading text.
+     * @param builder The AlertDialog.Builder instance for creating the dialog.
+     */
+    private void createComponents(String message, AlertDialog.Builder builder) {
         LinearLayout layout = createLayoutContainer();
         LinearLayout textLayout = createTextLayout();
         TextView loadingText = createLoadingTextView(message);
@@ -41,17 +43,34 @@ public class ProgressDialogManager {
 
         textLayout.addView(loadingText);
         textLayout.addView(progressText);
-
         layout.addView(textLayout);
         layout.addView(progressBar);
-
         builder.setView(layout);
+        assignValuesToVariables(builder, progressBar, progressText);
+    }
 
+    /**
+     * Assigns the created components to their respective class variables.
+     *
+     * @param builder      The AlertDialog.Builder instance used to create the dialog.
+     * @param progressBar  The ProgressBar component of the dialog.
+     * @param progressText The TextView component for displaying progress.
+     */
+    private void assignValuesToVariables(AlertDialog.Builder builder, ProgressBar progressBar,
+                                         TextView progressText){
         this.progressDialog = builder.create();
         this.progressBar = progressBar;
         this.progressText = progressText;
     }
 
+    /**
+     * This method creates a new AlertDialog with a progress bar and percentage text.
+     */
+    private void createProgressDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setCancelable(false);
+        createComponents(message, builder);
+    }
 
     /**
      * This method creates a LinearLayout container for the progress dialog.
@@ -89,8 +108,7 @@ public class ProgressDialogManager {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1.0f
-        ));
-        return loadingText;
+        )); return loadingText;
     }
 
     /**
@@ -106,8 +124,7 @@ public class ProgressDialogManager {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1.0f
-        ));
-        return progressText;
+        )); return progressText;
     }
 
     /**
@@ -120,25 +137,21 @@ public class ProgressDialogManager {
         progressBar.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        return progressBar;
+        )); return progressBar;
     }
+
     /**
      * This method shows the progress dialog.
      */
     public void showProgressDialog() {
-        if (!progressDialog.isShowing()) {
-            progressDialog.show();
-        }
+        if (!progressDialog.isShowing()) progressDialog.show();
     }
 
     /**
      * This method dismiss the progress dialog.
      */
     public void dismissProgressDialog() {
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+        if (progressDialog.isShowing()) progressDialog.dismiss();
     }
 
     /**
@@ -146,6 +159,7 @@ public class ProgressDialogManager {
      *
      * @param progress The progress value to set.
      */
+    @SuppressLint("SetTextI18n")
     public void updateProgress(int progress) {
         progressBar.setProgress(progress);
         progressText.setText(progress + "%");
