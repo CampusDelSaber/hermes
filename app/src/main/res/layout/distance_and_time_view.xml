@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="401dp"
-        android:layout_height="185dp"
+        android:layout_height="129dp"
         android:background="#FFFFFF"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,21 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
-
-        <LinearLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/rerouting_button_background">
-
-            <ImageView
-                android:id="@+id/reloadTheWayButton"
-                android:layout_width="50dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:src="@drawable/reload_icon" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="392dp"

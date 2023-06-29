@@ -30,7 +30,6 @@ public class InfoRouteController {
     private Button buttonRouteB;
     private Button buttonRouteC;
     private Button startNavigationButton;
-    private ImageView reloadTheWayButton;
     private TextView timeText;
     private TextView distanceText;
     private static InfoRouteController instanceNavigationController;
@@ -78,8 +77,6 @@ public class InfoRouteController {
         buttonRouteB.setAlpha(0.3f);
         buttonRouteC.setAlpha(0.3f);
         startNavigationButton = activity.findViewById(R.id.startNavegationButton);
-        reloadTheWayButton = activity.findViewById(R.id.reloadTheWayButton);
-        setTheReloadWayButtonAction();
     }
 
     /**
@@ -118,16 +115,6 @@ public class InfoRouteController {
         startNavigationButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
-        });
-    }
-
-    private void setTheReloadWayButtonAction(){
-        reloadTheWayButton.setOnClickListener(v -> {
-            mapPolyline.hidePolylines();
-            layout.startAnimation(Animations.exitAnimation);
-            layout.setVisibility(View.GONE);
-            navigationOptionsController.handleReloadButtonClick();
-            setActionButtons();
         });
     }
 

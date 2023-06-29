@@ -109,6 +109,24 @@
             mapbox:mapbox_cameraTargetLng="-66.1568"
             mapbox:mapbox_cameraZoom="12">
 
+            <LinearLayout
+                android:id="@+id/reroutingLayout"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/rerouting_button_background"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="130dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/reloadTheWayButton"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/reload_icon" />
+            </LinearLayout>
+
     </com.mapbox.mapboxsdk.maps.MapView>
     <LinearLayout
         android:paddingTop="65dp"

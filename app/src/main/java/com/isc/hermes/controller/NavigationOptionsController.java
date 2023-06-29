@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -50,6 +51,8 @@ public class NavigationOptionsController {
     private TransportationType transportationType;
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
+    private ImageView reroutingButton;
+    private LinearLayout reroutingLayout;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -96,7 +99,8 @@ public class NavigationOptionsController {
         startPointButton = activity.findViewById(R.id.startPoint_button);
         finalPointButton = activity.findViewById(R.id.finalPoint_Button);
         transportationTypesContainer = activity.findViewById(R.id.transportationTypesContainer);
-
+        reroutingLayout = activity.findViewById(R.id.reroutingLayout);
+        reroutingButton = activity.findViewById(R.id.reloadTheWayButton);
     }
 
     /**
@@ -112,6 +116,7 @@ public class NavigationOptionsController {
             if (i != 0) button.setAlpha(0.3f);
             button.setOnClickListener(buttonClickListener);
         }
+        reroutingButton.setOnClickListener(v -> handleReloadButtonClick());
 
     }
 
@@ -315,6 +320,7 @@ public class NavigationOptionsController {
      */
     private void handleAcceptButtonClick() {
         handleHiddeItemsView();
+        reroutingLayout.setVisibility(View.VISIBLE);
         isActive = false;
         if (isCurrentLocationSelected)
             startPoint = CurrentLocationModel.getInstance().getLatLng();
@@ -322,6 +328,10 @@ public class NavigationOptionsController {
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
         this.destination = destination;
         this.start = start;
+
+        System.out.println("lat: " + start.getLatitude() + "long: " + start.getLongitude());
+        System.out.println("lat: " + destination.getLatitude() + "long: " + destination.getLongitude());
+
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -337,6 +347,10 @@ public class NavigationOptionsController {
      */
     public void handleReloadButtonClick() {
         mapWayPointController.deleteMarks();
+        if (isCurrentLocationSelected) {
+            startPoint = CurrentLocationModel.getInstance().getLatLng();
+            this.start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
+        }
 
         //HARD-CODE THE START POSITION TO A NEW POSITION
         //start = new LatLng(-17.392323816197262, -66.15327559536917);
