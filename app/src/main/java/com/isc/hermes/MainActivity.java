@@ -17,21 +17,19 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import com.isc.hermes.controller.ViewIncidentsController;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.os.Handler;
-
 import com.isc.hermes.controller.FilterCategoriesController;
 import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
-import com.isc.hermes.controller.PolygonOptionsController;
-import com.isc.hermes.controller.ViewIncidentsController;
+import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
@@ -41,7 +39,6 @@ import com.isc.hermes.controller.GenerateRandomIncidentController;
 import com.isc.hermes.database.AccountInfoManager;
 
 import com.isc.hermes.database.IncidentsUploader;
-import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.MapManager;
@@ -98,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setupSearchView();
         changeSearchView();
         addIncidentGeneratorButton();
+        incidentViewButton();
+        initShowIncidentsController();
         MarkerManager.getInstance(this).removeSavedMarker();
         initFilterAdvancedView();
         launcher = createActivityResult();
@@ -105,9 +104,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
-        setTheUserInformationInTheDropMenu();
+        try {
+            setTheUserInformationInTheDropMenu();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
     /**
      * Sets up the search view and clear button.
      * Initializes the search view, sets the text color to black,
@@ -183,6 +185,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.burger_button);
+    }
+
+    /**
+     * This method is the incident view button
+     */
+    private void incidentViewButton() {
+        IncidentViewNavigation.getInstance(this);
     }
 
     /**
@@ -366,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findViewById(R.id.userAccountImage);
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
-                UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
+                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
     }
 
     /**
@@ -420,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         buttonClear.setVisibility(View.GONE);
     }
 
-    /*
+    /**
      * This method used for open a new activity, offline settings.
      *
      * @param view view

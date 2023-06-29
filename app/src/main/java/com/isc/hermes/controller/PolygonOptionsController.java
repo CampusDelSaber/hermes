@@ -3,6 +3,7 @@ package com.isc.hermes.controller;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -16,6 +17,10 @@ import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapManager;
 
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Class on controller function to initialise all components in natural disaster form
@@ -98,9 +103,12 @@ public class PolygonOptionsController {
     }
 
     private Integer uploadNaturalDisasterDataBase(){
-        String id = IncidentsUtils.getInstance().generateObjectId();
-        String dateCreated= "0000-00-00T00:00:00.000+00:00", deathDate = "0000-00-00T00:00:00.000+00:00";
-        String coordinates = MapPolygonController.getInstance(this.polygonController.getMapboxMap(), context).getPolygonPoints().toString();
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        String dateCreated= simpleDateFormat.format(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        String deathDate =  simpleDateFormat.format(calendar.getTime());;
+        String coordinates = MapPolygonController.getInstance(this.polygonController.getMapboxMap(), context).getStringWithPolygonPoint();
         String JsonString = IncidentsUploader.getInstance().generateJsonIncident("Natural Disaster","Natural Disaster",dateCreated, deathDate , GeometryType.POLYGON.getName(),coordinates);
         return IncidentsUploader.getInstance().uploadIncident(JsonString);
     }

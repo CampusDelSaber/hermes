@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Hermes</string>
     <string name="welcomeApp">Welcome to Hermes App</string>
     <string name="userType">User Type</string>
@@ -153,6 +153,14 @@
     <string name="user_account">User account</string>
     <string name="log_out">Log out</string>
 
+    <string name="display_incidents">Display Incidents</string>
+    <string name="select_an_option">Select an Option</string>
+    <string name="generate_incidents">Generate Incidents</string>
     <string name="verify_account">Verify Account</string>
     <string name="continue_general_account">Continue General Account</string>
+
+    <!--  Incidents Messages  -->
+    <string name="incidents_fail_to_load">
+        Failure to get the incidents data. Please, try again
+    </string>
 </resources>

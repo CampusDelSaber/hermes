@@ -31,7 +31,7 @@ public class MapPolygonController implements MapClickConfigurationController {
     private final GeometryFactory geometryFactory;
     private static MapPolygonController instance;
 
-    public MapPolygonController(MapboxMap mapboxMap, Context context ) {
+    private MapPolygonController(MapboxMap mapboxMap, Context context ) {
         this.mapboxMap = mapboxMap;
         polygonOptionsController = new PolygonOptionsController(context, this);
         polygonOptionsController.displayComponents();
@@ -101,6 +101,25 @@ public class MapPolygonController implements MapClickConfigurationController {
 
     public List<Point> getPolygonPoints() {
         return polygonPoints;
+    }
+
+    /**
+     * This method generate a string with the coordinates registered.
+     *
+     * @return String with coordinates.
+     */
+    public String getStringWithPolygonPoint(){
+        StringBuilder stringBuilder = new StringBuilder("[");
+        if(coordinates.size() > 1){
+            for (Double[] currentCoordinate : coordinates){
+                stringBuilder.append("["+currentCoordinate[0]+", "+currentCoordinate[1]+"],");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.toString().length()-1);
+            stringBuilder.append("]");
+        }else {
+            stringBuilder.append(coordinates.get(0)[0]+", "+coordinates.get(0)[1]+"]");
+        }
+        return stringBuilder.toString();
     }
 
     public static MapPolygonController getInstance(MapboxMap mapboxMap, Context context ) {

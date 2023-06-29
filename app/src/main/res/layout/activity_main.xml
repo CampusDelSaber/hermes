@@ -109,7 +109,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapView"
@@ -120,25 +120,25 @@
             mapbox:mapbox_cameraTargetLng="-66.1568"
             mapbox:mapbox_cameraZoom="12">
 
-    </com.mapbox.mapboxsdk.maps.MapView>
-    <LinearLayout
-        android:paddingTop="65dp"
-        android:layout_width="409dp"
-        android:layout_height="669dp"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="61dp"
-        tools:ignore="MissingConstraints">
-        <include
-            layout="@layout/filters_view"
+        </com.mapbox.mapboxsdk.maps.MapView>
+        <LinearLayout
+            android:paddingTop="65dp"
+            android:layout_width="409dp"
+            android:layout_height="669dp"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="61dp"
+            tools:ignore="MissingConstraints">
+            <include
+                layout="@layout/filters_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/viewIncidentsForm"
@@ -199,13 +199,13 @@
 
                 <ImageButton
                     android:id="@+id/generateIncidentButton"
-                    android:layout_width="30dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:background="@android:color/transparent"
+                    android:importantForAccessibility="no"
                     mapbox:srcCompat="@drawable/img_icon_incident_generate"
-                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
-                    android:importantForAccessibility="no" />
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                 <ImageButton
                     android:id="@+id/locationButton"
@@ -240,7 +240,17 @@
             mapbox:layout_anchorGravity="center" />
 
         <include
+            layout="@layout/incident_view"
+            mapbox:layout_anchor="@+id/mapView"
+            mapbox:layout_anchorGravity="center" />
+
+        <include
             layout="@layout/incident_generate_view"
+            mapbox:layout_anchor="@+id/mapView"
+            mapbox:layout_anchorGravity="center" />
+
+        <include
+            layout="@layout/display_incidents"
             mapbox:layout_anchor="@+id/mapView"
             mapbox:layout_anchorGravity="center" />
 
