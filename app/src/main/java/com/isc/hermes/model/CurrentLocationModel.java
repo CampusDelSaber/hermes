@@ -9,6 +9,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class CurrentLocationModel {
     private double latitude;
     private double longitude;
+    private static CurrentLocationModel currentLocationModel;
 
     /**
      * Returns the latitude coordinate of the current location.
@@ -16,7 +17,7 @@ public class CurrentLocationModel {
      * @return The latitude coordinate.
      */
     public double getLatitude() {
-        return latitude;
+        return this.latitude;
     }
 
     /**
@@ -25,7 +26,7 @@ public class CurrentLocationModel {
      * @return The longitude coordinate.
      */
     public double getLongitude() {
-        return longitude;
+        return this.longitude;
     }
 
     /**
@@ -53,6 +54,15 @@ public class CurrentLocationModel {
      */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    /**
+     * This method will get the singleton instance
+     * @return the instance of the class
+     */
+    public static CurrentLocationModel getInstance() {
+        if (currentLocationModel == null) currentLocationModel = new CurrentLocationModel();
+        return currentLocationModel;
     }
 }
 
