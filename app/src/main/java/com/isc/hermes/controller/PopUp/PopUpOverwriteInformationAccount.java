@@ -22,6 +22,7 @@ import com.isc.hermes.model.Validator;
 public class PopUpOverwriteInformationAccount extends PopUp{
 
     private Button button;
+    private Button buttonUploadImage;
     private AutoCompleteTextView fullName;
     private AutoCompleteTextView username;
     private AutoCompleteTextView comboBoxField;
@@ -60,6 +61,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
             fullName.setEnabled(false);
             username.setEnabled(false);
             comboBoxField.setEnabled(false);
+            buttonUploadImage.setVisibility(View.GONE);
         } dismiss();
     }
 
@@ -100,12 +102,13 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      * @param username The AutoCompleteTextView for entering the username.
      * @param comboBoxField The AutoCompleteTextView for selecting a field from a combo box.
      */
-    public void setInformationToAbelEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
-                                         AutoCompleteTextView comboBoxField) {
+    public void setInformationToAbleEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
+                                         AutoCompleteTextView comboBoxField, Button buttonUploadImage) {
         this.button = button;
         this.fullName = fullName;
         this.username = username;
         this.comboBoxField = comboBoxField;
+        this.buttonUploadImage = buttonUploadImage;
     }
 
     /**

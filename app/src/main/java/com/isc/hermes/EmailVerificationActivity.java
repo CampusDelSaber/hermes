@@ -234,8 +234,15 @@ public class EmailVerificationActivity extends AppCompatActivity {
      * @param view The View that triggered the method call.
      */
     public void continueVerification(View view) {
-        if (!UserRepository.getInstance().getUserContained().isRegistered()) addAdministratorUser();
-        else updateToAdministratorUser();
+        System.out.println("2334");
+        if (!UserRepository.getInstance().getUserContained().isRegistered()){
+            System.out.println("edeed");
+            if (!UserRepository.getInstance().getUserContained().isAdministrator()){
+                addAdministratorUser();
+                System.out.println("666666");
+            }
+            else updateToAdministratorUser();
+        }
     }
 
     /**

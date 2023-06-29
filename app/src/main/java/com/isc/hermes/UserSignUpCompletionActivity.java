@@ -95,7 +95,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
             if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
-                UserRepository.getInstance().getUserContained().setRegistered(false);
+                UserRepository.getInstance().getUserContained().setAdministrator(false);
                 new  SignUpTransitionHandler().transitionBasedOnRole(this);
             } else comboBoxTextField.setHelperText("Required");
         });
