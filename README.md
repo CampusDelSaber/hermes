@@ -185,3 +185,44 @@ classes
  ├── MapPolygonStyle.class
  └── OfflineCardView.class
 
+##Program usage
+
+- ### SEARCH
+Above the map display, there is a search engine in which the user can enter the location he/she wants 
+and then the searched place will be displayed on the map.
+
+
+![Search](https://i.postimg.cc/cCFqMVtZ/Screenshot-from-2023-06-28-23-58-58.png)
+
+- ### SEARCH FILTERS.
+
+Below the search engine you can see the different options for the type of services that the 
+user wishes to search for, such as restaurants, hotels, parks, etc.
+
+![Search](https://i.postimg.cc/B6LbLBjm/Screenshot-from-2023-06-29-00-08-10.png)
+
+- #### REPORT
+  Clicking on a point on the route displays a menu of options for reporting incidents, 
+  traffic and natural disasters. The user must choose the type of report he/she wants to make 
+  and click on the desired option.
+
+![Report](https://i.postimg.cc/QCfy21br/Screenshot-from-2023-06-29-00-10-53.png)
+
+ To continue the report, it will show us the different characteristics that we can fill in to report 
+ such as the type of incident, the user can write the reason and the estimated time, and finally we 
+ have the options to accept and cancel.
+
+![Report](https://i.postimg.cc/DzzdNHNm/Screenshot-from-2023-06-29-00-15-25.png)
+
+- #### NAVIGATION:
+
+ To start a route, you must press the navigate option.
+
+![Navigation](https://i.postimg.cc/fRPj6BQK/Screenshot-from-2023-06-29-00-22-12.png)
+
+ Next, the navigation options will scroll, we will be able to select the starting point, the user 
+ can choose to do it from the current location or choose a point on the map, the type of transport 
+ and the start and end coordinates of the route will be displayed.
+
+![Navigation](https://i.postimg.cc/vHQJBHgK/Screenshot-from-2023-06-29-00-23-21.png)
+
