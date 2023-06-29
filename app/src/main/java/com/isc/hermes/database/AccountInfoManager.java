@@ -4,6 +4,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.isc.hermes.model.User.User;
+import com.isc.hermes.model.User.UserRepository;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,6 +104,19 @@ public class AccountInfoManager {
     public String getIdByEmail(String email) throws ExecutionException, InterruptedException, JSONException {
         JSONObject jsonObject = getJSONArrayByEmail(email).getJSONObject(0);
         return jsonObject.getString("_id");
+    }
+
+    /**
+     * Updates the local user information using the email as a reference.
+     */
+    public void updateUserInformationLocal() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                UserRepository.getInstance().setUserContained(getUserById(UserRepository.getInstance().getUserContained().getId()));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 
     /**

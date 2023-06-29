@@ -26,6 +26,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.os.Handler;
 import com.isc.hermes.controller.FilterCategoriesController;
+import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
@@ -34,15 +35,12 @@ import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
-import com.isc.hermes.controller.offline.OfflineDataRepository;
-import com.isc.hermes.database.IncidentsDataProcessor;
-import com.isc.hermes.model.RegionData;
-
-
-import android.widget.SearchView;
-
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
+import com.isc.hermes.database.AccountInfoManager;
+
+import com.isc.hermes.database.IncidentsUploader;
+import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
@@ -73,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private AccountInfoManager accountInfoManager;
     private ImageButton buttonClear;
     private final String resetSearchText = "Search...";
 
@@ -86,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        accountInfoManager = new AccountInfoManager();
+        accountInfoManager.updateUserInformationLocal();
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
@@ -100,15 +101,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.getInstance(this).removeSavedMarker();
         initFilterAdvancedView();
         launcher = createActivityResult();
+        initShowIncidentsController();
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
         try {
             setTheUserInformationInTheDropMenu();
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -495,5 +496,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
         }
         return true;
+    }
+
+    public void acceptNaturalDisasters(){
+        String JsonString = IncidentsUploader.getInstance().generateJsonIncident("Natural Disaster","Natural Disaster","2023-06-22T19:40:47.955Z", "2023-06-22T19:40:47.955Z" , GeometryType.POLYGON.getName(),MapPolygonController.getInstance(MapManager.getInstance().getMapboxMap(), context).getPolygonPoints().toString());
+        IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 }
