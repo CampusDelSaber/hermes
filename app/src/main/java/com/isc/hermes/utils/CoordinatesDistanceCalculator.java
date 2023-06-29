@@ -1,6 +1,7 @@
 package com.isc.hermes.utils;
 
 import com.isc.hermes.model.graph.Node;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 /**
  * This class is responsible for calculating the distance between two nodes using their coordinates.
@@ -32,6 +33,29 @@ public class CoordinatesDistanceCalculator {
         double lon1 = Math.toRadians(node1.getLongitude());
         double lat2 = Math.toRadians(node2.getLatitude());
         double lon2 = Math.toRadians(node2.getLongitude());
+
+        double dlon = lon2 - lon1;
+        double dlat = lat2 - lat1;
+
+        double angularDistance = getAngularDistance(lat1, lat2, dlon, dlat);
+        double centralAngle = getCentralAngle(angularDistance);
+
+        return EARTH_RADIUS * centralAngle;
+    }
+
+    /**
+     * This method calculates the distance between two points overloading the
+     * calculateDistance(Node, Node) method.
+     *
+     * @param source coords of the source point
+     * @param target coords of the target point
+     * @return the distance between the nodes in kilometers
+     */
+    public double calculateDistance(LatLng source, LatLng target) {
+        double lat1 = Math.toRadians(source.getLatitude());
+        double lon1 = Math.toRadians(source.getLongitude());
+        double lat2 = Math.toRadians(target.getLatitude());
+        double lon2 = Math.toRadians(target.getLongitude());
 
         double dlon = lon2 - lon1;
         double dlat = lat2 - lat1;

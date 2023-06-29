@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Hermes</string>
     <string name="welcomeApp">Welcome to Hermes App</string>
     <string name="userType">User Type</string>
@@ -44,6 +44,8 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="close">Close</string>
+    <string name="rerouting_message">Do you want to generate a new route to your destination from
+        your current point?</string>
 
     <!--    Authentication Strings-->
     <string name="google">GOOGLE</string>
@@ -51,6 +53,8 @@
 
     <string name="incidents_uploaded">Incident uploaded successfully.</string>
     <string name="incidents_not_uploaded">Incident could not be uploaded.</string>
+    <string name="natural_disaster_uploaded">Natural Disaster uploaded successfully.</string>
+    <string name="natural_disaster_not_uploaded">Natural Disaster could not be uploaded.</string>
     <string name="incidents_api_url">https://api-rest-hermes.onrender.com/pointIncidets</string>
     <string name="traffic_uploaded">Traffic uploaded successfully.</string>
     <string name="traffic_not_uploaded">Traffic could not be uploaded.</string>
@@ -140,7 +144,7 @@
     <string name="download_button_text">Download\n</string>
     <string name="tittle_region_popup">Give a name to your map</string>
     <string name="your_name_map">Your name map</string>
-
+    <string name="update">Update</string>
     <!--  Dropdown Menu  -->
     <string name="tools">Tools</string>
     <string name="profile">Profile</string>
@@ -151,6 +155,16 @@
     <string name="user_account">User account</string>
     <string name="log_out">Log out</string>
 
+    <string name="display_incidents">Display</string>
+    <string name="incidents">Incidents</string>
+    <string name="generate_incidents">Generate</string>
     <string name="verify_account">Verify Account</string>
     <string name="continue_general_account">Continue General Account</string>
+
+    <!--  Incidents Messages  -->
+    <string name="incidents_fail_to_load">
+        Failure to get the incidents data. Please, try again
+    </string>
+    <string name="generate_incidents_title">GENERATE INCIDENTS</string>
+    <string name="generate">Generate</string>
 </resources>

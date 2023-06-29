@@ -10,6 +10,7 @@ import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
+import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
 import org.json.JSONException;
@@ -53,7 +54,7 @@ public class SignUpTransitionHandler {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void transitionBasedOnRole(Context packageContext) {
         Intent intent;
-        if (UserRepository.getInstance().getUserContained().getTypeUser().equals("Administrator")) {
+        if (UserRepository.getInstance().getUserContained().getTypeUser().equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 sendVerificationCode(UserRepository.getInstance().getUserContained().getTypeUser(),
                         UserRepository.getInstance().getUserContained().getEmail());
@@ -73,7 +74,7 @@ public class SignUpTransitionHandler {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(String roles, String email) {
-        if (roles.equals("Administrator")) {
+        if (roles.equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
             Validator validator = new Validator(UserRepository.getInstance().getUserContained());
             validator.obtainVerificationCode();
             SendEmailManager sendEmailManager = new SendEmailManager();

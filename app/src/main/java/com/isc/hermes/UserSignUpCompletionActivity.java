@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
+import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.signup.SignUpTransitionHandler;
 import com.isc.hermes.model.User.UserRepository;
 
@@ -65,9 +66,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * @return The generated AutoCompleteTextView for the combo box.
      */
     private AutoCompleteTextView generateComponentsToComboBox() {
-        String[] items = {"Administrator", "General"};
         AutoCompleteTextView autoCompleteText = findViewById(R.id.textFieldUserType);
-        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, items);
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item,
+                TypeUser.getArrayTypeUsers());
         autoCompleteText.setAdapter(adapterItems);
         return autoCompleteText;
     }

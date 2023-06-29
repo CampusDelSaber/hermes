@@ -7,6 +7,7 @@ import android.view.View;
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 
 /**
@@ -34,7 +35,6 @@ public class PopUpContinueLikeGeneralUser extends PopUp{
                 return R.drawable.baseline_manage_accounts_24; }
         });
     }
-
 
     /**
      * Handles the click event for the view.

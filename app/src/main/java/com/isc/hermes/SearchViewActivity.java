@@ -1,7 +1,6 @@
 package com.isc.hermes;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -54,7 +53,6 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         recyclerView = findViewById(R.id.recycle_view_searched);
         searchView = findViewById(R.id.searcher_view);
         imageView = findViewById(R.id.back_arrow_main);
-
         searcher = new Searcher(this.getApplicationContext());
         List<WayPoint> wayPoints = new ArrayList<>();
         adapter = new SearcherAdapter(wayPoints, this);
@@ -69,7 +67,6 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     private void setupSearchView() {
         searcherController = new SearcherController(searcher, adapterUpdater);
         searchView.setOnQueryTextListener(searcherController.getOnQueryTextListener());
-
         searchView.requestFocus();
     }
 

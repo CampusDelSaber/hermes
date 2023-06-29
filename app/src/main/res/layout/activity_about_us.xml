@@ -12,40 +12,51 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView4"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/blueOxford_app_theme"
-            android:orientation="horizontal"
-            android:textAlignment="center">
+            android:layout_height="60dp"
+            android:backgroundTint="@color/blueOxford_app_theme"
+            tools:ignore="MissingConstraints">
 
-            <ImageButton
-                android:id="@+id/imageButtonBack"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginLeft="20dp"
-                android:contentDescription="@string/DescriptionBack"
-                app:srcCompat="@drawable/backbutton" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="281dp"
-                android:layout_height="37dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginRight="10dp"
-                android:text="@string/AboutUsApp"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textColorLink="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold|italic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.41"
-                app:layout_constraintStart_toEndOf="@+id/imageButtonBack"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageButtonBack"
+                    android:layout_width="35dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/baseline_arrow_back_ios_new_24"
+                    android:backgroundTint="@color/silver"
+                    android:elevation="20dp"
+                    android:onClick="goToPrincipalView"
+                    android:translationX="10dp"
+                    android:translationY="10dp"
+                    app:civ_circle_background_color="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.120000005"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/AboutUsApp"
+                    android:textColor="@color/silver"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -77,9 +88,9 @@
                     android:id="@+id/body_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="28dp"
+                    android:layout_marginStart="28dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginRight="200dp"
+                    android:layout_marginEnd="200dp"
                     android:background="@color/white"
                     android:text="@string/ObjectiveApp"
                     android:textStyle="bold|italic"
@@ -91,9 +102,9 @@
                     android:id="@+id/text_5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="45dp"
+                    android:layout_marginStart="45dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginRight="35dp"
+                    android:layout_marginEnd="35dp"
                     android:background="@color/white"
                     android:text="@string/ObjectiveContextApp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -105,9 +116,9 @@
                     android:id="@+id/body_text2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="0dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginRight="260dp"
+                    android:layout_marginEnd="260dp"
                     android:background="@color/white"
                     android:text="@string/FeaturesApp"
                     android:textStyle="bold|italic"
@@ -119,7 +130,7 @@
                     android:id="@+id/body4_text2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="60dp"
+                    android:layout_marginStart="60dp"
                     android:layout_marginTop="8dp"
                     android:background="@color/white"
                     android:text="@string/RealTimeGPS"
@@ -145,17 +156,17 @@
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="12dp"
                     android:background="@color/white"
-                    android:paddingRight="12dp"
+                    android:paddingEnd="12dp"
                     android:text="@string/InformationGPS"
                     app:layout_constraintStart_toEndOf="@+id/indicator_1"
                     app:layout_constraintTop_toBottomOf="@+id/body4_text2"
-                    tools:ignore="MissingConstraints" />
+                    tools:ignore="MissingConstraints,RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/body6_text2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="60dp"
+                    android:layout_marginStart="60dp"
                     android:layout_marginTop="16dp"
                     android:background="@color/white"
                     android:text="@string/RealTimeGPS"
@@ -169,7 +180,7 @@
                     android:layout_height="67sp"
                     android:layout_marginStart="60dp"
                     android:layout_marginTop="12sp"
-                    android:layout_marginRight="15sp"
+                    android:layout_marginEnd="15sp"
                     android:background="@color/white"
                     android:contentDescription="@string/DescriptionMap"
                     app:layout_constraintHorizontal_bias="4.0"
@@ -184,17 +195,17 @@
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="12dp"
                     android:background="@color/white"
-                    android:paddingRight="12dp"
+                    android:paddingEnd="12dp"
                     android:text="@string/ProtectUser"
                     app:layout_constraintStart_toEndOf="@+id/imageView3"
                     app:layout_constraintTop_toBottomOf="@+id/body6_text2"
-                    tools:ignore="MissingConstraints" />
+                    tools:ignore="MissingConstraints,RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/body7_text2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="60dp"
+                    android:layout_marginStart="60dp"
                     android:layout_marginTop="8dp"
                     android:background="@color/white"
                     android:text="@string/Explore"
@@ -207,9 +218,8 @@
                     android:layout_width="90sp"
                     android:layout_height="67sp"
                     android:layout_marginStart="60dp"
-                    android:layout_marginLeft="65sp"
                     android:layout_marginTop="12sp"
-                    android:layout_marginRight="15sp"
+                    android:layout_marginEnd="15sp"
                     android:background="@color/white"
                     android:contentDescription="@string/DescriptionExplore"
                     app:layout_constraintEnd_toStartOf="@+id/body9_text"
@@ -225,17 +235,17 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="12dp"
                     android:background="@color/white"
-                    android:paddingRight="12dp"
+                    android:paddingEnd="12dp"
                     android:text="@string/FindPlaces"
                     app:layout_constraintStart_toEndOf="@+id/imageView4"
                     app:layout_constraintTop_toBottomOf="@+id/body7_text2"
-                    tools:ignore="MissingConstraints" />
+                    tools:ignore="MissingConstraints,RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/body11_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="60dp"
+                    android:layout_marginStart="60dp"
                     android:layout_marginTop="8dp"
                     android:background="@color/white"
                     android:text="@string/LocationTitle"
@@ -247,9 +257,9 @@
                     android:id="@+id/body12_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="45dp"
+                    android:layout_marginStart="45dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginRight="35dp"
+                    android:layout_marginEnd="35dp"
                     android:background="@color/white"
                     android:text="@string/FarewellApp"
                     app:layout_constraintEnd_toEndOf="parent"
