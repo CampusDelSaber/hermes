@@ -90,14 +90,8 @@ public class InfoRouteController {
         colorsInfoRoutes.add(size > 1 ? 0XFFFF6E26 : 0XFF686C6C);
     }
 
-    public void cancelButtonAction(){
-        mapPolyline.hidePolylines();
-        layout.startAnimation(Animations.exitAnimation);
-        layout.setVisibility(View.GONE);
-        navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
-        navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
-        navigationOptionsController.getMapWayPointController().deleteMarks();
-        isActive = false;
+    public MapPolyline getMapPolyline(){
+        return mapPolyline;
     }
 
     /**
@@ -106,7 +100,13 @@ public class InfoRouteController {
     private void setActionButtons(){
         isActive = false;
         cancelButton.setOnClickListener(v -> {
-            cancelButtonAction();
+            mapPolyline.hidePolylines();
+            layout.startAnimation(Animations.exitAnimation);
+            layout.setVisibility(View.GONE);
+            navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
+            navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
+            navigationOptionsController.getMapWayPointController().deleteMarks();
+            isActive = false;
         });
 
         buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,

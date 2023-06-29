@@ -55,6 +55,8 @@ public class NavigationOptionsController {
     private AlertDialog progressDialog;
     private ImageView reroutingButton;
     private LinearLayout reroutingLayout;
+    private MapPolyline mapPolyline;
+    private ConstraintLayout layoutInfo;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -103,6 +105,8 @@ public class NavigationOptionsController {
         transportationTypesContainer = activity.findViewById(R.id.transportationTypesContainer);
         reroutingLayout = activity.findViewById(R.id.reroutingLayout);
         reroutingButton = activity.findViewById(R.id.reloadTheWayButton);
+        mapPolyline = infoRouteController.getMapPolyline();
+        layoutInfo = infoRouteController.getLayout();
     }
 
     /**
@@ -344,7 +348,10 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     public void handleReloadButtonClick() {
-        infoRouteController.cancelButtonAction();
+        mapPolyline.hidePolylines();
+        layoutInfo.startAnimation(Animations.exitAnimation);
+        layoutInfo.setVisibility(View.GONE);
+        mapWayPointController.deleteMarks();
         if (isCurrentLocationSelected) {
             startPoint = CurrentLocationModel.getInstance().getLatLng();
             this.start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
