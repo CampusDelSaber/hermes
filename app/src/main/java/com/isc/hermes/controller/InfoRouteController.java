@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -87,6 +88,10 @@ public class InfoRouteController {
         colorsInfoRoutes.add(size > 1 ? 0XFF686C6C : 0XFFFF6E26);
         colorsInfoRoutes.add(0xFF2350A3);
         colorsInfoRoutes.add(size > 1 ? 0XFFFF6E26 : 0XFF686C6C);
+    }
+
+    public MapPolyline getMapPolyline(){
+        return mapPolyline;
     }
 
     /**

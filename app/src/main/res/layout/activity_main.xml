@@ -120,25 +120,55 @@
             mapbox:mapbox_cameraTargetLng="-66.1568"
             mapbox:mapbox_cameraZoom="12">
 
-        </com.mapbox.mapboxsdk.maps.MapView>
-        <LinearLayout
-            android:paddingTop="65dp"
-            android:layout_width="409dp"
-            android:layout_height="669dp"
-            android:orientation="horizontal"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="61dp"
-            tools:ignore="MissingConstraints">
-            <include
-                layout="@layout/filters_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <LinearLayout
+            <LinearLayout
+                android:id="@+id/reroutingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/rerouting_button_background"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="30dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/reloadTheWayButton"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/reload_icon" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/rerouting_message"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="10dp"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    />
+            </LinearLayout>
+
+    </com.mapbox.mapboxsdk.maps.MapView>
+    <LinearLayout
+        android:paddingTop="65dp"
+        android:layout_width="409dp"
+        android:layout_height="669dp"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="61dp"
+        tools:ignore="MissingConstraints">
+        <include
+            layout="@layout/filters_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/viewIncidentsForm"
