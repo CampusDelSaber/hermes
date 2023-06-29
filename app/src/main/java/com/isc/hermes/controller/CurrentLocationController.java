@@ -44,10 +44,9 @@ public class CurrentLocationController {
         mapboxMap = MapManager.getInstance().getMapboxMap();
         locationEngine = LocationEngineProvider.getBestLocationEngine(activity);
         currentLocationModel = CurrentLocationModel.getInstance();
+        locationListeningCallback = new LocationListeningCallback(activity);
         this.activity = activity;
         locationPermissionsController = new LocationPermissionsController(activity);
-        locationListeningCallback = new LocationListeningCallback(
-                activity, currentLocationModel, locationEngine, locationPermissionsController);
     }
 
     /**
@@ -72,7 +71,6 @@ public class CurrentLocationController {
         ImageButton locationButton = activity.findViewById(R.id.locationButton);
         locationButton.setOnClickListener(v -> {
             mapboxMap = MapManager.getInstance().getMapboxMap();
-            System.out.println(mapboxMap);
             enableLocationComponent();
         });
     }

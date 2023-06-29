@@ -65,3 +65,4 @@ public class CurrentLocationModel {
         return currentLocationModel;
     }
 }
+
