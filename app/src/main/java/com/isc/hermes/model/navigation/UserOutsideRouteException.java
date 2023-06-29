@@ -1,12 +1,10 @@
+package com.isc.hermes.model.navigation;
+import android.annotation.SuppressLint;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 /**
  * This exception is thrown when a user is outside the boundaries of a route segment.
  */
-package com.isc.hermes.model.navigation;
-
-import android.annotation.SuppressLint;
-
-import com.mapbox.mapboxsdk.geometry.LatLng;
-
 public class UserOutsideRouteException extends RuntimeException {
     /**
      * Constructs a new UserOutsideRouteException with the specified segment record and user location.
