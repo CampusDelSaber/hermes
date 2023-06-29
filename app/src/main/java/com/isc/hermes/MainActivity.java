@@ -34,6 +34,7 @@ import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.model.WayPoint;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private AccountInfoManager accountInfoManager;
     private ImageButton buttonClear;
     private final String resetSearchText = "Search...";
 
@@ -76,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        accountInfoManager = new AccountInfoManager();
+        accountInfoManager.updateUserInformationLocal();
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
