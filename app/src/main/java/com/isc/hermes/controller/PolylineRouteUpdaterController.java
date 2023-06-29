@@ -17,7 +17,7 @@ import java.util.TimerTask;
  * @see NavigationOptionsController
  * @see MapPolyline
  */
-public class PolylineRouteUpdater {
+public class PolylineRouteUpdaterController {
     private final MapPolyline mapPolyline;
     private final Handler handler;
     private LatLng startPoint;
@@ -27,12 +27,11 @@ public class PolylineRouteUpdater {
     /**
      * Constructs a PolylineDrawer object.
      *
-     * @param startPoint          The starting point of the polyline. If null, the current location is used.
-     * @param destination         The destination point of the polyline.
-     * @param mapPolyline         The MapPolyline object for drawing the polyline on the map.
+     * @param startPoint  The starting point of the polyline. If null, the current location is used.
+     * @param destination The destination point of the polyline.
+     * @param mapPolyline The MapPolyline object for drawing the polyline on the map.
      */
-    public PolylineRouteUpdater(LatLng startPoint, LatLng destination,
-                                MapPolyline mapPolyline) {
+    public PolylineRouteUpdaterController(LatLng startPoint, LatLng destination, MapPolyline mapPolyline) {
         handler = new Handler(Looper.getMainLooper());
         this.startPoint = startPoint == null ? CurrentLocationModel.getInstance().getLatLng() : startPoint;
         this.finalPoint = CurrentLocationModel.getInstance().getLatLng();
