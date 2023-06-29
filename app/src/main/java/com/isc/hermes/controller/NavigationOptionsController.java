@@ -118,7 +118,7 @@ public class NavigationOptionsController {
             if (i != 0) button.setAlpha(0.3f);
             button.setOnClickListener(buttonClickListener);
         }
-        reroutingButton.setOnClickListener(v -> handleReloadButtonClick());
+        reroutingLayout.setOnClickListener(v -> handleReloadButtonClick());
 
     }
 
