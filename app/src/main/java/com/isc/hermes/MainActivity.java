@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
+        setTheUserInformationInTheDropMenu();
     }
 
 
