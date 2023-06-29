@@ -1,9 +1,11 @@
 package com.isc.hermes.controller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -38,6 +40,7 @@ public class InfoRouteController {
    private NavigationOptionsController navigationOptionsController;
    private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
+    private ImageView hideButton;
 
 
     /**
@@ -66,6 +69,7 @@ public class InfoRouteController {
      */
     private void setViewComponents(Context context){
         Activity activity = ((AppCompatActivity) context);
+        hideButton = activity.findViewById(R.id.hideNavigationStepsButton);
         layout = activity.findViewById(R.id.distance_time_view);
         cancelButton =  activity.findViewById(R.id.cancel_navigation_button);
         timeText = activity.findViewById(R.id.timeText);
@@ -76,6 +80,7 @@ public class InfoRouteController {
         buttonRouteB.setAlpha(0.3f);
         buttonRouteC.setAlpha(0.3f);
         startNavigationButton = activity.findViewById(R.id.startNavegationButton);
+
     }
 
     /**
@@ -94,15 +99,7 @@ public class InfoRouteController {
      */
     private void setActionButtons(){
         isActive = false;
-        cancelButton.setOnClickListener(v -> {
-            mapPolyline.hidePolylines();
-            layout.startAnimation(Animations.exitAnimation);
-            layout.setVisibility(View.GONE);
-            navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
-            navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
-            navigationOptionsController.getMapWayPointController().deleteMarks();
-            isActive = false;
-        });
+        setFunctionCancelButton();
 
         buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
                 true, false, false));
@@ -111,9 +108,37 @@ public class InfoRouteController {
         buttonRouteC.setOnClickListener(v -> setRouteInformation(0,
                 false, false, true));
 
+        setFunctionStarNavButton();
+        asignarFuncionOcultar();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setFunctionCancelButton(){
+        cancelButton.setOnClickListener(v -> {
+            mapPolyline.hidePolylines();
+            layout.startAnimation(Animations.exitAnimation);
+            layout.setVisibility(View.GONE);
+            navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
+            navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
+            navigationOptionsController.getMapWayPointController().deleteMarks();
+            startNavigationButton.setText("START NAVIGATION");
+            isActive = false;
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setFunctionStarNavButton(){
         startNavigationButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
+            startNavigationButton.setText("Navigation Steps");
+        });
+    }
+
+    private void asignarFuncionOcultar(){
+        hideButton.setOnClickListener(v -> {
+            navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
+            navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
         });
     }
 
@@ -126,6 +151,10 @@ public class InfoRouteController {
         this.isRouteBSelected = isRouteBSelected;
         this.isRouteCSelected = isRouteCSelected;
         updateButtonVisibility();
+    }
+
+    private void saveRouteSelected(JSONObject route){
+
     }
 
     /**
