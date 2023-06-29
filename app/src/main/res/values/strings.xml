@@ -19,8 +19,10 @@
     <string name="userEmail"> sebastian.faustino@example.com</string>
     <string name="enterCodeLabel"> Please enter the code here</string>
     <string name="resendLabel"> did not get an email ? Resend</string>
-    <string name="verifyEmailTittle">Verify admin user request </string>
-    <string name="emailVerificationSent"> An email with verification code has been sent to</string>
+    <string name="verifyEmailTittle"> Administrator Account Request </string>
+    <string name="emailVerificationSent"> Your request is being processed, please check your email, until the request is approved. </string>
+    <string name="VerifyAccount"> Verify Account.</string>
+    <string name="GeneralAccount"> Continue General Account.</string>
     <string name="log_out_text">Log out</string>
     <string name="account_text">Account</string>
     <string name="delete_account_question_text">Are you sure you want to delete your account?</string>
