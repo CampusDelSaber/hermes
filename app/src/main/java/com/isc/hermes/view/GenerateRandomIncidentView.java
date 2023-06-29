@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.model.Radium;
+import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.UserRepository;
 
 /**
  * This class is used to initialize the view to select how to generate incidents.
@@ -53,7 +55,9 @@ public class GenerateRandomIncidentView {
      * Shows the screen with its functionality to generate incidents
      */
     private void showFunctionalityGeneratingIncidents() {
-        IncidentViewNavigation.getInstance(activity)
+        if (!UserRepository.getInstance().getUserContained().getTypeUser().equals(
+                TypeUser.GENERAL.getTypeUser()))
+            IncidentViewNavigation.getInstance(activity)
                 .initIncidentButtonFunctionality(generateIncidentButton, layout);
     }
 

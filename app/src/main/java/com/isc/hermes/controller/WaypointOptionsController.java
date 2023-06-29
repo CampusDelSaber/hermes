@@ -9,6 +9,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapManager;
@@ -136,7 +138,8 @@ public class WaypointOptionsController {
      * @param point is the coordinate point market.
      */
     public void setReportIncidentStatus(LatLng point) {
-        if (!streetValidator.hasStreetContext(point))
+        if (!streetValidator.hasStreetContext(point) || UserRepository.getInstance().
+                getUserContained().getTypeUser().equals(TypeUser.GENERAL.getTypeUser()))
             reportIncidentsView.setVisibility(View.GONE);
         else reportIncidentsView.setVisibility(View.VISIBLE);
     }

@@ -2,6 +2,7 @@ package com.isc.hermes;
 
 import static com.mongodb.assertions.Assertions.assertNotNull;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,19 +59,23 @@ import com.mapbox.mapboxsdk.maps.Style;
  */
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
-    public static Context context;
-    private MapView mapView;
-    private String mapStyle;
+    private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private CurrentLocationController currentLocationController;
     private FilterCategoriesController filterCategoriesController;
-    private TextView searchView;
-    private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private ViewIncidentsController viewIncidentsController;
     private MarkerManager markerManager;
     private ActivityResultLauncher<Intent> launcher;
-    private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private TextView searchView;
+
+    private boolean visibilityMenu;
+
+    @SuppressLint("StaticFieldLeak")
+    public static Context context;
     private Toolbar toolbar;
+    private MapView mapView;
+    private String mapStyle;
     private AccountInfoManager accountInfoManager;
     private ImageButton buttonClear;
     private final String resetSearchText = "Search...";
@@ -106,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
     }
+
 
     /**
      * Sets up the search view and clear button.
