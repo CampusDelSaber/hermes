@@ -95,10 +95,20 @@ public class MapPolygonController implements MapClickConfigurationController {
         }
     }
 
+    /**
+     * Gets the MapboxMap object used in the current context.
+     *
+     * @return The MapboxMap object used in the context.
+     */
     public MapboxMap getMapboxMap() {
         return mapboxMap;
     }
 
+    /**
+     * Gets a list of points that represent a polygon.
+     *
+     * @return A list of points that represent a polygon.
+     */
     public List<Point> getPolygonPoints() {
         return polygonPoints;
     }
@@ -122,6 +132,13 @@ public class MapPolygonController implements MapClickConfigurationController {
         return stringBuilder.toString();
     }
 
+    /**
+     * Returns the singleton instance of MapPolygonController.
+     *
+     * @param mapboxMap the MapboxMap
+     * @param context the Context
+     * @return The MapPolygonController instance.
+     */
     public static MapPolygonController getInstance(MapboxMap mapboxMap, Context context ) {
         if (instance == null) instance = new MapPolygonController(mapboxMap, context);
         return instance;

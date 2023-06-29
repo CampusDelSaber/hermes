@@ -30,7 +30,7 @@ public class GenerateRandomIncidentView {
         numberIncidentsEdit = activity.findViewById(R.id.numberIncidentsElement);
         generateIncidentButton = activity.findViewById(R.id.generateIncidentsButton);
         initSpinner();
-        initGenerateIncidentButtonFunctionality();
+        showFunctionalityGeneratingIncidents();
         initButtons();
     }
 
@@ -49,7 +49,10 @@ public class GenerateRandomIncidentView {
         spinner.setAdapter(adapter);
     }
 
-    private void initGenerateIncidentButtonFunctionality() {
+    /**
+     * Shows the screen with its functionality to generate incidents
+     */
+    private void showFunctionalityGeneratingIncidents() {
         IncidentViewNavigation.getInstance(activity)
                 .initIncidentButtonFunctionality(generateIncidentButton, layout);
     }

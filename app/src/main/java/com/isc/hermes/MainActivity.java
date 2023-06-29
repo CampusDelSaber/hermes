@@ -499,8 +499,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+    /**
+     * Accept natural disasters and upload a corresponding incident.
+     *
+     * Generates a JSON for the natural disaster incident and sends it to the server.
+     */
     public void acceptNaturalDisasters(){
-        String JsonString = IncidentsUploader.getInstance().generateJsonIncident("Natural Disaster","Natural Disaster","2023-06-22T19:40:47.955Z", "2023-06-22T19:40:47.955Z" , GeometryType.POLYGON.getName(),MapPolygonController.getInstance(MapManager.getInstance().getMapboxMap(), context).getPolygonPoints().toString());
+        String JsonString = IncidentsUploader.getInstance()
+                .generateJsonIncident(
+                        "Natural Disaster",
+                        "Natural Disaster",
+                        "2023-06-22T19:40:47.955Z",
+                        "2023-06-22T19:40:47.955Z" ,
+                        GeometryType.POLYGON.getName(),
+                        MapPolygonController.getInstance(
+                                MapManager.getInstance().getMapboxMap(), context)
+                                .getPolygonPoints().toString()
+                );
         IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 }

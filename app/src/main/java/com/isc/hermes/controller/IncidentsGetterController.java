@@ -55,6 +55,11 @@ public class IncidentsGetterController {
         loadNearIncidents(context);
     }
 
+    /**
+     * Load incidents according to how you scroll.
+     *
+     * @param context the context.
+     **/
     private void loadNearIncidents(Context context){
         executorService.execute(() -> {
             LatLng cameraFocus = mapboxMap.getCameraPosition().target;

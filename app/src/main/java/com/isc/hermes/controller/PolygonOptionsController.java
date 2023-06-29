@@ -32,6 +32,11 @@ public class PolygonOptionsController {
     private final Context context;
     private MapPolygonController polygonController;
 
+    /**
+     * This is the constructor method.
+     * @param context the context.
+     * @param polygonController the polygonController.
+     */
     public PolygonOptionsController(Context context, MapPolygonController polygonController){
         this.context = context;
         polygonOptions = ((AppCompatActivity) context).findViewById(R.id.natural_disaster_form);
@@ -91,9 +96,13 @@ public class PolygonOptionsController {
         };
         task.execute();
     }
+
+    /**
+     * This method gives the messages to handle the upload response.
+     *
+     * @param responseCode the Integer.
+     */
     private void handleUploadResponse(Integer responseCode) {
-        System.out.println(responseCode);
-        System.out.println("EL PEPEPE");
         if (responseCode == HttpURLConnection.HTTP_OK) {
             Toast.makeText(context, R.string.natural_disaster_uploaded, Toast.LENGTH_SHORT).show();
 
@@ -102,6 +111,13 @@ public class PolygonOptionsController {
         }
     }
 
+    /**
+     * Uploads a natural disaster data entry to the database.
+     *
+     * @return An Integer representing the status of the upload.
+     *         It could be a unique identifier for the uploaded data, or a status
+     *         code indicating success or failure.
+     */
     private Integer uploadNaturalDisasterDataBase(){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
