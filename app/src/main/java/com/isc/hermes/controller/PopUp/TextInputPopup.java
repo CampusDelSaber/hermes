@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.appcompat.app.AlertDialog;
-
 import com.isc.hermes.R;
 import com.isc.hermes.utils.regex.InputValidator;
 
@@ -16,11 +14,12 @@ import com.isc.hermes.utils.regex.InputValidator;
  * It provides methods to create, display, and handle the dialog.
  */
 public class TextInputPopup {
-    private AlertDialog alertDialog;
     private final DialogListener dialogListener;
-    private Button ok;
-    private Button close;
+    private AlertDialog alertDialog;
     private EditText inputText;
+    private Button close;
+    private Button ok;
+
 
 
     /**
@@ -84,11 +83,8 @@ public class TextInputPopup {
      * @param text The valid input text.
      */
     private void handleValidInput(String text) {
-        if (dialogListener != null) {
-            dialogListener.dialogClosed(text);
-        } else {
-            closePopup();
-        }
+        if (dialogListener != null) dialogListener.dialogClosed(text);
+        else closePopup();
     }
 
     /**

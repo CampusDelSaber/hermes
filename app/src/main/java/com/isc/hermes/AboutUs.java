@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -14,14 +15,18 @@ import android.widget.TextView;
  */
 public class AboutUs extends AppCompatActivity {
 
+    /**
+     * This method is used to create the components to start the activity.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
-
-        actionButtonBack();
         creationLabelLine();
-
     }
 
     /**
@@ -41,7 +46,7 @@ public class AboutUs extends AppCompatActivity {
      * @param title source text.
      */
     private void creationLineSpan(@IdRes int id, String title){
-        TextView textView1 = (TextView) findViewById(id);
+        TextView textView1 = findViewById(id);
         SpannableString textU = new SpannableString(title);
         textU.setSpan(new UnderlineSpan(), 0, textU.length(), 0);
         textView1.setText(textU);
@@ -51,9 +56,8 @@ public class AboutUs extends AppCompatActivity {
      *  It is the action of returning to sing In, to get out of the about us.
      *  You will find the button, and by clicking it you can go back.
      */
-    private void actionButtonBack(){
-        ImageButton btn=findViewById(R.id.imageButtonBack);
-        btn.setOnClickListener(v -> startActivity(
-                new Intent(AboutUs.this,SignUpActivityView.class)));
+    public void goToPrincipalView(View view) {
+        Intent intent = new Intent(AboutUs.this,SignUpActivityView.class);
+        startActivity(intent);
     }
 }

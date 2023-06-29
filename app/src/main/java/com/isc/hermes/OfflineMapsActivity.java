@@ -5,6 +5,7 @@ import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LONGITUDE;
 import static com.isc.hermes.ActivitySelectRegion.ZOOM_LEVEL;
 import static com.isc.hermes.utils.offline.OfflineUtils.JSON_FIELD_REGION_NAME;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -193,6 +194,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
      * @param nameItem The name of the item.
      * @return {@code true} if the menu item is handled, {@code false} otherwise.
      */
+    @SuppressLint("NonConstantResourceId")
     public boolean showPopupMenu(MenuItem item, String nameItem) {
         switch (item.getItemId()) {
             case RENAME:

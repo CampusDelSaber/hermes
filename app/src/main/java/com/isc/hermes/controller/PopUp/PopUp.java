@@ -16,14 +16,15 @@ import com.isc.hermes.controller.authentication.GoogleAuthentication;
  * providing functionality for displaying a pop-up dialog in an Android application.
  */
 public abstract class PopUp extends Dialog implements View.OnClickListener {
-    protected boolean status;
-    protected Button confirmButton;
-    protected Button betterNotButton;
-    protected TextView deleteAccountText;
-    protected TextView warningText;
-    protected ImageView iconMessagePopUp;
+
     protected GoogleAuthentication googleAuthentication;
+    protected TextView deleteAccountText;
+    protected ImageView iconMessagePopUp;
+    protected Button betterNotButton;
     protected final Activity activity;
+    protected Button confirmButton;
+    protected TextView warningText;
+    protected boolean status;
 
     /**
      * Constructs a Warning Popup with the provided activity and pop-up style.
@@ -80,6 +81,11 @@ public abstract class PopUp extends Dialog implements View.OnClickListener {
         refuseButton.setOnClickListener(this);
     }
 
+    /**
+     * This method return the status of pop up.
+     *
+     * @return the status of pop up
+     */
     public boolean isStatus() {
         return status;
     }
