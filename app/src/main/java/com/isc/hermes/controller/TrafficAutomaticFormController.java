@@ -6,23 +6,32 @@ import com.isc.hermes.R;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.model.incidents.GeometryType;
+
+
 import java.net.HttpURLConnection;
 
 /**
  * This is the controller class for "waypoints_options_fragment" view.
  */
-public class TrafficAutomaticFormController extends InfoRouteController{
+public class TrafficAutomaticFormController {
     private final Context context;
     private final MapWayPointController mapController;
+    private InfoRouteController infoRouteController ;
+
+
+
+
     /**
      * This is the constructor method. Init all the necessary components.
      *
      * @param context Is the context application.
      * @param mapController Is the controller of the map.
      */
-    public TrafficAutomaticFormController(Context context, MapWayPointController mapController) {
+    public TrafficAutomaticFormController(Context context, MapWayPointController mapController,NavigationOptionsController navigationOptionsController) {
         this.context = context;
         this.mapController = mapController;
+        this.infoRouteController = InfoRouteController.getInstance(context,  navigationOptionsController);
+
     }
 
     /**
@@ -84,12 +93,13 @@ public class TrafficAutomaticFormController extends InfoRouteController{
         }
         return trafficLevel;
     }
+
     /**
      This method retrieves the selected Traffic time from the number picker and time spinner.
      @return The selected Traffic time as a  string.
      */
     public String getTrafficTime(){
-        int selectedTrafficTime = calculateEstimateTime(getTimeEstimate(),getElapsedSeconds());
+        int selectedTrafficTime = calculateEstimateTime(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds());
 
         return selectedTrafficTime+ " " + "Minutes";
     }
@@ -104,7 +114,7 @@ public class TrafficAutomaticFormController extends InfoRouteController{
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getTrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(getTimeEstimate(),getElapsedSeconds()),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
+        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds()),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
         return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
 

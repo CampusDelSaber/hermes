@@ -43,10 +43,8 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
-
-    private int timeEstimate;
     private int elapsedSeconds;
-
+    private int timeEstimate;
 
     /**
      * Constructs a new InfoRouteController object.
@@ -64,13 +62,9 @@ public class InfoRouteController {
         isRouteBSelected = false;
         isRouteCSelected = false;
         jsonObjects = new ArrayList<>();
-        timeEstimate = 0;
-        elapsedSeconds = 0;
         setActionButtons();
     }
-
-    public InfoRouteController() {
-    }
+    
 
     /**
      * Retrieves an instance of InfoRouteController.
@@ -152,9 +146,12 @@ public class InfoRouteController {
             long endTime = System.currentTimeMillis();
             long elapsedTime = endTime - startTime;
 
-            elapsedSeconds = (int) (elapsedTime / 1000);
+            int elapsedSeconds2 = (int) (elapsedTime / 1000);
+            setElapsedSeconds(elapsedSeconds2);
         });
     }
+
+
 
     /**
      * This method shows which route is selected
@@ -315,7 +312,11 @@ public class InfoRouteController {
         }
         if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
         else timeText.setText(timeInMinutes + " min");
-        timeEstimate = timeInMinutes;
+    }
+
+
+    public void setTimeEstimate(int timeEstimate) {
+        this.timeEstimate = timeEstimate;
     }
 
     public int getTimeEstimate() {
@@ -324,5 +325,9 @@ public class InfoRouteController {
 
     public int getElapsedSeconds() {
         return elapsedSeconds;
+    }
+
+    public void setElapsedSeconds(int elapsedSeconds) {
+        this.elapsedSeconds = elapsedSeconds;
     }
 }

@@ -1,6 +1,8 @@
 package com.isc.hermes.model.navigation;
 
 import com.isc.hermes.controller.InfoRouteController;
+import com.isc.hermes.controller.TrafficAutomaticFormController;
+import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.location.LocationIntervals;
 
 import org.json.JSONException;
@@ -13,7 +15,6 @@ public class RouteEstimatesManager {
     private final UserRouteTracker userRouteTracker;
     private final InfoRouteController infoRouteController;
     private final TransportationType transportationType;
-
     private double totalEstimatedDistance;
 
     /**
@@ -29,6 +30,8 @@ public class RouteEstimatesManager {
         this.transportationType = transportationType;
         setTimeDistanceEstimates(userRouteTracker.getRouteInformation());
     }
+
+
 
     /**
      * Starts updating the estimates for arrival time and distance.
@@ -68,7 +71,9 @@ public class RouteEstimatesManager {
         int totalEstimatedArrivalTime = (int) Math.ceil(((totalEstimatedDistance / transportationType.getVelocity()) * 60));
 
         infoRouteController.setEstimatedTimeInfo(totalEstimatedArrivalTime);
+        infoRouteController.setTimeEstimate(totalEstimatedArrivalTime);
     }
+
 
     /**
      * Updates the estimated arrival distance based on the traveled distance.
@@ -79,4 +84,5 @@ public class RouteEstimatesManager {
         this.totalEstimatedDistance = totalEstimatedDistance - traveledDistance;
         infoRouteController.setDistanceInfo(totalEstimatedDistance);
     }
+
 }

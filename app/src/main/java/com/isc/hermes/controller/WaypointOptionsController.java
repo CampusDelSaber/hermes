@@ -44,13 +44,12 @@ public class WaypointOptionsController {
      */
     public WaypointOptionsController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
-        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
         streetValidator = new StreetValidator();
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = new IncidentFormController(context, mapWayPointController);
         navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
-        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
+        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController, navigationOptionsFormController);
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);

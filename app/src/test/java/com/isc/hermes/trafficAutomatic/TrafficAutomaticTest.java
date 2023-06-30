@@ -31,7 +31,7 @@ public class TrafficAutomaticTest {
     Context context;
     DijkstraAlgorithm dijkstraAlgorithm;
     TrafficUploader trafficUploader ;
-    TrafficAutomaticFormController trafficAutomaticFormController = new TrafficAutomaticFormController(context,mapWayPointController);
+    TrafficAutomaticFormController trafficAutomaticFormController = new TrafficAutomaticFormController(context,mapWayPointController,null);
 
     @Before()
     public void setUp(){
