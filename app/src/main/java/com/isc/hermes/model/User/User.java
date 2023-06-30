@@ -14,7 +14,7 @@ public class User {
     private String typeUser;
     private String id;
     private boolean isAdministrator;
-    private boolean isRegistered;
+    private boolean isRegistered = true;
 
     /**
      * Constructs a User object with the specified email, path to the user's image, and ID.

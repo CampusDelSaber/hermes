@@ -185,6 +185,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
         Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
+            UserRepository.getInstance().getUserContained().setRegistered(true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
                         UserRepository.getInstance().getUserContained().getFullName(), UserRepository.getInstance().getUserContained().getUserName(),
@@ -234,15 +235,22 @@ public class EmailVerificationActivity extends AppCompatActivity {
      * @param view The View that triggered the method call.
      */
     public void continueVerification(View view) {
+        System.out.println("IS REGISTRED: " + UserRepository.getInstance().getUserContained().isRegistered());
+        System.out.println("IS ADMIN: " + UserRepository.getInstance().getUserContained().getTypeUser());
         System.out.println("2334");
-        if (!UserRepository.getInstance().getUserContained().isRegistered()){
-            System.out.println("edeed");
-            if (!UserRepository.getInstance().getUserContained().isAdministrator()){
-                addAdministratorUser();
-                System.out.println("666666");
-            }
-            else updateToAdministratorUser();
+        System.out.println("edeed");
+        System.out.println("USER UDPATE ====================================================================================================================================");
+        if (UserRepository.getInstance().getUserContained().isRegistered() && !UserRepository.getInstance().getUserContained().isAdministrator()){
+            updateToAdministratorUser();
+            System.out.println("666666");
+        }if (!UserRepository.getInstance().getUserContained().isRegistered()){
+            System.out.println("USER UDPATE ====================================================================================================================================");
+            addAdministratorUser();
         }
+        System.out.println("MAIN ACTIVITY================================================================================================");
+        System.out.println(UserRepository.getInstance().getUserContained().isRegistered());
+        System.out.println(UserRepository.getInstance().getUserContained().getTypeUser());
+        System.out.println("MAIN ACTIVITY================================================================================================");
     }
 
     /**

@@ -11,6 +11,7 @@ import com.isc.hermes.MainActivity;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
 import org.json.JSONException;
@@ -62,7 +63,8 @@ public class SignUpTransitionHandler {
         } else {
             loadUserDataInDB();
             intent = new Intent(packageContext, MainActivity.class);
-        } packageContext.startActivity(intent);
+        }
+        packageContext.startActivity(intent);
     }
 
     /**
