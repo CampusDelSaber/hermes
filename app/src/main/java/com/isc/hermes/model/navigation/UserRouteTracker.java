@@ -18,15 +18,14 @@ import timber.log.Timber;
  * The UserRouteTracker class tracks the user's route and provides information about the user's progress.
  */
 public class UserRouteTracker {
+    public static final int GEO_JSON_LATITUDE = 1;
+    private static final int GEO_JSON_LONGITUDE = 0;
     private final CoordinatesDistanceCalculator distanceCalculator;
     private final CurrentLocationModel currentLocation;
     private final ListIterator<RouteSegmentRecord> availableSegments;
     private LatLng destination;
     private RouteSegmentRecord currentRouteSegmentRecord;
     private JSONObject routeInformation;
-
-    public static final int GEO_JSON_LATITUDE = 1;
-    private static final int GEO_JSON_LONGITUDE = 0;
     private LatLng lastLocation;
 
     /**
@@ -153,15 +152,20 @@ public class UserRouteTracker {
     public JSONObject getRouteInformation() {
         return routeInformation;
     }
-    
-    public boolean hasUserMoved(){
+
+    /**
+     * Checks if the user has moved based on their current location compared to the last known location.
+     *
+     * @return true if the user has moved, false otherwise.
+     */
+    public boolean hasUserMoved() {
         LatLng userLocation = currentLocation.getLatLng();
         boolean hasUserMoved = NavigationTrackerTools.hasUserMoved(userLocation, lastLocation);
-        if (hasUserMoved){
+        if (hasUserMoved) {
             lastLocation = userLocation;
         }
 
         return hasUserMoved;
     }
-    
+
 }

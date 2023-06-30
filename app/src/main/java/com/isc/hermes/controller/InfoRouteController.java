@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,7 +43,7 @@ public class InfoRouteController {
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
 
-    private Thread thread;
+    private Thread liveEstimationsThread;
 
 
     /**
@@ -127,7 +126,7 @@ public class InfoRouteController {
             navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
             navigationOptionsController.getMapWayPointController().deleteMarks();
             isActive = false;
-            thread.interrupt();
+            liveEstimationsThread.interrupt();
         });
 
         buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
@@ -304,7 +303,12 @@ public class InfoRouteController {
         else timeText.setText(timeInMinutes + " min");
     }
 
-    public void setThread(Thread thread){
-        this.thread = thread;
+    /**
+     * Sets the thread used for the live estimations
+     *
+     * @param thread a Thread object
+     */
+    public void setLiveEstimationsThread(Thread thread){
+        this.liveEstimationsThread = thread;
     }
 }

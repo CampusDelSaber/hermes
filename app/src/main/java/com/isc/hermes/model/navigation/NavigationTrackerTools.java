@@ -44,7 +44,16 @@ public class NavigationTrackerTools {
         return isLowerThanHigherPoint && isHigherThanLowerPoint;
     }
 
-    public static boolean hasUserMoved(LatLng userLocation, LatLng lastLocation){
+    /**
+     * Determines if a user has moved based on the distance between their current location
+     * and their last known location.
+     *
+     * @param userLocation  The current location of the user.
+     * @param lastLocation  The last known location of the user.
+     * @return              {@code true} if the user has moved beyond the defined criteria,
+     *                      {@code false} otherwise.
+     */
+    public static boolean hasUserMoved(LatLng userLocation, LatLng lastLocation) {
         CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         double movement = distanceCalculator.calculateDistance(userLocation, lastLocation);
         return Double.compare(movement, USER_MOVED_CRITERIA) > 0;

@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
@@ -485,7 +484,7 @@ public class NavigationOptionsController {
                 () -> new RouteEstimatesManager(tracker, infoRouteController, transportationType).startUpdatingEstimations(),
                 "Estimation Thread");
         routeEstimationManagerThread.start();
-        infoRouteController.setThread(routeEstimationManagerThread);
+        infoRouteController.setLiveEstimationsThread(routeEstimationManagerThread);
     }
 
 }

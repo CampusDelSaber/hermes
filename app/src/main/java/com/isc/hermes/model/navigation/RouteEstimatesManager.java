@@ -82,7 +82,7 @@ public class RouteEstimatesManager {
      * @param traveledDistance The distance traveled by the user.
      */
     private void updateEstimatedArrivalDistance(double traveledDistance){
-        double left = totalEstimatedDistance - traveledDistance;
-        infoRouteController.setDistanceInfo(left);
+        double distanceLeft = totalEstimatedDistance - traveledDistance;
+        infoRouteController.setDistanceInfo(distanceLeft);
     }
 }
