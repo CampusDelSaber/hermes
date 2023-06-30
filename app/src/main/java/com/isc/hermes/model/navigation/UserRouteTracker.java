@@ -1,5 +1,7 @@
 package com.isc.hermes.model.navigation;
 
+import android.widget.Toast;
+
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -94,7 +96,7 @@ public class UserRouteTracker {
                         ));
                     } else {
                         JSONArray dest = route.getJSONArray(i);
-                        destination = new LatLng(dest.getDouble(0), dest.getDouble(1));
+                        destination = new LatLng(dest.getDouble(1), dest.getDouble(0));
                         break;
                     }
                 }
