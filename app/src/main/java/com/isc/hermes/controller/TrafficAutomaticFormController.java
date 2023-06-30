@@ -11,10 +11,9 @@ import java.net.HttpURLConnection;
 /**
  * This is the controller class for "waypoints_options_fragment" view.
  */
-public class TrafficAutomaticFormController {
+public class TrafficAutomaticFormController extends InfoRouteController{
     private final Context context;
     private final MapWayPointController mapController;
-
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -90,7 +89,8 @@ public class TrafficAutomaticFormController {
      @return The selected Traffic time as a  string.
      */
     public String getTrafficTime(){
-        int selectedTrafficTime = calculateEstimateTime(20,50);
+        int selectedTrafficTime = calculateEstimateTime(getTimeEstimate(),getElapsedSeconds());
+
         return selectedTrafficTime+ " " + "Minutes";
     }
 
@@ -104,7 +104,7 @@ public class TrafficAutomaticFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getTrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(20,50),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
+        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(getTimeEstimate(),getElapsedSeconds()),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
         return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
 

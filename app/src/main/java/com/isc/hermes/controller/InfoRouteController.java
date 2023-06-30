@@ -69,6 +69,9 @@ public class InfoRouteController {
         setActionButtons();
     }
 
+    public InfoRouteController() {
+    }
+
     /**
      * Retrieves an instance of InfoRouteController.
      *
