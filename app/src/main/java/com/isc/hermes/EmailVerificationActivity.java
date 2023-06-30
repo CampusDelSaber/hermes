@@ -189,8 +189,13 @@ public class EmailVerificationActivity extends AppCompatActivity {
                 new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
                         UserRepository.getInstance().getUserContained().getFullName(), UserRepository.getInstance().getUserContained().getUserName(),
                         UserRepository.getInstance().getUserContained().getTypeUser(), UserRepository.getInstance().getUserContained().getPathImageUser());
-            verificationCodeUpdate(intent);
-        } else visualizedWarningPop();
+            VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
+            verificationCodesManager.updateVerificationCode(validator.getId(), false);
+            startActivity(intent);
+        } else {
+            changeColorCodeUser();
+            warningPopUp.show();
+        }
     }
 
     /**
@@ -204,8 +209,13 @@ public class EmailVerificationActivity extends AppCompatActivity {
         if (validator.isCorrect(code)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 new AccountInfoManager().editUser(UserRepository.getInstance().getUserContained());
-            verificationCodeUpdate(intent);
-        } else visualizedWarningPop();
+            VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
+            verificationCodesManager.updateVerificationCode(validator.getId(), false);
+            startActivity(intent);
+        } else {
+            changeColorCodeUser();
+            warningPopUp.show();
+        }
     }
 
     /**
@@ -234,15 +244,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
      * @param view The View that triggered the method call.
      */
     public void continueVerification(View view) {
-        System.out.println("2334");
-        if (!UserRepository.getInstance().getUserContained().isRegistered()){
-            System.out.println("edeed");
-            if (!UserRepository.getInstance().getUserContained().isAdministrator()){
-                addAdministratorUser();
-                System.out.println("666666");
-            }
-            else updateToAdministratorUser();
-        }
+        if (!UserRepository.getInstance().getUserContained().isRegistered()) addAdministratorUser();
+        else updateToAdministratorUser();
     }
 
     /**

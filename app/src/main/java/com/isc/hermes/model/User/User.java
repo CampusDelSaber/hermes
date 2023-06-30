@@ -13,7 +13,7 @@ public class User {
     private String pathImageUser;
     private String typeUser;
     private String id;
-    private boolean isAdministrator;
+    //private boolean isAdministrator;
     private boolean isRegistered;
 
     /**
@@ -189,8 +189,8 @@ public class User {
     /**
      * Sets the registration status of the object.
      *
-     * @param administrator the registration status to be set
-     */
+     *
+
     public void setAdministrator(boolean administrator) {
         isAdministrator = administrator;
     }
@@ -199,10 +199,10 @@ public class User {
      * Returns the registration status of the object.
      *
      * @return isAdministrator true if the object is registered, false otherwise
-     */
+
     public boolean isAdministrator() {
         return isAdministrator;
-    }
+    }*/
     public boolean isRegistered() {
         return isRegistered;
     }
@@ -211,7 +211,7 @@ public class User {
         isRegistered = registered;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return "User{" +
                 "fullName='" + fullName + '\'' +
@@ -223,5 +223,5 @@ public class User {
                 ", isAdministrator=" + isAdministrator +
                 ", isRegistered=" + isRegistered +
                 '}';
-    }
+    }*/
 }

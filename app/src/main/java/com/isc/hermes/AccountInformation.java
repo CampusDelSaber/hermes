@@ -12,13 +12,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
-import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
 import com.isc.hermes.controller.Utiils.ImageUtil;
+
 import java.io.IOException;
-import com.isc.hermes.model.User.TypeUser;
+
+
+import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.SaveProfileImage;
 import com.isc.hermes.model.User.UserRepository;
@@ -34,9 +37,9 @@ public class AccountInformation extends AppCompatActivity {
     private AutoCompleteTextView textFieldFullName;
     private AutoCompleteTextView comboBoxField;
     private AutoCompleteTextView textFieldEmail;
-    private PopUp popUpDialogDelete;
     private ImageView imageView;
     private PopUpOverwriteInformationAccount popUpDialogEdit;
+    private PopUp popUpDialogDelete;
     private static final int PICK_IMAGE_REQUEST = 1;
     private SaveProfileImage saveProfileImage;
     private boolean isModifiable;
@@ -49,8 +52,8 @@ public class AccountInformation extends AppCompatActivity {
      * @return The generated AutoCompleteTextView for the combo box.
      */
     private AutoCompleteTextView generateComponentsToComboBox() {
-        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item,
-                TypeUser.getArrayTypeUsers());
+        String[] items = {"Administrator", "General"};
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, items);
         comboBoxField.setAdapter(adapterItems);
         return comboBoxField;
     }
@@ -73,8 +76,9 @@ public class AccountInformation extends AppCompatActivity {
      * Sets the user's username, full name, email, and type in their respective text fields.
      */
     private void updateComponentsByUserInformation() {
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
-        accountInfoManager.updateUserInformationLocal();
+        //no se actualiza en la pantalla y genera 2 cuentas general y administrador.
+        //AccountInfoManager accountInfoManager = new AccountInfoManager();
+        //accountInfoManager.updateUserInformationLocal();
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
                     UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);
@@ -130,7 +134,7 @@ public class AccountInformation extends AppCompatActivity {
      */
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
+        //intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
@@ -147,6 +151,7 @@ public class AccountInformation extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             saveProfileImage.saveProfileImage(selectedImageUri, AccountInformation.this);
+
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
@@ -164,8 +169,9 @@ public class AccountInformation extends AppCompatActivity {
         buttonSaveInformation.setVisibility(View.VISIBLE);
         verifyAdministratorUser();
         textFieldFullName.setEnabled(true);
+        //comboBoxField.setEnabled(true);
         textFieldUserName.setEnabled(true);
-        buttonUploadImage.setVisibility(View.VISIBLE);
+        //buttonUploadImage.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -177,11 +183,6 @@ public class AccountInformation extends AppCompatActivity {
         UserRepository.getInstance().getUserContained().setFullName(String.valueOf(textFieldFullName.getText()));
     }
 
-    /**
-     * Verifies if the user is an administrator user and performs corresponding actions.
-     * The user is not an administrator, the comboBoxField is enabled.
-     * The user is an administrator, the comboBoxField is set to display the user's type.
-     */
     private void verifyAdministratorUser() {
         if (!UserRepository.getInstance().getUserContained().getTypeUser().
                 equals("Administrator")) comboBoxField.setEnabled(true);
@@ -196,9 +197,11 @@ public class AccountInformation extends AppCompatActivity {
      */
     public void saveAccountInformationAction(View view) {
         updateInformationUser();
-        popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField, buttonUploadImage);
+        popUpDialogEdit.setInformationToAbelEdit(buttonSaveInformation, textFieldFullName,
+                textFieldUserName, comboBoxField);
         popUpDialogEdit.show();
+        //popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
+        //                              textFieldUserName, comboBoxField, buttonUploadImage);
     }
 
     /**
@@ -217,9 +220,9 @@ public class AccountInformation extends AppCompatActivity {
      */
     private void  assignValuesToComponentsView() {
         isModifiable = UserRepository.getInstance().getUserContained().getTypeUser().equals("Administrator");
-        UserRepository.getInstance().getUserContained().setAdministrator(true);
+        UserRepository.getInstance().getUserContained().setRegistered(true);
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
-        buttonUploadImage = findViewById(R.id.buttonUploadImage);
+        //buttonUploadImage = findViewById(R.id.buttonUploadImage);
         imageView = findViewById(R.id.imageUpload);
         comboBoxField = findViewById(R.id.textFieldUserTypeUpdate);
         textFieldFullName = findViewById(R.id.textFieldFullName);
@@ -229,5 +232,6 @@ public class AccountInformation extends AppCompatActivity {
         textFieldUserName.setEnabled(false);
         comboBoxField.setEnabled(false);
         saveProfileImage = new SaveProfileImage();
+
     }
 }

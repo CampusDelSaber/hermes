@@ -66,9 +66,9 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * @return The generated AutoCompleteTextView for the combo box.
      */
     private AutoCompleteTextView generateComponentsToComboBox() {
+        String[] items = {"Administrator", "General"};
         AutoCompleteTextView autoCompleteText = findViewById(R.id.textFieldUserType);
-        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item,
-                TypeUser.getArrayTypeUsers());
+        ArrayAdapter<String> adapterItems = new ArrayAdapter<>(this, R.layout.combo_box_item, items);
         autoCompleteText.setAdapter(adapterItems);
         return autoCompleteText;
     }
@@ -96,7 +96,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private void generateActionToButtonSignUp() {
         buttonRegister.setOnClickListener(v -> {
             if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
-                UserRepository.getInstance().getUserContained().setAdministrator(false);
+                UserRepository.getInstance().getUserContained().setRegistered(false);
                 new  SignUpTransitionHandler().transitionBasedOnRole(this);
             } else comboBoxTextField.setHelperText("Required");
         });
