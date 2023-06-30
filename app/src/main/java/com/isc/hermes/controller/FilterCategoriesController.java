@@ -1,6 +1,5 @@
 package com.isc.hermes.controller;
 
-import android.app.Activity;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -109,7 +108,9 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     @Override
     public void onLocationCategoryClick(CategoryFilter locationCategory) {
-        searchPlacesByTag(locationCategory.getNameCategory());
+        searchPlacesByTag(locationCategory.getNameCategory(),
+                CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLatitude(),
+                CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLatitude());
     }
 
     /**
@@ -117,11 +118,14 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      *
      * @param tag the tag to search for
      */
-    private void searchPlacesByTag(String tag) {
+    private void searchPlacesByTag(String tag, double latitude, double longitude) {
+        Point currentUserLocation = Point.fromLngLat(longitude, latitude);
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken(activity.getString(R.string.access_token))
                 .query(tag)
                 .geocodingTypes(GeocodingCriteria.TYPE_POI)
+                .proximity(currentUserLocation)
+                .limit(10)
                 .build();
 
         mapboxGeocoding.enqueueCall(new Callback<>() {
