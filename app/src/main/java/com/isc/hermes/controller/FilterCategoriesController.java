@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.isc.hermes.R;
 import com.isc.hermes.SpacingItemDecoration;
 import com.isc.hermes.model.CategoryFilter;
@@ -21,6 +22,7 @@ import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,6 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     private RecyclerView locationCategoriesRecyclerView;
     private CategoryFilterAdapter locationCategoryAdapter;
     private String lastClickedCategory = "";
-
     private boolean isMarkersShown = false;
 
     /**
@@ -95,6 +96,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
 
     /**
      * Generates the categories locations
+     *
      * @return the list of categories
      */
     private List<CategoryFilter> generateLocationCategories() {
@@ -109,6 +111,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
 
     /**
      * Shows the places on the map.
+     *
      * @param locationCategory the category of the places to show
      */
     @Override
@@ -117,6 +120,12 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
         addAndRemoveMarkets(locationCategory, center);
     }
 
+    /**
+     * Shows or removes the places on the map.
+     *
+     * @param locationCategory the category of the places to show
+     * @param center           the center of the map
+     */
     private void addAndRemoveMarkets(CategoryFilter locationCategory, LatLng center) {
         if (isMarkersShown && lastClickedCategory.equals(locationCategory.getNameCategory())) {
             markerManager.removeAllMarkers(mapView);
@@ -131,6 +140,11 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
         }
     }
 
+    /**
+     * Manages location of user.
+     *
+     * @return location of the user.
+     */
     private LatLng getLocationEnable() {
         LatLng center;
         if (CurrentLocationController.getControllerInstance(activity).locationEnabled()) {
