@@ -43,6 +43,7 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
+    private int timeEstimate;
 
 
     /**
@@ -62,6 +63,9 @@ public class InfoRouteController {
         isRouteCSelected = false;
         jsonObjects = new ArrayList<>();
         setActionButtons();
+    }
+
+    public InfoRouteController() {
     }
 
     /**
@@ -263,6 +267,7 @@ public class InfoRouteController {
             }
             if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
             else timeText.setText(timeInMinutes + " min");
+            timeEstimate = timeInMinutes;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -299,5 +304,9 @@ public class InfoRouteController {
         }
         if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
         else timeText.setText(timeInMinutes + " min");
+    }
+
+    public int getTimeEstimate() {
+        return timeEstimate;
     }
 }
