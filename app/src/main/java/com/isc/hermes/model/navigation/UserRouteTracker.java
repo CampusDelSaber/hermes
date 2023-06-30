@@ -1,5 +1,7 @@
 package com.isc.hermes.model.navigation;
 
+import android.widget.Toast;
+
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -22,6 +24,9 @@ public class UserRouteTracker {
     private LatLng destination;
     private RouteSegmentRecord currentRouteSegmentRecord;
     private JSONObject routeInformation;
+
+    private static int GEO_JSON_LATITUDE = 1;
+    private static int GEO_JSON_LONGITUDE = 0;
 
     /**
      * Constructs a UserRouteTracker object with the provided GeoJSON route information.
@@ -89,12 +94,12 @@ public class UserRouteTracker {
                         JSONArray start = route.getJSONArray(i);
                         JSONArray end = route.getJSONArray(i + 1);
                         routeSegments.add(new RouteSegmentRecord(
-                                new LatLng(start.getDouble(0), start.getDouble(1)),
-                                new LatLng(end.getDouble(0), end.getDouble(1))
+                                new LatLng(start.getDouble(GEO_JSON_LATITUDE), start.getDouble(GEO_JSON_LONGITUDE)),
+                                new LatLng(end.getDouble(GEO_JSON_LATITUDE), end.getDouble(GEO_JSON_LONGITUDE))
                         ));
                     } else {
                         JSONArray dest = route.getJSONArray(i);
-                        destination = new LatLng(dest.getDouble(0), dest.getDouble(1));
+                        destination = new LatLng(dest.getDouble(GEO_JSON_LATITUDE), dest.getDouble(GEO_JSON_LONGITUDE));
                         break;
                     }
                 }
