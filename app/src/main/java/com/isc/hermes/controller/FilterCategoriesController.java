@@ -1,18 +1,19 @@
 package com.isc.hermes.controller;
 
 import android.app.Activity;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.isc.hermes.R;
 import com.isc.hermes.SpacingItemDecoration;
 import com.isc.hermes.model.CategoryFilter;
-import com.isc.hermes.model.Searcher;
 import com.isc.hermes.utils.CategoryFilterAdapter;
 import com.isc.hermes.utils.CategoryFilterClickListener;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.PlacesType;
-import com.isc.hermes.utils.searcher.SearchPlacesListener;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
@@ -32,7 +33,7 @@ import retrofit2.Response;
 public class FilterCategoriesController implements CategoryFilterClickListener {
     private MarkerManager markerManager;
     private MapView mapView;
-    private Activity activity;
+    private AppCompatActivity activity;
     private RecyclerView locationCategoriesRecyclerView;
     private CategoryFilterAdapter locationCategoryAdapter;
 
@@ -41,7 +42,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      *
      * @param activity the activity associated with the controller
      */
-    public FilterCategoriesController(Activity activity) {
+    public FilterCategoriesController(AppCompatActivity activity) {
         this.activity = activity;
     }
 
@@ -123,29 +124,14 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
                 .geocodingTypes(GeocodingCriteria.TYPE_POI)
                 .build();
 
-        mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
+        mapboxGeocoding.enqueueCall(new Callback<>() {
             @Override
-            public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-                if (response.isSuccessful()) {
-                    List<CarmenFeature> places = null;
-                    Searcher placeSearch = new Searcher();
-                    placeSearch.searchPlacesByType(tag, new SearchPlacesListener() {
-                        @Override
-                        public void onSearchComplete(List<CarmenFeature> places) {
-                            markerManager.removeAllMarkers(mapView);
-                            showPlacesOnMap(places);
-                        }
-
-                        @Override
-                        public void onSearchError(String errorMessage) {
-                        }
-                    });
-
-                }
+            public void onResponse(@NonNull Call<GeocodingResponse> call, @NonNull Response<GeocodingResponse> response) {
+                marketManager(response);
             }
 
             @Override
-            public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<GeocodingResponse> call, @NonNull Throwable t) {
                 throw new RuntimeException(t);
             }
         });
@@ -154,15 +140,21 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     /**
      * Displays the retrieved places on the map.
      *
-     * @param places the list of places to display
+     * @param response the response from the API
      */
-    private void showPlacesOnMap(List<CarmenFeature> places) {
-        for (CarmenFeature place : places) {
-            String name = place.text();
-            double latitude = ((Point) place.geometry()).latitude();
-            double longitude = ((Point) place.geometry()).longitude();
-
-            markerManager.addMarkerToMap(mapView, name, latitude, longitude, true);
+    private void marketManager(Response<GeocodingResponse> response) {
+        if (response.body() != null) {
+            List<CarmenFeature> results = response.body().features();
+            if (results.size() > 0) {
+                markerManager.removeAllMarkers(mapView);
+                for (CarmenFeature feature : results) {
+                    Point firstResultPoint = (Point) feature.geometry();
+                    assert firstResultPoint != null;
+                    markerManager.addMarkerToMap(mapView, feature.placeName(), firstResultPoint.latitude(), firstResultPoint.longitude(), true);
+                }
+            } else {
+                Toast.makeText(activity, R.string.no_results_founds, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

@@ -46,6 +46,7 @@
     <string name="close">Close</string>
     <string name="rerouting_message">Do you want to generate a new route to your destination from
         your current point?</string>
+    <string name="no_results_founds">No results found</string>
 
     <!--    Authentication Strings-->
     <string name="google">GOOGLE</string>
