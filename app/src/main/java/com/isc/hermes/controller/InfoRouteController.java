@@ -44,6 +44,7 @@ public class InfoRouteController {
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
     private int timeEstimate;
+    private int elapsedSeconds;
 
 
     /**
@@ -62,6 +63,8 @@ public class InfoRouteController {
         isRouteBSelected = false;
         isRouteCSelected = false;
         jsonObjects = new ArrayList<>();
+        timeEstimate = 0;
+        elapsedSeconds = 0;
         setActionButtons();
     }
 
@@ -139,8 +142,17 @@ public class InfoRouteController {
                 false, false, true));
 
         startNavigationButton.setOnClickListener(v -> {
+
+            long startTime = System.currentTimeMillis();
+
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
+
+            long endTime = System.currentTimeMillis();
+            long elapsedTime = endTime - startTime;
+
+            elapsedSeconds = (int) (elapsedTime / 1000);
+
         });
     }
 
@@ -308,5 +320,9 @@ public class InfoRouteController {
 
     public int getTimeEstimate() {
         return timeEstimate;
+    }
+
+    public int getElapsedSeconds() {
+        return elapsedSeconds;
     }
 }

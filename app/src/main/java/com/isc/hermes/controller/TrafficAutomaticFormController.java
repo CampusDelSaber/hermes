@@ -90,7 +90,7 @@ public class TrafficAutomaticFormController extends InfoRouteController{
      @return The selected Traffic time as a  string.
      */
     public String getTrafficTime(){
-        int selectedTrafficTime = calculateEstimateTime(getTimeEstimate(),50);
+        int selectedTrafficTime = calculateEstimateTime(getTimeEstimate(),getElapsedSeconds());
         return selectedTrafficTime+ " " + "Minutes";
     }
 
@@ -104,7 +104,7 @@ public class TrafficAutomaticFormController extends InfoRouteController{
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getTrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(getTimeEstimate(),50),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
+        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(getTimeEstimate(),getElapsedSeconds()),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
         System.out.println(getTimeEstimate());
         return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
