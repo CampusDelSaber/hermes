@@ -5,7 +5,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 /**
  * This exception is thrown when a user is outside the boundaries of a route segment.
  */
-public class UserOutsideRouteException extends RuntimeException {
+public class UserOutsideRouteException extends Exception {
     /**
      * Constructs a new UserOutsideRouteException with the specified segment record and user location.
      *

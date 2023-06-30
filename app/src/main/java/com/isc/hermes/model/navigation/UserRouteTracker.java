@@ -1,5 +1,7 @@
 package com.isc.hermes.model.navigation;
 
+import android.widget.Toast;
+
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -11,6 +13,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Logger;
+
+import timber.log.Timber;
 
 /**
  * The UserRouteTracker class tracks the user's route and provides information about the user's progress.
@@ -22,6 +27,9 @@ public class UserRouteTracker {
     private LatLng destination;
     private RouteSegmentRecord currentRouteSegmentRecord;
     private JSONObject routeInformation;
+
+    private static final int GEO_JSON_LATITUDE = 1;
+    private static final int GEO_JSON_LONGITUDE = 0;
 
     /**
      * Constructs a UserRouteTracker object with the provided GeoJSON route information.
@@ -38,7 +46,11 @@ public class UserRouteTracker {
         distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         currentLocation = CurrentLocationModel.getInstance();
         availableSegments = makeRouteSegments().listIterator();
-        updateCurrentRouteSegment(currentLocation.getLatLng());
+        try {
+            updateCurrentRouteSegment(currentLocation.getLatLng());
+        } catch (UserOutsideRouteException e) {
+            Timber.e(e.getMessage());
+        }
     }
 
     /**
@@ -49,7 +61,11 @@ public class UserRouteTracker {
     public double getPartialSegmentDistance() {
         LatLng userLocation = currentLocation.getLatLng();
         if (!isUserInSegment(userLocation)) {
-            updateCurrentRouteSegment(userLocation);
+            try {
+                updateCurrentRouteSegment(userLocation);
+            } catch (UserOutsideRouteException e) {
+                Timber.e(e.getMessage());
+            }
         }
         return distanceCalculator.calculateDistance(
                 userLocation,
@@ -65,7 +81,7 @@ public class UserRouteTracker {
      * @param userLocation The user's current location.
      * @throws UserOutsideRouteException If the user is outside the current route segment.
      */
-    private void updateCurrentRouteSegment(LatLng userLocation) {
+    private void updateCurrentRouteSegment(LatLng userLocation) throws UserOutsideRouteException {
         if (availableSegments.hasNext()) {
             currentRouteSegmentRecord = availableSegments.next();
             if (!NavigationTrackerTools.isInsideSegment(currentRouteSegmentRecord, userLocation)) {
@@ -89,12 +105,12 @@ public class UserRouteTracker {
                         JSONArray start = route.getJSONArray(i);
                         JSONArray end = route.getJSONArray(i + 1);
                         routeSegments.add(new RouteSegmentRecord(
-                                new LatLng(start.getDouble(0), start.getDouble(1)),
-                                new LatLng(end.getDouble(0), end.getDouble(1))
+                                new LatLng(start.getDouble(GEO_JSON_LATITUDE), start.getDouble(GEO_JSON_LONGITUDE)),
+                                new LatLng(end.getDouble(GEO_JSON_LATITUDE), end.getDouble(GEO_JSON_LONGITUDE))
                         ));
                     } else {
                         JSONArray dest = route.getJSONArray(i);
-                        destination = new LatLng(dest.getDouble(0), dest.getDouble(1));
+                        destination = new LatLng(dest.getDouble(GEO_JSON_LATITUDE), dest.getDouble(GEO_JSON_LONGITUDE));
                         break;
                     }
                 }
