@@ -474,7 +474,9 @@ public class NavigationOptionsController {
      * drawPolylineEverySecond method.
      */
     private void updateNavigatedRoute() {
-//        polylineRouteUpdaterController.drawPolylineEverySecond();
+        polylineRouteUpdaterController = polylineRouteUpdaterController == null ? new PolylineRouteUpdaterController(startPoint,finalPoint) :
+        polylineRouteUpdaterController;
+        polylineRouteUpdaterController.drawPolylineEverySecond();
     }
 
     private void startRouteEstimationManager(String JSONRoute){

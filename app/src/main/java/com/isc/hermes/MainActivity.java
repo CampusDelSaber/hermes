@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Toolbar toolbar;
     private MapView mapView;
     private String mapStyle;
-    private AccountInfoManager accountInfoManager;
     private ImageButton buttonClear;
     private final String resetSearchText = "Search...";
 
@@ -90,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        accountInfoManager = new AccountInfoManager();
-        accountInfoManager.updateUserInformationLocal();
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
@@ -110,7 +107,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
-        setTheUserInformationInTheDropMenu();
+        try{
+            setTheUserInformationInTheDropMenu();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 
