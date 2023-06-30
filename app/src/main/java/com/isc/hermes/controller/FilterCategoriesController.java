@@ -11,6 +11,7 @@ import com.isc.hermes.SpacingItemDecoration;
 import com.isc.hermes.model.CategoryFilter;
 import com.isc.hermes.utils.CategoryFilterAdapter;
 import com.isc.hermes.utils.CategoryFilterClickListener;
+import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.PlacesType;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
@@ -18,6 +19,7 @@ import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,9 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     private AppCompatActivity activity;
     private RecyclerView locationCategoriesRecyclerView;
     private CategoryFilterAdapter locationCategoryAdapter;
+    private String lastClickedCategory = "";
+
+    private boolean isMarkersShown = false;
 
     /**
      * Constructs a new FilterCategoriesController with the specified activity.
@@ -108,9 +113,33 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     @Override
     public void onLocationCategoryClick(CategoryFilter locationCategory) {
-        searchPlacesByTag(locationCategory.getNameCategory(),
-                CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLatitude(),
-                CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLatitude());
+        LatLng center = getLocationEnable();
+        addAndRemoveMarkets(locationCategory, center);
+    }
+
+    private void addAndRemoveMarkets(CategoryFilter locationCategory, LatLng center) {
+        if (isMarkersShown && lastClickedCategory.equals(locationCategory.getNameCategory())) {
+            markerManager.removeAllMarkers(mapView);
+            isMarkersShown = false;
+        } else {
+            if (isMarkersShown) {
+                markerManager.removeAllMarkers(mapView);
+            }
+            searchPlacesByTag(locationCategory.getNameCategory(), center.getLatitude(), center.getLongitude());
+            isMarkersShown = true;
+            lastClickedCategory = locationCategory.getNameCategory();
+        }
+    }
+
+    private LatLng getLocationEnable() {
+        LatLng center;
+        if (CurrentLocationController.getControllerInstance(activity).locationEnabled()) {
+            center = new LatLng(
+                    CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLatitude(),
+                    CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLongitude()
+            );
+        } else center = MapManager.getInstance().getMapboxMap().getCameraPosition().target;
+        return center;
     }
 
     /**

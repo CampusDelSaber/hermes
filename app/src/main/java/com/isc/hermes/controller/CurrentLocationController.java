@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.location.LocationManager;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -139,5 +140,25 @@ public class CurrentLocationController {
      */
     public CurrentLocationModel getCurrentLocationModel(){
         return currentLocationModel;
+    }
+
+    public boolean locationEnabled() {
+        LocationManager lm = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return gps_enabled || network_enabled;
     }
 }
