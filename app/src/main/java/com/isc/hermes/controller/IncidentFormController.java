@@ -92,6 +92,12 @@ public class IncidentFormController {
         incidentForm.startAnimation(Animations.exitAnimation);
         incidentForm.setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
+        resetDefaultIncidents();
+    }
+
+    private void resetDefaultIncidents(){
+        incidentText.setText("");
+        reasonTextField.getEditText().setText("");
     }
 
     /**
