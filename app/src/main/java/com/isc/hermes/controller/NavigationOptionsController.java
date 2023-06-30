@@ -59,7 +59,7 @@ public class NavigationOptionsController {
     private LinearLayout reroutingLayout;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
 
-    private Thread routeEstimationManagerThread;
+    private String selectedRoutGeoJSON;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -162,7 +162,6 @@ public class NavigationOptionsController {
             mapWayPointController.setMarked(false);
             mapWayPointController.deleteMarks();
             polylineRouteUpdaterController.setStartPoint(finalPoint);
-            routeEstimationManagerThread.interrupt();
         });
     }
 
@@ -346,6 +345,7 @@ public class NavigationOptionsController {
         progressDialog = builder.create();
         progressDialog.show();
         manageGraphBuilding(graphController);
+        infoRouteController.startRouteEstimationManager(selectedRoutGeoJSON, transportationType);
     }
 
     /**
@@ -436,9 +436,7 @@ public class NavigationOptionsController {
         for (String route : routes)
             if (!route.isEmpty()) geoJson.add(route);
 
-
-        // TODO: Use the best available route
-        startRouteEstimationManager(jsonA);
+        selectedRoutGeoJSON = jsonA;
         renderMapRoutes(geoJson);
     }
 
@@ -476,13 +474,4 @@ public class NavigationOptionsController {
     private void updateNavigatedRoute() {
         polylineRouteUpdaterController.drawPolylineEverySecond();
     }
-
-    private void startRouteEstimationManager(String JSONRoute){
-        UserRouteTracker tracker = new UserRouteTracker(JSONRoute);
-        routeEstimationManagerThread = new Thread(
-                () -> new RouteEstimatesManager(tracker, infoRouteController, transportationType).startUpdatingEstimations(),
-                "Estimation Thread");
-        routeEstimationManagerThread.start();
-    }
-
 }

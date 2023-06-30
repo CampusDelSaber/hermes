@@ -15,13 +15,14 @@ public class RouteEstimatesManager {
     private final TransportationType transportationType;
 
     private double totalEstimatedDistance;
+    private Thread liveUpdateThread;
 
     /**
      * Constructs a new RouteEstimatesManager object.
      *
-     * @param userRouteTracker     The UserRouteTracker instance for tracking the user's route.
-     * @param infoRouteController  The InfoRouteController instance for updating route information.
-     * @param transportationType   The transportation type used for estimating arrival time.
+     * @param userRouteTracker    The UserRouteTracker instance for tracking the user's route.
+     * @param infoRouteController The InfoRouteController instance for updating route information.
+     * @param transportationType  The transportation type used for estimating arrival time.
      */
     public RouteEstimatesManager(UserRouteTracker userRouteTracker, InfoRouteController infoRouteController, TransportationType transportationType) {
         this.userRouteTracker = userRouteTracker;
@@ -33,17 +34,19 @@ public class RouteEstimatesManager {
     /**
      * Starts updating the estimates for arrival time and distance.
      */
-    public void startUpdatingEstimations() {
-        while (!userRouteTracker.hasUserArrived()) {
-            updateEstimatedArrivalDistance(userRouteTracker.getPartialSegmentDistance());
-            updateEstimatedArrivalTime();
-            try {
-                Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
-            } catch (InterruptedException e) {
-                // TODO: Handle exception properly.
-                e.printStackTrace();
+    public void startLiveUpdate() {
+        liveUpdateThread = new Thread(() -> {
+            while (!userRouteTracker.hasUserArrived()) {
+                updateEstimatedArrivalDistance(userRouteTracker.getPartialSegmentDistance());
+                updateEstimatedArrivalTime();
+                try {
+                    Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
+                } catch (InterruptedException e) {
+                    // TODO: Handle exception properly.
+                    e.printStackTrace();
+                }
             }
-        }
+        }, "Live estimations");
     }
 
     /**
@@ -51,7 +54,7 @@ public class RouteEstimatesManager {
      *
      * @param geoJSON The JSON object containing route information.
      */
-    private void setTimeDistanceEstimates(JSONObject geoJSON){
+    private void setTimeDistanceEstimates(JSONObject geoJSON) {
         try {
             totalEstimatedDistance = geoJSON.getDouble("distance");
         } catch (JSONException e) {
@@ -64,7 +67,7 @@ public class RouteEstimatesManager {
     /**
      * Updates the estimated arrival time based on the total estimated distance and transportation type.
      */
-    private void updateEstimatedArrivalTime(){
+    private void updateEstimatedArrivalTime() {
         int totalEstimatedArrivalTime = (int) Math.ceil(((totalEstimatedDistance / transportationType.getVelocity()) * 60));
 
         infoRouteController.setEstimatedTimeInfo(totalEstimatedArrivalTime);
@@ -75,8 +78,12 @@ public class RouteEstimatesManager {
      *
      * @param traveledDistance The distance traveled by the user.
      */
-    private void updateEstimatedArrivalDistance(double traveledDistance){
+    private void updateEstimatedArrivalDistance(double traveledDistance) {
         this.totalEstimatedDistance = totalEstimatedDistance - traveledDistance;
         infoRouteController.setDistanceInfo(totalEstimatedDistance);
+    }
+
+    public void stopLiveUpdate() {
+        liveUpdateThread.interrupt();
     }
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +11,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.navigation.RouteEstimatesManager;
+import com.isc.hermes.model.navigation.TransportationType;
+import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 
 import org.json.JSONException;
@@ -43,6 +45,8 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
+
+    private RouteEstimatesManager routeEstimatesManager;
 
 
     /**
@@ -125,6 +129,7 @@ public class InfoRouteController {
             navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
             navigationOptionsController.getMapWayPointController().deleteMarks();
             isActive = false;
+            routeEstimatesManager.stopLiveUpdate();
         });
 
         buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
@@ -299,5 +304,11 @@ public class InfoRouteController {
         }
         if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
         else timeText.setText(timeInMinutes + " min");
+    }
+
+    public void startRouteEstimationManager(String JSONRoute, TransportationType transportationType){
+        UserRouteTracker tracker = new UserRouteTracker(JSONRoute);
+        routeEstimatesManager = new RouteEstimatesManager(tracker, this, transportationType);
+        routeEstimatesManager.startLiveUpdate();
     }
 }
