@@ -38,8 +38,9 @@ public class RouteEstimatesManager {
     public void startUpdatingEstimations() {
         while (!userRouteTracker.hasUserArrived()) {
             if (userRouteTracker.hasUserMoved()){
-                updateEstimatedArrivalDistance(userRouteTracker.getTraveledDistance());
-                updateEstimatedArrivalTime();
+                double distanceLeft = userRouteTracker.getTraveledDistance() + userRouteTracker.getUnvisitedRouteSize();
+                updateEstimatedArrivalDistance(distanceLeft);
+                updateEstimatedArrivalTime(distanceLeft);
             }
 
             try {
@@ -61,17 +62,17 @@ public class RouteEstimatesManager {
         try {
             totalEstimatedDistance = geoJSON.getDouble("distance");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Timber.e("Could not get distance", e);
         }
 
-        updateEstimatedArrivalTime();
+        updateEstimatedArrivalTime(totalEstimatedDistance);
     }
 
     /**
      * Updates the estimated arrival time based on the total estimated distance and transportation type.
      */
-    private void updateEstimatedArrivalTime(){
-        int totalEstimatedArrivalTime = (int) Math.ceil(((totalEstimatedDistance / transportationType.getVelocity()) * 60));
+    private void updateEstimatedArrivalTime(double distance){
+        int totalEstimatedArrivalTime = (int) Math.ceil(((distance / transportationType.getVelocity()) * 60));
 
         infoRouteController.setEstimatedTimeInfo(totalEstimatedArrivalTime);
     }
@@ -82,7 +83,6 @@ public class RouteEstimatesManager {
      * @param traveledDistance The distance traveled by the user.
      */
     private void updateEstimatedArrivalDistance(double traveledDistance){
-        double distanceLeft = totalEstimatedDistance - traveledDistance;
-        infoRouteController.setDistanceInfo(distanceLeft);
+        infoRouteController.setDistanceInfo(traveledDistance);
     }
 }

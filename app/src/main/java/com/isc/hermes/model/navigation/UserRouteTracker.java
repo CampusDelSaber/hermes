@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import timber.log.Timber;
 
@@ -20,13 +19,17 @@ import timber.log.Timber;
 public class UserRouteTracker {
     public static final int GEO_JSON_LATITUDE = 1;
     private static final int GEO_JSON_LONGITUDE = 0;
+
     private final CoordinatesDistanceCalculator distanceCalculator;
     private final CurrentLocationModel currentLocation;
-    private final ListIterator<RouteSegmentRecord> availableSegments;
-    private LatLng destination;
+
+    private final List<RouteSegmentRecord> routeSegments;
     private RouteSegmentRecord currentRouteSegmentRecord;
+    private int routeIndex;
     private JSONObject routeInformation;
-    private LatLng lastLocation;
+    private LatLng destination;
+
+    private UserLocationTracker userLocationTracker;
 
     /**
      * Constructs a UserRouteTracker object with the provided GeoJSON route information.
@@ -42,8 +45,10 @@ public class UserRouteTracker {
         currentRouteSegmentRecord = null;
         distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         currentLocation = CurrentLocationModel.getInstance();
-        availableSegments = makeRouteSegments().listIterator();
-        lastLocation = currentLocation.getLatLng();
+        userLocationTracker = new UserLocationTracker();
+        routeSegments = makeRouteSegments();
+        routeIndex = 0;
+
         try {
             updateCurrentRouteSegment(currentLocation.getLatLng());
         } catch (UserOutsideRouteException e) {
@@ -65,11 +70,10 @@ public class UserRouteTracker {
                 Timber.e(e.getMessage());
             }
         }
-        double calculateDistance = distanceCalculator.calculateDistance(
+        return distanceCalculator.calculateDistance(
                 userLocation,
                 currentRouteSegmentRecord.getEnd()
         );
-        return calculateDistance;
     }
 
     /**
@@ -81,10 +85,17 @@ public class UserRouteTracker {
      * @throws UserOutsideRouteException If the user is outside the current route segment.
      */
     private void updateCurrentRouteSegment(LatLng userLocation) throws UserOutsideRouteException {
-        if (availableSegments.hasNext()) {
-            currentRouteSegmentRecord = availableSegments.next();
+        if (!routeSegments.isEmpty()) {
+            currentRouteSegmentRecord = routeSegments.get(routeIndex);
+
             if (!NavigationTrackerTools.isInsideSegment(currentRouteSegmentRecord, userLocation)) {
                 throw new UserOutsideRouteException(currentRouteSegmentRecord, userLocation);
+            }
+
+            if (routeIndex < routeSegments.size()) {
+                routeIndex++;
+            } else {
+                Timber.e("The current route has no more segments available");
             }
         }
     }
@@ -153,19 +164,16 @@ public class UserRouteTracker {
         return routeInformation;
     }
 
-    /**
-     * Checks if the user has moved based on their current location compared to the last known location.
-     *
-     * @return true if the user has moved, false otherwise.
-     */
-    public boolean hasUserMoved() {
-        LatLng userLocation = currentLocation.getLatLng();
-        boolean hasUserMoved = NavigationTrackerTools.hasUserMoved(userLocation, lastLocation);
-        if (hasUserMoved) {
-            lastLocation = userLocation;
+    public double getUnvisitedRouteSize() {
+        double totalDistance = 0.0;
+        for (int i = routeIndex; i < routeSegments.size(); i++) {
+            totalDistance += routeSegments.get(i).getDistance();
         }
 
-        return hasUserMoved;
+        return totalDistance;
     }
 
+    public boolean hasUserMoved() {
+        return userLocationTracker.hasUserMoved();
+    }
 }

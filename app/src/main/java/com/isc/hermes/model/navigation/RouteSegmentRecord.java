@@ -1,5 +1,6 @@
 package com.isc.hermes.model.navigation;
 
+import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 /**
@@ -8,6 +9,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class RouteSegmentRecord {
     private final LatLng start;
     private final LatLng end;
+    private final double distance;
 
     /**
      * Constructs a new RouteSegmentRecord object.
@@ -18,6 +20,7 @@ public class RouteSegmentRecord {
     public RouteSegmentRecord(LatLng start, LatLng end) {
         this.start = start;
         this.end = end;
+        this.distance = CoordinatesDistanceCalculator.getInstance().calculateDistance(start, end);
     }
 
     /**
@@ -36,5 +39,9 @@ public class RouteSegmentRecord {
      */
     public LatLng getEnd() {
         return end;
+    }
+
+    public double getDistance() {
+        return distance;
     }
 }
