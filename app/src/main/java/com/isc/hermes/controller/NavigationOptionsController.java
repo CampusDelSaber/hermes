@@ -483,6 +483,7 @@ public class NavigationOptionsController {
                 () -> new RouteEstimatesManager(tracker, infoRouteController, transportationType).startUpdatingEstimations(),
                 "Estimation Thread");
         routeEstimationManagerThread.start();
+        infoRouteController.setThread(routeEstimationManagerThread);
     }
 
 }

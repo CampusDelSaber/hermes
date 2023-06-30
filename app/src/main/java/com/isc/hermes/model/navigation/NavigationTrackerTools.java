@@ -7,7 +7,8 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
  * The NavigationTrackerTools class provides utility methods for navigation tracking.
  */
 public class NavigationTrackerTools {
-    public static double CLOSE_ENOUGH = 10;
+    public static double USER_REACHED_DESTINATION_CRITERIA = 0.005;
+    public static double USER_MOVED_CRITERIA = 0.001;
 
     /**
      * Checks if a point has been reached based on the target and the current point.
@@ -19,7 +20,8 @@ public class NavigationTrackerTools {
     public static boolean isPointReached(LatLng target, LatLng point) {
         CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         double distance = distanceCalculator.calculateDistance(point, target);
-        return distance <= CLOSE_ENOUGH;
+        int comparation = Double.compare(distance, USER_REACHED_DESTINATION_CRITERIA);
+        return comparation <= 0;
     }
 
     /**
@@ -40,5 +42,11 @@ public class NavigationTrackerTools {
         boolean isLowerThanHigherPoint = (ceilLat >= 0) && (ceilLng >= 0);
 
         return isLowerThanHigherPoint && isHigherThanLowerPoint;
+    }
+
+    public static boolean hasUserMoved(LatLng userLocation, LatLng lastLocation){
+        CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();
+        double movement = distanceCalculator.calculateDistance(userLocation, lastLocation);
+        return Double.compare(movement, USER_MOVED_CRITERIA) > 0;
     }
 }

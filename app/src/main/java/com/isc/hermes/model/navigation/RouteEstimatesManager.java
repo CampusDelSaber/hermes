@@ -6,6 +6,8 @@ import com.isc.hermes.model.location.LocationIntervals;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import timber.log.Timber;
+
 /**
  * The RouteEstimatesManager class manages the estimates for route time and distance during navigation.
  */
@@ -35,13 +37,17 @@ public class RouteEstimatesManager {
      */
     public void startUpdatingEstimations() {
         while (!userRouteTracker.hasUserArrived()) {
-            updateEstimatedArrivalDistance(userRouteTracker.getPartialSegmentDistance());
-            updateEstimatedArrivalTime();
+            if (userRouteTracker.hasUserMoved()){
+                updateEstimatedArrivalDistance(userRouteTracker.getTraveledDistance());
+                updateEstimatedArrivalTime();
+            }
+
             try {
-                Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
+                if (!Thread.interrupted()){
+                    Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
+                }
             } catch (InterruptedException e) {
-                // TODO: Handle exception properly.
-                e.printStackTrace();
+                Timber.d("Route Estimation Thread has been closed");
             }
         }
     }
@@ -76,7 +82,7 @@ public class RouteEstimatesManager {
      * @param traveledDistance The distance traveled by the user.
      */
     private void updateEstimatedArrivalDistance(double traveledDistance){
-        this.totalEstimatedDistance = totalEstimatedDistance - traveledDistance;
-        infoRouteController.setDistanceInfo(totalEstimatedDistance);
+        double left = totalEstimatedDistance - traveledDistance;
+        infoRouteController.setDistanceInfo(left);
     }
 }

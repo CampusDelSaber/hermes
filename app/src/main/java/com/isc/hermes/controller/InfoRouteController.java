@@ -44,6 +44,8 @@ public class InfoRouteController {
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
 
+    private Thread thread;
+
 
     /**
      * Constructs a new InfoRouteController object.
@@ -125,6 +127,7 @@ public class InfoRouteController {
             navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
             navigationOptionsController.getMapWayPointController().deleteMarks();
             isActive = false;
+            thread.interrupt();
         });
 
         buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
@@ -299,5 +302,9 @@ public class InfoRouteController {
         }
         if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
         else timeText.setText(timeInMinutes + " min");
+    }
+
+    public void setThread(Thread thread){
+        this.thread = thread;
     }
 }

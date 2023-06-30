@@ -1,7 +1,5 @@
 package com.isc.hermes.model.navigation;
 
-import android.widget.Toast;
-
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -13,7 +11,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.logging.Logger;
 
 import timber.log.Timber;
 
@@ -28,8 +25,9 @@ public class UserRouteTracker {
     private RouteSegmentRecord currentRouteSegmentRecord;
     private JSONObject routeInformation;
 
-    private static final int GEO_JSON_LATITUDE = 1;
+    public static final int GEO_JSON_LATITUDE = 1;
     private static final int GEO_JSON_LONGITUDE = 0;
+    private LatLng lastLocation;
 
     /**
      * Constructs a UserRouteTracker object with the provided GeoJSON route information.
@@ -46,6 +44,7 @@ public class UserRouteTracker {
         distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         currentLocation = CurrentLocationModel.getInstance();
         availableSegments = makeRouteSegments().listIterator();
+        lastLocation = currentLocation.getLatLng();
         try {
             updateCurrentRouteSegment(currentLocation.getLatLng());
         } catch (UserOutsideRouteException e) {
@@ -58,7 +57,7 @@ public class UserRouteTracker {
      *
      * @return The distance remaining in the current route segment.
      */
-    public double getPartialSegmentDistance() {
+    public double getTraveledDistance() {
         LatLng userLocation = currentLocation.getLatLng();
         if (!isUserInSegment(userLocation)) {
             try {
@@ -67,10 +66,11 @@ public class UserRouteTracker {
                 Timber.e(e.getMessage());
             }
         }
-        return distanceCalculator.calculateDistance(
+        double calculateDistance = distanceCalculator.calculateDistance(
                 userLocation,
                 currentRouteSegmentRecord.getEnd()
         );
+        return calculateDistance;
     }
 
     /**
@@ -153,4 +153,15 @@ public class UserRouteTracker {
     public JSONObject getRouteInformation() {
         return routeInformation;
     }
+    
+    public boolean hasUserMoved(){
+        LatLng userLocation = currentLocation.getLatLng();
+        boolean hasUserMoved = NavigationTrackerTools.hasUserMoved(userLocation, lastLocation);
+        if (hasUserMoved){
+            lastLocation = userLocation;
+        }
+
+        return hasUserMoved;
+    }
+    
 }
