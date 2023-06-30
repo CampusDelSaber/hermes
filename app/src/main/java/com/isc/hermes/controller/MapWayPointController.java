@@ -2,8 +2,6 @@ package com.isc.hermes.controller;
 
 import android.content.Context;
 
-import android.graphics.PointF;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
@@ -50,12 +48,10 @@ public class MapWayPointController implements MapClickConfigurationController {
         if (NavigationOptionsController.isActive) {
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
             markPointBehavior(point);
-        } else if (!InfoRouteController.getInstance(context).isActive()) {
-            Log.i("Mau","Entre a dibuajr unb");
+        } else if (!InfoRouteController.getInstance(context,
+                waypointOptionsController.getNavOptionsFormController()).isActive()) {
             doMarkOnMapAction(point);
             waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
-        } else {
-            Log.i("Mau","No puedo dibujar");
         }
         IncidentsUploader.getInstance().setLastClickedPoint(point);
         try {
@@ -117,7 +113,7 @@ public class MapWayPointController implements MapClickConfigurationController {
     /**
      * Method to render a marker on map
      */
-    private void setMarkerOnMap(LatLng point) {
+    public void setMarkerOnMap(LatLng point) {
         MarkerOptions markerOptions = new MarkerOptions().position(point);
         mapboxMap.addMarker(markerOptions);
     }

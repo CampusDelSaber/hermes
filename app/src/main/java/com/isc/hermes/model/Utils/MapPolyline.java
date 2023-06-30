@@ -1,11 +1,15 @@
 package com.isc.hermes.model.Utils;
 
 
+import android.graphics.Color;
+
 import com.isc.hermes.utils.MapManager;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Feature;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
@@ -153,7 +157,7 @@ public class MapPolyline {
      * @param colors list of colors
      */
     public void verifyPolylineNull(List<Point> polylinePoints, String layerID, String sourceID, List<Integer> colors, int count, Style style){
-        if(polylinePoints != null){
+        if(polylinePoints != null && colors.get(count) != null){
             LineLayer polylineLayer = new LineLayer(layerID, sourceID);
             polylineLayer.setProperties(
                     PropertyFactory.lineColor(colors.get(count)),
@@ -162,4 +166,20 @@ public class MapPolyline {
             style.addLayer(polylineLayer);
         }
     }
+
+    /**
+     * Displays a polyline on the map between two given points.
+     *
+     * @param point1 The first point of the polyline.
+     * @param point2 The second point of the polyline.
+     */
+    public void displayPolyline(LatLng point1, LatLng point2) {
+        if (mapboxMap != null) {
+            mapboxMap.addPolyline(new PolylineOptions()
+                    .add(point1, point2)
+                    .color(Color.GRAY)
+                    .width(5));
+        }
+    }
+
 }

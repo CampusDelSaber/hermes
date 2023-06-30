@@ -1,13 +1,19 @@
 package com.isc.hermes.controller.PopUp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+
+import androidx.annotation.RequiresApi;
+
+import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
-import com.isc.hermes.database.AccountInfoManager;
+import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.Validator;
 
 /**
  * The class {@code PopUpEditAccount} extends {@code PopUp} and represents a specific type of pop-up
@@ -16,9 +22,11 @@ import com.isc.hermes.model.User.UserRepository;
 public class PopUpOverwriteInformationAccount extends PopUp{
 
     private Button button;
+    private Button buttonUploadImage;
     private AutoCompleteTextView fullName;
     private AutoCompleteTextView username;
     private AutoCompleteTextView comboBoxField;
+    private boolean isModifiable;
 
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
@@ -36,35 +44,54 @@ public class PopUpOverwriteInformationAccount extends PopUp{
             @Override
             public int getIconImagePopUp() {
                 return R.drawable.img_edit_icon_blue; }
-        });
+        }); isModifiable = true;
     }
 
     /**
      * Handles the click event for the view.
      *
-     * @param v The view that was clicked.
+     * @param view The view that was clicked.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void onClick(View v) {
-        if (v == super.confirmButton) {
-            updateUserInformation();
+    public void onClick(View view) {
+        if (view == super.confirmButton) {
+            updateTypeUser();
             button.setVisibility(View.INVISIBLE);
             fullName.setEnabled(false);
             username.setEnabled(false);
             comboBoxField.setEnabled(false);
+            buttonUploadImage.setVisibility(View.GONE);
         } dismiss();
     }
 
     /**
-     * Updates the user information.
-     * This method is responsible for updating the user information by calling the `editUser()` method
-     * of the `AccountInfoManager` class.
-     *
-     * @throws UnsupportedOperationException if the device's SDK version is lower than Android Oreo.
+     * Updates the type of user if the user's type is "Administrator" and the object is not modifiable.
+     * It sends an email and starts the EmailVerificationActivity for further verification.
      */
-    private void updateUserInformation(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            new AccountInfoManager().editUser(UserRepository.getInstance().getUserContained());
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void updateTypeUser() {
+        if (UserRepository.getInstance().getUserContained().getTypeUser().
+                equals("Administrator") && !isModifiable) {
+            UserRepository.getInstance().getUserContained().setTypeUser("Administrator");
+            sendEmail();
+            Intent intent = new Intent(activity, EmailVerificationActivity.class);
+            activity.startActivity(intent);
+        }
+    }
+
+    /**
+     * Sends an email containing a verification code to the user's email address.
+     * The email is sent using the SendEmailManager class.
+     * The verification code is obtained from the Validator class.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void sendEmail(){
+        Validator validator = new Validator(UserRepository.getInstance().getUserContained());
+        validator.obtainVerificationCode();
+        SendEmailManager sendEmailManager = new SendEmailManager();
+        sendEmailManager.addEmail(UserRepository.getInstance().getUserContained().getEmail(),
+                validator.getCode());
     }
 
     /**
@@ -75,11 +102,21 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      * @param username The AutoCompleteTextView for entering the username.
      * @param comboBoxField The AutoCompleteTextView for selecting a field from a combo box.
      */
-    public void setInformationToAbelEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
-                                         AutoCompleteTextView comboBoxField) {
+    public void setInformationToAbleEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
+                                         AutoCompleteTextView comboBoxField, Button buttonUploadImage) {
         this.button = button;
         this.fullName = fullName;
         this.username = username;
         this.comboBoxField = comboBoxField;
+        this.buttonUploadImage = buttonUploadImage;
+    }
+
+    /**
+     * Sets the modifiability status of the object.
+     *
+     * @param modifiable the modifiability status to be set
+     */
+    public void setIsModifiable(boolean modifiable) {
+        isModifiable = modifiable;
     }
 }

@@ -10,6 +10,9 @@ on:
     types:
       - opened
       - synchronize
+    branches:
+      - develop
+      - main
 
 jobs:
   build:

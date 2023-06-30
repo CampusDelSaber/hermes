@@ -2,9 +2,13 @@ package com.isc.hermes.utils.offline;
 
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
 import timber.log.Timber;
+
 /**
  * Utility class for offline-related operations and functionalities.
  */
@@ -52,5 +56,18 @@ public class OfflineUtils {
             metadata = null;
         }
         return metadata;
+    }
+
+    /**
+     * Updates the metadata for an offline region.
+     *
+     * @param newName The name of the region.
+     * @param previousMetadata the previous metadata
+     * @return The metadata as a byte array.
+     */
+    public static byte[] updateMetadata(String newName, byte[] previousMetadata) throws UnsupportedEncodingException, JSONException {
+          JSONObject jsonMetadata = new JSONObject(new String(previousMetadata, OfflineUtils.JSON_CHARSET));
+            jsonMetadata.put(JSON_FIELD_REGION_NAME, newName);
+            return jsonMetadata.toString().getBytes(OfflineUtils.JSON_CHARSET);
     }
 }
