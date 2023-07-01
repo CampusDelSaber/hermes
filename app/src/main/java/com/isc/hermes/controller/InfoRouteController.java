@@ -105,10 +105,6 @@ public class InfoRouteController {
         colorsInfoRoutes.add(size > 1 ? 0XFFFF6E26 : 0XFF686C6C);
     }
 
-    public MapPolyline getMapPolyline(){
-        return mapPolyline;
-    }
-
     /**
      * Sets the action listeners for the buttons.
      */
@@ -123,10 +119,12 @@ public class InfoRouteController {
         buttonRouteC.setOnClickListener(v -> setRouteInformation(0,
                 false, false, true));
 
-        setNavigationButtonsVisibility();
         setNavigationButtonsEvent();
     }
 
+    /**
+     * Cancels the navigation hiding the routes modal and the routes in map
+     */
     private void cancelNavigation(){
         mapPolyline.hidePolylines();
         layout.startAnimation(Animations.exitAnimation);
@@ -137,12 +135,20 @@ public class InfoRouteController {
         isActive = false;
     }
 
+    /**
+     * Shows or hides start navigation or recalculate buttons depending on start point if
+     * it was the current location selected or not
+     */
     private void setNavigationButtonsVisibility(){
         startNavigationButton.setVisibility(
                 navigationOptionsController.isCurrentLocationSelected() ? View.VISIBLE : View.GONE);
         recalculateRouteButton.setVisibility(
                 navigationOptionsController.isCurrentLocationSelected() ? View.GONE : View.VISIBLE);
     }
+
+    /**
+     * Sets the start navigation and recalculate buttons on click listeners actions
+     */
     private void setNavigationButtonsEvent(){
         recalculateRouteButton.setOnClickListener(event -> {
             cancelNavigation();
@@ -190,6 +196,8 @@ public class InfoRouteController {
         layout.setVisibility(View.VISIBLE);
         jsonObjects = new ArrayList<>();
         try {
+            setNavigationButtonsVisibility();
+
             for (String currentJson : jsonCoordinates)
                 jsonObjects.add(new JSONObject(currentJson));
             setColorsInfoRoutes(jsonCoordinates.size());

@@ -47,7 +47,7 @@ public class WaypointOptionsController {
         trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
         streetValidator = new StreetValidator();
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
-        incidentFormController = new IncidentFormController(context, mapWayPointController);
+        incidentFormController = IncidentFormController.getInstance(context,mapWayPointController);
         navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
         trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
