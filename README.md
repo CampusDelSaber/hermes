@@ -10,186 +10,229 @@ explore places of interest and calculate optimal routes in real time.
 This section is about register and login your account to the app, if you aren't registered, 
 you need to sign up, but if you already signed up, just log in.
 
-<<<<<<< HEAD
+### Map Creation
+After sign up or log in, the map displays with streets, avenues,
+certified places, its names and every country information.
 
+### Map Personalization
+The map can be personalized changing the way the map is displayed, like only streets and avenues,
+map by satellite image and dark color map.
 
+### Report Incidents
+There's incidents that can be reported, like traffic accident, it can be generated randomly only putting
+the number of incidents and radius to generate.
 
+### Navigation
+You can put points on the map, where based on your position, the trip is calculated depending on whether the trip will be by car,
+bicycle or on foot, the trip is traced from your position to the indicated position.
 
+### Offline Mode
+Offline mode appears when there's no internet on the mobile, zones of the map can be downloaded,
+for use it later when there's no internet, downloaded zones can be renamed and deleted.
 
+---
 
+## Dependencies
 
+The project has the following dependencies:
 
+- `Java 17:`
 
+The project uses Java 17 to compile and run.
 
+- `Mapbox Android SDK (version 9.7.1):`
 
+The Mapbox SDK is used for integrating maps into the Android application.
 
+- `Glide (version 4.15.1):`
 
+Glide is used for image loading and display in the Android application.
 
+- `Google Play Services Auth (version 20.5.0):`
 
+Google Play Services Auth is used for authentication in the Android application.
 
+- `MongoDB (version 4.5.0):`
 
+MongoDB is used as the database for the project.
 
+---
 
+## Installation
 
+### Clone the repository in Android Studio
 
+After installing Android Studio and running it, this window will appear:
 
+[![image.png](https://i.postimg.cc/25Z0ZD3J/image.png)](https://postimg.cc/Y4t65T6f)
 
+Inside Android Studio, click this button:
 
+[![image.png](https://i.postimg.cc/FRtNyNpJ/image.png)](https://postimg.cc/2qxsmpPz)
 
+Paste this link (https://github.com/CampusDelSaber/hermes.git) into the text field :
 
+[![image.png](https://i.postimg.cc/TYnnTR7N/image.png)](https://postimg.cc/CzLRNVVb)
 
+The directory can be changed where you want. When the download directory has been chosen,
+click on this button:
 
+[![image.png](https://i.postimg.cc/2jh1Z0QV/image.png)](https://postimg.cc/c611qM5S)
 
+You can select Trust the project or open in safe mode (It is recommended to select Trust the project):
 
+[![image.png](https://i.postimg.cc/SQ6KsJ49/image.png)](https://postimg.cc/XXvW1NpN)
 
+It is necessary to load the gradle Project to load configuration and dependencies :
 
+[![image.png](https://i.postimg.cc/7PmpmkMc/image.png)](https://postimg.cc/RqJsZ2YQ)
 
+Going to any class, it is necessary to define the SDK, load Java 17 SDK:
 
+[![image.png](https://i.postimg.cc/DyhPJJX3/image.png)](https://postimg.cc/5jPCDtgs)
 
+Now It's ready to execute the app.
+
+---
 
 ##Repo Structure
 
-
-classes
- └── com
- └── isc
- └── hermes
- ├── AboutUs.class
- ├── AccountInformation.class
- ├── ActivitySelectRegion.class
- ├── BuildConfig.class
- ├── controller
- │  ├── authentication
- │  │  ├── AuthenticationFactory$1.class
- │  │  ├── AuthenticationFactory.class
- │  │  ├── AuthenticationServices.class
- │  │  ├── GoogleAuthentication$1.class
- │  │  ├── GoogleAuthentication$2.class
- │  │  ├── GoogleAuthentication.class
- │  │  └── IAuthentication.class
- │  ├── CurrentLocationController.class
- │  ├── FilterController$1.class
- │  ├── FilterController$2.class
- │  ├── FilterController.class
- │  ├── GenerateRandomIncidentController$1.class
- │  ├── GenerateRandomIncidentController.class
- │  ├── IncidentDialogController$1.class
- │  ├── IncidentDialogController.class
- │  ├── IncidentFormController$1.class
- │  ├── IncidentFormController$2.class
- │  ├── IncidentFormController.class
- │  ├── incidents
- │  │  ├── IncidentPointVisualizationController$1.class
- │  │  └── IncidentPointVisualizationController.class
- │  ├── IncidentsGetterController.class
- │  ├── interfaces
- │  │  └── MapClickConfigurationController.class
- │  ├── LocationPermissionsController.class
- │  ├── MapPolygonController.class
- │  ├── MapWayPointController.class
- │  ├── offline
- │  │  ├── CardViewHandler.class
- │  │  ├── OfflineDataRepository.class
- │  │  ├── RegionDeleter.class
- │  │  ├── RegionDownloader$1.class
- │  │  ├── RegionDownloader.class
- │  │  ├── RegionLoader.class
- │  │  ├── RegionObservable.class
- │  │  └── RegionObserver.class
- │  ├── PolygonOptionsController.class
- │  ├── PopUp
- │  │  ├── DialogListener.class
- │  │  ├── PopUp.class
- │  │  ├── PopUpDeleteAccount.class
- │  │  ├── PopUpEditAccount.class
- │  │  ├── TextInputPopup.class
- │  │  └── TypePopUp.class
- │  ├── SearcherController$1.class
- │  ├── SearcherController.class
- │  ├── Utiils
- │  │  └── ImageUtil.class
- │  └── WaypointOptionsController.class
- ├── database
- │  ├── AccountInfoManager.class
- │  ├── ApiHandler.class
- │  ├── ApiRequestHandler.class
- │  ├── ApiResponseParser.class
- │  ├── IncidentsDataProcessor.class
- │  └── IncidentsUploader.class
- ├── generators
- │  ├── CoordinateGen.class
- │  ├── CoordinateParser.class
- │  ├── CoordinatesGenerable.class
- │  ├── IncidentGenerator.class
- │  ├── LinestringGenerator.class
- │  ├── PointGenerator.class
- │  └── PolygonGenerator.class
- ├── MainActivity$1.class
- ├── MainActivity.class
- ├── model
- │  ├── CurrentLocationModel.class
- │  ├── graph
- │  │  ├── Edge.class
- │  │  ├── Graph.class
- │  │  └── Node.class
- │  ├── incidents
- │  │  ├── Geometry.class
- │  │  ├── GeometryType.class
- │  │  ├── Incident.class
- │  │  ├── IncidentGetterModel.class
- │  │  ├── IncidentType.class
- │  │  └── PointIncident.class
- │  ├── LocationPermissionsModel.class
- │  ├── navigation
- │  │  └── Route.class
- │  ├── Radium.class
- │  ├── RegionData.class
- │  ├── Searcher.class
- │  ├── User$1.class
- │  ├── User.class
- │  ├── Utils
- │  │  ├── ImageUploaderToServerImgur.class
- │  │  ├── ImageUploaderToServerImgur$ImgurUploadTask.class
- │  │  ├── IncidentsUtils.class
- │  │  ├── MapPolyline.class
- │  │  └── Utils.class
- │  └── WayPoint.class
- ├── OfflineMapsActivity.class
- ├── requests
- │  └── geocoders
- │      ├── Geocoder.class
- │      ├── Geocoding.class
- │      ├── ReverseGeocoding.class
- │      └── StreetValidator.class
- ├── SearchViewActivity.class
- ├── SignUpActivityView.class
- ├── UserSignUpCompletionActivity.class
- ├── utils
- │  ├── Animations.class
- │  ├── CoordinatesDistanceCalculator.class
- │  ├── DijkstraAlgorithm.class
- │  ├── GeoJsonUtils.class
- │  ├── IncidentsManager.class
- │  ├── ISO8601Converter.class
- │  ├── LocationListeningCallback.class
- │  ├── MapClickEventsManager.class
- │  ├── MapConfigure.class
- │  ├── MarkerManager.class
- │  ├── offline
- │  │  ├── MapboxOfflineManager.class
- │  │  └── OfflineUtils.class
- │  ├── SearcherAdapter.class
- │  ├── SearcherAdapterUpdater.class
- │  ├── SearcherViewHolder$1.class
- │  ├── SearcherViewHolder.class
- │  ├── SharedSearcherPreferencesManager.class
- │  └── WayPointClickListener.class
- └── view
- ├── GenerateRandomIncidentView.class
- ├── IncidentTypeButton.class
- ├── MapDisplay.class
- ├── MapPolygonStyle.class
- └── OfflineCardView.class
+- classes
+  - com
+    - isc
+      - hermes
+        - AboutUs
+        - AccountInformation
+        - ActivitySelectRegion
+        - BuildConfig
+        - controller
+          - authentication
+            - AuthenticationFactory
+            - AuthenticationServices
+            - GoogleAuthentication
+            - IAuthentication
+          - CurrentLocationController
+          - FilterController
+          - GenerateRandomIncidentController
+          - IncidentDialogController
+          - IncidentFormController
+          - incidents
+            - IncidentPointVisualizationController
+          - IncidentsGetterController
+          - interfaces
+            - MapClickConfigurationController
+          - LocationPermissionsController
+          - MapPolygonController
+          - MapWayPointController
+          - offline
+            - CardViewHandler
+            - OfflineDataRepository
+            - RegionDeleter
+            - RegionDownloader
+            - RegionLoader
+            - RegionObservable
+            - RegionObserver
+          - PolygonOptionsController
+          - PopUp
+            - DialogListener
+            - PopUp
+            - PopUpDeleteAccount
+            - PopUpEditAccount
+            - TextInputPopup
+            - TypePopUp
+          - SearcherController
+          - Utils
+            - ImageUtil
+          - WaypointOptionsController
+        - database
+          - AccountInfoManager
+          - ApiHandler
+          - ApiRequestHandler
+          - ApiResponseParser
+          - IncidentsDataProcessor
+          - IncidentsUploader
+        - generators
+          - CoordinateGen
+          - CoordinateParser
+          - CoordinatesGenerable
+          - IncidentGenerator
+          - LinestringGenerator
+          - PointGenerator
+          - PolygonGenerator
+        - MainActivity
+        - model
+          - exceptions
+            - CorruptedTokenException
+            - InvalidUserRoleException
+          - CurrentLocationModel
+          - graph
+            - Edge
+            - Graph
+            - Node
+            - GraphManager
+          - incidents
+            - Geometry
+            - GeometryType
+            - Incident
+            - IncidentGetterModel
+            - IncidentType
+            - PointIncident
+          - LocationPermissionsModel
+          - navigation
+            - Route
+            - NavigationTrackerTools
+            - RouteEstimatesManager
+            - RouteSegmentRecord
+            - TransportationType
+            - UserOutsideRouteException
+            - UserRouteTracker
+          - Radium
+          - RegionData
+          - Searcher
+          - User
+          - Utils
+            - ImageUploaderToServerImgur.class
+            - ImageUploaderToServerImgur$ImgurUploadTask.class
+            - IncidentsUtils
+            - MapPolyline
+            - Utils
+          - WayPoint.class
+        - OfflineMapsActivity.class
+        - requests
+          - geocoders
+            - Geocoder.class
+            - Geocoding.class
+            - ReverseGeocoding.class
+            - StreetValidator.class
+        - SearchViewActivity.class
+        - SignUpActivityView.class
+        - UserSignUpCompletionActivity.class
+        - utils
+          - Animations.class
+          - CoordinatesDistanceCalculator.class
+          - DijkstraAlgorithm.class
+          - GeoJsonUtils.class
+          - IncidentsManager.class
+          - ISO8601Converter.class
+          - LocationListeningCallback.class
+          - MapClickEventsManager.class
+          - MapConfigure.class
+          - MarkerManager.class
+          - offline
+            - MapboxOfflineManager.class
+            - OfflineUtils.class
+          - SearcherAdapter.class
+          - SearcherAdapterUpdater.class
+          - SearcherViewHolder$1.class
+          - SearcherViewHolder.class
+          - SharedSearcherPreferencesManager.class
+          - WayPointClickListener.class
+        - view
+          - GenerateRandomIncidentView.class
+          - IncidentTypeButton.class
+          - MapDisplay.class
+          - MapPolygonStyle.class
+          - OfflineCardView.class
 
 ##Program usage
 
@@ -232,50 +275,6 @@ user wishes to search for, such as restaurants, hotels, parks, etc.
 
 ![Navigation](https://i.postimg.cc/vHQJBHgK/Screenshot-from-2023-06-29-00-23-21.png)
 
-### Map Creation
-After sign up or log in, the map displays with streets, avenues, 
-certified places, its names and every country information.
-
-### Map Personalization
-The map can be personalized changing the way the map is displayed, like only streets and avenues,
-map by satellite image and dark color map.
-
-### Report Incidents
-There's incidents that can be reported, like traffic accident, it can be generated randomly only putting
-the number of incidents and radius to generate.
-
-### Navigation 
-You can put points on the map, where based on your position, the trip is calculated depending on whether the trip will be by car,
-bicycle or on foot, the trip is traced from your position to the indicated position.
-
-### Offline Mode
-Offline mode appears when there's no internet on the mobile, zones of the map can be downloaded,
-for use it later when there's no internet, downloaded zones can be renamed and deleted.
-
-
-### Dependencies
-
-The project has the following dependencies:
-
-- `Java 17:`
-
-The project uses Java 17 to compile and run.
-
-- `Mapbox Android SDK (version 9.7.1):`
-
-The Mapbox SDK is used for integrating maps into the Android application.
-
-- `Glide (version 4.15.1):`
-
-Glide is used for image loading and display in the Android application.
-
-- `Google Play Services Auth (version 20.5.0):`
-
-Google Play Services Auth is used for authentication in the Android application.
-
-- `MongoDB (version 4.5.0):`
-
-MongoDB is used as the database for the project.
 
 
 ### Contributors
