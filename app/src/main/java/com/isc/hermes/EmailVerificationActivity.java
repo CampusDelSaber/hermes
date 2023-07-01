@@ -185,7 +185,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
         Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
-            UserRepository.getInstance().getUserContained().setRegistered(true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
                         UserRepository.getInstance().getUserContained().getFullName(), UserRepository.getInstance().getUserContained().getUserName(),
@@ -235,22 +234,16 @@ public class EmailVerificationActivity extends AppCompatActivity {
      * @param view The View that triggered the method call.
      */
     public void continueVerification(View view) {
-        System.out.println("IS REGISTRED: " + UserRepository.getInstance().getUserContained().isRegistered());
-        System.out.println("IS ADMIN: " + UserRepository.getInstance().getUserContained().getTypeUser());
-        System.out.println("2334");
-        System.out.println("edeed");
-        System.out.println("USER UDPATE ====================================================================================================================================");
-        if (UserRepository.getInstance().getUserContained().isRegistered() && !UserRepository.getInstance().getUserContained().isAdministrator()){
+        System.out.println("================================================================\nSI ENTRA AQUI 1\n================================================================");
+        System.out.println("################################################################\nROLE: " + UserRepository.getInstance().getUserContained().getTypeUser() + "\n################################################################");
+        if (UserRepository.getInstance().getUserContained().isRegistered() && UserRepository.getInstance().getUserContained().getTypeUser().equals("General")){
+            UserRepository.getInstance().getUserContained().setTypeUser("Administrator");
             updateToAdministratorUser();
-            System.out.println("666666");
-        }if (!UserRepository.getInstance().getUserContained().isRegistered()){
-            System.out.println("USER UDPATE ====================================================================================================================================");
+            System.out.println("================================================================\nSI ENTRA AQUI 2\n================================================================");
+        } else {
             addAdministratorUser();
+            System.out.println("================================================================\nSI ENTRA AQUI 3\n================================================================");
         }
-        System.out.println("MAIN ACTIVITY================================================================================================");
-        System.out.println(UserRepository.getInstance().getUserContained().isRegistered());
-        System.out.println(UserRepository.getInstance().getUserContained().getTypeUser());
-        System.out.println("MAIN ACTIVITY================================================================================================");
     }
 
     /**

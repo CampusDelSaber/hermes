@@ -14,7 +14,7 @@ public class User {
     private String typeUser;
     private String id;
     private boolean isAdministrator;
-    private boolean isRegistered = true;
+    private boolean isRegistered;
 
     /**
      * Constructs a User object with the specified email, path to the user's image, and ID.
@@ -27,6 +27,7 @@ public class User {
         this.email = email;
         this.pathImageUser = pathImageUser;
         this.id = id;
+        this.isRegistered = true;
     }
 
     /**
@@ -44,6 +45,7 @@ public class User {
         this.userName = userName;
         this.typeUser = typeUser;
         this.pathImageUser = pathImageUser;
+        this.isRegistered = true;
     }
 
     /**
@@ -63,6 +65,7 @@ public class User {
         this.typeUser = typeUser;
         this.id = id;
         this.pathImageUser = pathImageUser;
+        this.isRegistered = true;
     }
 
     /**

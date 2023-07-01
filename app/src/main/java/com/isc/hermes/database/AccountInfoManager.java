@@ -43,8 +43,6 @@ public class AccountInfoManager {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addUser(String email, String fullName, String userName, String typeUser, String pathImageUser) {
         User user = new User( email, fullName, userName, typeUser, pathImageUser);
-        user.setRegistered(true);
-        UserRepository.getInstance().getUserContained().setRegistered(true);
         apiHandler.postFutureCollections(ACCOUNT_INFO_COLLECTION, user);
     }
 

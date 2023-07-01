@@ -11,9 +11,9 @@ import com.isc.hermes.MainActivity;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.TypeUser;
-import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
+
 import org.json.JSONException;
 
 import java.util.concurrent.ExecutionException;
@@ -41,7 +41,6 @@ public class SignUpTransitionHandler {
                     UserRepository.getInstance().getUserContained().getTypeUser(),
                     UserRepository.getInstance().getUserContained().getPathImageUser());
         try {
-            UserRepository.getInstance().getUserContained().setRegistered(true);
             UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(UserRepository.getInstance().getUserContained().getEmail()));}
         catch (ExecutionException | InterruptedException | JSONException e) {
             throw new RuntimeException(e); }

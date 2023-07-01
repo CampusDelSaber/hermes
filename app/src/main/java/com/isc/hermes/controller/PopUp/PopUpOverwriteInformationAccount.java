@@ -71,13 +71,9 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateTypeUser() {
-        if (UserRepository.getInstance().getUserContained().getTypeUser().
-                equals("Administrator") && !isModifiable) {
-            UserRepository.getInstance().getUserContained().setTypeUser("Administrator");
-            sendEmail();
-            Intent intent = new Intent(activity, EmailVerificationActivity.class);
-            activity.startActivity(intent);
-        }
+        sendEmail();
+        Intent intent = new Intent(activity, EmailVerificationActivity.class);
+        activity.startActivity(intent);
     }
 
     /**
