@@ -1,7 +1,11 @@
 package com.isc.hermes.database;
 
+import android.content.Context;
+
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.controller.GraphController;
+import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.controller.NavigationOptionsController;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.Node;
@@ -20,6 +24,7 @@ public class TrafficUploader extends IncidentsUploader {
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Graph graph;
     private GraphController graph2;
+    private NavigationOptionsController navigationOptionsController;
     /**
      * This method generates the current traffic coordinates.
      * <p>
@@ -29,7 +34,7 @@ public class TrafficUploader extends IncidentsUploader {
      *
      * @return The coordinates of the last clicked point in the format "[latitude, longitude]".
      */
-    public String getCoordinates() {
+    public String getCoordinatesTraffic() {
         if (dijkstraAlgorithm == null) {
             dijkstraAlgorithm = new DijkstraAlgorithm();
         }
@@ -56,6 +61,35 @@ public class TrafficUploader extends IncidentsUploader {
         return coordinates;
     }
 
+    public String getCoordinatesTraffic3(Context context, MapWayPointController mapWayPointController) {
+        if (dijkstraAlgorithm == null) {
+            dijkstraAlgorithm = new DijkstraAlgorithm();
+        }
+        String routeSelected = "Route A";
+        //TODO: This line must be received as a parameter to see which line to take from the network to be generated.
+
+
+        CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null).getCurrentLocationModel();
+        LatLng location = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng destiny = new LatLng(lastClickedPoint.getLatitude(), lastClickedPoint.getLongitude());
+
+        graph2 = new GraphController(location,destiny);
+
+        navigationOptionsController = new NavigationOptionsController(context,mapWayPointController);
+
+
+        Map<String, String> trafficLine =
+                dijkstraAlgorithm.getGeoJsonRoutes(
+                        graph2.getGraph(), graph2.getStartNode(),
+                        graph2.getDestinationNode(), TransportationType.CAR);
+
+        String route = trafficLine.get(routeSelected);
+        int indexCoordinates = route.indexOf("coordinates");
+        String coordinates = route.substring(indexCoordinates);
+        coordinates = coordinates.substring(13,coordinates.length()-2);
+        return coordinates;
+    }
+
     public String getCoordinates2() {
         if (dijkstraAlgorithm == null) {
             dijkstraAlgorithm = new DijkstraAlgorithm();
@@ -69,6 +103,9 @@ public class TrafficUploader extends IncidentsUploader {
         LatLng destiny = new LatLng(lastClickedPoint.getLatitude(), lastClickedPoint.getLongitude());
 
         graph2 = new GraphController(location,destiny);
+
+
+
 
         Map<String, String> trafficLine =
                 dijkstraAlgorithm.getGeoJsonRoutes(

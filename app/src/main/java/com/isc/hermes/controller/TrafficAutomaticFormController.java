@@ -18,6 +18,9 @@ public class TrafficAutomaticFormController {
     private final MapWayPointController mapController;
     private InfoRouteController infoRouteController ;
 
+    NavigationOptionsController navigationOptionsController ;
+
+
 
 
 
@@ -31,6 +34,7 @@ public class TrafficAutomaticFormController {
         this.context = context;
         this.mapController = mapController;
         this.infoRouteController = InfoRouteController.getInstance(context,  navigationOptionsController);
+        this.navigationOptionsController = new NavigationOptionsController(context,mapController);
 
     }
 
@@ -113,8 +117,10 @@ public class TrafficAutomaticFormController {
         String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getTrafficTime());
-        String coordinates = TrafficUploader.getInstance().getCoordinates();
+        String coordinates = TrafficUploader.getInstance().getCoordinatesTraffic();
         String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds()),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
+
+       // System.out.println("MIO: "+navigationOptionsController.getJson());
         return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
 
