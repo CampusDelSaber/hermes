@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -80,11 +81,23 @@ public class IncidentFormController {
     private void setButtonsOnClick() {
         cancelButton.setOnClickListener(v -> {
             new PopUpConfirmIncidentCanceling((AppCompatActivity) context).show();
+            hideKeyboard(v);
         });
 
         acceptButton.setOnClickListener(v -> {
             handleAcceptButtonClick();
+            hideKeyboard(v);
         });
+    }
+
+    /**
+     * This method hides the keyboard
+     *
+     * @param view View class
+     */
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     /**
@@ -95,6 +108,15 @@ public class IncidentFormController {
         incidentForm.startAnimation(Animations.exitAnimation);
         incidentForm.setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
+        resetDefaultIncidents();
+    }
+
+    /**
+     * This method resets the value of the text fields in the incidents form
+     */
+    private void resetDefaultIncidents(){
+        incidentText.setText("");
+        reasonTextField.getEditText().setText("");
     }
 
     /**
