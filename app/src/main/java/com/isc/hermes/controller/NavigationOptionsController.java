@@ -443,6 +443,8 @@ public class NavigationOptionsController {
         startRouteEstimationManager(jsonA);
         renderMapRoutes(geoJson);
     }
+
+    //TODO: complete Mau
     public String getJson() {
         String jsonA = routeOptions.getOrDefault("Route A", "");
         String jsonB = routeOptions.getOrDefault("Route B", "");
@@ -455,9 +457,7 @@ public class NavigationOptionsController {
 
         Gson gson = new Gson();
         String json = gson.toJson(geoJson);
-        System.out.println(routes);
-
-
+        System.out.println(routes.toString());
         return json;
     }
 

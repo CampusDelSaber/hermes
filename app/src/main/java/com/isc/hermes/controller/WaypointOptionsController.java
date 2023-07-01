@@ -79,6 +79,8 @@ public class WaypointOptionsController {
         reportTrafficButton.setOnClickListener(v -> {
 
             waypointOptions.startAnimation(Animations.exitAnimation);
+            //TODO: complete Mau
+
 
             System.out.println("MIO "+navigationOptionsFormController.getJson());
 
