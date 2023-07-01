@@ -12,6 +12,7 @@ import com.isc.hermes.SpacingItemDecoration;
 import com.isc.hermes.model.CategoryFilter;
 import com.isc.hermes.utils.CategoryFilterAdapter;
 import com.isc.hermes.utils.CategoryFilterClickListener;
+import com.isc.hermes.utils.AndroidServicesVerification;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.PlacesType;
@@ -41,6 +42,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     private CategoryFilterAdapter locationCategoryAdapter;
     private String lastClickedCategory = "";
     private boolean isMarkersShown = false;
+    private AndroidServicesVerification androidServicesVerification;
 
     /**
      * Constructs a new FilterCategoriesController with the specified activity.
@@ -49,6 +51,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     public FilterCategoriesController(AppCompatActivity activity) {
         this.activity = activity;
+        androidServicesVerification = new AndroidServicesVerification();
     }
 
     /**
@@ -147,7 +150,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     private LatLng getLocationEnable() {
         LatLng center;
-        if (CurrentLocationController.getControllerInstance(activity).locationEnabled()) {
+        if (androidServicesVerification.isLocationEnabled(activity)) {
             center = new LatLng(
                     CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLatitude(),
                     CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLongitude()
