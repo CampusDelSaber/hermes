@@ -125,6 +125,8 @@
                     android:id="@+id/textFieldFullName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:digits="@string/regexLetters"
                     tools:ignore="LabelFor,TextContrastCheck,VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -143,6 +145,8 @@
                     android:id="@+id/textFieldUserName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:digits="@string/regexUsernameCharacters"
                     tools:ignore="LabelFor,TextContrastCheck,VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 
