@@ -179,7 +179,6 @@ public class AccountInformation extends AppCompatActivity {
      * Updates the user information based on the values entered in the UI fields.
      */
     private  void updateInformationUser() {
-        //UserRepository.getInstance().getUserContained().setTypeUser(String.valueOf(comboBoxField.getText()));
         UserRepository.getInstance().getUserContained().setUserName(String.valueOf(textFieldUserName.getText()));
         UserRepository.getInstance().getUserContained().setFullName(String.valueOf(textFieldFullName.getText()));
     }
