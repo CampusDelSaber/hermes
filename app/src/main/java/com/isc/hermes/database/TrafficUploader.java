@@ -34,7 +34,7 @@ public class TrafficUploader extends IncidentsUploader {
      *
      * @return The coordinates of the last clicked point in the format "[latitude, longitude]".
      */
-    public String getCoordinatesTraffic() {
+    public String getCoordinates() {
         if (dijkstraAlgorithm == null) {
             dijkstraAlgorithm = new DijkstraAlgorithm();
         }

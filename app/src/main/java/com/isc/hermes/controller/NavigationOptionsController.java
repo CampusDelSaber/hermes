@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -442,6 +443,24 @@ public class NavigationOptionsController {
         startRouteEstimationManager(jsonA);
         renderMapRoutes(geoJson);
     }
+    public String getJson() {
+        String jsonA = routeOptions.getOrDefault("Route A", "");
+        String jsonB = routeOptions.getOrDefault("Route B", "");
+        String jsonC = routeOptions.getOrDefault("Route C", "");
+
+        String[] routes = {jsonC, jsonB, jsonA};
+        ArrayList<String> geoJson = new ArrayList<>();
+        for (String route : routes)
+            if (!route.isEmpty()) geoJson.add(route);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(geoJson);
+        System.out.println(routes);
+
+
+        return json;
+    }
+
 
     /**
      * This method render the routes on the map.

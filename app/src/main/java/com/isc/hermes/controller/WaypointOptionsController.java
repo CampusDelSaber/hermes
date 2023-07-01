@@ -80,6 +80,8 @@ public class WaypointOptionsController {
 
             waypointOptions.startAnimation(Animations.exitAnimation);
 
+            System.out.println("MIO "+navigationOptionsFormController.getJson());
+
 
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
                 @Override
