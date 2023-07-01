@@ -6,6 +6,11 @@ import android.view.View;
 import com.isc.hermes.R;
 import com.isc.hermes.controller.IncidentFormController;
 
+/**
+ * This class represents a popup dialog for confirming the
+ * act of cancelling an incident report.
+ * Extends the PopUp class.
+ */
 public class PopUpConfirmIncidentCanceling extends PopUp{
 
     /**
