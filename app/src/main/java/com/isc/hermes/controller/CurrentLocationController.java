@@ -1,7 +1,7 @@
 package com.isc.hermes.controller;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
+import android.location.LocationManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -122,7 +122,7 @@ public class CurrentLocationController {
     /**
      * Generates an instance of this class if an existing one is not found and returns it.
      *
-     * @param activity Receives an AppCompacActivity to generate changes to the activity passed to it.
+     * @param activity Receives an AppCompactActivity to generate changes to the activity passed to it.
      * @return Returns a instance of this class.
      */
     public static CurrentLocationController getControllerInstance(AppCompatActivity activity){
@@ -139,5 +139,29 @@ public class CurrentLocationController {
      */
     public CurrentLocationModel getCurrentLocationModel(){
         return currentLocationModel;
+    }
+
+    /**
+     * Checks if the location is enabled on the device.
+     * @return Returns true if the location is enabled, false otherwise.
+     */
+    public boolean locationEnabled() {
+        LocationManager lm = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return gps_enabled || network_enabled;
     }
 }

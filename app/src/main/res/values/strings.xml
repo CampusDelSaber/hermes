@@ -12,6 +12,8 @@
     <string name="informationSection">-- Your Information --</string>
     <string name="userName">Username</string>
     <string name="userID">User ID</string>
+    <string name="regexLetters">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="regexUsernameCharacters">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.-_</string>
     <string name="version"> Current Version: 0.0.0</string>
     <string name="access_token">sk.eyJ1IjoiaGVybWVzLW1hcHMiLCJhIjoiY2xpamxmbnQxMDg2aDNybGc0YmUzcHloaCJ9.__1WydgkE41IAuYtsob0jA</string>
     <string name="web_client_id">628551362001-osi4l1rcdiqt00got5n0hvn1akoc2una.apps.googleusercontent.com</string>
@@ -46,6 +48,7 @@
     <string name="close">Close</string>
     <string name="rerouting_message">Do you want to generate a new route to your destination from
         your current point?</string>
+    <string name="no_results_founds">No results found</string>
 
     <!--    Authentication Strings-->
     <string name="google">GOOGLE</string>
