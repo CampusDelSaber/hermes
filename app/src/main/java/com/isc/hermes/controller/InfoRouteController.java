@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,11 +29,8 @@ public class InfoRouteController {
     private static InfoRouteController instanceNavigationController;
     private ConstraintLayout layout;
     private boolean isActive;
-    private Button cancelButton;
-    private Button buttonRouteA;
-    private Button buttonRouteB;
-    private Button buttonRouteC;
-    private Button startNavigationButton;
+    private Button cancelButton, buttonRouteA, buttonRouteB, buttonRouteC,
+            startNavigationButton, recalculateRouteButton;
     private TextView timeText;
     private TextView distanceText;
     private ArrayList<Integer> colorsInfoRoutes;
@@ -91,9 +87,10 @@ public class InfoRouteController {
         buttonRouteC = activity.findViewById(R.id.ButtonRouteThree);
         buttonRouteB = activity.findViewById(R.id.ButtonRouteTwo);
         buttonRouteA = activity.findViewById(R.id.ButtonRouteOne);
+        recalculateRouteButton = activity.findViewById(R.id.recalculateFromCurrentLocation);
         buttonRouteB.setAlpha(0.3f);
         buttonRouteC.setAlpha(0.3f);
-        startNavigationButton = activity.findViewById(R.id.startNavegationButton);
+        startNavigationButton = activity.findViewById(R.id.startNavigationButton);
     }
 
     /**
@@ -117,15 +114,7 @@ public class InfoRouteController {
      */
     private void setActionButtons() {
         isActive = false;
-        cancelButton.setOnClickListener(v -> {
-            mapPolyline.hidePolylines();
-            layout.startAnimation(Animations.exitAnimation);
-            layout.setVisibility(View.GONE);
-            navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
-            navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
-            navigationOptionsController.getMapWayPointController().deleteMarks();
-            isActive = false;
-        });
+        cancelButton.setOnClickListener(v -> cancelNavigation());
 
         buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
                 true, false, false));
@@ -134,7 +123,34 @@ public class InfoRouteController {
         buttonRouteC.setOnClickListener(v -> setRouteInformation(0,
                 false, false, true));
 
-        startNavigationButton.setOnClickListener(v -> {
+        setNavigationButtonsVisibility();
+        setNavigationButtonsEvent();
+    }
+
+    private void cancelNavigation(){
+        mapPolyline.hidePolylines();
+        layout.startAnimation(Animations.exitAnimation);
+        layout.setVisibility(View.GONE);
+        navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
+        navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
+        navigationOptionsController.getMapWayPointController().deleteMarks();
+        isActive = false;
+    }
+
+    private void setNavigationButtonsVisibility(){
+        startNavigationButton.setVisibility(
+                navigationOptionsController.isCurrentLocationSelected() ? View.VISIBLE : View.GONE);
+        recalculateRouteButton.setVisibility(
+                navigationOptionsController.isCurrentLocationSelected() ? View.GONE : View.VISIBLE);
+    }
+    private void setNavigationButtonsEvent(){
+        recalculateRouteButton.setOnClickListener(event -> {
+            cancelNavigation();
+            navigationOptionsController.setIsCurrentLocationSelected(true);
+            navigationOptionsController.handleAcceptButtonClick();
+        });
+
+        startNavigationButton.setOnClickListener(event -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         });
@@ -143,7 +159,9 @@ public class InfoRouteController {
     /**
      * This method shows which route is selected
      */
-    private void setRouteInformation(int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected) {
+    private void setRouteInformation(
+            int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected
+    ) {
         setTimeAndDistanceInformation(jsonObjects.get(index));
         this.isRouteASelected = isRouteASelected;
         this.isRouteBSelected = isRouteBSelected;

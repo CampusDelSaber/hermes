@@ -124,10 +124,26 @@
                     android:layout_height="match_parent">
 
                     <Button
-                        android:id="@+id/startNavegationButton"
+                        android:id="@+id/startNavigationButton"
                         android:layout_width="218dp"
                         android:layout_height="47dp"
-                        android:text="START NAVIGATION"
+                        android:text="@string/start_navigation"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="247dp"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/recalculateFromCurrentLocation"
+                        android:layout_width="218dp"
+                        android:layout_height="47dp"
+                        android:text="@string/recalculate_from_current_location"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

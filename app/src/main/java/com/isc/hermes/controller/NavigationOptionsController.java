@@ -124,7 +124,10 @@ public class NavigationOptionsController {
             if (i != 0) button.setAlpha(0.3f);
             button.setOnClickListener(buttonClickListener);
         }
-        reroutingLayout.setOnClickListener(v -> handleReloadButtonClick());
+        reroutingLayout.setOnClickListener(v -> {
+            isCurrentLocationSelected = true;
+            handleAcceptButtonClick();
+        });
 
     }
 
@@ -145,12 +148,8 @@ public class NavigationOptionsController {
     /**
      * Creates an OnClickListener for the transportation type buttons.
      */
-    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+    private View.OnClickListener buttonClickListener = view ->
             handleTransportationTypeButtonClick((Button) view);
-        }
-    };
 
     /**
      * Method to manage the cancel button behavior
@@ -321,6 +320,7 @@ public class NavigationOptionsController {
                 Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
             }, 3000);
         } catch (Exception e) {
+            System.out.println("ERROR 1");
             handleErrorLoadingRoutes();
         }
     }
@@ -328,7 +328,7 @@ public class NavigationOptionsController {
     /**
      * This method handles the actions performed when the accept button is clicked.
      */
-    private void handleAcceptButtonClick() {
+    public void handleAcceptButtonClick() {
         handleHiddeItemsView();
         reroutingLayout.setVisibility(View.VISIBLE);
         isActive = false;
@@ -412,6 +412,7 @@ public class NavigationOptionsController {
                     graphController.getDestinationNode(), transportationType
             );
         } catch (JSONException e) {
+            System.out.println("ERROR 2");
             handleErrorLoadingRoutes();
         }
     }
@@ -454,9 +455,12 @@ public class NavigationOptionsController {
                 infoRouteController.showInfoRoute(geoJson, mapPolyline);
                 updateNavigatedRoute();
             } catch (Exception e){
+                System.out.println("ERROR 3");
+                e.printStackTrace();
                 handleErrorLoadingRoutes();
             }
         } else {
+            System.out.println("ERROR 4");
             handleErrorLoadingRoutes();
         }
     }
@@ -478,11 +482,14 @@ public class NavigationOptionsController {
     }
 
     private void startRouteEstimationManager(String JSONRoute){
-        UserRouteTracker tracker = new UserRouteTracker(JSONRoute);
-        routeEstimationManagerThread = new Thread(
-                () -> new RouteEstimatesManager(tracker, infoRouteController, transportationType).startUpdatingEstimations(),
-                "Estimation Thread");
-        routeEstimationManagerThread.start();
+
     }
 
+    public boolean isCurrentLocationSelected() {
+        return isCurrentLocationSelected;
+    }
+
+    public void setIsCurrentLocationSelected(boolean isCurrentLocationSelected) {
+        NavigationOptionsController.isCurrentLocationSelected = isCurrentLocationSelected;
+    }
 }
