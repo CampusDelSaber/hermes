@@ -1,5 +1,8 @@
 package com.isc.hermes.controller;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -119,8 +122,12 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     @Override
     public void onLocationCategoryClick(CategoryFilter locationCategory) {
-        LatLng center = getLocationEnable();
-        addAndRemoveMarkets(locationCategory, center);
+        if (androidServicesVerification.isInternetEnabled(activity)) {
+            LatLng center = getLocationEnable();
+            addAndRemoveMarkets(locationCategory, center);
+        } else {
+            showInternetDialog();
+        }
     }
 
     /**
@@ -165,12 +172,11 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      * @param tag the tag to search for
      */
     private void searchPlacesByTag(String tag, double latitude, double longitude) {
-        Point currentUserLocation = Point.fromLngLat(longitude, latitude);
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken(activity.getString(R.string.access_token))
                 .query(tag)
                 .geocodingTypes(GeocodingCriteria.TYPE_POI)
-                .proximity(currentUserLocation)
+                .proximity(Point.fromLngLat(longitude, latitude))
                 .limit(10)
                 .build();
 
@@ -206,5 +212,17 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
                 Toast.makeText(activity, R.string.no_results_founds, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void showInternetDialog() {
+        new AlertDialog.Builder(activity)
+                .setTitle("Internet Connection Needed")
+                .setMessage("You need internet access for this function. Do you want to enable it?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                    activity.startActivity(intent);
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 }

@@ -32,7 +32,7 @@ public class AndroidServicesVerification {
         return gps_enabled || network_enabled;
     }
 
-    private boolean isInternetEnabled(AppCompatActivity activity) {
+    public boolean isInternetEnabled(AppCompatActivity activity) {
         ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (cm != null) {
