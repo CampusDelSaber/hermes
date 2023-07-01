@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -77,13 +78,24 @@ public class IncidentFormController {
     private void setButtonsOnClick() {
         cancelButton.setOnClickListener(v -> {
             handleCancelButtonClick();
+            hideKeyboard(v);
         });
 
         acceptButton.setOnClickListener(v -> {
             handleAcceptButtonClick();
+            hideKeyboard(v);
         });
     }
 
+    /**
+     * This method hides the keyboard
+     *
+     * @param view View class
+     */
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
     /**
      * This method handles the actions performed when the cancel button is clicked.
      */
