@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
@@ -46,9 +45,7 @@ public class NavigationOptionsController {
             finalPointButton, currentLocationButton;
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
-    private LatLng startPoint, finalPoint;
-    private LatLng destination;
-    private LatLng start;
+    private LatLng startPoint, finalPoint, destination, start;
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
@@ -58,8 +55,8 @@ public class NavigationOptionsController {
     private ImageView reroutingButton;
     private LinearLayout reroutingLayout;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
-
     private Thread routeEstimationManagerThread;
+    private MapPolyline mapPolyline;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -77,6 +74,9 @@ public class NavigationOptionsController {
         setNavOptionsUiComponents();
         setButtons();
         dijkstraAlgorithm = DijkstraAlgorithm.getInstance();
+        mapPolyline = new MapPolyline();
+        polylineRouteUpdaterController =
+                new PolylineRouteUpdaterController(startPoint, destination, mapPolyline);
         setTransportationTypeOptions();
     }
 
@@ -125,7 +125,6 @@ public class NavigationOptionsController {
             button.setOnClickListener(buttonClickListener);
         }
         reroutingLayout.setOnClickListener(v -> handleReloadButtonClick());
-
     }
 
     /**
@@ -159,10 +158,12 @@ public class NavigationOptionsController {
         cancelButton.setOnClickListener(v -> {
             handleHiddeItemsView();
             isActive = false;
+            isCurrentLocationSelected = true;
             mapWayPointController.setMarked(false);
             mapWayPointController.deleteMarks();
             polylineRouteUpdaterController.setStartPoint(finalPoint);
-            routeEstimationManagerThread.interrupt();
+            if (routeEstimationManagerThread != null)
+                routeEstimationManagerThread.interrupt();
         });
     }
 
@@ -449,7 +450,6 @@ public class NavigationOptionsController {
      */
     private void renderMapRoutes(ArrayList<String> geoJson){
         if (geoJson.size() > 0){
-            MapPolyline mapPolyline = new MapPolyline();
             try{
                 infoRouteController.showInfoRoute(geoJson, mapPolyline);
                 updateNavigatedRoute();
