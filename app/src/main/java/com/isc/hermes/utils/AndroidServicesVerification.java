@@ -7,6 +7,9 @@ import android.net.NetworkInfo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This class is responsible for verifying the status of the Android services.
+ */
 public class AndroidServicesVerification {
     /**
      * Checks if the location is enabled on the device.
@@ -32,6 +35,11 @@ public class AndroidServicesVerification {
         return gps_enabled || network_enabled;
     }
 
+    /**
+     * Checks if the internet is enabled on the device.
+     * @param activity The activity instance.
+     * @return Returns true if the internet is enabled, false otherwise.
+     */
     public boolean isInternetEnabled(AppCompatActivity activity) {
         ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 

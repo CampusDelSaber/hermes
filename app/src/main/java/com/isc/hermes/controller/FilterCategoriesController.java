@@ -126,6 +126,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
             LatLng center = getLocationEnable();
             addAndRemoveMarkets(locationCategory, center);
         } else {
+            markerManager.removeAllMarkers(mapView);
             showInternetDialog();
         }
     }
@@ -214,6 +215,9 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
         }
     }
 
+    /**
+     * Shows a dialog to enable internet.
+     */
     private void showInternetDialog() {
         new AlertDialog.Builder(activity)
                 .setTitle("Internet Connection Needed")
