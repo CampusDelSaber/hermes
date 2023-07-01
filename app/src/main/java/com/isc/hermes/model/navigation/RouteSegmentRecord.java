@@ -7,7 +7,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
  * The RouteSegmentRecord class represents a segment of a route defined by its start and end coordinates.
  */
 public class RouteSegmentRecord {
-    private final LatLng start;
+    private LatLng start;
     private final LatLng end;
     private final double distance;
 
@@ -43,5 +43,9 @@ public class RouteSegmentRecord {
 
     public double getDistance() {
         return distance;
+    }
+
+    public void setStart(LatLng start) {
+        this.start = start;
     }
 }

@@ -177,6 +177,7 @@ public class InfoRouteController {
      * @param mapPolyline     The MapPolyline object for displaying the routes.
      */
     public void showInfoRoute(List<String> jsonCoordinates, MapPolyline mapPolyline) {
+        Toast.makeText(layout.getContext(), "Drawing routes", Toast.LENGTH_SHORT).show();
         this.mapPolyline = mapPolyline;
         isActive = true;
         layout.setVisibility(View.VISIBLE);
@@ -324,7 +325,6 @@ public class InfoRouteController {
             return;
         }
 
-        Toast.makeText(layout.getContext(), "Drawing routes", Toast.LENGTH_SHORT).show();
         liveRouteEstimationsWorker = new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
         liveRouteEstimationsWorker.startLiveUpdate((Thread t, Throwable e) -> {
             Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();

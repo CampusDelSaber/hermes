@@ -9,7 +9,8 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class NavigationTrackerTools {
     public static double USER_REACHED_DESTINATION_CRITERIA = 0.005;
     public static double USER_MOVED_CRITERIA = 0.001;
-    public static double USER_ON_TRACK_CRITERIA = 0.08;
+    public static double USER_ON_TRACK_CRITERIA = 0.02;
+    public static double USER_IN_RANGE_PRECISION = 0.001;
 
     /**
      * Checks if a point has been reached based on the target and the current point.
@@ -37,25 +38,36 @@ public class NavigationTrackerTools {
         LatLng lineStart = segment.getStart();
         LatLng lineEnd = segment.getEnd();
 
-        int floorComparative = Double.compare(lineStart.getLatitude(), point.getLatitude());
-        int ceilComparative = Double.compare(lineEnd.getLatitude(), point.getLatitude());
-        boolean isInsideHorizontalBounds  = (floorComparative >= 0) && (ceilComparative <= 0);
+        boolean isInsideHorizontalBounds  = isInRange(lineStart, lineEnd, point, USER_IN_RANGE_PRECISION);
         if (isLog){
-            System.err.println(String.format("INSIDE HORIZONTAL BOUNDARIES STATUS: %s", isInsideHorizontalBounds));
+            System.err.printf("INSIDE HORIZONTAL BOUNDARIES STATUS: %s\n", isInsideHorizontalBounds);
         }
 
         double pointToLineDistance = distanceCalculator.pointToLineDistance(point, lineStart, lineEnd);
         if (isLog){
-            System.err.println(String.format("User distance to point: %s", pointToLineDistance));
+            System.err.printf("User distance to point: %s\n", pointToLineDistance);
         }
 
         boolean isInsideVerticalBounds = (Double.compare(pointToLineDistance, USER_ON_TRACK_CRITERIA) <= 0);
         if (isLog){
-            System.err.println(String.format("INSIDE VERTICAL BOUNDARIES STATUS: %s", isInsideHorizontalBounds));
+            System.err.printf("INSIDE VERTICAL BOUNDARIES STATUS: %s\n", isInsideVerticalBounds);
         }
 
         return isInsideHorizontalBounds && isInsideVerticalBounds;
     }
+
+    public static boolean isInRange(LatLng floor, LatLng ceil, LatLng point, double precision) {
+        double minLat = Math.min(floor.getLatitude(), ceil.getLatitude());
+        double maxLat = Math.max(floor.getLatitude(), ceil.getLatitude());
+        double minLng = Math.min(floor.getLongitude(), ceil.getLongitude());
+        double maxLng = Math.max(floor.getLongitude(), ceil.getLongitude());
+
+        return (point.getLatitude() >= minLat - precision) &&
+                (point.getLatitude() <= maxLat + precision) &&
+                (point.getLongitude() >= minLng - precision) &&
+                (point.getLongitude() <= maxLng + precision);
+    }
+
 
     /**
      * Determines if a user has moved based on the distance between their current location

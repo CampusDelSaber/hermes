@@ -1,10 +1,14 @@
 package com.isc.hermes.model.navigation;
 
+import android.widget.Toast;
+
 import com.isc.hermes.controller.InfoRouteController;
 import com.isc.hermes.model.location.LocationIntervals;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
@@ -17,6 +21,7 @@ public class LiveRouteEstimationsWorker implements Runnable{
     private final TransportationType transportationType;
 
     private double totalEstimatedDistance;
+    private final AtomicBoolean canRun;
 
     /**
      * Constructs a new RouteEstimatesManager object.
@@ -29,6 +34,7 @@ public class LiveRouteEstimationsWorker implements Runnable{
         this.userRouteTracker = userRouteTracker;
         this.infoRouteController = infoRouteController;
         this.transportationType = transportationType;
+        canRun = new AtomicBoolean();
         setTimeDistanceEstimates(userRouteTracker.getRouteInformation());
     }
 
@@ -66,23 +72,27 @@ public class LiveRouteEstimationsWorker implements Runnable{
 
     @Override
     public void run() {
-        while (!userRouteTracker.hasUserArrived()) {
+        while (canRun.get()) {
+            if (userRouteTracker.hasUserArrived()){
+                Toast.makeText(infoRouteController.getLayout().getContext(), "User has arrived", Toast.LENGTH_SHORT).show();
+                break;
+            }
+
             if (userRouteTracker.hasUserMoved()) {
                 double distanceLeft = userRouteTracker.getTraveledDistance() + userRouteTracker.getUnvisitedRouteSize();
                 updateEstimatedArrivalDistance(distanceLeft);
                 updateEstimatedArrivalTime(distanceLeft);
             }
 
-            if (Thread.currentThread().isInterrupted()){
-               break;
-            }
-
             try {
                 Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
             } catch (InterruptedException e) {
-                System.out.println("Route Estimation Thread has been closed");
+                System.err.println("Route Estimation Thread has been interrupted");
+                canRun.set(false);
+                break;
             }
         }
+        System.out.println("Live estimations worker is closing");
     }
 
     /**
@@ -91,10 +101,11 @@ public class LiveRouteEstimationsWorker implements Runnable{
     public void startLiveUpdate(Thread.UncaughtExceptionHandler exceptionHandler) {
         Thread estimationsThread = new Thread(this, "Estimations Thread");
         estimationsThread.setUncaughtExceptionHandler(exceptionHandler);
+        canRun.set(true);
         estimationsThread.start();
     }
 
     public void stopLiveUpdate(){
-        Thread.currentThread().interrupt();
+        canRun.set(false);
     }
 }
