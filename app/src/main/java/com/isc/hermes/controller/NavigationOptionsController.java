@@ -18,18 +18,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
-import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+
 import org.json.JSONException;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import timber.log.Timber;
 
 
@@ -476,8 +478,6 @@ public class NavigationOptionsController {
     }
 
     private void startRouteEstimationManager(String JSONRoute){
-        UserRouteTracker tracker = new UserRouteTracker(JSONRoute);
-        infoRouteController.setLiveEstimationsUpdater(new LiveRouteEstimationsWorker(tracker, infoRouteController, transportationType));
+        infoRouteController.setLiveEstimationsUpdater(new UserRouteTracker(JSONRoute), transportationType);
     }
-
 }

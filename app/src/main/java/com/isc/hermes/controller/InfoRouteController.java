@@ -13,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
+import com.isc.hermes.model.navigation.TransportationType;
+import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 
 import org.json.JSONException;
@@ -121,13 +123,7 @@ public class InfoRouteController {
     private void setActionButtons() {
         isActive = false;
         cancelButton.setOnClickListener(v -> {
-            mapPolyline.hidePolylines();
-            layout.startAnimation(Animations.exitAnimation);
-            layout.setVisibility(View.GONE);
-            navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
-            navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
-            navigationOptionsController.getMapWayPointController().deleteMarks();
-            isActive = false;
+            stopNavigationMode();
             liveRouteEstimationsWorker.stopLiveUpdate();
         });
 
@@ -142,6 +138,16 @@ public class InfoRouteController {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         });
+    }
+
+    private void stopNavigationMode(){
+        mapPolyline.hidePolylines();
+        layout.startAnimation(Animations.exitAnimation);
+        layout.setVisibility(View.GONE);
+        navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
+        navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
+        navigationOptionsController.getMapWayPointController().deleteMarks();
+        isActive = false;
     }
 
     /**
@@ -307,15 +313,24 @@ public class InfoRouteController {
 
     /**
      * Sets the thread used for the live estimations
-     *
-     * @param liveRouteEstimationsWorker a Thread object
      */
-    public void setLiveEstimationsUpdater(LiveRouteEstimationsWorker liveRouteEstimationsWorker){
-        this.liveRouteEstimationsWorker = liveRouteEstimationsWorker;
-        liveRouteEstimationsWorker.startLiveUpdate((t, e) -> {
-            Toast.makeText(layout.getContext(), "Route live update interrupted", Toast.LENGTH_SHORT).show();
+    public void setLiveEstimationsUpdater(UserRouteTracker userRouteTracker, TransportationType transportationType){
+        try {
+            userRouteTracker.parseRoute();
+        }catch (Exception e){
+            Toast.makeText(layout.getContext(), "Could not start navigation mode", Toast.LENGTH_SHORT).show();
+            stopNavigationMode();
+            System.err.println(e.getMessage());
+            return;
+        }
+
+        Toast.makeText(layout.getContext(), "Drawing routes", Toast.LENGTH_SHORT).show();
+        liveRouteEstimationsWorker = new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
+        liveRouteEstimationsWorker.startLiveUpdate((Thread t, Throwable e) -> {
+            Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
+            t.interrupt();
             e.printStackTrace();
-            cancelButton.callOnClick();
+            stopNavigationMode();
         });
     }
 }

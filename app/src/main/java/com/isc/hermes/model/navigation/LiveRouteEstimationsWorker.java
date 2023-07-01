@@ -68,13 +68,9 @@ public class LiveRouteEstimationsWorker implements Runnable{
     public void run() {
         while (!userRouteTracker.hasUserArrived()) {
             if (userRouteTracker.hasUserMoved()) {
-                try {
-                    double distanceLeft = userRouteTracker.getTraveledDistance() + userRouteTracker.getUnvisitedRouteSize();
-                    updateEstimatedArrivalDistance(distanceLeft);
-                    updateEstimatedArrivalTime(distanceLeft);
-                }catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                double distanceLeft = userRouteTracker.getTraveledDistance() + userRouteTracker.getUnvisitedRouteSize();
+                updateEstimatedArrivalDistance(distanceLeft);
+                updateEstimatedArrivalTime(distanceLeft);
             }
 
             if (Thread.currentThread().isInterrupted()){
@@ -85,7 +81,6 @@ public class LiveRouteEstimationsWorker implements Runnable{
                 Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
             } catch (InterruptedException e) {
                 System.out.println("Route Estimation Thread has been closed");
-                throw new RuntimeException(e);
             }
         }
     }

@@ -8,28 +8,23 @@ import com.isc.hermes.model.navigation.exceptions.UserOutsideTrackException;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The UserRouteTracker class tracks the user's route and provides information about the user's progress.
  */
 public class UserRouteTracker {
-    public static final int GEO_JSON_LATITUDE = 1;
-    private static final int GEO_JSON_LONGITUDE = 0;
 
     private final CoordinatesDistanceCalculator distanceCalculator;
     private final CurrentLocationModel currentLocation;
 
-    private final List<RouteSegmentRecord> routeSegments;
+    private List<RouteSegmentRecord> routeSegments;
     private RouteSegmentRecord currentSegment;
     private int routeSegmentIndex;
     private JSONObject routeInformation;
-    private LatLng destination;
+    private LatLng usersDestination;
 
     private final UserLocationTracker userLocationTracker;
     private boolean isUserTrackLost;
@@ -49,13 +44,17 @@ public class UserRouteTracker {
         distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         currentLocation = CurrentLocationModel.getInstance();
         userLocationTracker = new UserLocationTracker();
-        routeSegments = makeRouteSegments();
         routeSegmentIndex = 0;
         isUserTrackLost = false;
-        initCurrentTrack();
     }
 
-    private void initCurrentTrack() {
+    public void parseRoute() {
+        routeSegments = NavigationRouteParser.makeRouteSegments(routeInformation);
+        if (routeSegments.isEmpty()){
+            throw new RouteOutOfTracksException("Could not start the navigation, route is empty");
+        }
+        usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
+
         try {
             updateCurrentRouteSegment(currentLocation.getLatLng());
         } catch (UserOutsideTrackException e) {
@@ -112,38 +111,6 @@ public class UserRouteTracker {
         }
     }
 
-    /**
-     * Creates a list of route segments from the route information.
-     *
-     * @return The list of route segments.
-     */
-    private List<RouteSegmentRecord> makeRouteSegments() {
-        List<RouteSegmentRecord> routeSegments = new ArrayList<>();
-        try {
-            JSONArray route = routeInformation.getJSONObject("geometry").getJSONArray("coordinates");
-            for (int i = 0; i < 10000; i++) {
-                if (route.optJSONArray(i) != null) {
-                    if (route.optJSONArray(i + 1) != null) {
-                        JSONArray start = route.getJSONArray(i);
-                        JSONArray end = route.getJSONArray(i + 1);
-                        routeSegments.add(new RouteSegmentRecord(
-                                new LatLng(start.getDouble(GEO_JSON_LATITUDE), start.getDouble(GEO_JSON_LONGITUDE)),
-                                new LatLng(end.getDouble(GEO_JSON_LATITUDE), end.getDouble(GEO_JSON_LONGITUDE))
-                        ));
-                    } else {
-                        JSONArray dest = route.getJSONArray(i);
-                        destination = new LatLng(dest.getDouble(GEO_JSON_LATITUDE), dest.getDouble(GEO_JSON_LONGITUDE));
-                        break;
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return routeSegments;
-    }
 
     /**
      * Checks if the user has arrived at the destination point.
@@ -151,7 +118,7 @@ public class UserRouteTracker {
      * @return true if the user has arrived, false otherwise.
      */
     public boolean hasUserArrived() {
-        return NavigationTrackerTools.isPointReached(destination, currentLocation.getLatLng());
+        return NavigationTrackerTools.isPointReached(usersDestination, currentLocation.getLatLng());
     }
 
     /**
