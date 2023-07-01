@@ -66,6 +66,27 @@ public class CoordinatesDistanceCalculator {
         return EARTH_RADIUS * centralAngle;
     }
 
+    public double pointToLineDistance(LatLng point, LatLng lineStart, LatLng lineEnd){
+        double x = convertToCartesian(point.getLongitude());
+        double y = convertToCartesian(point.getLatitude());
+
+        double x1 = convertToCartesian(lineStart.getLongitude());
+        double y1 = convertToCartesian(lineStart.getLatitude());
+
+        double x2 = convertToCartesian(lineEnd.getLongitude());
+        double y2 = convertToCartesian(lineEnd.getLatitude());
+
+        double A = y2 - y1;
+        double B = x1 - x2;
+        double C = (x2 * y1) - (x1 * y2);
+
+        return Math.abs((A * x) + (B * y) + C) / Math.sqrt((A * A) + (B * B));
+    }
+
+    private double convertToCartesian(double coord){
+       return Math.toRadians(coord) * EARTH_RADIUS;
+    }
+
     /**
      * Calculates the angular distance based on the given latitude and longitude differences.
      *

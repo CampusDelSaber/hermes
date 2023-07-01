@@ -5,12 +5,14 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
 import com.isc.hermes.utils.Animations;
 
 import org.json.JSONException;
@@ -43,7 +45,7 @@ public class InfoRouteController {
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
 
-    private Thread liveEstimationsThread;
+    private LiveRouteEstimationsWorker liveRouteEstimationsWorker;
 
 
     /**
@@ -126,7 +128,7 @@ public class InfoRouteController {
             navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
             navigationOptionsController.getMapWayPointController().deleteMarks();
             isActive = false;
-            liveEstimationsThread.interrupt();
+            liveRouteEstimationsWorker.stopLiveUpdate();
         });
 
         buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
@@ -306,9 +308,14 @@ public class InfoRouteController {
     /**
      * Sets the thread used for the live estimations
      *
-     * @param thread a Thread object
+     * @param liveRouteEstimationsWorker a Thread object
      */
-    public void setLiveEstimationsThread(Thread thread){
-        this.liveEstimationsThread = thread;
+    public void setLiveEstimationsUpdater(LiveRouteEstimationsWorker liveRouteEstimationsWorker){
+        this.liveRouteEstimationsWorker = liveRouteEstimationsWorker;
+        liveRouteEstimationsWorker.startLiveUpdate((t, e) -> {
+            Toast.makeText(layout.getContext(), "Route live update interrupted", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            cancelButton.callOnClick();
+        });
     }
 }

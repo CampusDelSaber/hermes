@@ -1,6 +1,10 @@
 package com.isc.hermes.model.navigation;
 
+import static com.isc.hermes.model.navigation.NavigationTrackerTools.isPointInsideSegment;
+
 import com.isc.hermes.model.CurrentLocationModel;
+import com.isc.hermes.model.navigation.exceptions.RouteOutOfTracksException;
+import com.isc.hermes.model.navigation.exceptions.UserOutsideTrackException;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -10,8 +14,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import timber.log.Timber;
 
 /**
  * The UserRouteTracker class tracks the user's route and provides information about the user's progress.
@@ -24,12 +26,13 @@ public class UserRouteTracker {
     private final CurrentLocationModel currentLocation;
 
     private final List<RouteSegmentRecord> routeSegments;
-    private RouteSegmentRecord currentRouteSegmentRecord;
-    private int routeIndex;
+    private RouteSegmentRecord currentSegment;
+    private int routeSegmentIndex;
     private JSONObject routeInformation;
     private LatLng destination;
 
-    private UserLocationTracker userLocationTracker;
+    private final UserLocationTracker userLocationTracker;
+    private boolean isUserTrackLost;
 
     /**
      * Constructs a UserRouteTracker object with the provided GeoJSON route information.
@@ -42,17 +45,21 @@ public class UserRouteTracker {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        currentRouteSegmentRecord = null;
+
         distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         currentLocation = CurrentLocationModel.getInstance();
         userLocationTracker = new UserLocationTracker();
         routeSegments = makeRouteSegments();
-        routeIndex = 0;
+        routeSegmentIndex = 0;
+        isUserTrackLost = false;
+        initCurrentTrack();
+    }
 
+    private void initCurrentTrack() {
         try {
             updateCurrentRouteSegment(currentLocation.getLatLng());
-        } catch (UserOutsideRouteException e) {
-            Timber.e(e.getMessage());
+        } catch (UserOutsideTrackException e) {
+            attemptRecoverUserTrack();
         }
     }
 
@@ -63,17 +70,24 @@ public class UserRouteTracker {
      */
     public double getTraveledDistance() {
         LatLng userLocation = currentLocation.getLatLng();
-        if (!isUserInSegment(userLocation)) {
-            try {
-                updateCurrentRouteSegment(userLocation);
-            } catch (UserOutsideRouteException e) {
-                Timber.e(e.getMessage());
+        if (!isUserTrackLost){
+            if (!isUserOnTrack(userLocation)) {
+                try {
+                    updateCurrentRouteSegment(userLocation);
+                } catch (UserOutsideTrackException e) {
+                    attemptRecoverUserTrack();
+                }
+
+                return distanceCalculator.calculateDistance(
+                        userLocation,
+                        currentSegment.getEnd()
+                );
             }
+        }else {
+            lookForUser();
         }
-        return distanceCalculator.calculateDistance(
-                userLocation,
-                currentRouteSegmentRecord.getEnd()
-        );
+
+        return 0.0;
     }
 
     /**
@@ -82,21 +96,19 @@ public class UserRouteTracker {
      * If the user is outside the current segment, a UserOutsideRouteException is thrown.
      *
      * @param userLocation The user's current location.
-     * @throws UserOutsideRouteException If the user is outside the current route segment.
+     * @throws UserOutsideTrackException If the user is outside the current route segment.
      */
-    private void updateCurrentRouteSegment(LatLng userLocation) throws UserOutsideRouteException {
-        if (!routeSegments.isEmpty()) {
-            currentRouteSegmentRecord = routeSegments.get(routeIndex);
+    private void updateCurrentRouteSegment(LatLng userLocation) throws UserOutsideTrackException {
+        if (!routeSegments.isEmpty() && routeSegmentIndex < routeSegments.size() ) {
+            currentSegment = routeSegments.get(routeSegmentIndex);
+            routeSegmentIndex++;
 
-            if (!NavigationTrackerTools.isInsideSegment(currentRouteSegmentRecord, userLocation)) {
-                throw new UserOutsideRouteException(currentRouteSegmentRecord, userLocation);
+            if (!isPointInsideSegment(currentSegment, userLocation, isUserTrackLost)) {
+                throw new UserOutsideTrackException(currentSegment, userLocation);
             }
 
-            if (routeIndex < routeSegments.size()) {
-                routeIndex++;
-            } else {
-                Timber.e("The current route has no more segments available");
-            }
+        }else {
+            throw new RouteOutOfTracksException("The current route does not have any more unvisited tracks");
         }
     }
 
@@ -148,9 +160,9 @@ public class UserRouteTracker {
      * @param userLocation The user's current location.
      * @return true if the user is inside the current route segment, false otherwise.
      */
-    public boolean isUserInSegment(LatLng userLocation) {
-        boolean isInsideSegment = NavigationTrackerTools.isInsideSegment(currentRouteSegmentRecord, userLocation);
-        boolean isEndReached = NavigationTrackerTools.isPointReached(currentRouteSegmentRecord.getEnd(), userLocation);
+    public boolean isUserOnTrack(LatLng userLocation) {
+        boolean isInsideSegment = isPointInsideSegment(currentSegment, userLocation, isUserTrackLost);
+        boolean isEndReached = NavigationTrackerTools.isPointReached(currentSegment.getEnd(), userLocation);
 
         return isInsideSegment && !isEndReached;
     }
@@ -166,7 +178,7 @@ public class UserRouteTracker {
 
     public double getUnvisitedRouteSize() {
         double totalDistance = 0.0;
-        for (int i = routeIndex; i < routeSegments.size(); i++) {
+        for (int i = routeSegmentIndex; i < routeSegments.size(); i++) {
             totalDistance += routeSegments.get(i).getDistance();
         }
 
@@ -175,5 +187,45 @@ public class UserRouteTracker {
 
     public boolean hasUserMoved() {
         return userLocationTracker.hasUserMoved();
+    }
+
+    private void attemptRecoverUserTrack() {
+        int immediateTrackIndex = routeSegmentIndex +1;
+        RouteSegmentRecord trackCandidate;
+        if (routeSegments.size() > immediateTrackIndex){
+            trackCandidate = routeSegments.get(routeSegmentIndex + 1);
+            if (isPointInsideSegment(trackCandidate, currentLocation.getLatLng(), isUserTrackLost)){
+                routeSegmentIndex++;
+                currentSegment = trackCandidate;
+                return;
+            }
+        }
+
+        if (!(routeSegmentIndex > 0)){
+            trackCandidate = routeSegments.get(routeSegmentIndex - 1);
+            if (isPointInsideSegment(trackCandidate, currentLocation.getLatLng(), isUserTrackLost)){
+                routeSegmentIndex--;
+                currentSegment = trackCandidate;
+                return;
+            }
+        }
+
+        isUserTrackLost = true;
+        System.err.println("Track of the user has been lost");
+    }
+
+    private void lookForUser(){
+        RouteSegmentRecord trackCandidate;
+        for (int index = routeSegmentIndex; index < routeSegments.size(); index++) {
+            trackCandidate = routeSegments.get(index);
+            LatLng userLocation = currentLocation.getLatLng();
+            if (isPointInsideSegment(trackCandidate, userLocation, isUserTrackLost)){
+                isUserTrackLost = false;
+                routeSegmentIndex = index;
+                currentSegment = trackCandidate;
+                System.out.println("User track was recuperated");
+            }
+        }
+        System.err.println("Attempt to look for the user in the track failed");
     }
 }

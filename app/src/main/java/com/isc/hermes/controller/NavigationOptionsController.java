@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
-import com.isc.hermes.model.navigation.RouteEstimatesManager;
+import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
@@ -57,8 +57,6 @@ public class NavigationOptionsController {
     private ImageView reroutingButton;
     private LinearLayout reroutingLayout;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
-
-    private Thread routeEstimationManagerThread;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -161,7 +159,6 @@ public class NavigationOptionsController {
             mapWayPointController.setMarked(false);
             mapWayPointController.deleteMarks();
             polylineRouteUpdaterController.setStartPoint(finalPoint);
-            routeEstimationManagerThread.interrupt();
         });
     }
 
@@ -437,8 +434,8 @@ public class NavigationOptionsController {
 
 
         // TODO: Use the best available route
-        startRouteEstimationManager(jsonA);
         renderMapRoutes(geoJson);
+        startRouteEstimationManager(jsonA);
     }
 
     /**
@@ -480,11 +477,7 @@ public class NavigationOptionsController {
 
     private void startRouteEstimationManager(String JSONRoute){
         UserRouteTracker tracker = new UserRouteTracker(JSONRoute);
-        routeEstimationManagerThread = new Thread(
-                () -> new RouteEstimatesManager(tracker, infoRouteController, transportationType).startUpdatingEstimations(),
-                "Estimation Thread");
-        routeEstimationManagerThread.start();
-        infoRouteController.setLiveEstimationsThread(routeEstimationManagerThread);
+        infoRouteController.setLiveEstimationsUpdater(new LiveRouteEstimationsWorker(tracker, infoRouteController, transportationType));
     }
 
 }

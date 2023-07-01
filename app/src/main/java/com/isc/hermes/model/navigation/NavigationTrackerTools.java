@@ -9,6 +9,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class NavigationTrackerTools {
     public static double USER_REACHED_DESTINATION_CRITERIA = 0.005;
     public static double USER_MOVED_CRITERIA = 0.001;
+    public static double USER_ON_TRACK_CRITERIA = 0.025;
 
     /**
      * Checks if a point has been reached based on the target and the current point.
@@ -20,8 +21,8 @@ public class NavigationTrackerTools {
     public static boolean isPointReached(LatLng target, LatLng point) {
         CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         double distance = distanceCalculator.calculateDistance(point, target);
-        int comparation = Double.compare(distance, USER_REACHED_DESTINATION_CRITERIA);
-        return comparation <= 0;
+        int comparative = Double.compare(distance, USER_REACHED_DESTINATION_CRITERIA);
+        return comparative <= 0;
     }
 
     /**
@@ -31,17 +32,29 @@ public class NavigationTrackerTools {
      * @param point   The point to check.
      * @return true if the point is inside the segment, false otherwise.
      */
-    public static boolean isInsideSegment(RouteSegmentRecord segment, LatLng point) {
-        int floorLng = Double.compare(segment.getStart().getLongitude(), point.getLongitude());
-        int floorLat = Double.compare(segment.getStart().getAltitude(), point.getLatitude());
+    public static boolean isPointInsideSegment(RouteSegmentRecord segment, LatLng point, boolean isLog) {
+        CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();
+        LatLng lineStart = segment.getStart();
+        LatLng lineEnd = segment.getEnd();
 
-        boolean isHigherThanLowerPoint = (floorLat >= 0) && (floorLng >= 0);
+        int floorComparative = Double.compare(lineStart.getLatitude(), point.getLatitude());
+        int ceilComparative = Double.compare(lineEnd.getLatitude(), point.getLatitude());
+        boolean isInsideHorizontalBounds  = (floorComparative >= 0) && (ceilComparative <= 0);
+        if (isLog){
+            System.err.println(String.format("INSIDE HORIZONTAL BOUNDARIES STATUS: %s", isInsideHorizontalBounds));
+        }
 
-        int ceilLng = Double.compare(segment.getEnd().getLongitude(), point.getLongitude());
-        int ceilLat = Double.compare(segment.getEnd().getAltitude(), point.getLatitude());
-        boolean isLowerThanHigherPoint = (ceilLat >= 0) && (ceilLng >= 0);
+        double pointToLineDistance = distanceCalculator.pointToLineDistance(point, lineStart, lineEnd);
+        if (isLog){
+            System.err.println(String.format("User distance to point: %s", pointToLineDistance));
+        }
 
-        return isLowerThanHigherPoint && isHigherThanLowerPoint;
+        boolean isInsideVerticalBounds = (Double.compare(pointToLineDistance, USER_ON_TRACK_CRITERIA) <= 0);
+        if (isLog){
+            System.err.println(String.format("INSIDE VERTICAL BOUNDARIES STATUS: %s", isInsideHorizontalBounds));
+        }
+
+        return isInsideHorizontalBounds && isInsideVerticalBounds;
     }
 
     /**
