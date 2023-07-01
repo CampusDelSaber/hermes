@@ -323,7 +323,6 @@ public class NavigationOptionsController {
                 Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
             }, 3000);
         } catch (Exception e) {
-            System.out.println("ERROR 1");
             handleErrorLoadingRoutes();
         }
     }
@@ -392,7 +391,6 @@ public class NavigationOptionsController {
                     graphController.getDestinationNode(), transportationType
             );
         } catch (JSONException e) {
-            System.out.println("ERROR 2");
             handleErrorLoadingRoutes();
         }
     }
@@ -434,12 +432,10 @@ public class NavigationOptionsController {
                 infoRouteController.showInfoRoute(geoJson, mapPolyline);
                 updateNavigatedRoute();
             } catch (Exception e){
-                System.out.println("ERROR 3");
                 e.printStackTrace();
                 handleErrorLoadingRoutes();
             }
         } else {
-            System.out.println("ERROR 4");
             handleErrorLoadingRoutes();
         }
     }
