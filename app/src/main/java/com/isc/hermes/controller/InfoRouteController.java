@@ -129,7 +129,9 @@ public class InfoRouteController {
         mapPolyline.hidePolylines();
         layout.startAnimation(Animations.exitAnimation);
         layout.setVisibility(View.GONE);
-        navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
+        if (navigationOptionsController.getNavOptionsForm().getVisibility() == View.VISIBLE)
+            navigationDirectionController.getDirectionsForm()
+                    .startAnimation(Animations.exitAnimation);
         navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
         navigationOptionsController.getMapWayPointController().deleteMarks();
         isActive = false;
