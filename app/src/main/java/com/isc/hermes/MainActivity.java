@@ -11,7 +11,6 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -38,7 +37,6 @@ import com.isc.hermes.utils.AndroidRequestActivation;
 import com.isc.hermes.utils.AndroidServicesVerification;
 import com.isc.hermes.utils.NetworkChangeReceiver;
 import com.isc.hermes.utils.OnNetworkChangeListener;
-import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -92,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
     private FilterController filterController;
     private TextView noInternetConnectionMessage;
     private AndroidRequestActivation androidRequestActivation;
+
+    private AndroidServicesVerification androidServicesVerification;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -336,23 +336,6 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
     }
 
     /**
-     * Method for detect if the network is connected or not.
-     * @param isConnected Boolean indicating whether the device is connected to the internet.
-     */
-    @Override
-    public void onNetworkChange(boolean isConnected) {
-        if (isConnected) {
-            searchView.setVisibility(View.VISIBLE);
-            filterController.getFiltersView().getFiltersButton().setVisibility(View.VISIBLE);
-            noInternetConnectionMessage.setVisibility(View.INVISIBLE);
-        } else {
-            searchView.setVisibility(View.INVISIBLE);
-            filterController.getFiltersView().getFiltersButton().setVisibility(View.INVISIBLE);
-            noInternetConnectionMessage.setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
      * Request internet connection.
      */
     private void internetRequest() {
@@ -589,8 +572,34 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         exitOffLineModeButton.setVisibility(View.VISIBLE);
         exitOffLineModeButton.setOnClickListener(v->{
             MapManager.getInstance().setOfflineMode(false);
-            MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
+            androidServicesVerification = new AndroidServicesVerification();
+            if (androidServicesVerification.isInternetEnabled(this)){
+                MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
+            }
             exitOffLineModeButton.setVisibility(View.GONE);
         });
+    }
+
+
+    /**
+     * Method for detect if the network is connected or not.
+     * @param isConnected Boolean indicating whether the device is connected to the internet.
+     */
+    @Override
+    public void onNetworkChange(boolean isConnected) {
+        if (isConnected) {
+            searchView.setVisibility(View.VISIBLE);
+            filterController.getFiltersView().getFiltersButton().setVisibility(View.VISIBLE);
+            noInternetConnectionMessage.setVisibility(View.INVISIBLE);
+            if (MapManager.getInstance().getMapboxMap()==null) return;
+            MapManager.getInstance().removeCurrentClickController();
+            if (!MapManager.getInstance().isOffLine())
+                MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
+        } else {
+            searchView.setVisibility(View.INVISIBLE);
+            filterController.getFiltersView().getFiltersButton().setVisibility(View.INVISIBLE);
+            noInternetConnectionMessage.setVisibility(View.VISIBLE);
+            MapManager.getInstance().removeCurrentClickController();
+        }
     }
 }
