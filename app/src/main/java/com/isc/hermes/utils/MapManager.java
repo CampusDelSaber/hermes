@@ -1,8 +1,6 @@
 package com.isc.hermes.utils;
 
 
-import android.content.Context;
-
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -16,8 +14,8 @@ public class MapManager {
 
     private static MapManager instance;
     private MapboxMap mapboxMap;
-
     private MapClickConfigurationController configurationController;
+    private boolean isOffLineMode;
 
 
     public static MapManager getInstance() {
@@ -67,4 +65,16 @@ public class MapManager {
     public MapboxMap getMapboxMap() {
         return this.mapboxMap;
     }
+
+    /**
+     * Method to set this class to offLine state
+     * @param isOfflineMode is param to set
+     */
+    public void setOfflineMode(boolean isOfflineMode){this.isOffLineMode = isOfflineMode;}
+
+    /**
+     * Method to obtain current state of manager
+     * @return True if is offline, False if is Online
+     */
+    public boolean isOffLine(){return this.isOffLineMode;}
 }
