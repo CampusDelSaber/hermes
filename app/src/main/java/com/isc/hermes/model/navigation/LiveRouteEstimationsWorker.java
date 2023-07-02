@@ -59,6 +59,7 @@ public class LiveRouteEstimationsWorker implements Runnable {
     private void updateEstimatedArrivalTime(double distance) {
         int totalEstimatedArrivalTime = (int) Math.ceil(((distance / transportationType.getVelocity()) * 60));
         infoRouteController.setEstimatedTimeInfo(totalEstimatedArrivalTime);
+        infoRouteController.setTimeEstimate(totalEstimatedArrivalTime);
     }
 
     /**

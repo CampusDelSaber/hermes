@@ -70,7 +70,6 @@ public class InfoRouteController {
         isRouteASelected = false;
         isRouteBSelected = false;
         isRouteCSelected = false;
-        timeEstimate = 30;
         jsonObjects = new ArrayList<>();
         setActionButtons();
     }
