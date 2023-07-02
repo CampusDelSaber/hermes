@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         filterController.setMapboxMap(mapboxMap);
-        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(mapStylesController.getMapStyle(), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
