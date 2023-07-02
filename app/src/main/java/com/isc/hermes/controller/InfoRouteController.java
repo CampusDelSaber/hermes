@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -268,7 +267,6 @@ public class InfoRouteController {
     private void setTimeAndDistanceInformation(JSONObject jsonObject) {
         setDistanceInfo(jsonObject);
         setEstimatedTimeInfo(jsonObject);
-        navigationDirectionController.processRoute(jsonObject);
     }
 
     /**
@@ -354,7 +352,7 @@ public class InfoRouteController {
         try {
             userRouteTracker.parseRoute();
             new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
-            new RouteDirectionsProvider(userRouteTracker);
+            new RouteDirectionsProvider(userRouteTracker, navigationDirectionController);
             navigationOrchestrator = new NavigationOrchestrator(userRouteTracker);
             navigationOrchestrator.startNavigationMode((t, e) -> {
                 Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
