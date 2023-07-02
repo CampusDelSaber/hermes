@@ -31,6 +31,8 @@ public class LastActivityHelper {
      */
     public static String getLastActivity(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_LAST_ACTIVITY, "");
+        String lastActivityName = sharedPreferences.getString(KEY_LAST_ACTIVITY, "");
+        saveLastActivity(context,"");
+        return  lastActivityName;
     }
 }

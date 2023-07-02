@@ -225,8 +225,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
     private void verificationCodeUpdate(Intent intent){
         VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
         verificationCodesManager.updateVerificationCode(validator.getId(), false);
-        startActivity(intent);
-        setResult(RESULT_OK);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

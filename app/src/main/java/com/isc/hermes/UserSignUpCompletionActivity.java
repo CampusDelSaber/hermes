@@ -25,6 +25,8 @@ import com.isc.hermes.model.signup.SignUpTransitionHandler;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.lifecycle.LastActivityHelper;
 
+import java.sql.SQLOutput;
+
 /**
  * This class is used  for completing the user sign-up process.
  * This activity allows the user to enter additional information to complete their registration.
@@ -60,7 +62,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * Charges information about the user in the text fields.
      * Sets the name, username, and email of the user to the respective TextView and AutoCompleteTextView components.
      */
-    private void loadInformationAboutUserInTextFields(){
+    private void loadInformationAboutUserInTextFields() {
         textNameComplete.setText(UserRepository.getInstance().getUserContained().getFullName());
         textFieldUserName.setText(UserRepository.getInstance().getUserContained().getUserName());
         textFieldEmail.setText(UserRepository.getInstance().getUserContained().getEmail());
@@ -105,7 +107,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(v -> {
             if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
                 UserRepository.getInstance().getUserContained().setAdministrator(false);
-                new SignUpTransitionHandler().transitionBasedOnRole(this,verificationLauncher);
+                new SignUpTransitionHandler().transitionBasedOnRole(this, verificationLauncher);
             } else comboBoxTextField.setHelperText("Required");
         });
     }
@@ -147,7 +149,12 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      */
     private ActivityResultLauncher<Intent> createActivityResult() {
         return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {if (result.getResultCode() == RESULT_OK) {finish();}});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        startActivity(result.getData());
+                        finish();
+                    }
+                });
     }
 
     @Override

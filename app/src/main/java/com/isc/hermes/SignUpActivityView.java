@@ -92,7 +92,7 @@ public class SignUpActivityView extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         lastActivityStatus();
-        Intent intent = ActivityStackManager.getInstance(this).verifyTop();
+        Intent intent = ActivityStackManager.getInstance(this).getForeground();
         if (intent != null) {
             startActivity(intent);
             finish();
@@ -109,7 +109,6 @@ public class SignUpActivityView extends AppCompatActivity {
     private void getUserDependingAbleNetwork(IAuthentication authentication) {
 
         if (authentication.checkUserSignIn(this)) {
-
             authenticator = authentication;
             User user = null;
             if (NetworkManager.isOnline(this)) {
