@@ -76,30 +76,93 @@ public class CurrentLocationController {
     }
 
     /**
-     * Method for enabling the location component on the map.
+     * The isLocationEnabled method checks if the location is enabled on the device.
+     *<p>
+     * It verifies by checking the status of the GPS location is enabled, this
+     * will be given in a boolean and it will check for network room verification.
+     * </p>
+     * @return true if GPS is enabled, otherwise false.
+     */
+    private boolean isLocationEnabled() {
+        LocationManager locationManager =
+                (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+
+        boolean gpsEnabled =
+                locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean networkEnabled =
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        return gpsEnabled || networkEnabled;
+    }
+
+    /**
+     * The method is going to check for enabling the location components on the map.
      */
     @SuppressWarnings("MissingPermission")
     private void enableLocationComponent() {
         if (locationPermissionsController.checkLocationPermissions()) {
-            LocationComponentOptions locationComponentOptions =
-                    LocationComponentOptions.builder(activity).pulseEnabled(true).build();
+            if (isLocationEnabled()) {
+                activateLocationComponent();
+            } else {
+                showMessageToEnableGps();
+            }
+        } else {
+            requestLocationPermissions();
+        }
+    }
 
-            LocationComponentActivationOptions locationComponentActivationOptions =
-                    LocationComponentActivationOptions.builder(
-                                    activity, Objects.requireNonNull(mapboxMap.getStyle()))
-                            .locationComponentOptions(locationComponentOptions).build();
+    /**
+     * The activateLocationComponent method is responsible for activating the location component.
+     */
+    private void activateLocationComponent() {
+        LocationComponentOptions locationComponentOptions =
+                LocationComponentOptions.builder(activity).pulseEnabled(true).build();
 
-            mapboxMap.getLocationComponent().activateLocationComponent(
-                    locationComponentActivationOptions
-            );
-            mapboxMap.getLocationComponent().setLocationComponentEnabled(true);
-            mapboxMap.getLocationComponent().setCameraMode(CameraMode.TRACKING);
-            mapboxMap.getLocationComponent().setRenderMode(RenderMode.COMPASS);
+        LocationComponentActivationOptions locationComponentActivationOptions =
+                LocationComponentActivationOptions.builder(
+                                activity, Objects.requireNonNull(mapboxMap.getStyle()))
+                        .locationComponentOptions(locationComponentOptions).build();
 
+        if (isLocationEnabled()) {
+            activateLocation(locationComponentActivationOptions);
             onLocationEngineConnected();
         } else {
-            locationPermissionsController.requestLocationPermissionAccess();
+            showMessageToEnableGps();
         }
+    }
+
+    /**
+     * Displays the message to enable GPS on the device.
+     */
+    private void showMessageToEnableGps() {
+        Toast.makeText(activity, "Please, turn on your GPS.", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * This method requests location permissions.
+     * <p>
+     * Method is in charge of requesting the location permissions if they are not present.
+     * </p>
+     */
+    private void requestLocationPermissions() {
+        locationPermissionsController.requestLocationPermissionAccess();
+    }
+
+    /**
+     * Activates the location component with the given options.
+     *
+     * @param locationComponentActivationOptions The options to activate the location component.
+     */
+    @SuppressLint("MissingPermission")
+    private void activateLocation(
+            LocationComponentActivationOptions locationComponentActivationOptions
+    ) {
+        mapboxMap.getLocationComponent().activateLocationComponent(
+                locationComponentActivationOptions
+        );
+        mapboxMap.getLocationComponent().setLocationComponentEnabled(true);
+        mapboxMap.getLocationComponent().setCameraMode(CameraMode.TRACKING);
+        mapboxMap.getLocationComponent().setRenderMode(RenderMode.COMPASS);
     }
 
     /**
