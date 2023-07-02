@@ -155,7 +155,6 @@ public class InfoRouteController {
             navigationDirectionController.getDirectionsForm()
                     .startAnimation(Animations.exitAnimation);
         navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
-        navigationOptionsController.getMapWayPointController().deleteMarks();
         isActive = false;
     }
 
