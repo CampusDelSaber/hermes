@@ -265,7 +265,7 @@ public class NavigationOptionsController {
      * @return The formatted string in the format "Lt: {latitude}\nLg: {longitude}".
      */
     private String formatLatLng(double latitude, double longitude) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.######");
+        DecimalFormat decimalFormat = new DecimalFormat("#.#######");
         String formattedLatitude = decimalFormat.format(latitude);
         String formattedLongitude = decimalFormat.format(longitude);
         return "Lt: " + formattedLatitude + "\n" + "Lg: " + formattedLongitude;
@@ -331,17 +331,24 @@ public class NavigationOptionsController {
             if (isCurrentLocationSelected) startPoint = CurrentLocationModel.getInstance().getLatLng();
             GraphController graphController = new GraphController(startPoint, finalPoint);
             markStartEndPoint(startPoint, finalPoint);
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setView(R.layout.loader_route_dialog);
-            builder.setCancelable(false);
-            progressDialog = builder.create();
-            progressDialog.show();
+            showLoaderAlertLabel();
             manageGraphBuilding(graphController);
-        }
+        } else showAlertToChangeStartPoint();
+    }
+
+    private void showLoaderAlertLabel() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(R.layout.loader_route_dialog);
+        builder.setCancelable(false);
+        progressDialog = builder.create();
+        progressDialog.show();
+    }
+
+    private void showAlertToChangeStartPoint() {
+        Toast.makeText(context, R.string.choose_start_again, Toast.LENGTH_SHORT).show();
     }
 
     private boolean isStartEqualsDestinationPoint() {
-        System.out.println(startPoint.getLatitude()+" "+finalPoint.getLatitude()+" aAAAAAA");
         return startPoint.getLatitude() == finalPoint.getLatitude() &&
                 startPoint.getLongitude() == finalPoint.getLongitude();
     };
