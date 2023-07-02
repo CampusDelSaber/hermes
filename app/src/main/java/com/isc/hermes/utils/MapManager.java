@@ -16,8 +16,9 @@ public class MapManager {
 
     private static MapManager instance;
     private MapboxMap mapboxMap;
-
     private MapClickConfigurationController configurationController;
+
+    private String mapStyleUri = "mapbox://styles/mapbox/streets-v11";
 
 
     public static MapManager getInstance() {
@@ -32,6 +33,15 @@ public class MapManager {
      */
     public void setMapboxMap(MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
+    }
+
+
+    /**
+     * Method to obtain current mapbox map
+     * @return map from this class
+     */
+    public MapboxMap getMapboxMap() {
+        return this.mapboxMap;
     }
 
     /**
@@ -61,10 +71,14 @@ public class MapManager {
     }
 
     /**
-     * Method to obtain current mapbox map
-     * @return map from this class
+     * Method to obtain current may Style ID (Uri)
+     * @return
      */
-    public MapboxMap getMapboxMap() {
-        return this.mapboxMap;
-    }
+    public String getMapStyleUri() {return mapStyleUri;}
+
+    /**
+     * Method to set Style to map
+     * @param mapStyleUri is map to Style
+     */
+    public void setMapStyleUri(String mapStyleUri) {this.mapStyleUri = mapStyleUri;}
 }

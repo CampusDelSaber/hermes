@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         FilterController filterController = new FilterController(mapboxMap, this);
-        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(MapManager.getInstance().getMapStyleUri().toString(), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
@@ -368,7 +368,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
         styleOptionsWindow.setVisibility(View.GONE);
         mapStyle = ((ImageButton) view).getTag().toString();
-        MapManager.getInstance().getMapboxMap().setStyle(mapStyle);
+        MapManager.getInstance().setMapStyleUri(mapStyle);
+        MapManager.getInstance().getMapboxMap().setStyle(MapManager.getInstance().getMapStyleUri().toString());
     }
 
     /**
