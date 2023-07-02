@@ -265,7 +265,7 @@ public class NavigationOptionsController {
      * @return The formatted string in the format "Lt: {latitude}\nLg: {longitude}".
      */
     private String formatLatLng(double latitude, double longitude) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
+        DecimalFormat decimalFormat = new DecimalFormat("#.######");
         String formattedLatitude = decimalFormat.format(latitude);
         String formattedLongitude = decimalFormat.format(longitude);
         return "Lt: " + formattedLatitude + "\n" + "Lg: " + formattedLongitude;
