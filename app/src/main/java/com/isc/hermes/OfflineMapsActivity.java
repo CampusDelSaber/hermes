@@ -65,6 +65,7 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
         vBoxDownloadedMaps = findViewById(R.id.vBoxMapsDownloaded);
         CardViewHandler.getInstance().addObserver(this);
         launcher = createActivityResult();
+        ((AppManager) getApplication()).setLastActivity(this);
     }
 
 
@@ -298,5 +299,11 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
     private void setChangesToApplicationData( OfflineRegion targetRegion, String previousName, String newName){
         MapboxOfflineManager.getInstance(this).getOfflineRegions().put(newName, targetRegion);
         MapboxOfflineManager.getInstance(this).getOfflineRegions().remove(previousName);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((AppManager) getApplication()).setLastActivity(null);
     }
 }

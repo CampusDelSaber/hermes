@@ -42,6 +42,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
         this.popUpToConfirmUser = new PopUpContinueLikeGeneralUser(this);
         this.warningPopUp = new PopUpWarningIncorrectData(this);
         initComponents();
+        ((AppManager)getApplication()).setLastActivity(this);
     }
 
     /**
@@ -260,5 +261,11 @@ public class EmailVerificationActivity extends AppCompatActivity {
         super.onBackPressed();
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((AppManager) getApplication()).setLastActivity(null);
     }
 }

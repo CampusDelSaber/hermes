@@ -18,14 +18,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
-import com.isc.hermes.controller.offline.OfflineDataRepository;
-import com.isc.hermes.model.RegionData;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.signup.SignUpTransitionHandler;
 import com.isc.hermes.model.User.UserRepository;
-import com.isc.hermes.utils.lifecycle.LastActivityHelper;
-
-import java.sql.SQLOutput;
+import com.isc.hermes.utils.lifecycle.LastSessionTracker;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -138,7 +134,8 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         loadUserImageInView();
         loadInformationAboutUserInTextFields();
         verificationLauncher = createActivityResult();
-        LastActivityHelper.saveLastActivity(this, getClass().getSimpleName());
+        LastSessionTracker.saveLastActivity(this, getClass().getSimpleName());
+        ((AppManager) getApplication()).setLastActivity(this);
     }
 
 
@@ -160,6 +157,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        ((AppManager) getApplication()).setLastActivity(null);
         Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
         finish();
@@ -168,6 +166,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LastActivityHelper.saveLastActivity(this, "");
+        ((AppManager) getApplication()).setLastActivity(null);
+        LastSessionTracker.saveLastActivity(this, "");
     }
 }

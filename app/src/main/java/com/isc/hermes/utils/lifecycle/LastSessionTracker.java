@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 /**
  * This is a helper class for saving and retrieving the name of the last activity created using SharedPreferences.
  */
-public class LastActivityHelper {
+public class LastSessionTracker {
     private static final String PREFS_NAME = "LastActivityPrefs";
     private static final String KEY_LAST_ACTIVITY = "lastActivity";
 

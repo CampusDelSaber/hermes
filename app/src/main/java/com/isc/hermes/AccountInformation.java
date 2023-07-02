@@ -97,6 +97,7 @@ public class AccountInformation extends AppCompatActivity {
         updateComponentsByUserInformation();
         generateActionToComboBox();
         initializePopups();
+        ((AppManager) getApplication()).setLastActivity(this);
     }
 
     /**
@@ -235,5 +236,11 @@ public class AccountInformation extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         goToPrincipalView(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((AppManager) getApplication()).setLastActivity(null);
     }
 }

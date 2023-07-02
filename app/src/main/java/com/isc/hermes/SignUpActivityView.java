@@ -13,7 +13,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.api.ApiException;
-import com.isc.hermes.utils.lifecycle.ActivityStackManager;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
@@ -21,7 +20,7 @@ import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Utils.DataAccountOffline;
-import com.isc.hermes.utils.lifecycle.LastActivityHelper;
+import com.isc.hermes.utils.lifecycle.LastSessionTracker;
 import com.isc.hermes.utils.offline.NetworkManager;
 
 import org.json.JSONException;
@@ -92,7 +91,7 @@ public class SignUpActivityView extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         lastActivityStatus();
-        Intent intent = ActivityStackManager.getInstance(this).getForeground();
+        Intent intent = ((AppManager)getApplication()).getLastActivity();
         if (intent != null) {
             startActivity(intent);
             finish();
@@ -218,7 +217,7 @@ public class SignUpActivityView extends AppCompatActivity {
      * from all available authentication services.
      */
     private void lastActivityStatus() {
-        if (LastActivityHelper.getLastActivity(this).equals(UserSignUpCompletionActivity.class.getSimpleName())) {
+        if (LastSessionTracker.getLastActivity(this).equals(UserSignUpCompletionActivity.class.getSimpleName())) {
             authenticationServices.forEach((authType, authService) -> {
                 if (authService.checkUserSignIn(this)) {
                     authService.signOut(this);
