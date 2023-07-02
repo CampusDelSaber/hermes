@@ -19,12 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-
 /**
  * Class to get the turn by turn directions from the route chosen
  */
@@ -33,8 +27,6 @@ public class NavigationDirectionController {
     private final RelativeLayout directionsForm;
     private TextView directionsList;
     private Button closeButton;
-    private static final String BASE_URL = "https://nominatim.openstreetmap.org/reverse";
-
 
     /**
      * Constructor for the NavigationDirectionController class.
@@ -134,35 +126,23 @@ public class NavigationDirectionController {
      * @return The street name associated with the coordinates.
      */
     private String getStreetNameForCoordinates(double latitude, double longitude) {
-        OkHttpClient client = new OkHttpClient();
-
-        // Parámetros
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
-        urlBuilder.addQueryParameter("format", "geocodejson");
-        urlBuilder.addQueryParameter("lat", String.valueOf(latitude));
-        urlBuilder.addQueryParameter("lon", String.valueOf(longitude));
-        String url = urlBuilder.build().toString();
+        Geocoder geocoder = new Geocoder(context);
+        String streetName = "";
 
         try {
-            // Petición HTTP GET
-            Request request = new Request.Builder()
-                    .url(url)
-                    .addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36")
-                    .build();
-            Response response = client.newCall(request).execute();
-            System.out.println("Petición HTTP GET a la URL: " + response.request().url() + " | Código de estado: " + response.code());
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
-            // Obtener el nombre de la calle
-            JSONObject jsonObject = new JSONObject(response.body().string());
-            JSONArray featuresArray = jsonObject.getJSONArray("features");
-            JSONObject propertiesObject = featuresArray.getJSONObject(0).getJSONObject("properties").getJSONObject("geocoding");
-            return propertiesObject.getString("road");
-
-        } catch (IOException | JSONException e) {
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                streetName = address.getThoroughfare();
+                if (streetName == null)
+                    streetName = address.getAddressLine(0);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return "";
+        return streetName;
     }
 
     /**
