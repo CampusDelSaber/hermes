@@ -96,9 +96,6 @@ public class WaypointOptionsController {
 
             task.execute();
             waypointOptions.setVisibility(View.GONE);
-            incidentFormController.getMapController().deleteMarks();
-
-
         });
 
         reportNaturalDisasterButton.setOnClickListener(v->{
