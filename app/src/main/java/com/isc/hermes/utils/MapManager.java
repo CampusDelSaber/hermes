@@ -1,8 +1,6 @@
 package com.isc.hermes.utils;
 
 
-import android.content.Context;
-
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
