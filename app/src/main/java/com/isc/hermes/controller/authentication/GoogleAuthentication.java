@@ -15,6 +15,8 @@ import com.isc.hermes.R;
 import com.isc.hermes.model.User.User;
 import java.util.Objects;
 
+import timber.log.Timber;
+
 /**
  * This class is in charge of authentication by the google service
  */
@@ -55,13 +57,8 @@ public class GoogleAuthentication implements IAuthentication {
      */
     public void signOut(Context context){
         configureAccess(context);
-        googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(context, "Your account was closed successfully",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            Timber.i("App closes Successfully");});
     }
 
     /**
