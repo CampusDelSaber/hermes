@@ -24,7 +24,6 @@ import java.util.List;
  */
 public class MapPolyline {
     private final MapboxMap mapboxMap;
-    private List<List<Point>> allPoints;
     private ArrayList<GeoJsonSource> idPolyLinesList;
 
 
@@ -33,7 +32,6 @@ public class MapPolyline {
      */
     public MapPolyline() {
         mapboxMap = MapManager.getInstance().getMapboxMap();
-        this.allPoints = new ArrayList<>();
         idPolyLinesList = new ArrayList<>();
     }
 
@@ -46,9 +44,7 @@ public class MapPolyline {
     public void displaySavedCoordinates(List<String> geoJson, List<Integer> colors){
         List<List<Point>> coordinates = new ArrayList<>();
         extractCoordinates(coordinates, geoJson);
-
-        MapPolyline mapPolyline = new MapPolyline();
-        mapPolyline.drawPolyline(coordinates,colors);
+        drawPolyline(coordinates,colors);
     }
 
     /**

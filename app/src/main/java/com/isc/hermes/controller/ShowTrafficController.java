@@ -63,6 +63,8 @@ public class ShowTrafficController {
         createTraffic(incidentsArrayNormal, "Normal Traffic");
         createTraffic(incidentsArrayLow, "Low Traffic");
         createTraffic(incidentsArrayHigh, "High Traffic");
+        System.out.println("ESTO"+ incidentsArrayHigh.toString());
+        System.out.println("ESTO"+ incidentsArrayHigh.length());
     }
 
     /**
