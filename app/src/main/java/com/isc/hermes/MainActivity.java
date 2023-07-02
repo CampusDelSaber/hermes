@@ -1,17 +1,20 @@
 package com.isc.hermes;
 
-import static com.mongodb.assertions.Assertions.assertNotNull;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +34,10 @@ import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.utils.AndroidRequestActivation;
+import com.isc.hermes.utils.AndroidServicesVerification;
+import com.isc.hermes.utils.NetworkChangeReceiver;
+import com.isc.hermes.utils.OnNetworkChangeListener;
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -38,7 +45,6 @@ import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.database.AccountInfoManager;
 
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.incidents.GeometryType;
@@ -53,11 +59,13 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
+import timber.log.Timber;
+
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnNetworkChangeListener, OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private CurrentLocationController currentLocationController;
@@ -77,7 +85,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private String mapStyle;
     private ImageButton buttonClear;
+    private Button exitOffLineModeButton;
     private final String resetSearchText = "Search...";
+    private NetworkChangeReceiver networkChangeReceiver;
+    private FilterController filterController;
+    private TextView noInternetConnectionMessage;
+    private AndroidRequestActivation androidRequestActivation;
+
+    private AndroidServicesVerification androidServicesVerification;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -107,6 +122,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
+        internetRequest();
+        filterController = new FilterController(this);
+        androidRequestActivation = new AndroidRequestActivation();
         try{
             setTheUserInformationInTheDropMenu();
         } catch(Exception e){
@@ -125,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchView.setTextColor(Color.BLACK);
         buttonClear = findViewById(R.id.buttonClear);
         buttonClear.setVisibility(View.GONE);
+        noInternetConnectionMessage = findViewById(R.id.noInternetTextView);
+        noInternetConnectionMessage.setPaintFlags(noInternetConnectionMessage.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
     /**
@@ -148,13 +168,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
-        FilterController filterController = new FilterController(mapboxMap, this);
+        filterController.setMapboxMap(mapboxMap);
         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
         MapManager.getInstance().setMapboxMap(mapboxMap);
-        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
+        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
     }
 
     /**
@@ -279,6 +299,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         super.onStart();
+        networkChangeReceiver = new NetworkChangeReceiver(this);
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(networkChangeReceiver, intentFilter);
     }
 
     /**
@@ -294,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         addMarkers();
         onActionButtonClear();
+        handleOffLineMode();
     }
 
     /**
@@ -311,11 +336,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     * Request internet connection.
+     */
+    private void internetRequest() {
+        noInternetConnectionMessage.setOnClickListener(v -> {
+            if (noInternetConnectionMessage.getVisibility() == View.VISIBLE) androidRequestActivation.showInternetRequest(this);
+        });
+    }
+
+    /**
      * Method for stopping the MapView object instance.
      */
     @Override
     protected void onStop() {
         super.onStop();
+        unregisterReceiver(networkChangeReceiver);
     }
 
     /**
@@ -520,5 +555,51 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .getPolygonPoints().toString()
                 );
         IncidentsUploader.getInstance().uploadIncident(JsonString);
+    }
+
+    /**
+     * Method to determinate if map will change its mode
+     */
+    private void handleOffLineMode(){
+        if (MapManager.getInstance().isOffLine()) initExitOffLineModeButton();
+    }
+
+    /**
+     * Method to init the button and configure a new MapWayPoint configuration to it
+     */
+    private void initExitOffLineModeButton(){
+        exitOffLineModeButton = findViewById(R.id.exitOfflineModeButton);
+        exitOffLineModeButton.setVisibility(View.VISIBLE);
+        exitOffLineModeButton.setOnClickListener(v->{
+            MapManager.getInstance().setOfflineMode(false);
+            androidServicesVerification = new AndroidServicesVerification();
+            if (androidServicesVerification.isInternetEnabled(this)){
+                MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
+            }
+            exitOffLineModeButton.setVisibility(View.GONE);
+        });
+    }
+
+
+    /**
+     * Method for detect if the network is connected or not.
+     * @param isConnected Boolean indicating whether the device is connected to the internet.
+     */
+    @Override
+    public void onNetworkChange(boolean isConnected) {
+        if (isConnected) {
+            searchView.setVisibility(View.VISIBLE);
+            filterController.getFiltersView().getFiltersButton().setVisibility(View.VISIBLE);
+            noInternetConnectionMessage.setVisibility(View.INVISIBLE);
+            if (MapManager.getInstance().getMapboxMap()==null) return;
+            MapManager.getInstance().removeCurrentClickController();
+            if (!MapManager.getInstance().isOffLine())
+                MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
+        } else {
+            searchView.setVisibility(View.INVISIBLE);
+            filterController.getFiltersView().getFiltersButton().setVisibility(View.INVISIBLE);
+            noInternetConnectionMessage.setVisibility(View.VISIBLE);
+            MapManager.getInstance().removeCurrentClickController();
+        }
     }
 }

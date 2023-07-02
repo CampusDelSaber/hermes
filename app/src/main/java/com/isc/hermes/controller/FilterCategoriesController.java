@@ -1,24 +1,29 @@
 package com.isc.hermes.controller;
+import android.widget.Toast;
 
-import android.app.Activity;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.isc.hermes.R;
 import com.isc.hermes.SpacingItemDecoration;
 import com.isc.hermes.model.CategoryFilter;
-import com.isc.hermes.model.Searcher;
+import com.isc.hermes.utils.AndroidRequestActivation;
 import com.isc.hermes.utils.CategoryFilterAdapter;
 import com.isc.hermes.utils.CategoryFilterClickListener;
+import com.isc.hermes.utils.AndroidServicesVerification;
+import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.PlacesType;
-import com.isc.hermes.utils.searcher.SearchPlacesListener;
 import com.mapbox.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.api.geocoding.v5.MapboxGeocoding;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
 import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,17 +37,23 @@ import retrofit2.Response;
 public class FilterCategoriesController implements CategoryFilterClickListener {
     private MarkerManager markerManager;
     private MapView mapView;
-    private Activity activity;
+    private AppCompatActivity activity;
     private RecyclerView locationCategoriesRecyclerView;
     private CategoryFilterAdapter locationCategoryAdapter;
+    private String lastClickedCategory = "";
+    private boolean isMarkersShown = false;
+    private AndroidServicesVerification androidServicesVerification;
+    private AndroidRequestActivation androidRequestActivation;
 
     /**
      * Constructs a new FilterCategoriesController with the specified activity.
      *
      * @param activity the activity associated with the controller
      */
-    public FilterCategoriesController(Activity activity) {
+    public FilterCategoriesController(AppCompatActivity activity) {
         this.activity = activity;
+        androidServicesVerification = new AndroidServicesVerification();
+        androidRequestActivation = new AndroidRequestActivation();
     }
 
     /**
@@ -90,6 +101,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
 
     /**
      * Generates the categories locations
+     *
      * @return the list of categories
      */
     private List<CategoryFilter> generateLocationCategories() {
@@ -104,11 +116,54 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
 
     /**
      * Shows the places on the map.
+     *
      * @param locationCategory the category of the places to show
      */
     @Override
     public void onLocationCategoryClick(CategoryFilter locationCategory) {
-        searchPlacesByTag(locationCategory.getNameCategory());
+        if (androidServicesVerification.isInternetEnabled(activity)) {
+            LatLng center = getLocationEnable();
+            addAndRemoveMarkets(locationCategory, center);
+        } else {
+            markerManager.removeAllMarkers(mapView);
+            androidRequestActivation.showInternetRequest(activity);
+        }
+    }
+
+    /**
+     * Shows or removes the places on the map.
+     *
+     * @param locationCategory the category of the places to show
+     * @param center           the center of the map
+     */
+    private void addAndRemoveMarkets(CategoryFilter locationCategory, LatLng center) {
+        if (isMarkersShown && lastClickedCategory.equals(locationCategory.getNameCategory())) {
+            markerManager.removeAllMarkers(mapView);
+            isMarkersShown = false;
+        } else {
+            if (isMarkersShown) {
+                markerManager.removeAllMarkers(mapView);
+            }
+            searchPlacesByTag(locationCategory.getNameCategory(), center.getLatitude(), center.getLongitude());
+            isMarkersShown = true;
+            lastClickedCategory = locationCategory.getNameCategory();
+        }
+    }
+
+    /**
+     * Manages location of user.
+     *
+     * @return location of the user.
+     */
+    private LatLng getLocationEnable() {
+        LatLng center;
+        if (androidServicesVerification.isLocationEnabled(activity)) {
+            center = new LatLng(
+                    CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLatitude(),
+                    CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLongitude()
+            );
+        } else center = MapManager.getInstance().getMapboxMap().getCameraPosition().target;
+        return center;
     }
 
     /**
@@ -116,36 +171,23 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      *
      * @param tag the tag to search for
      */
-    private void searchPlacesByTag(String tag) {
+    private void searchPlacesByTag(String tag, double latitude, double longitude) {
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken(activity.getString(R.string.access_token))
                 .query(tag)
                 .geocodingTypes(GeocodingCriteria.TYPE_POI)
+                .proximity(Point.fromLngLat(longitude, latitude))
+                .limit(10)
                 .build();
 
-        mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
+        mapboxGeocoding.enqueueCall(new Callback<>() {
             @Override
-            public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
-                if (response.isSuccessful()) {
-                    List<CarmenFeature> places = null;
-                    Searcher placeSearch = new Searcher();
-                    placeSearch.searchPlacesByType(tag, new SearchPlacesListener() {
-                        @Override
-                        public void onSearchComplete(List<CarmenFeature> places) {
-                            markerManager.removeAllMarkers(mapView);
-                            showPlacesOnMap(places);
-                        }
-
-                        @Override
-                        public void onSearchError(String errorMessage) {
-                        }
-                    });
-
-                }
+            public void onResponse(@NonNull Call<GeocodingResponse> call, @NonNull Response<GeocodingResponse> response) {
+                marketManager(response);
             }
 
             @Override
-            public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<GeocodingResponse> call, @NonNull Throwable t) {
                 throw new RuntimeException(t);
             }
         });
@@ -154,15 +196,21 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     /**
      * Displays the retrieved places on the map.
      *
-     * @param places the list of places to display
+     * @param response the response from the API
      */
-    private void showPlacesOnMap(List<CarmenFeature> places) {
-        for (CarmenFeature place : places) {
-            String name = place.text();
-            double latitude = ((Point) place.geometry()).latitude();
-            double longitude = ((Point) place.geometry()).longitude();
-
-            markerManager.addMarkerToMap(mapView, name, latitude, longitude, true);
+    private void marketManager(Response<GeocodingResponse> response) {
+        if (response.body() != null) {
+            List<CarmenFeature> results = response.body().features();
+            if (results.size() > 0) {
+                markerManager.removeAllMarkers(mapView);
+                for (CarmenFeature feature : results) {
+                    Point firstResultPoint = (Point) feature.geometry();
+                    assert firstResultPoint != null;
+                    markerManager.addMarkerToMap(mapView, feature.placeName(), firstResultPoint.latitude(), firstResultPoint.longitude(), true);
+                }
+            } else {
+                Toast.makeText(activity, R.string.no_results_founds, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

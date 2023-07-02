@@ -76,6 +76,7 @@ public class ViewIncidentsController{
                 }
                 if (traffic.isChecked()) {
                     ShowTrafficController.getInstance().getTraffic(activity);
+                    System.out.println();
                 }
                 if (streetIncident.isChecked()) {
                     IncidentsGetterController.getInstance().getNearIncidentsWithinRadius(activity);
