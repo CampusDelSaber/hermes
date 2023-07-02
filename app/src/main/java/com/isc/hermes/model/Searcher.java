@@ -74,6 +74,10 @@ public class Searcher {
         return features;
     }
 
+    /**
+     * This method is used to get the type of the place that will be searched
+     * @return the types of the place
+     */
     private List<String> getGeocodingTypeOrders() {
         return Arrays.asList(
                 GeocodingCriteria.TYPE_ADDRESS,
@@ -162,6 +166,12 @@ public class Searcher {
         return getWayPointsFromFeatures(getCombinedSuggestions(boSuggestions, globalSuggestions));
     }
 
+    /**
+     * Method to get the combination of the suggestions of the searcher
+     * @param boSuggestions the suggestions of the searcher in Bolivia
+     * @param globalSuggestions the suggestions of the searcher in the world
+     * @return the combination of the suggestions
+     */
     private List<CarmenFeature> getCombinedSuggestions(Future<List<CarmenFeature>> boSuggestions, Future<List<CarmenFeature>> globalSuggestions) {
         List<CarmenFeature> combinedFeatures = new ArrayList<>();
         try {
@@ -173,6 +183,11 @@ public class Searcher {
         return combinedFeatures;
     }
 
+    /**
+     * Method to get the waypoints of the features of the suggestions
+     * @param features the features of the suggestions
+     * @return the waypoints of the features
+     */
     private List<WayPoint> getWayPointsFromFeatures(List<CarmenFeature> features) {
         List<WayPoint> wayPoints = new ArrayList<>();
         for (CarmenFeature feature : features) {
@@ -182,7 +197,7 @@ public class Searcher {
     }
 
     /**
-     * Method to instance a wapoint feature passing the latitud and longitud of a geo point of the feature
+     * Method to instance a waypoint feature passing the latitude and longitude of a geo point of the feature
      *
      * @param feature to pass the attributes of a waypoint
      * @return the instanced waypoint
