@@ -8,7 +8,6 @@ import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -88,7 +87,6 @@ public class MapWayPointController implements MapClickConfigurationController {
      * @param point geocode point to set
      */
     private void markPointBehavior(LatLng point) {
-            deleteMarks();
             setMarkerOnMap(point);
     }
 
@@ -98,7 +96,7 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
     private void doMarkOnMapAction(LatLng point){
         if (isMarked){
-            deleteMarks();
+            deleteLastMark();
             handleVisibilityPropertiesForLayouts();
             isMarked = false;
         } else {
@@ -118,14 +116,11 @@ public class MapWayPointController implements MapClickConfigurationController {
         mapboxMap.addMarker(markerOptions);
     }
 
-
     /**
-     * Method to delete all the marks in the map.
+     * Method to delete last mark set on map
      */
-    public void deleteMarks() {
-        for (Marker marker:mapboxMap.getMarkers()) {
-            mapboxMap.removeMarker(marker);
-        }
+    public void deleteLastMark(){
+        mapboxMap.removeMarker(mapboxMap.getMarkers().remove(mapboxMap.getMarkers().size()-1));
     }
 
     /**
