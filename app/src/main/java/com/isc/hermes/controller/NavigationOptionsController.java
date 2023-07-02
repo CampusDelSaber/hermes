@@ -146,7 +146,6 @@ public class NavigationOptionsController {
             handleHiddeItemsView();
             isActive = false;
             mapWayPointController.setMarked(false);
-            mapWayPointController.deleteMarks();
             polylineRouteUpdaterController.setStartPoint(finalPoint);
         });
     }
@@ -177,7 +176,6 @@ public class NavigationOptionsController {
         if (getNavOptionsForm().getVisibility() == View.VISIBLE)
             getNavOptionsForm().startAnimation(Animations.exitAnimation);
         getNavOptionsForm().setVisibility(View.GONE);
-        mapWayPointController.deleteMarks();
     }
 
 
