@@ -51,9 +51,12 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
+    private NavigationOrchestrator navigationOrchestrator
 
-    private NavigationOrchestrator navigationOrchestrator;
-
+    private int elapsedSeconds;
+    private int timeEstimate;
+    private String routes;
+    private String selectedRoute = "Route A";
 
     /**
      * Constructs a new InfoRouteController object.
@@ -129,16 +132,21 @@ public class InfoRouteController {
             navigationOrchestrator.stopNavigationMode();
         });
 
-        buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
-                true, false, false));
-        buttonRouteB.setOnClickListener(v -> setRouteInformation(1,
-                false, true, false));
-        buttonRouteC.setOnClickListener(v -> setRouteInformation(0,
-                false, false, true));
+        buttonRouteA.setOnClickListener(v -> {
+            setRouteInformation(jsonObjects.size() - 1, true, false, false);
+            selectedRoute = "Route A";
+        });
+        buttonRouteB.setOnClickListener(v -> {
+            setRouteInformation(1, false, true, false);
+            selectedRoute = "Route B";
+        });
+        buttonRouteC.setOnClickListener(v -> {
+            setRouteInformation(0, false, false, true);
+            selectedRoute = "Route C";
+        });
 
         setNavigationButtonsEvent();
     }
-
     /**
      * Cancels the navigation hiding the routes modal and the routes in map
      */
@@ -150,7 +158,6 @@ public class InfoRouteController {
             navigationDirectionController.getDirectionsForm()
                     .startAnimation(Animations.exitAnimation);
         navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
-        navigationOptionsController.getMapWayPointController().deleteMarks();
         isActive = false;
     }
 
@@ -176,10 +183,18 @@ public class InfoRouteController {
         });
 
         startNavigationButton.setOnClickListener(event -> {
+            long startTime = System.currentTimeMillis();
+
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
+            long endTime = System.currentTimeMillis();
+            long elapsedTime = endTime - startTime;
+
+            int elapsedSeconds2 = (int) (elapsedTime / 1000);
+            setElapsedSeconds(elapsedSeconds2);
         });
     }
+
     /**
      * This method shows which route is selected
      */
@@ -364,5 +379,53 @@ public class InfoRouteController {
             cancelNavigation();
             Timber.e(e.getMessage());
         }
+    }
+    /**
+     * help me to obtain the routes
+     * @return routes
+     */
+    public String getRoutes() {
+        return routes;
+    }
+
+    /**
+     * help me to set the routes
+     */
+    public void setRoutes(String routes) {
+        this.routes = routes;
+    }
+
+    /**
+     * help me to set the time Estimate
+     */
+    public void setTimeEstimate(int timeEstimate) {
+        this.timeEstimate = timeEstimate;
+    }
+
+    /**
+     * help me to obtain the time Estimate
+     * @return time Estimate
+     */
+    public int getTimeEstimate() {
+        return timeEstimate;
+    }
+
+    /**
+     * help me to obtain the elapsed Seconds
+     * @return elapsed Seconds
+     */
+    public int getElapsedSeconds() {
+        return elapsedSeconds;
+    }
+
+    /**
+     * help me to set the elapsed Seconds
+     */
+    public void setElapsedSeconds(int elapsedSeconds) {
+        this.elapsedSeconds = elapsedSeconds;
+    }
+
+    public String getSelectedRoute() {
+        return selectedRoute;
     }
 }
