@@ -6,12 +6,14 @@ import com.isc.hermes.model.CurrentLocationModel;
 
 import java.util.List;
 
-public class TrackRecoveryProtocol {
+import timber.log.Timber;
+
+public class TrackRecoveryHandler {
     private final List<RouteSegmentRecord> routeSegments;
     private final CurrentLocationModel currentLocation;
     private RouteSegmentRecord foundedTrack;
 
-    public TrackRecoveryProtocol(List<RouteSegmentRecord> routeSegments) {
+    public TrackRecoveryHandler(List<RouteSegmentRecord> routeSegments) {
         this.routeSegments = routeSegments;
         currentLocation = CurrentLocationModel.getInstance();
         foundedTrack = null;
@@ -30,17 +32,17 @@ public class TrackRecoveryProtocol {
             threeWayStrategy(routeSegmentIndex);
         }
 
-        System.out.println("Simple recovery is done");
+        Timber.d("Simple recovery is done");
     }
 
     public void attemptDeepRecovery() {
         for (int index = 0; index < routeSegments.size(); index++) {
-            System.out.printf("ATTEMPT RECOVERY ON TRACK #%d\n", index);
+            Timber.d("ATTEMPT RECOVERY ON TRACK #%d\n", index);
             attemptSimpleRecovery(index);
             if (isAttemptSuccessful()) {
                 break;
             } else {
-                System.out.println("ATTEMPT FAILED");
+                Timber.d("ATTEMPT FAILED");
             }
         }
     }
@@ -54,9 +56,9 @@ public class TrackRecoveryProtocol {
     private RouteSegmentRecord extractSegmentWithUser(RouteSegmentRecord[] tracks) {
         RouteSegmentRecord foundSegment = null;
         for (RouteSegmentRecord track : tracks) {
-            if (isPointInsideSegment(track, currentLocation.getLatLng(), true)) {
+            if (isPointInsideSegment(track, currentLocation.getLatLng())) {
                 foundSegment = track;
-                System.out.println("The user's track has been found");
+                Timber.d("The user's track has been found");
                 break;
             }
         }
@@ -84,7 +86,7 @@ public class TrackRecoveryProtocol {
 
     private void simpleStrategy() {
         RouteSegmentRecord candidate = routeSegments.get(0);
-        if (isPointInsideSegment(candidate, currentLocation.getLatLng(), true)) {
+        if (isPointInsideSegment(candidate, currentLocation.getLatLng())) {
             foundedTrack = candidate;
         }
     }

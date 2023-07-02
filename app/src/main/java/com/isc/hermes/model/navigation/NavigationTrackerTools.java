@@ -33,25 +33,14 @@ public class NavigationTrackerTools {
      * @param point   The point to check.
      * @return true if the point is inside the segment, false otherwise.
      */
-    public static boolean isPointInsideSegment(RouteSegmentRecord segment, LatLng point, boolean isLog) {
+    public static boolean isPointInsideSegment(RouteSegmentRecord segment, LatLng point) {
         CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         LatLng lineStart = segment.getStart();
         LatLng lineEnd = segment.getEnd();
 
         boolean isInsideHorizontalBounds  = isInRange(lineStart, lineEnd, point, USER_IN_RANGE_PRECISION);
-        if (isLog){
-            System.err.printf("INSIDE HORIZONTAL BOUNDARIES STATUS: %s\n", isInsideHorizontalBounds);
-        }
-
         double pointToLineDistance = distanceCalculator.pointToLineDistance(point, lineStart, lineEnd);
-        if (isLog){
-            System.err.printf("User distance to point: %s\n", pointToLineDistance);
-        }
-
         boolean isInsideVerticalBounds = (Double.compare(pointToLineDistance, USER_ON_TRACK_CRITERIA) <= 0);
-        if (isLog){
-            System.err.printf("INSIDE VERTICAL BOUNDARIES STATUS: %s\n", isInsideVerticalBounds);
-        }
 
         return isInsideHorizontalBounds && isInsideVerticalBounds;
     }

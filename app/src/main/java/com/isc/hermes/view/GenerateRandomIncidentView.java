@@ -66,17 +66,12 @@ public class GenerateRandomIncidentView {
      * Shows the screen with its functionality to generate incidents
      */
     private void showFunctionalityGeneratingIncidents() {
-        try{
-            if (!UserRepository.getInstance().getUserContained().getTypeUser().equals(
-                    TypeUser.GENERAL.getTypeUser())) {
-                generatePopUpDependingOnTypeUser();
-                IncidentViewNavigation.getInstance(activity)
-                        .initIncidentButtonFunctionality(generateIncidentButton, layout);
-            }
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-    }
+        if (!UserRepository.getInstance().getUserContained().getTypeUser().equals(
+                TypeUser.GENERAL.getTypeUser())) {
+            generatePopUpDependingOnTypeUser();
+            IncidentViewNavigation.getInstance(activity)
+                    .initIncidentButtonFunctionality(generateIncidentButton, layout);
+        }}
 
     /**
      * Initializes the view buttons

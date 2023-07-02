@@ -87,12 +87,12 @@ public class LiveRouteEstimationsWorker implements Runnable{
             try {
                 Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
             } catch (InterruptedException e) {
-                System.err.println("Route Estimation Thread has been interrupted");
+                Timber.e("Route Estimation Thread has been interrupted");
                 canRun.set(false);
             }
         }
 
-        System.out.println("Live estimations worker is closing");
+        Timber.d("Live estimations worker is closing");
     }
 
     /**
