@@ -1,10 +1,13 @@
 package com.isc.hermes;
 
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +34,10 @@ import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.utils.AndroidRequestActivation;
+import com.isc.hermes.utils.AndroidServicesVerification;
+import com.isc.hermes.utils.NetworkChangeReceiver;
+import com.isc.hermes.utils.OnNetworkChangeListener;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
@@ -59,7 +66,7 @@ import timber.log.Timber;
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnNetworkChangeListener, OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private CurrentLocationController currentLocationController;
@@ -81,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ImageButton buttonClear;
     private Button exitOffLineModeButton;
     private final String resetSearchText = "Search...";
+    private NetworkChangeReceiver networkChangeReceiver;
+    private FilterController filterController;
+    private TextView noInternetConnectionMessage;
+    private AndroidRequestActivation androidRequestActivation;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -110,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
         initializeFunctionalityOfTheBurgerButton();
+        internetRequest();
+        filterController = new FilterController(this);
+        androidRequestActivation = new AndroidRequestActivation();
         try{
             setTheUserInformationInTheDropMenu();
         } catch(Exception e){
@@ -130,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchView.setTextColor(Color.BLACK);
         buttonClear = findViewById(R.id.buttonClear);
         buttonClear.setVisibility(View.GONE);
+        noInternetConnectionMessage = findViewById(R.id.noInternetTextView);
     }
 
     /**
@@ -153,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
-        FilterController filterController = new FilterController(mapboxMap, this);
+        filterController.setMapboxMap(mapboxMap);
         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
@@ -284,6 +299,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         super.onStart();
+        networkChangeReceiver = new NetworkChangeReceiver(this);
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(networkChangeReceiver, intentFilter);
     }
 
     /**
@@ -317,11 +336,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     * Method for detect if the network is connected or not.
+     * @param isConnected Boolean indicating whether the device is connected to the internet.
+     */
+    @Override
+    public void onNetworkChange(boolean isConnected) {
+        if (isConnected) {
+            searchView.setVisibility(View.VISIBLE);
+            filterController.getFiltersView().getFiltersButton().setVisibility(View.VISIBLE);
+            noInternetConnectionMessage.setVisibility(View.INVISIBLE);
+        } else {
+            searchView.setVisibility(View.INVISIBLE);
+            filterController.getFiltersView().getFiltersButton().setVisibility(View.INVISIBLE);
+            noInternetConnectionMessage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Request internet connection.
+     */
+    private void internetRequest() {
+        noInternetConnectionMessage.setOnClickListener(v -> {
+            if (noInternetConnectionMessage.getVisibility() == View.VISIBLE) androidRequestActivation.showInternetRequest(this);
+        });
+    }
+
+    /**
      * Method for stopping the MapView object instance.
      */
     @Override
     protected void onStop() {
         super.onStop();
+        unregisterReceiver(networkChangeReceiver);
     }
 
     /**

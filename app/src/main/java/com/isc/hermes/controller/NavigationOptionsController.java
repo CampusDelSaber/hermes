@@ -14,6 +14,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -24,11 +29,16 @@ import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+
+import org.json.JSONArray;
 import org.json.JSONException;
+
+import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -405,6 +415,55 @@ public class NavigationOptionsController {
         renderMapRoutes(geoJson);
         startRouteEstimationManager(jsonA);
     }
+
+    /**
+     * please help me to obtain the data of the coordinates of the routes.
+     * @return json
+     */
+    public String getJson() {
+        if (routeOptions == null) {
+            return "[]";
+        }
+        String selectedRoute = routeOptions.getOrDefault(infoRouteController.getSelectedRoute(), ""); // Obtener la ruta seleccionada por el usuario
+        List<List<Double>> coordinatesList = new ArrayList<>();
+
+        if (!selectedRoute.isEmpty()) {
+            JsonObject jsonObject = JsonParser.parseString(selectedRoute).getAsJsonObject();
+            JsonArray coordinatesArray = jsonObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
+            extractCoordinates(coordinatesArray, coordinatesList);
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(coordinatesList);
+        System.out.println(json);
+        infoRouteController.setRoutes(json);
+        return json;
+    }
+
+
+
+    /**
+     * will only help me to extract the necessary coordinates.
+     *
+     */
+    private void extractCoordinates(JsonArray jsonArray, List<List<Double>> coordinatesList) {
+        List<Double> coordinates = new ArrayList<>();
+
+        for (JsonElement element : jsonArray) {
+            if (element.isJsonArray()) {
+                extractCoordinates(element.getAsJsonArray(), coordinatesList);
+            } else if (element.isJsonPrimitive()) {
+                coordinates.add(element.getAsDouble());
+            }
+        }
+        if (!coordinates.isEmpty()) {
+            List<Double> reversedCoordinates = new ArrayList<>();
+            reversedCoordinates.add(coordinates.get(1));
+            reversedCoordinates.add(coordinates.get(0));
+            coordinatesList.add(reversedCoordinates);
+        }
+    }
+
 
     /**
      * This method render the routes on the map.

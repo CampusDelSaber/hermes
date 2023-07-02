@@ -35,6 +35,8 @@ public class WaypointOptionsController {
     private final Button reportNaturalDisasterButton;
     private final Context context;
     private TextView placeName;
+    private static WaypointOptionsController waypointOptionsController;
+
 
     /**
      * This is the constructor method. Init all the components of UI.
@@ -44,13 +46,12 @@ public class WaypointOptionsController {
      */
     public WaypointOptionsController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
-        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
         streetValidator = new StreetValidator();
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
         incidentFormController = IncidentFormController.getInstance(context,mapWayPointController);
         navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
-        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
+        trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController, navigationOptionsFormController);
         reportIncidentButton = ((AppCompatActivity) context).findViewById(R.id.report_incident_button);
         reportTrafficButton = ((AppCompatActivity) context).findViewById(R.id.report_traffic_button);
         reportNaturalDisasterButton = ((AppCompatActivity) context).findViewById(R.id.report_natural_disaster_button);
@@ -80,8 +81,7 @@ public class WaypointOptionsController {
         reportTrafficButton.setOnClickListener(v -> {
 
             waypointOptions.startAnimation(Animations.exitAnimation);
-
-
+            System.out.println("MIO "+navigationOptionsFormController.getJson());
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected Integer doInBackground(Void... voids) {
