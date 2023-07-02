@@ -126,10 +126,19 @@ public class CurrentLocationController {
      * @return Returns a instance of this class.
      */
     public static CurrentLocationController getControllerInstance(AppCompatActivity activity){
-        if(controllerInstance == null){
+        if(controllerInstance == null || controllerInstance.isNewInstanceNeeded(activity)){
             controllerInstance = new CurrentLocationController(activity);
         }
         return controllerInstance;
+    }
+    /**
+     * This method checks if a new instance of IncidentViewNavigation should be created.
+     *
+     * @param appActivity The activity in which the IncidentViewNavigation is used.
+     * @return True if a new instance should be created, false otherwise.
+     */
+    private boolean isNewInstanceNeeded(AppCompatActivity appActivity) {
+        return activity == null || activity != appActivity;
     }
 
     /**

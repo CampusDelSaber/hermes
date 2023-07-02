@@ -1,8 +1,11 @@
 package com.isc.hermes;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,11 +15,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
+import com.isc.hermes.controller.offline.OfflineDataRepository;
+import com.isc.hermes.model.RegionData;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.signup.SignUpTransitionHandler;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.utils.lifecycle.LastActivityHelper;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -33,6 +40,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private TextInputLayout comboBoxTextField;
     private Button buttonRegister;
     private ImageView imgUser;
+    private ActivityResultLauncher<Intent> verificationLauncher;
 
     /**
      * Assigns values to the components view.
@@ -97,7 +105,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(v -> {
             if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
                 UserRepository.getInstance().getUserContained().setAdministrator(false);
-                new  SignUpTransitionHandler().transitionBasedOnRole(this);
+                new SignUpTransitionHandler().transitionBasedOnRole(this,verificationLauncher);
             } else comboBoxTextField.setHelperText("Required");
         });
     }
@@ -106,7 +114,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * Charges the user's profile image into the ImageView if available.
      * If the user has a path to their profile image, it uses Glide to load the image into the ImageView.
      */
-    private void loadUserImageInView(){
+    private void loadUserImageInView() {
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
                     UserRepository.getInstance().getUserContained().getPathImageUser())).into(imgUser);
@@ -127,5 +135,32 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         generateActionToButtonSignUp();
         loadUserImageInView();
         loadInformationAboutUserInTextFields();
+        verificationLauncher = createActivityResult();
+        LastActivityHelper.saveLastActivity(this, getClass().getSimpleName());
+    }
+
+
+    /**
+     * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
+     *
+     * @return The created {@link ActivityResultLauncher} object.
+     */
+    private ActivityResultLauncher<Intent> createActivityResult() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {if (result.getResultCode() == RESULT_OK) {finish();}});
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, SignUpActivityView.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LastActivityHelper.saveLastActivity(this, "");
     }
 }

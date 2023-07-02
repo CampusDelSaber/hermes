@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
+        this.finish();
     }
 
     /**

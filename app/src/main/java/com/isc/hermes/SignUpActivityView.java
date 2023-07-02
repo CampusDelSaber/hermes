@@ -7,9 +7,13 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.common.api.ApiException;
+import com.isc.hermes.utils.lifecycle.ActivityStackManager;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
@@ -17,7 +21,9 @@ import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Utils.DataAccountOffline;
+import com.isc.hermes.utils.lifecycle.LastActivityHelper;
 import com.isc.hermes.utils.offline.NetworkManager;
+
 import org.json.JSONException;
 
 import java.util.HashMap;
@@ -34,29 +40,30 @@ import timber.log.Timber;
 public class SignUpActivityView extends AppCompatActivity {
     private Map<AuthenticationServices, IAuthentication> authenticationServices;
     public static IAuthentication authenticator;
-    private static final int REQUEST_CODE = 7;
+    private ActivityResultLauncher<Intent> authenticationLauncher;
 
     /**
      * Method for creating the view and configuring it using the components xml.
      *
      * @param savedInstanceState the saved state of the instance
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_view);
         startAuthenticationServices();
         creationActionAboutUs();
+        authenticationLauncher = createAuthenticationResult();
     }
 
     /**
-     *  It is the action of returning to about us, to get out of the sing In.
-     *  You will find the button of "About Us", and by clicking it you can go back.
+     * It is the action of returning to about us, to get out of the sing In.
+     * You will find the button of "About Us", and by clicking it you can go back.
      */
-    private void creationActionAboutUs(){
+    private void creationActionAboutUs() {
         TextView btn = findViewById(R.id.bttn_about_us);
-        btn.setOnClickListener(v -> startActivity(
-                new Intent(this,AboutUs.class)));
+        btn.setOnClickListener(v -> startActivity(new Intent(this, AboutUs.class)));
     }
 
     /**
@@ -84,9 +91,14 @@ public class SignUpActivityView extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        authenticationServices.forEach((key, authentication) -> {
-            getUserDependingAbleNetwork(authentication);
-        });
+        lastActivityStatus();
+        Intent intent = ActivityStackManager.getInstance(this).verifyTop();
+        if (intent != null) {
+            startActivity(intent);
+            finish();
+        } else {
+            authenticationServices.forEach((key, authentication) -> getUserDependingAbleNetwork(authentication));
+        }
     }
 
     /**
@@ -94,15 +106,15 @@ public class SignUpActivityView extends AppCompatActivity {
      *
      * @param authentication The authentication object representing the signed-in user.
      */
-    private void getUserDependingAbleNetwork(IAuthentication authentication){
+    private void getUserDependingAbleNetwork(IAuthentication authentication) {
 
         if (authentication.checkUserSignIn(this)) {
 
             authenticator = authentication;
             User user = null;
-            if(NetworkManager.isOnline(this)){
+            if (NetworkManager.isOnline(this)) {
                 user = obtainUserUsingInternet(authentication);
-            }else{
+            } else {
                 user = DataAccountOffline.getInstance(this).loadDataLogged();
             }
             UserRepository.getInstance().setUserContained(user);
@@ -116,26 +128,28 @@ public class SignUpActivityView extends AppCompatActivity {
      * @param authentication The authentication object representing the signed-in user.
      * @return the user obtained
      */
-    private User obtainUserUsingInternet(IAuthentication authentication){
+    private User obtainUserUsingInternet(IAuthentication authentication) {
         User user = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
                 AccountInfoManager manager = new AccountInfoManager();
                 String id = manager.getIdByEmail(authentication.getUserSignIn().getEmail());
-                user =  manager.getUserById(id);
+                user = manager.getUserById(id);
                 DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
             } catch (ExecutionException | InterruptedException | JSONException e) {
                 e.printStackTrace();
             }
-        } return user;
+        }
+        return user;
     }
 
     /**
      * This method change the activity to the activity map.
      */
-    private void changeActivityToMap(){
+    private void changeActivityToMap() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -146,19 +160,17 @@ public class SignUpActivityView extends AppCompatActivity {
     public void signUp(View view) {
         authenticator = authenticationServices.get(AuthenticationServices.valueOf((String) view.getTag()));
         if (authenticator == null) return;
-        startActivityForResult( //TODO: Solve this is a deprecated method.
-                authenticator.signIn()
-                , REQUEST_CODE
-        );
+        System.out.println(authenticator);
+        authenticationLauncher.launch(authenticator.signIn());
     }
 
     /**
      * Changes the activity depending on whether the user is registered or not.
      *
      * @param user The user object containing the user's information.
-     * @throws ExecutionException If an error occurs while executing the asynchronous task.
+     * @throws ExecutionException   If an error occurs while executing the asynchronous task.
      * @throws InterruptedException If the current thread is interrupted while waiting for the asynchronous task to complete.
-     * @throws JSONException If an error occurs while parsing JSON data.
+     * @throws JSONException        If an error occurs while parsing JSON data.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void changeActivityDependingIsUserIsRegistered(User user) throws ExecutionException, InterruptedException, JSONException {
@@ -170,29 +182,48 @@ public class SignUpActivityView extends AppCompatActivity {
         if (accountInfoManager.verifyIfAccountIsRegistered(user.getEmail())) {
             intent = new Intent(this, MainActivity.class);
             UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(user.getEmail()));
-        } else intent = new Intent(this, UserSignUpCompletionActivity.class);
+        } else {
+            intent = new Intent(this, UserSignUpCompletionActivity.class);
+        }
         startActivity(intent);
+        finish();
     }
 
     /**
-     * This method controls the activity produced in the activity
+     * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
      *
-     * @param requestCode The integer request code originally supplied to
-     *                    startActivityForResult(), allowing you to identify who this
-     *                    result came from.
-     * @param resultCode  The integer result code returned by the child activity
-     * @param data        An Intent, which can return result data to the caller
+     * @return The created {@link ActivityResultLauncher} object.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(data));
-        } catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
-            Toast.makeText(SignUpActivityView.this,"Wait a moment ", Toast.LENGTH_SHORT).show();
-            Timber.tag("LOG").e(e);
-        }
+    private ActivityResultLauncher<Intent> createAuthenticationResult() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    try {
+                        changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(result.getData()));
+                    } catch (ExecutionException | InterruptedException | JSONException |
+                             ApiException e) {
+                        e.printStackTrace();
+                        Toast.makeText(SignUpActivityView.this, "Wait a moment ", Toast.LENGTH_SHORT).show();
+                        Timber.tag("LOG").e(e);
+                    }
+                });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+    /**
+     * This method checks the status of the last activity and performs actions based on it.
+     * If the last activity is UserSignUpCompletionActivity, it checks and signs out
+     * from all available authentication services.
+     */
+    private void lastActivityStatus() {
+        if (LastActivityHelper.getLastActivity(this).equals(UserSignUpCompletionActivity.class.getSimpleName())) {
+            authenticationServices.forEach((authType, authService) -> {
+                if (authService.checkUserSignIn(this)) {
+                    authService.signOut(this);
+                }});
+            }
+    }
 }

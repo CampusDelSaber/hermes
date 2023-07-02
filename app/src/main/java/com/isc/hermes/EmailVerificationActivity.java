@@ -226,6 +226,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
         VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
         verificationCodesManager.updateVerificationCode(validator.getId(), false);
         startActivity(intent);
+        setResult(RESULT_OK);
+        finish();
     }
 
     /**
@@ -252,5 +254,12 @@ public class EmailVerificationActivity extends AppCompatActivity {
      */
     public void continueLikeGeneralUser(View view) {
         popUpToConfirmUser.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
+        finish();
     }
 }

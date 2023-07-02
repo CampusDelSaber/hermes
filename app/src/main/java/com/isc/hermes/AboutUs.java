@@ -57,7 +57,6 @@ public class AboutUs extends AppCompatActivity {
      *  You will find the button, and by clicking it you can go back.
      */
     public void goToPrincipalView(View view) {
-        Intent intent = new Intent(AboutUs.this,SignUpActivityView.class);
-        startActivity(intent);
+        finish();
     }
 }

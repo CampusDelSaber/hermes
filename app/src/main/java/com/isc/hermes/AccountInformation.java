@@ -107,6 +107,7 @@ public class AccountInformation extends AppCompatActivity {
     public void goToPrincipalView(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -229,5 +230,10 @@ public class AccountInformation extends AppCompatActivity {
         textFieldUserName.setEnabled(false);
         comboBoxField.setEnabled(false);
         saveProfileImage = new SaveProfileImage();
+    }
+
+    @Override
+    public void onBackPressed() {
+        goToPrincipalView(null);
     }
 }
