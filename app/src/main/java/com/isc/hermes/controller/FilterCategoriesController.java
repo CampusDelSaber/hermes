@@ -223,7 +223,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
                 .setTitle("Internet Connection Needed")
                 .setMessage("You need internet access for this function. Do you want to enable it?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                    Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
                     activity.startActivity(intent);
                 })
                 .setNegativeButton("No", null)
