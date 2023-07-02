@@ -13,8 +13,12 @@ import com.mapbox.mapboxsdk.maps.Style;
 
 public class MapStylesController {
     private String mapStyle;
-    private AppCompatActivity activity;
+    private final AppCompatActivity activity;
 
+    /**
+     * Constructor method.
+     * @param activity the main activity of the app.
+     */
     public MapStylesController(AppCompatActivity activity) {
         this.activity = activity;
         this.mapStyle = MapStylePreference.getMapStyle(activity.getBaseContext());
@@ -41,11 +45,19 @@ public class MapStylesController {
         updateMapStyle();
     }
 
-    public void updateMapStyle(){
+    /**
+     * Set the current map style into the style utils.
+     */
+    private void updateMapStyle(){
         MapStylePreference.setMapStyle(activity.getBaseContext(), mapStyle);
     }
 
-    public String getCurrentMapStyle(){
+    /**
+     * Recover the style map if it was set previously.
+     *
+     * @return the previous style if it was set or a the default style if not.
+     */
+    public String getMapStyle(){
         if (mapStyle == null) {
             mapStyle = Style.MAPBOX_STREETS;
         }

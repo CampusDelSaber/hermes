@@ -12,14 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.isc.hermes.controller.MapStylesController;
-import com.isc.hermes.model.Utils.MapStylePreference;
 import com.isc.hermes.controller.ViewIncidentsController;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         FilterController filterController = new FilterController(mapboxMap, this);
-        mapboxMap.setStyle(mapStylesController.getCurrentMapStyle(), new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(mapStylesController.getMapStyle(), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
