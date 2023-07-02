@@ -1,5 +1,6 @@
 package com.isc.hermes.model.navigation;
 
+import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 

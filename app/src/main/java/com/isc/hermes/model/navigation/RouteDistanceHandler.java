@@ -1,11 +1,15 @@
 package com.isc.hermes.model.navigation;
 
+import com.isc.hermes.model.navigation.events.Publisher;
+import com.isc.hermes.model.navigation.events.Subscriber;
+import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
+
 import java.util.List;
 
 /**
  * The RouteDistanceHandler class calculates the total distance of a route based on its segments.
  */
-public class RouteDistanceHandler {
+public class RouteDistanceHandler implements Subscriber {
     private final List<RouteSegmentRecord> routeSegments;
     private double lastMeasurement;
     private boolean lastSegment;
@@ -15,10 +19,11 @@ public class RouteDistanceHandler {
      *
      * @param routeSegments The list of route segments.
      */
-    public RouteDistanceHandler(List<RouteSegmentRecord> routeSegments) {
+    public RouteDistanceHandler(List<RouteSegmentRecord> routeSegments, Publisher notifier) {
         this.routeSegments = routeSegments;
         lastMeasurement = 0.0;
         lastSegment = false;
+        notifier.subscribe(this);
     }
 
     /**

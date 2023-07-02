@@ -5,6 +5,7 @@ import static com.isc.hermes.model.navigation.NavigationTrackerTools.isPointReac
 
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.navigation.exceptions.RouteOutOfTracksException;
+import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -24,8 +25,10 @@ public class UserRouteTracker {
     private final CoordinatesDistanceCalculator distanceCalculator;
     private final CurrentLocationModel currentLocation;
     private final UserLocationTracker userLocationTracker;
+    private final UserRouteTrackerNotifier routeTrackerNotifier;
     private RouteDistanceHandler routeDistanceHandler;
     private TrackRecoveryHandler trackRecoveryHandler;
+    private final NavigationRouteParser navigationRouteParser;
 
     private List<RouteSegmentRecord> routeSegments;
     private RouteSegmentRecord currentSegment;
@@ -49,6 +52,8 @@ public class UserRouteTracker {
         distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         currentLocation = CurrentLocationModel.getInstance();
         userLocationTracker = new UserLocationTracker();
+        routeTrackerNotifier = new UserRouteTrackerNotifier();
+        navigationRouteParser = new NavigationRouteParser();
         routeSegmentIndex = 0;
         isUserTrackLost = false;
     }
@@ -59,14 +64,14 @@ public class UserRouteTracker {
      * @throws RouteOutOfTracksException If the route is empty and navigation cannot be started.
      */
     public void parseRoute() throws RouteOutOfTracksException {
-        routeSegments = NavigationRouteParser.makeRouteSegments(routeInformation);
+        routeSegments = navigationRouteParser.makeRouteSegments(routeInformation);
         if (routeSegments.isEmpty()) {
             throw new RouteOutOfTracksException("Could not start the navigation, route is empty");
         }
+
         usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
-        routeSegments.get(0).setStart(currentLocation.getLatLng());
         trackRecoveryHandler = new TrackRecoveryHandler(routeSegments);
-        routeDistanceHandler = new RouteDistanceHandler(routeSegments);
+        routeDistanceHandler = new RouteDistanceHandler(routeSegments, routeTrackerNotifier);
         Timber.i(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
         nextTrack(currentLocation.getLatLng());
     }
@@ -169,6 +174,11 @@ public class UserRouteTracker {
         return userLocationTracker.hasUserMoved();
     }
 
+    /**
+     * Recovers the track based on the specified deep attempt flag.
+     *
+     * @param deepAttempt Determines whether to perform a deep recovery attempt.
+     */
     private void recoverTrack(boolean deepAttempt) {
         if (deepAttempt) {
             trackRecoveryHandler.attemptDeepRecovery();
@@ -180,11 +190,12 @@ public class UserRouteTracker {
             currentSegment = trackRecoveryHandler.getTrack();
             routeSegmentIndex = routeSegments.indexOf(currentSegment);
             routeDistanceHandler.update(routeSegmentIndex);
+            routeTrackerNotifier.notifyRouteTrackUpdated(routeSegmentIndex);
             Timber.d("User on track #%d\n", routeSegmentIndex);
             isUserTrackLost = false;
 
         } else if (deepAttempt) {
-            Timber.e("Deep recovery has failed");
+            Timber.d("Deep recovery has failed");
         } else {
             isUserTrackLost = true;
             Timber.e("Track of the user has been lost");
