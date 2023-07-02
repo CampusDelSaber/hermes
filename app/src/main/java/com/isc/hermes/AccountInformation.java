@@ -244,7 +244,7 @@ public class AccountInformation extends AppCompatActivity {
         InputFilter inputFilter = new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                String regex = "^[a-zA-Z]+$";
+                String regex = "^[a-zA-Z\\s]+$";
 
                 if (source.toString().matches(regex)) {
                     return source;
