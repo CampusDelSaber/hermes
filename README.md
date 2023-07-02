@@ -192,7 +192,7 @@ Now It's ready to execute the app.
           - User
           - Utils
             - ImageUploaderToServerImgur.class
-            - ImageUploaderToServerImgur$ImgurUploadTask.class
+            - DataAccountOffline
             - IncidentsUtils
             - MapPolyline
             - Utils
