@@ -453,8 +453,10 @@ public class NavigationOptionsController   {
         renderMapRoutes(geoJson);
     }
 
-    //TODO: complete Mau
-
+    /**
+     * please help me to obtain the data of the coordinates of the routes.
+     * @return json
+     */
     public String getJson() {
         if (routeOptions == null) {
             return "[]";
@@ -482,6 +484,10 @@ public class NavigationOptionsController   {
         return json;
     }
 
+    /**
+     * will only help me to extract the necessary coordinates.
+     *
+     */
     private void extractCoordinates(JsonArray jsonArray, List<List<Double>> coordinatesList) {
         List<Double> coordinates = new ArrayList<>();
 

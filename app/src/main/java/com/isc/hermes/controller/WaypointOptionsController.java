@@ -112,14 +112,6 @@ public class WaypointOptionsController {
         });
     }
 
-    public void getRoute(){
-        navigationOptionsFormController.getJson();
-    }
-
-    public NavigationOptionsController getNavigationOptionsFormController() {
-        return navigationOptionsFormController;
-    }
-
     /**
      * This is a getter method to waypoint options layout.
      * @return Return a layout.
@@ -168,10 +160,4 @@ public class WaypointOptionsController {
         } else reportIncidentsView.setVisibility(View.VISIBLE);
     }
 
-    public static WaypointOptionsController getInstance(Context context, MapWayPointController mapWayPointController) {
-        if (waypointOptionsController == null) {
-            waypointOptionsController = new WaypointOptionsController(context, mapWayPointController);
-        }
-        return waypointOptionsController;
-    }
 }

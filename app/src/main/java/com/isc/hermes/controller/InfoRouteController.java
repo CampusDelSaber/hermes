@@ -315,26 +315,47 @@ public class InfoRouteController {
         else timeText.setText(timeInMinutes + " min");
     }
 
+    /**
+     * help me to obtain the routes
+     * @return routes
+     */
     public String getRoutes() {
         return routes;
     }
 
+    /**
+     * help me to set the routes
+     */
     public void setRoutes(String routes) {
         this.routes = routes;
     }
 
+    /**
+     * help me to set the time Estimate
+     */
     public void setTimeEstimate(int timeEstimate) {
         this.timeEstimate = timeEstimate;
     }
 
+    /**
+     * help me to obtain the time Estimate
+     * @return time Estimate
+     */
     public int getTimeEstimate() {
         return timeEstimate;
     }
 
+    /**
+     * help me to obtain the elapsed Seconds
+     * @return elapsed Seconds
+     */
     public int getElapsedSeconds() {
         return elapsedSeconds;
     }
 
+    /**
+     * help me to set the elapsed Seconds
+     */
     public void setElapsedSeconds(int elapsedSeconds) {
         this.elapsedSeconds = elapsedSeconds;
     }

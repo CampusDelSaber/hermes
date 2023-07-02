@@ -102,12 +102,6 @@ public class TrafficAutomaticFormController {
         return selectedTrafficTime+ " " + "Minutes";
     }
 
-    public String getTrafficTime2(){
-        int selectedTrafficTime = calculateEstimateTime(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds());
-
-        return selectedTrafficTime+ " " + "Minutes";
-    }
-
     /**
      * This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
      *
