@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -43,6 +44,7 @@ public class AccountInformation extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private SaveProfileImage saveProfileImage;
     private boolean isModifiable;
+    private String fullNameString;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -198,10 +200,13 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void saveAccountInformationAction(View view) {
+        fullNameString = textFieldFullName.getText().toString().trim();
+        if (!TextUtils.isEmpty(fullNameString)){
         updateInformationUser();
         popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
                 textFieldUserName, comboBoxField, buttonUploadImage);
         popUpDialogEdit.show();
+        } else textFieldFullName.setError("Your full name is requested");
     }
 
     /**
