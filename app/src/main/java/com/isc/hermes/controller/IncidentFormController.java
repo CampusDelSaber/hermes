@@ -118,7 +118,6 @@ public class IncidentFormController {
         IncidentsUploader uploader = new IncidentsUploader();
         String reasonInserted = reasonTextField.getEditText().getText().toString();
         String reasonSelected = reasonTextField.equals("")? reasonInserted: incidentTypeReported;
-        Log.i("MauTag", IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime()));
         uploader.uploadIncident(uploader.generateJsonIncident(
                 incidentTypeReported,reasonSelected,
                 IncidentsUtils.getInstance().generateCurrentDateCreated(),
@@ -273,7 +272,7 @@ public class IncidentFormController {
                 v -> {
                     incidentTypeReported = typeButton.getText().toString();
                     IncidentFormController.incidentType = typeButton.getText().toString();
-                    changeTypeTitle("PointIncidet Type: " + typeButton.getText());
+                    changeTypeTitle("Point incident type: " + typeButton.getText());
                     typeButton.setAlpha(1.0f);
                     for (int i = 0; i < incidentTypesContainer.getChildCount(); i++) {
                         Button button = (Button) incidentTypesContainer.getChildAt(i);
