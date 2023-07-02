@@ -461,6 +461,10 @@ public class NavigationOptionsController {
 
         for (JsonElement element : jsonArray) {
             if (element.isJsonArray()) {
+                List<Double> reversedCoordinates = new ArrayList<>();
+                reversedCoordinates.add(coordinates.get(1));
+                reversedCoordinates.add(coordinates.get(0));
+                coordinatesList.add(reversedCoordinates);
                 extractCoordinates(element.getAsJsonArray(), coordinatesList);
             } else if (element.isJsonPrimitive()) {
                 coordinates.add(element.getAsDouble());
