@@ -11,6 +11,9 @@ import com.isc.hermes.model.Utils.MapStylePreference;
 import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.maps.Style;
 
+/**
+ * Class controller of map styles that handles the styles view and the stored map style.
+ */
 public class MapStylesController {
     private String mapStyle;
     private final AppCompatActivity activity;
