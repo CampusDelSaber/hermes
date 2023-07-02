@@ -98,7 +98,6 @@ public class TrafficAutomaticFormController {
      */
     public String getTrafficTime(){
         int selectedTrafficTime = calculateEstimateTime(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds());
-
         return selectedTrafficTime+ " " + "Minutes";
     }
 

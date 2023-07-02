@@ -53,6 +53,7 @@ public class InfoRouteController {
     private int elapsedSeconds;
     private int timeEstimate;
     private String routes;
+    private String selectedRoute;
 
     /**
      * Constructs a new InfoRouteController object.
@@ -69,6 +70,7 @@ public class InfoRouteController {
         isRouteASelected = false;
         isRouteBSelected = false;
         isRouteCSelected = false;
+        timeEstimate = 30;
         jsonObjects = new ArrayList<>();
         setActionButtons();
     }
@@ -128,16 +130,21 @@ public class InfoRouteController {
             liveRouteEstimationsWorker.stopLiveUpdate();
         });
 
-        buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
-                true, false, false));
-        buttonRouteB.setOnClickListener(v -> setRouteInformation(1,
-                false, true, false));
-        buttonRouteC.setOnClickListener(v -> setRouteInformation(0,
-                false, false, true));
+        buttonRouteA.setOnClickListener(v -> {
+            setRouteInformation(jsonObjects.size() - 1, true, false, false);
+            selectedRoute = "Route A";
+        });
+        buttonRouteB.setOnClickListener(v -> {
+            setRouteInformation(1, false, true, false);
+            selectedRoute = "Route B";
+        });
+        buttonRouteC.setOnClickListener(v -> {
+            setRouteInformation(0, false, false, true);
+            selectedRoute = "Route C";
+        });
 
         setNavigationButtonsEvent();
     }
-
     /**
      * Cancels the navigation hiding the routes modal and the routes in map
      */
@@ -417,5 +424,9 @@ public class InfoRouteController {
      */
     public void setElapsedSeconds(int elapsedSeconds) {
         this.elapsedSeconds = elapsedSeconds;
+    }
+
+    public String getSelectedRoute() {
+        return selectedRoute;
     }
 }

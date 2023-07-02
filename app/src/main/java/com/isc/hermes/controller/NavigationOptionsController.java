@@ -424,20 +424,13 @@ public class NavigationOptionsController {
         if (routeOptions == null) {
             return "[]";
         }
-        String jsonA = routeOptions.getOrDefault("Route A", "");
-        String jsonB = routeOptions.getOrDefault("Route B", "");
-        String jsonC = routeOptions.getOrDefault("Route C", "");
-
-        String[] routes = { jsonC, jsonB, jsonA };
+        String selectedRoute = routeOptions.getOrDefault(infoRouteController.getSelectedRoute(), ""); // Obtener la ruta seleccionada por el usuario
         List<List<Double>> coordinatesList = new ArrayList<>();
 
-        for (String route : routes) {
-            if (!route.isEmpty()) {
-                JsonObject jsonObject = JsonParser.parseString(route).getAsJsonObject();
-                JsonArray coordinatesArray = jsonObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
-                List<Double> coordinates = new ArrayList<>();
-                extractCoordinates(coordinatesArray, coordinatesList);
-            }
+        if (!selectedRoute.isEmpty()) {
+            JsonObject jsonObject = JsonParser.parseString(selectedRoute).getAsJsonObject();
+            JsonArray coordinatesArray = jsonObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
+            extractCoordinates(coordinatesArray, coordinatesList);
         }
 
         Gson gson = new Gson();
@@ -446,6 +439,8 @@ public class NavigationOptionsController {
         infoRouteController.setRoutes(json);
         return json;
     }
+
+
 
     /**
      * will only help me to extract the necessary coordinates.
@@ -456,19 +451,19 @@ public class NavigationOptionsController {
 
         for (JsonElement element : jsonArray) {
             if (element.isJsonArray()) {
-                List<Double> reversedCoordinates = new ArrayList<>();
-                reversedCoordinates.add(coordinates.get(1));
-                reversedCoordinates.add(coordinates.get(0));
-                coordinatesList.add(reversedCoordinates);
                 extractCoordinates(element.getAsJsonArray(), coordinatesList);
             } else if (element.isJsonPrimitive()) {
                 coordinates.add(element.getAsDouble());
             }
         }
         if (!coordinates.isEmpty()) {
-            coordinatesList.add(coordinates);
+            List<Double> reversedCoordinates = new ArrayList<>();
+            reversedCoordinates.add(coordinates.get(1));
+            reversedCoordinates.add(coordinates.get(0));
+            coordinatesList.add(reversedCoordinates);
         }
     }
+
 
     /**
      * This method render the routes on the map.
