@@ -58,8 +58,6 @@ public class NavigationOptionsController {
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
-    private LatLng destination;
-    private LatLng start;
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
@@ -327,23 +325,26 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     public void handleAcceptButtonClick() {
-        handleHiddeItemsView();
-        isActive = false;
-        if (isCurrentLocationSelected)
-            startPoint = CurrentLocationModel.getInstance().getLatLng();
-        LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
-        LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
-        this.destination = destination;
-        this.start = start;
-        GraphController graphController = new GraphController(start, destination);
-        markStartEndPoint(start, destination);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(R.layout.loader_route_dialog);
-        builder.setCancelable(false);
-        progressDialog = builder.create();
-        progressDialog.show();
-        manageGraphBuilding(graphController);
+        if (!isStartEqualsDestinationPoint()) {
+            handleHiddeItemsView();
+            isActive = false;
+            if (isCurrentLocationSelected) startPoint = CurrentLocationModel.getInstance().getLatLng();
+            GraphController graphController = new GraphController(startPoint, finalPoint);
+            markStartEndPoint(startPoint, finalPoint);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setView(R.layout.loader_route_dialog);
+            builder.setCancelable(false);
+            progressDialog = builder.create();
+            progressDialog.show();
+            manageGraphBuilding(graphController);
+        }
     }
+
+    private boolean isStartEqualsDestinationPoint() {
+        System.out.println(startPoint.getLatitude()+" "+finalPoint.getLatitude()+" aAAAAAA");
+        return startPoint.getLatitude() == finalPoint.getLatitude() &&
+                startPoint.getLongitude() == finalPoint.getLongitude();
+    };
 
     /**
      * Method to mark the start and destination point on map
