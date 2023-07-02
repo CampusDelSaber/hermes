@@ -1,12 +1,13 @@
 package com.isc.hermes;
 
-import static com.mongodb.assertions.Assertions.assertNotNull;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +32,8 @@ import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.utils.NetworkChangeReceiver;
+import com.isc.hermes.utils.OnNetworkChangeListener;
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -38,7 +41,6 @@ import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.database.AccountInfoManager;
 
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.incidents.GeometryType;
@@ -59,7 +61,7 @@ import timber.log.Timber;
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
  */
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnNetworkChangeListener, OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
     private CurrentLocationController currentLocationController;
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String mapStyle;
     private ImageButton buttonClear;
     private final String resetSearchText = "Search...";
+    private NetworkChangeReceiver networkChangeReceiver;
 
     /**
      * Method for creating the map and configuring it using the MapConfigure object.
@@ -283,6 +286,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         super.onStart();
+        networkChangeReceiver = new NetworkChangeReceiver(this);
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(networkChangeReceiver, intentFilter);
     }
 
     /**
@@ -314,12 +321,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    @Override
+    public void onNetworkChange(boolean isConnected) {
+        if (isConnected) {
+            searchView.setVisibility(View.VISIBLE);
+        } else {
+            searchView.setVisibility(View.INVISIBLE);
+        }
+    }
+
     /**
      * Method for stopping the MapView object instance.
      */
     @Override
     protected void onStop() {
         super.onStop();
+        unregisterReceiver(networkChangeReceiver);
     }
 
     /**
