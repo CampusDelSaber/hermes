@@ -45,12 +45,12 @@ public class NavigationDirectionController {
      * Sets the start navigation and recalculate buttons on click listeners actions
      */
     private void setButtonsEvent(){
-
         closeButton.setOnClickListener(event -> {
             directionsForm.startAnimation(Animations.exitAnimation);
             closeDirectionsForm();
         });
     }
+
     private void closeDirectionsForm() {
         directionsForm.setVisibility(View.GONE);
     }
@@ -108,9 +108,11 @@ public class NavigationDirectionController {
             JSONArray currentPoint = coordinates.getJSONArray(i);
             double latitude = currentPoint.getDouble(1);
             double longitude = currentPoint.getDouble(0);
+
             String streetName = getStreetNameForCoordinates(latitude, longitude);
             String direction = determineDirection(prevLatitude, prevLongitude, latitude, longitude);
             String directionWithStreet = direction + " on " + streetName;
+
             directions.add(directionWithStreet);
             prevLatitude = latitude;
             prevLongitude = longitude;
