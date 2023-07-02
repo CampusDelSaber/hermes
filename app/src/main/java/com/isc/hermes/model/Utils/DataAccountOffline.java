@@ -71,6 +71,7 @@ public class DataAccountOffline {
                 preferences.getString(FULL_NAME, "Full Name"),
                 preferences.getString(USER_NAME, "Username"),
                 preferences.getString(USER_TYPE, "Type User"),
+                preferences.getString(ID,"ID"),
                 preferences.getString(PATH_IMG_US, "Image Upload")
         );
     }
@@ -78,7 +79,7 @@ public class DataAccountOffline {
     public void deleteDataLogged(){
         SharedPreferences preferences = context.getSharedPreferences("credentials", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.remove("credentials");
+        editor.remove(EMAIL).remove(FULL_NAME).remove(USER_NAME).remove(USER_TYPE).remove(ID).remove(PATH_IMG_US);
         editor.apply();
     }
 }

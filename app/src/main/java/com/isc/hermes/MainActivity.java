@@ -31,6 +31,7 @@ import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -233,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
+        DataAccountOffline.getInstance(this).deleteDataLogged();
     }
 
     /**
