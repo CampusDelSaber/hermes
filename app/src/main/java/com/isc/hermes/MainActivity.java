@@ -1,7 +1,5 @@
 package com.isc.hermes;
 
-import static com.mongodb.assertions.Assertions.assertNotNull;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +8,10 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +31,7 @@ import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -38,7 +39,6 @@ import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.database.AccountInfoManager;
 
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.incidents.GeometryType;
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private String mapStyle;
     private ImageButton buttonClear;
+    private Button exitOffLineModeButton;
     private final String resetSearchText = "Search...";
 
     /**
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
         MapManager.getInstance().setMapboxMap(mapboxMap);
-        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
+        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
     }
 
     /**
@@ -298,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         addMarkers();
         onActionButtonClear();
+        handleOffLineMode();
     }
 
     /**
@@ -524,5 +526,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .getPolygonPoints().toString()
                 );
         IncidentsUploader.getInstance().uploadIncident(JsonString);
+    }
+
+    /**
+     * Method to determinate if map will change its mode
+     */
+    private void handleOffLineMode(){
+        if (MapManager.getInstance().isOffLine()) initExitOffLineModeButton();
+    }
+
+    /**
+     * Method to init the button and configure a new MapWayPoint configuration to it
+     */
+    private void initExitOffLineModeButton(){
+        exitOffLineModeButton = findViewById(R.id.exitOfflineModeButton);
+        exitOffLineModeButton.setVisibility(View.VISIBLE);
+        exitOffLineModeButton.setOnClickListener(v->{
+            MapManager.getInstance().setOfflineMode(false);
+            MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
+            exitOffLineModeButton.setVisibility(View.GONE);
+        });
     }
 }
