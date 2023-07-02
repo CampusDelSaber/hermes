@@ -2,7 +2,6 @@ package com.isc.hermes.model.navigation.events;
 
 public interface Publisher {
 
-    void notifyRouteTrackUpdated(int routeSegmentIndex);
-
+    void doNotify();
     void subscribe(Subscriber subscriber);
 }

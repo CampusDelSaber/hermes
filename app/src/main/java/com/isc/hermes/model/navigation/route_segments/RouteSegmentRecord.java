@@ -53,7 +53,7 @@ public class RouteSegmentRecord {
         return distance;
     }
 
-    public DirectionsRecord getDirections() {
-        return null;
+    public DirectionsRecord[] getDirections() {
+        return directions;
     }
 }
