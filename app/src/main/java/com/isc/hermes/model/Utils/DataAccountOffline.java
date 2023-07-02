@@ -1,6 +1,5 @@
 package com.isc.hermes.model.Utils;
 
-import android.animation.TypeEvaluator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,7 +10,7 @@ import com.isc.hermes.model.User.User;
  */
 public class DataAccountOffline {
 
-    private Activity activity;
+    private Context context;
     private static final String EMAIL = "EMAIL", ID = "ID", FULL_NAME = "FULL_NAME", USER_NAME = "USER_NAME",
             PATH_IMG_US = "PATH_IMG_US", USER_TYPE = "USER_TYPE";
     private static DataAccountOffline dataAccountOffline;
@@ -19,21 +18,21 @@ public class DataAccountOffline {
     /**
      * This method private constructor to enforce singleton pattern.
      *
-     * @param activity The activity instance.
+     * @param context The context instance.
      */
-    private DataAccountOffline(Activity activity) {
-        this.activity = activity;
+    private DataAccountOffline(Context context) {
+        this.context = context;
     }
 
     /**
      * This method returns the instance of DataAccountOffline.
      *
-     * @param activity The activity instance.
+     * @param context The context instance.
      * @return The DataAccountOffline instance.
      */
-    public static DataAccountOffline getInstance(Activity activity) {
+    public static DataAccountOffline getInstance(Activity context) {
         if (dataAccountOffline == null) {
-            dataAccountOffline = new DataAccountOffline(activity);
+            dataAccountOffline = new DataAccountOffline(context);
         }
         return dataAccountOffline;
     }
@@ -44,7 +43,7 @@ public class DataAccountOffline {
      * @param user The user object representing the logged account.
      */
     public void saveDataLoggedAccount(User user) {
-        SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("credentials", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(EMAIL, user.getEmail());
         editor.putString(ID, user.getId());
@@ -53,7 +52,11 @@ public class DataAccountOffline {
         editor.putString(PATH_IMG_US, user.getPathImageUser());
         editor.putString(USER_TYPE, user.getTypeUser());
 
+        System.out.println("user:" + user.getTypeUser());
+
         editor.apply();
+
+        System.out.println("guardado:" + preferences.getString(USER_TYPE, "Type User"));
     }
 
     /**
@@ -62,7 +65,7 @@ public class DataAccountOffline {
      * @return The User object representing the logged account.
      */
     public User loadDataLogged() {
-        SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("credentials",Context.MODE_PRIVATE);
         return new User(
                 preferences.getString(EMAIL, "Email"),
                 preferences.getString(FULL_NAME, "Full Name"),
@@ -70,5 +73,12 @@ public class DataAccountOffline {
                 preferences.getString(USER_TYPE, "Type User"),
                 preferences.getString(PATH_IMG_US, "Image Upload")
         );
+    }
+
+    public void deleteDataLogged(){
+        SharedPreferences preferences = context.getSharedPreferences("credentials", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("credentials");
+        editor.apply();
     }
 }

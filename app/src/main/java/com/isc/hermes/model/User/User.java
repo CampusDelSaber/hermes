@@ -201,7 +201,7 @@ public class User {
      * @return isAdministrator true if the object is registered, false otherwise
      */
     public boolean isAdministrator() {
-        return isAdministrator;
+        return typeUser.equals("Administrator");
     }
     public boolean isRegistered() {
         return isRegistered;

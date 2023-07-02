@@ -1,5 +1,6 @@
 package com.isc.hermes.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
@@ -11,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.controller.PopUp.PopUpWarningUpdateUserType;
 import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapManager;
@@ -150,10 +153,18 @@ public class WaypointOptionsController {
      * @param point is the coordinate point market.
      */
     public void setReportIncidentStatus(LatLng point) {
-        if (!hasValidStreetContext(point) || isGeneralUser()) {
+        if (!hasValidStreetContext(point)) {
             hideReportIncidentsView();
         } else {
-            showReportIncidentsView();
+            if(UserRepository.getInstance().getUserContained() == null){
+                UserRepository.getInstance().setUserContained(DataAccountOffline.getInstance((Activity) context).loadDataLogged());
+                User user = UserRepository.getInstance().getUserContained();
+                System.out.println(user.getTypeUser());
+            }
+            if(UserRepository.getInstance().getUserContained().isAdministrator()){
+                System.out.println("es admin cuando click");
+                showReportIncidentsView();
+            }
         }
     }
 
