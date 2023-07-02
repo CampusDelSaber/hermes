@@ -76,12 +76,20 @@ public class DataAccountOffline {
         );
     }
 
+    /**
+     * This method delete the user data logged.
+     */
     public void deleteDataLogged(){
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(EMAIL).remove(FULL_NAME).remove(USER_NAME).remove(USER_TYPE).remove(ID).remove(PATH_IMG_US);
         editor.apply();
     }
 
+    /**
+     * This method set the type of the user data logged.
+     *
+     * @param userType the new user Type
+     */
     public void setUserType(String userType){
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(USER_TYPE);
