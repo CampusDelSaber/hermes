@@ -22,22 +22,24 @@ public class TrackRecoveryProtocol {
     }
 
     public void attemptSimpleRecovery(int routeSegmentIndex) {
-        if (routeSegments.size() == 1){
+        if (routeSegments.size() == 1) {
             simpleStrategy();
-        }else if (routeSegments.size() == 2){
+        } else if (routeSegments.size() == 2) {
             doubleWayStrategy(routeSegmentIndex);
-        }else {
+        } else {
             threeWayStrategy(routeSegmentIndex);
         }
+
+        System.out.println("Simple recovery is done");
     }
 
     public void attemptDeepRecovery() {
         for (int index = 0; index < routeSegments.size(); index++) {
             System.out.printf("ATTEMPT RECOVERY ON TRACK #%d\n", index);
             attemptSimpleRecovery(index);
-            if (isAttemptSuccessful()){
+            if (isAttemptSuccessful()) {
                 break;
-            }else {
+            } else {
                 System.out.println("ATTEMPT FAILED");
             }
         }
@@ -49,7 +51,7 @@ public class TrackRecoveryProtocol {
         return tmp;
     }
 
-    private RouteSegmentRecord extractSegmentWithUser(RouteSegmentRecord[] tracks){
+    private RouteSegmentRecord extractSegmentWithUser(RouteSegmentRecord[] tracks) {
         RouteSegmentRecord foundSegment = null;
         for (RouteSegmentRecord track : tracks) {
             if (isPointInsideSegment(track, currentLocation.getLatLng(), true)) {
@@ -62,60 +64,52 @@ public class TrackRecoveryProtocol {
     }
 
     private RouteSegmentRecord[] getClosestTracks(int routeIndex) {
-        RouteSegmentRecord firstCandidate;
-        RouteSegmentRecord secondCandidate;
+        RouteSegmentRecord leftTrack;
+        RouteSegmentRecord rightTrack;
 
         if (routeIndex > 0) {
-            firstCandidate = routeSegments.get(routeIndex - 1);
+            leftTrack = routeSegments.get(routeIndex - 1);
         } else {
-            firstCandidate = routeSegments.get(routeIndex + 2);
+            leftTrack = routeSegments.get(routeIndex + 2);
         }
 
         if (routeIndex < routeSegments.size() - 1) {
-            secondCandidate = routeSegments.get(routeIndex + 1);
+            rightTrack = routeSegments.get(routeIndex + 1);
         } else {
-            secondCandidate = routeSegments.get(routeIndex - 2);
+            rightTrack = routeSegments.get(routeIndex - 2);
         }
 
-        return new RouteSegmentRecord[]{firstCandidate, secondCandidate};
+        return new RouteSegmentRecord[]{leftTrack, rightTrack};
     }
 
-    private void simpleStrategy(){
+    private void simpleStrategy() {
         RouteSegmentRecord candidate = routeSegments.get(0);
-        if (isPointInsideSegment(candidate, currentLocation.getLatLng(), true)){
+        if (isPointInsideSegment(candidate, currentLocation.getLatLng(), true)) {
             foundedTrack = candidate;
         }
     }
 
-    private void doubleWayStrategy(int routeSegmentIndex){
+    private void doubleWayStrategy(int routeSegmentIndex) {
         int upper = routeSegmentIndex + 1;
         int lower = routeSegmentIndex - 1;
         RouteSegmentRecord candidate;
         RouteSegmentRecord current = routeSegments.get(routeSegmentIndex);
 
-        if (upper < routeSegments.size()){
+        if (upper < routeSegments.size()) {
             candidate = routeSegments.get(upper);
-        }else {
+        } else {
             candidate = routeSegments.get(lower);
         }
 
-        RouteSegmentRecord twoTrack = new RouteSegmentRecord(current.getStart(), candidate.getEnd());
-        boolean isUserInside = isPointInsideSegment(twoTrack, currentLocation.getLatLng(), true);
-        if (isUserInside){
-            foundedTrack = extractSegmentWithUser(new RouteSegmentRecord[]{candidate, current});
-        }
+        foundedTrack = extractSegmentWithUser(new RouteSegmentRecord[]{candidate, current});
     }
 
-    private void threeWayStrategy(int routeSegmentIndex){
+    private void threeWayStrategy(int routeSegmentIndex) {
         RouteSegmentRecord[] closestTracks = getClosestTracks(routeSegmentIndex);
-        RouteSegmentRecord a = closestTracks[0];
-        RouteSegmentRecord b = closestTracks[1];
+        RouteSegmentRecord leftTrack = closestTracks[0];
+        RouteSegmentRecord rightTrack = closestTracks[1];
         RouteSegmentRecord middle = routeSegments.get(routeSegmentIndex);
 
-        RouteSegmentRecord triple = new RouteSegmentRecord(a.getStart(), b.getEnd());
-        boolean isUserInside = isPointInsideSegment(triple, currentLocation.getLatLng(), true);
-        if (isUserInside){
-            foundedTrack = extractSegmentWithUser(new RouteSegmentRecord[]{a, b, middle});
-        }
+        foundedTrack = extractSegmentWithUser(new RouteSegmentRecord[]{rightTrack, middle, leftTrack});
     }
 }

@@ -75,7 +75,10 @@ public class LiveRouteEstimationsWorker implements Runnable{
         while (canRun.get()) {
             if (userRouteTracker.hasUserArrived()){
                 Toast.makeText(infoRouteController.getLayout().getContext(), "User has arrived", Toast.LENGTH_SHORT).show();
-                break;
+                canRun.set(false);
+                updateEstimatedArrivalDistance(0.0);
+                updateEstimatedArrivalTime(0.0);
+                continue;
             }
 
             if (userRouteTracker.hasUserMoved()) {
@@ -89,9 +92,9 @@ public class LiveRouteEstimationsWorker implements Runnable{
             } catch (InterruptedException e) {
                 System.err.println("Route Estimation Thread has been interrupted");
                 canRun.set(false);
-                break;
             }
         }
+
         System.out.println("Live estimations worker is closing");
     }
 
