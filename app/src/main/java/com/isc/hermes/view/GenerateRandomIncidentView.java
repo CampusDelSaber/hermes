@@ -10,6 +10,8 @@ import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 
+import timber.log.Timber;
+
 /**
  * This class is used to initialize the view to select how to generate incidents.
  */
@@ -66,15 +68,15 @@ public class GenerateRandomIncidentView {
      * Shows the screen with its functionality to generate incidents
      */
     private void showFunctionalityGeneratingIncidents() {
-        try{
+        try {
             if (!UserRepository.getInstance().getUserContained().getTypeUser().equals(
                     TypeUser.GENERAL.getTypeUser())) {
                 generatePopUpDependingOnTypeUser();
                 IncidentViewNavigation.getInstance(activity)
                         .initIncidentButtonFunctionality(generateIncidentButton, layout);
             }
-        } catch(Exception e){
-            e.printStackTrace();
+        }catch (NullPointerException e){
+            Timber.d(e.getMessage());
         }
     }
 

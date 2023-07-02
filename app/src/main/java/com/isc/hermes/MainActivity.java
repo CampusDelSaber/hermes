@@ -53,6 +53,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
+import timber.log.Timber;
+
 /**
  * Class for displaying a map using a MapView object and a MapConfigure object.
  * Handles current user location functionality.
@@ -112,6 +114,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch(Exception e){
             e.printStackTrace();
         }
+
+        Timber.plant(new Timber.DebugTree());
     }
 
 
