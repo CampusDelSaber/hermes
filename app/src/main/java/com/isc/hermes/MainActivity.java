@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         buttonClear = findViewById(R.id.buttonClear);
         buttonClear.setVisibility(View.GONE);
         noInternetConnectionMessage = findViewById(R.id.noInternetTextView);
+        noInternetConnectionMessage.setPaintFlags(noInternetConnectionMessage.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
     /**
