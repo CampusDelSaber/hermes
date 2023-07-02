@@ -6,10 +6,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
@@ -223,11 +226,33 @@ public class AccountInformation extends AppCompatActivity {
         imageView = findViewById(R.id.imageUpload);
         comboBoxField = findViewById(R.id.textFieldUserTypeUpdate);
         textFieldFullName = findViewById(R.id.textFieldFullName);
+        textFieldFullName.setFilters(new InputFilter[] {charFilter()});
         textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldUserName = findViewById(R.id.textFieldUserName);
         textFieldFullName.setEnabled(false);
         textFieldUserName.setEnabled(false);
         comboBoxField.setEnabled(false);
         saveProfileImage = new SaveProfileImage();
+    }
+
+    /**
+     * This method is the filter for textFieldFullName.
+     * This method verifies if the char entered isn't in numbers.
+     * @return An InputFilter configured to regex any number.
+     */
+    private InputFilter charFilter(){
+        InputFilter inputFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                String regex = "^[a-zA-Z]+$";
+
+                if (source.toString().matches(regex)) {
+                    return source;
+                } else {
+                    return "";
+                }
+            }
+        };
+        return inputFilter;
     }
 }
