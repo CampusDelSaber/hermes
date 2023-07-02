@@ -106,6 +106,7 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void goToPrincipalView(View view) {
+        ((AppManager) getApplication()).setLastActivity(null);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
@@ -236,11 +237,5 @@ public class AccountInformation extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         goToPrincipalView(null);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ((AppManager) getApplication()).setLastActivity(null);
     }
 }

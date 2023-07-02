@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
+import timber.log.Timber;
+
 /**
  * This class is in charge of controlling the user's authentication activity.
  */
@@ -149,7 +151,6 @@ public class SignUpActivityView extends AppCompatActivity {
     public void signUp(View view) {
         authenticator = authenticationServices.get(AuthenticationServices.valueOf((String) view.getTag()));
         if (authenticator == null) return;
-        System.out.println(authenticator);
         authenticationLauncher.launch(authenticator.signIn());
     }
 
@@ -187,14 +188,13 @@ public class SignUpActivityView extends AppCompatActivity {
     private ActivityResultLauncher<Intent> createAuthenticationResult() {
         return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    try {
-                        changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(result.getData()));
-                    } catch (ExecutionException | InterruptedException | JSONException |
-                             ApiException e) {
-                        e.printStackTrace();
-                        Toast.makeText(SignUpActivityView.this, "Wait a moment ", Toast.LENGTH_SHORT).show();
-                        Timber.tag("LOG").e(e);
-                    }
+                    if (NetworkManager.isOnline(this)) {
+                        try {
+                            changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(result.getData()));}
+                        catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
+                            e.printStackTrace(); }}
+                    else
+                        Toast.makeText(SignUpActivityView.this,"Internet access is required", Toast.LENGTH_SHORT).show();
                 });
     }
 
