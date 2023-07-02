@@ -9,6 +9,7 @@ import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapManager;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -44,13 +45,21 @@ public class MapWayPointController implements MapClickConfigurationController {
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
         if (NavigationOptionsController.isActive) {
+            deleteMarks();
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
             markPointBehavior(point);
-        } else if (!InfoRouteController.getInstance(context,
-                waypointOptionsController.getNavOptionsFormController()).isActive()) {
+        } else if (!InfoRouteController.getInstance(context, waypointOptionsController.getNavOptionsFormController()).isActive()) {
             doMarkOnMapAction(point);
             waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
-        }
+        } setIncidentComponents(point);
+        return true;
+    }
+
+    /**
+     * Method to set the incident components alerts' dialog lebales
+     * @param point latlng point to set the mark on map
+     */
+    private void setIncidentComponents(LatLng point) {
         IncidentsUploader.getInstance().setLastClickedPoint(point);
         try {
             IncidentDialogController.getInstance(context).showDialogCorrect(point);
@@ -58,8 +67,6 @@ public class MapWayPointController implements MapClickConfigurationController {
             throw new RuntimeException(e);
         }
         TrafficUploader.getInstance().setLastClickedPoint(point);
-
-        return true;
     }
 
     /**
@@ -104,6 +111,15 @@ public class MapWayPointController implements MapClickConfigurationController {
             waypointOptionsController.getWaypointOptions().setVisibility(View.VISIBLE);
             waypointOptionsController.setReportIncidentStatus(point);
             isMarked = true;
+        }
+    }
+
+    /**
+     * Method to delete all waypoint marks on the map
+     */
+    public void deleteMarks() {
+        for (Marker marker:mapboxMap.getMarkers()) {
+            mapboxMap.removeMarker(marker);
         }
     }
 

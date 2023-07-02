@@ -146,7 +146,9 @@ public class NavigationOptionsController {
             handleHiddeItemsView();
             isActive = false;
             mapWayPointController.setMarked(false);
-            polylineRouteUpdaterController.setStartPoint(finalPoint);
+            mapWayPointController.deleteMarks();
+            if (polylineRouteUpdaterController != null)
+                polylineRouteUpdaterController.setStartPoint(finalPoint);
         });
     }
 
@@ -163,6 +165,7 @@ public class NavigationOptionsController {
      * Handles the action when the choose start point button is clicked.
      */
     private void handleChooseStartPointButton() {
+        mapWayPointController.deleteMarks();
         isActive = true;
         isCurrentLocationSelected = false;
         handleHiddeItemsView();
