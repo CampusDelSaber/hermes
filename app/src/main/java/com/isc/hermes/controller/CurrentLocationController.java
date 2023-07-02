@@ -149,28 +149,4 @@ public class CurrentLocationController {
     public CurrentLocationModel getCurrentLocationModel(){
         return currentLocationModel;
     }
-
-    /**
-     * Checks if the location is enabled on the device.
-     * @return Returns true if the location is enabled, false otherwise.
-     */
-    public boolean locationEnabled() {
-        LocationManager lm = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return gps_enabled || network_enabled;
-    }
 }

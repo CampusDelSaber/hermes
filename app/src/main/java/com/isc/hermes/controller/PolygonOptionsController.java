@@ -18,9 +18,7 @@ import com.isc.hermes.utils.MapManager;
 
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Class on controller function to initialise all components in natural disaster form
@@ -134,7 +132,7 @@ public class PolygonOptionsController {
      */
     private void resetMapConfiguration(){
         MapManager.getInstance().removeCurrentClickController();
-        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(MapManager.getInstance().getMapboxMap(), this.context));
+        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this.context));
         MapManager.getInstance().getMapboxMap().setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri());
     }
 

@@ -3,7 +3,6 @@ package com.isc.hermes;
 import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LATITUDE;
 import static com.isc.hermes.ActivitySelectRegion.MAP_CENTER_LONGITUDE;
 import static com.isc.hermes.ActivitySelectRegion.ZOOM_LEVEL;
-import static com.isc.hermes.utils.offline.OfflineUtils.JSON_FIELD_REGION_NAME;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,6 +23,7 @@ import com.isc.hermes.controller.PopUp.TextInputPopup;
 import com.isc.hermes.controller.offline.OfflineDataRepository;
 import com.isc.hermes.model.RegionData;
 import com.isc.hermes.controller.offline.CardViewHandler;
+import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.view.OfflineCardView;
 import com.isc.hermes.utils.offline.MapboxOfflineManager;
 import com.isc.hermes.utils.offline.OfflineUtils;
@@ -35,7 +35,6 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.offline.OfflineRegion;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
@@ -203,6 +202,8 @@ public class OfflineMapsActivity extends AppCompatActivity implements RegionObse
                 displayPopupInputNewName();
                 return true;
             case NAVIGATE_TO:
+                MapManager.getInstance().removeCurrentClickController();
+                MapManager.getInstance().setOfflineMode(true);
                 navigateToDownloadedMap(nameItem);
                 return true;
             case DELETE:

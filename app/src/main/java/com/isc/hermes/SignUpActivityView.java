@@ -24,14 +24,10 @@ import com.isc.hermes.utils.lifecycle.LastSessionTracker;
 import com.isc.hermes.utils.offline.NetworkManager;
 
 import org.json.JSONException;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-
-import timber.log.Timber;
-
 
 /**
  * This class is in charge of controlling the user's authentication activity.
@@ -108,13 +104,11 @@ public class SignUpActivityView extends AppCompatActivity {
     private void getUserDependingAbleNetwork(IAuthentication authentication) {
 
         if (authentication.checkUserSignIn(this)) {
+
             authenticator = authentication;
-            User user = null;
-            if (NetworkManager.isOnline(this)) {
-                user = obtainUserUsingInternet(authentication);
-            } else {
-                user = DataAccountOffline.getInstance(this).loadDataLogged();
-            }
+            User user;
+            if(NetworkManager.isOnline(this)) user = obtainUserUsingInternet(authentication);
+            else user = DataAccountOffline.getInstance(this).loadDataLogged();
             UserRepository.getInstance().setUserContained(user);
             changeActivityToMap();
         }
@@ -134,11 +128,8 @@ public class SignUpActivityView extends AppCompatActivity {
                 String id = manager.getIdByEmail(authentication.getUserSignIn().getEmail());
                 user = manager.getUserById(id);
                 DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
-            } catch (ExecutionException | InterruptedException | JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return user;
+            } catch (ExecutionException | InterruptedException | JSONException e) {e.printStackTrace(); }
+        } return user;
     }
 
     /**
