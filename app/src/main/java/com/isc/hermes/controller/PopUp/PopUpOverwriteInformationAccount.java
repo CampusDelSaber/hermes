@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.SendEmailManager;
@@ -26,6 +27,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     private AutoCompleteTextView fullName;
     private AutoCompleteTextView username;
     private AutoCompleteTextView comboBoxField;
+    private TextInputLayout textInputLayout;
     private boolean isModifiable;
 
     /**
@@ -61,6 +63,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
             fullName.setEnabled(false);
             username.setEnabled(false);
             comboBoxField.setEnabled(false);
+            textInputLayout.setEnabled(false);
             buttonUploadImage.setVisibility(View.GONE);
         } dismiss();
     }
@@ -91,21 +94,26 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     }
 
     /**
-     * Sets the information to be edited in the AbelEdit form.
+     * Sets the information to be edited in the AbleEdit form.
      *
-     * @param button The button used for editing the information.
-     * @param fullName The AutoCompleteTextView for entering the full name.
-     * @param username The AutoCompleteTextView for entering the username.
-     * @param comboBoxField The AutoCompleteTextView for selecting a field from a combo box.
+     * @param button              The button used for editing the information.
+     * @param fullName            The AutoCompleteTextView for entering the full name.
+     * @param username            The AutoCompleteTextView for entering the username.
+     * @param comboBoxField       The AutoCompleteTextView for selecting a field from a combo box.
+     * @param buttonUploadImage   The button used for uploading an image.
+     * @param textInputLayout     The TextInputLayout that contains the AutoCompleteTextViews.
      */
     public void setInformationToAbleEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
-                                         AutoCompleteTextView comboBoxField, Button buttonUploadImage) {
+                                         AutoCompleteTextView comboBoxField, Button buttonUploadImage,
+                                         TextInputLayout textInputLayout) {
         this.button = button;
         this.fullName = fullName;
         this.username = username;
         this.comboBoxField = comboBoxField;
         this.buttonUploadImage = buttonUploadImage;
+        this.textInputLayout = textInputLayout;
     }
+
 
     /**
      * Sets the modifiability status of the object.

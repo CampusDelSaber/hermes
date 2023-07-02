@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpDeleteAccount;
 import com.isc.hermes.controller.PopUp.PopUpOverwriteInformationAccount;
@@ -39,6 +40,7 @@ public class AccountInformation extends AppCompatActivity {
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldFullName;
     private AutoCompleteTextView comboBoxField;
+    private TextInputLayout textInputTypeUser;
     private AutoCompleteTextView textFieldEmail;
     private PopUp popUpDialogDelete;
     private ImageView imageView;
@@ -189,10 +191,14 @@ public class AccountInformation extends AppCompatActivity {
      * The user is an administrator, the comboBoxField is set to display the user's type.
      */
     private void verifyAdministratorUser() {
-        if (!UserRepository.getInstance().getUserContained().getTypeUser().
-                equals("Administrator")) comboBoxField.setEnabled(true);
-        else
+        if (UserRepository.getInstance().getUserContained().getTypeUser().equals("General")){
+            comboBoxField.setEnabled(true);
+            textInputTypeUser.setEnabled(true);
+        } else {
             comboBoxField.setText(UserRepository.getInstance().getUserContained().getTypeUser());
+            comboBoxField.setEnabled(false);
+            textInputTypeUser.setEnabled(false);
+        }
     }
 
     /**
@@ -203,7 +209,7 @@ public class AccountInformation extends AppCompatActivity {
     public void saveAccountInformationAction(View view) {
         updateInformationUser();
         popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField, buttonUploadImage);
+                textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser);
         popUpDialogEdit.show();
     }
 
@@ -227,12 +233,14 @@ public class AccountInformation extends AppCompatActivity {
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
         buttonUploadImage = findViewById(R.id.buttonUploadImage);
         imageView = findViewById(R.id.imageUpload);
-        comboBoxField = findViewById(R.id.textFieldUserTypeUpdate);
+        textInputTypeUser = findViewById(R.id.comboBoxTextField);
+        comboBoxField = textInputTypeUser.findViewById(R.id.textFieldUserTypeUpdate);
         textFieldFullName = findViewById(R.id.textFieldFullName);
         textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldUserName = findViewById(R.id.textFieldUserName);
         textFieldFullName.setEnabled(false);
         textFieldUserName.setEnabled(false);
+        textInputTypeUser.setEnabled(false);
         comboBoxField.setEnabled(false);
         saveProfileImage = new SaveProfileImage();
     }
