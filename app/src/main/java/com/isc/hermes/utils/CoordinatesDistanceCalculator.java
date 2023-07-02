@@ -12,12 +12,22 @@ public class CoordinatesDistanceCalculator {
     private final double EARTH_RADIUS = 6371.0;
 
     /**
+     * Gets the singleton instance of the CoordinatesDistanceCalculator class.
+     *
+     * @return the instance of CoordinatesDistanceCalculator
+     */
+    public static CoordinatesDistanceCalculator getInstance() {
+        if (instance == null) instance = new CoordinatesDistanceCalculator();
+        return instance;
+    }
+
+    /**
      * This method calculates the distance between two nodes (using their coordinates).
      * It applies Haversine formula:
      * a = sin²(Δlat/2) + cos(lat1) * cos(lat2) * sin²(Δlon/2)
      * c = 2 * atan2(sqrt(a), sqrt(1 - a))
      * distance = R * c
-     *
+     * <p>
      * lat1 and lat2 are the latitudes of the two points in radians.
      * lon1 and lon2 are the longitudes of the two points in radians.
      * Δlat is the difference between the latitudes: lat2 - lat1.
@@ -67,15 +77,50 @@ public class CoordinatesDistanceCalculator {
     }
 
     /**
+     * Calculates the shortest distance between a point and a line defined by two endpoints.
+     *
+     * @param point     The point for which to calculate the distance.
+     * @param lineStart The starting point of the line.
+     * @param lineEnd   The ending point of the line.
+     * @return The shortest distance between the point and the line.
+     */
+    public double pointToLineDistance(LatLng point, LatLng lineStart, LatLng lineEnd) {
+        double x = convertToCartesian(point.getLongitude());
+        double y = convertToCartesian(point.getLatitude());
+
+        double x1 = convertToCartesian(lineStart.getLongitude());
+        double y1 = convertToCartesian(lineStart.getLatitude());
+
+        double x2 = convertToCartesian(lineEnd.getLongitude());
+        double y2 = convertToCartesian(lineEnd.getLatitude());
+
+        double A = y2 - y1;
+        double B = x1 - x2;
+        double C = (x2 * y1) - (x1 * y2);
+
+        return Math.abs((A * x) + (B * y) + C) / Math.sqrt((A * A) + (B * B));
+    }
+
+    /**
+     * Converts a coordinate from degrees to Cartesian representation.
+     *
+     * @param coord The coordinate value in degrees.
+     * @return The corresponding Cartesian coordinate.
+     */
+    private double convertToCartesian(double coord) {
+        return Math.toRadians(coord) * EARTH_RADIUS;
+    }
+
+    /**
      * Calculates the angular distance based on the given latitude and longitude differences.
      *
-     * @param lat1  the latitude of the first point in radians
-     * @param lat2  the latitude of the second point in radians
-     * @param dlon  the difference in longitude between the points
-     * @param dlat  the difference in latitude between the points
+     * @param lat1 the latitude of the first point in radians
+     * @param lat2 the latitude of the second point in radians
+     * @param dlon the difference in longitude between the points
+     * @param dlat the difference in latitude between the points
      * @return the angular distance
      */
-    private double getAngularDistance(double lat1, double lat2, double dlon, double dlat){
+    private double getAngularDistance(double lat1, double lat2, double dlon, double dlat) {
         return Math.pow(Math.sin(dlat / 2), 2)
                 + Math.cos(lat1) * Math.cos(lat2)
                 * Math.pow(Math.sin(dlon / 2), 2);
@@ -84,20 +129,10 @@ public class CoordinatesDistanceCalculator {
     /**
      * Calculates the central angle based on the given angular distance.
      *
-     * @param angularDistance  the angular distance between the points
+     * @param angularDistance the angular distance between the points
      * @return the central angle
      */
-    private double getCentralAngle(double angularDistance){
+    private double getCentralAngle(double angularDistance) {
         return 2 * Math.atan2(Math.sqrt(angularDistance), Math.sqrt(1 - angularDistance));
-    }
-
-    /**
-     * Gets the singleton instance of the CoordinatesDistanceCalculator class.
-     *
-     * @return the instance of CoordinatesDistanceCalculator
-     */
-    public static CoordinatesDistanceCalculator getInstance() {
-        if (instance == null) instance = new CoordinatesDistanceCalculator();
-        return instance;
     }
 }
