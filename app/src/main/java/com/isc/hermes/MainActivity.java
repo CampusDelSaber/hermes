@@ -1,7 +1,5 @@
 package com.isc.hermes;
 
-import static com.mongodb.assertions.Assertions.assertNotNull;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +17,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
+import com.isc.hermes.controller.MapStylesController;
+import com.isc.hermes.model.Utils.MapStylePreference;
 import com.isc.hermes.controller.ViewIncidentsController;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +39,6 @@ import com.isc.hermes.controller.FilterController;
 import com.isc.hermes.controller.CurrentLocationController;
 import android.widget.TextView;
 import com.isc.hermes.controller.GenerateRandomIncidentController;
-import com.isc.hermes.database.AccountInfoManager;
 
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.incidents.GeometryType;
@@ -65,19 +65,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private CurrentLocationController currentLocationController;
     private FilterCategoriesController filterCategoriesController;
     private ViewIncidentsController viewIncidentsController;
+    private MapStylesController mapStylesController;
     private MarkerManager markerManager;
     private ActivityResultLauncher<Intent> launcher;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView searchView;
-
-    private boolean visibilityMenu;
-
     @SuppressLint("StaticFieldLeak")
     public static Context context;
     private Toolbar toolbar;
     private MapView mapView;
-    private String mapStyle;
     private ImageButton buttonClear;
     private final String resetSearchText = "Search...";
 
@@ -94,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initMapbox();
         setContentView(R.layout.activity_main);
         initMapView();
-        this.mapStyle = "Default";
+        initMapStylesController();
         addMapboxSearcher();
         mapView.getMapAsync(this);
         setupSearchView();
@@ -148,12 +145,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     * Method to initialize the map styles controller.
+     */
+    private void initMapStylesController() {
+        mapStylesController = new MapStylesController(this);
+    }
+
+    /**
      * Called when the map is ready to be used.
      */
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         FilterController filterController = new FilterController(mapboxMap, this);
-        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(mapStylesController.getCurrentMapStyle(), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
@@ -349,26 +353,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Opens the styles menu by toggling its visibility.
-     *
-     * @param view The view that triggered the method.
-     */
-    public void openStylesMenu(View view) {
-        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
-        styleOptionsWindow.setVisibility(View.VISIBLE);
-        setMapScrollGesturesEnabled(true);
-    }
-
-    /**
      * Method to change the map style.
      *
      * @param view The button's view of the style that has been clicked.
      */
     public void changeMapStyle(View view) {
-        LinearLayout styleOptionsWindow = findViewById(R.id.styleOptionsWindow);
-        styleOptionsWindow.setVisibility(View.GONE);
-        mapStyle = ((ImageButton) view).getTag().toString();
-        MapManager.getInstance().getMapboxMap().setStyle(mapStyle);
+        mapStylesController.changeMapStyle(view);
     }
 
     /**
@@ -486,7 +476,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
             case R.id.mapStyle:
                 drawerLayout.closeDrawer(GravityCompat.START);
-                openStylesMenu(new View(context));
+                mapStylesController.openStylesMenu();
                 return true;
             case R.id.offlineMaps:
                 drawerLayout.closeDrawer(GravityCompat.START);
