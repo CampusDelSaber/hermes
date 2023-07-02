@@ -25,7 +25,7 @@ public class NaturalDisasterRequesting {
     private static final String NATURAL_DISASTER_API_URL = "https://api-rest-hermes.onrender.com/incidents?types=Danger%20Zone,Natural%20Disaster";
     private final OkHttpClient client;
     private Request request;
-    private final List<List<Point>> allPolygonPoints;
+    private final List<List<List<Point>>> allPolygonPoints;
 
    public NaturalDisasterRequesting(){
        this.client = new OkHttpClient();
@@ -73,7 +73,7 @@ public class NaturalDisasterRequesting {
             JsonObject incidentObject = jsonElement.getAsJsonObject();
             JsonObject geometry = incidentObject.get("geometry").getAsJsonObject();
             JsonArray coordinatesArray = geometry.get("coordinates").getAsJsonArray();
-            List<Point> polygonCoordinates = fillOnePolygonFromArrayCoordinates(coordinatesArray);
+            List<List<Point>> polygonCoordinates = fillOnePolygonFromArrayCoordinates(coordinatesArray);
             allPolygonPoints.add(polygonCoordinates);
         }
     }
@@ -83,18 +83,20 @@ public class NaturalDisasterRequesting {
      * @param coordinatesArray Is array with all polygon points
      * @return polygon coordinates
      */
-    private List<Point> fillOnePolygonFromArrayCoordinates(JsonArray coordinatesArray){
+    private List<List<Point>> fillOnePolygonFromArrayCoordinates(JsonArray coordinatesArray){
+        List<List<Point>> polygonCoordinates = new ArrayList<>();
         List<Point> polygon = new ArrayList<>();
         coordinatesArray.forEach(point -> {
             Point singlePolygonPoint = Point.fromLngLat(point.getAsJsonArray().get(0).getAsDouble(), point.getAsJsonArray().get(1).getAsDouble());
             polygon.add(singlePolygonPoint);
         });
-        return polygon;
+        polygonCoordinates.add(polygon);
+        return polygonCoordinates;
     }
 
     /**
      * Method to return the final result to requesting from database
      * @return All polygons with its coordinates located in database
      */
-    public List<List<Point>> getAllPolygonPoints() {return allPolygonPoints;}
+    public List<List<List<Point>>> getAllPolygonPoints() {return allPolygonPoints;}
 }
