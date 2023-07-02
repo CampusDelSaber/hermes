@@ -11,19 +11,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import timber.log.Timber;
 
 /**
- * The RouteEstimatesManager class manages the estimates for route time and distance during navigation.
+ * The LiveRouteEstimationsWorker class manages the estimates for route time and distance during navigation.
  */
-public class LiveRouteEstimationsWorker implements Runnable{
+public class LiveRouteEstimationsWorker implements Runnable {
+
     private final UserRouteTracker userRouteTracker;
     private final InfoRouteController infoRouteController;
     private final TransportationType transportationType;
-
-    private double totalEstimatedDistance;
     private final AtomicBoolean canRun;
+    private double totalEstimatedDistance;
 
     /**
-     * Constructs a new RouteEstimatesManager object.
-     estimationsThread.interrupt();*
+     * Constructs a new LiveRouteEstimationsWorker object.
+     *
      * @param userRouteTracker    The UserRouteTracker instance for tracking the user's route.
      * @param infoRouteController The InfoRouteController instance for updating route information.
      * @param transportationType  The transportation type used for estimating arrival time.
@@ -53,6 +53,8 @@ public class LiveRouteEstimationsWorker implements Runnable{
 
     /**
      * Updates the estimated arrival time based on the total estimated distance and transportation type.
+     *
+     * @param distance The total estimated distance.
      */
     private void updateEstimatedArrivalTime(double distance) {
         int totalEstimatedArrivalTime = (int) Math.ceil(((distance / transportationType.getVelocity()) * 60));
@@ -71,7 +73,7 @@ public class LiveRouteEstimationsWorker implements Runnable{
     @Override
     public void run() {
         while (canRun.get()) {
-            if (userRouteTracker.hasUserArrived()){
+            if (userRouteTracker.hasUserArrived()) {
                 canRun.set(false);
                 updateEstimatedArrivalDistance(0.0);
                 updateEstimatedArrivalTime(0.0);
@@ -97,6 +99,8 @@ public class LiveRouteEstimationsWorker implements Runnable{
 
     /**
      * Starts updating the estimates for arrival time and distance.
+     *
+     * @param exceptionHandler The exception handler for the estimations thread.
      */
     public void startLiveUpdate(Thread.UncaughtExceptionHandler exceptionHandler) {
         Thread estimationsThread = new Thread(this, "Estimations Thread");
@@ -105,7 +109,11 @@ public class LiveRouteEstimationsWorker implements Runnable{
         estimationsThread.start();
     }
 
-    public void stopLiveUpdate(){
+
+    /**
+     * Stops updating the estimates for arrival time and distance.
+     */
+    public void stopLiveUpdate() {
         canRun.set(false);
     }
 }

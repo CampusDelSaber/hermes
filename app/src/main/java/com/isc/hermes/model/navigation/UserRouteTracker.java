@@ -15,6 +15,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
+
 /**
  * The UserRouteTracker class tracks the user's route and provides information about the user's progress.
  */
@@ -52,7 +53,12 @@ public class UserRouteTracker {
         isUserTrackLost = false;
     }
 
-    public void parseRoute() {
+    /**
+     * Parses the route information and initializes the necessary objects for tracking the user's route.
+     *
+     * @throws RouteOutOfTracksException If the route is empty and navigation cannot be started.
+     */
+    public void parseRoute() throws RouteOutOfTracksException {
         routeSegments = NavigationRouteParser.makeRouteSegments(routeInformation);
         if (routeSegments.isEmpty()) {
             throw new RouteOutOfTracksException("Could not start the navigation, route is empty");
@@ -145,10 +151,20 @@ public class UserRouteTracker {
         return routeInformation;
     }
 
+    /**
+     * Gets the distance remaining in the unvisited portion of the route.
+     *
+     * @return The distance remaining in the unvisited portion of the route.
+     */
     public double getUnvisitedRouteSize() {
         return routeDistanceHandler.getDistance();
     }
 
+    /**
+     * Checks if the user has moved from the last recorded location.
+     *
+     * @return true if the user has moved, false otherwise.
+     */
     public boolean hasUserMoved() {
         return userLocationTracker.hasUserMoved();
     }

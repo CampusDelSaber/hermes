@@ -45,6 +45,15 @@ public class NavigationTrackerTools {
         return isInsideHorizontalBounds && isInsideVerticalBounds;
     }
 
+    /**
+     * Checks if a point is within a range defined by a floor and ceil value with a given precision.
+     *
+     * @param floor     The floor value.
+     * @param ceil      The ceil value.
+     * @param point     The point to check.
+     * @param precision The precision for defining the range.
+     * @return true if the point is within the range, false otherwise.
+     */
     public static boolean isInRange(LatLng floor, LatLng ceil, LatLng point, double precision) {
         double minLat = Math.min(floor.getLatitude(), ceil.getLatitude());
         double maxLat = Math.max(floor.getLatitude(), ceil.getLatitude());
@@ -57,15 +66,13 @@ public class NavigationTrackerTools {
                 (point.getLongitude() <= maxLng + precision);
     }
 
-
     /**
      * Determines if a user has moved based on the distance between their current location
      * and their last known location.
      *
-     * @param userLocation  The current location of the user.
-     * @param lastLocation  The last known location of the user.
-     * @return              {@code true} if the user has moved beyond the defined criteria,
-     *                      {@code false} otherwise.
+     * @param userLocation The current location of the user.
+     * @param lastLocation The last known location of the user.
+     * @return true if the user has moved beyond the defined criteria, false otherwise.
      */
     public static boolean hasUserMoved(LatLng userLocation, LatLng lastLocation) {
         CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();

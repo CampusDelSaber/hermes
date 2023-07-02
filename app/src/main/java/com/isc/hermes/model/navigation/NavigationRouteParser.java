@@ -9,13 +9,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The NavigationRouteParser class is responsible for parsing route information and creating a list of route segments.
+ */
 public class NavigationRouteParser {
+
     public static final int GEO_JSON_LATITUDE = 1;
     public static final int GEO_JSON_LONGITUDE = 0;
 
     /**
      * Creates a list of route segments from the route information.
      *
+     * @param routeInformation The JSON object containing route information.
      * @return The list of route segments.
      */
     public static List<RouteSegmentRecord> makeRouteSegments(JSONObject routeInformation) {

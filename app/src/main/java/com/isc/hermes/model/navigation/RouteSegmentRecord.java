@@ -41,10 +41,20 @@ public class RouteSegmentRecord {
         return end;
     }
 
+    /**
+     * Returns the distance of the route segment.
+     *
+     * @return the distance.
+     */
     public double getDistance() {
         return distance;
     }
 
+    /**
+     * Sets the start point of the route segment.
+     *
+     * @param start the coordinates of the start point.
+     */
     public void setStart(LatLng start) {
         this.start = start;
     }
