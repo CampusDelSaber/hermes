@@ -24,6 +24,13 @@ public class PolygonsViewer implements Style.OnStyleLoaded {
     private final List<List<List<Point>>> polygons;
     private final String polygonColor;
 
+    /**
+     * This is the constructor method to build the polygon viewer.
+     *
+     * @param mapboxMap where the polygons will be displayed.
+     * @param polygons to displayed.
+     * @param polygonColor is the color for each polygon.
+     */
     public PolygonsViewer(MapboxMap mapboxMap, List<List<List<Point>>> polygons, String polygonColor){
         this.polygonColor = polygonColor;
         this.polygons = polygons;

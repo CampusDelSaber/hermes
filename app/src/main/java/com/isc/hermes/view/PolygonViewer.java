@@ -17,13 +17,20 @@ import java.util.List;
 /**
  * Class to display polygons on map although its style
  */
-public class MapPolygonStyle implements Style.OnStyleLoaded {
-    private final List<List<Point>> allPolygonsPoints;
-    private final String polygonColorHexCode;
+public class PolygonViewer implements Style.OnStyleLoaded {
 
-    public MapPolygonStyle(MapboxMap mapboxMap,List<List<Point>> allPolygonsPoints,String polygonColorHexCode){
-        this.polygonColorHexCode = polygonColorHexCode;
-        this.allPolygonsPoints = allPolygonsPoints;
+    private List<List<Point>> polygon;
+    private String polygonColorHexCode;
+
+    /**
+     * This is the constructor method to render a polygon on map.
+     * @param mapboxMap where the polygon will be render.
+     * @param polygon to render on map.
+     * @param polygonColor is the polygon color.
+     */
+    public PolygonViewer(MapboxMap mapboxMap, List<List<Point>> polygon, String polygonColor){
+        this.polygonColorHexCode = polygonColor;
+        this.polygon = polygon;
         mapboxMap.setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri(),this);
     }
 
@@ -32,7 +39,7 @@ public class MapPolygonStyle implements Style.OnStyleLoaded {
      * @param style the style that has finished loading
      */
     public void onStyleLoaded(@NonNull Style style) {
-        style.addSource(new GeoJsonSource("source-id", Polygon.fromLngLats(allPolygonsPoints)));
+        style.addSource(new GeoJsonSource("source-id", Polygon.fromLngLats(polygon)));
         style.addLayerBelow(new FillLayer("layer-id", "source-id").withProperties(
                         fillColor(Color.parseColor(polygonColorHexCode)),
                         fillOpacity(0.5f)

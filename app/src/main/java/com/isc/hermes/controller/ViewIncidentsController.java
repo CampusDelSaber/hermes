@@ -6,7 +6,7 @@ import android.widget.CheckBox;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
-import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
+import com.isc.hermes.requests.incidents.PolygonRequester;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.view.IncidentViewNavigation;
 
@@ -22,7 +22,7 @@ public class ViewIncidentsController{
     private final CheckBox naturalDisasters;
     private final CheckBox traffic;
     private final CheckBox streetIncident;
-    private final NaturalDisasterRequesting requesting;
+    private final PolygonRequester requesting;
 
     /**
      * Constructor for ViewIncidentsController.
@@ -31,7 +31,7 @@ public class ViewIncidentsController{
      */
     public ViewIncidentsController(AppCompatActivity activity){
         this.activity = activity;
-        this.requesting = new NaturalDisasterRequesting();
+        this.requesting = new PolygonRequester();
         displayIncidentsButton = activity.findViewById(R.id.displayIncidentsButton);
         displayIncidents = activity.findViewById(R.id.display_incidents);
         okButton = activity.findViewById(R.id.okButton);
@@ -71,7 +71,7 @@ public class ViewIncidentsController{
                     PolygonVisualizationController
                             .getInstance()
                             .displayPolygons(
-                                    requesting.getAllPolygonPoints(),"#Ff0000"
+                                    requesting.getPolygons(),"#Ff0000"
                             );
                 }
                 if (traffic.isChecked()) {
