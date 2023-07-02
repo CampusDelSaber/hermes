@@ -19,7 +19,10 @@ public class MapPolyline {
 
     public void displaySavedCoordinates(List<String> geoJson, List<Integer> colors) {
         polylineManager.displaySavedCoordinates(geoJson, colors);
+
     }
+
+
 
     public void displayPolyline(LatLng point1, LatLng point2) {
         polylineManager.displayPolyline(point1, point2);
