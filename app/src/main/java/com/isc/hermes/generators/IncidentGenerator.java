@@ -23,21 +23,20 @@ public class IncidentGenerator {
 
     private Random random;
     private LocalDateTime timeout;
-    private PointGenerator pointGenerator;
+    private PolygonGenerator polygonGenerator;
     private IncidentType incidentType;
     private List<Incident> incidents;
     private final List<IncidentType> INCIDENT_TYPES = (List.of(
             IncidentType.SOCIAL_INCIDENT, IncidentType.DANGER_ZONE, IncidentType.NATURAL_DISASTER));
-    private final List<Radium> RADII = List.of(Radium.FIVE_METERS, Radium.TEN_METERS,
-            Radium.TWENTY_FIVE_METERS, Radium.FIFTY_METERS);
-    ;
+    private final List<Radium> RADII = List.of(Radium.TEN_METERS, Radium.TWENTY_FIVE_METERS,
+            Radium.FIFTY_METERS, Radium.ONE_HUNDRED_METERS);
 
     /**
      * Constructor, initializes the generator types in an array.
      */
     public IncidentGenerator() {
         this.random = new Random();
-        this.pointGenerator = new PointGenerator();
+        this.polygonGenerator = new PolygonGenerator();
         this.incidents = new ArrayList<>();
     }
 
@@ -53,11 +52,12 @@ public class IncidentGenerator {
     public List<Incident> getIncidentsRandomly(Double[] referencePoint, Radium radium, int amount) {
         incidents.clear();
         if (withoutTimeout()) {
-            pointGenerator
-                    .getMultiPoint(referencePoint, radium, amount)
+            polygonGenerator
+                    .genSymmetricPolygon(referencePoint, radium, amount, false)
                     .forEach(reference -> {
                         incidentType = getIncidentTypeRandomly();
-                        incidents.add(buildIncident(incidentType, referencePoint));
+                        incidents.add(buildIncident(incidentType,
+                                new Double[]{reference.getX(), reference.getY()}));
                     });
             timeout = LocalDateTime.now().plus(5, ChronoUnit.MINUTES);
         }

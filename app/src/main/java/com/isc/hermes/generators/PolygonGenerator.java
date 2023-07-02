@@ -1,5 +1,7 @@
 package com.isc.hermes.generators;
 
+import android.util.Log;
+
 import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.GeometryType;
 
@@ -7,6 +9,7 @@ import org.locationtech.jts.geom.*;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,7 +49,7 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
         polygonCoordinates.clear();
         if (isValidReferencePoint(referencePoint)) {
             polygonCoordinates.add(coordinateParser.doubleToCoordinate(referencePoint));
-            polygonCoordinates = genSymmetricPolygon(referencePoint, radium, vertexAmount);
+            polygonCoordinates = genSymmetricPolygon(referencePoint, radium, vertexAmount, true);
             polygon = buildTriangulation(polygonCoordinates);
         }
 
@@ -61,8 +64,11 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
      * @param vertexAmount to define the number of vertices of the polygon.
      * @return symmetric polygon coordinates generated.
      */
-    public List<Coordinate> genSymmetricPolygon(Double[] referencePoint, Radium radium, int vertexAmount) {
-        vertexAmount *= 4;
+    public List<Coordinate> genSymmetricPolygon(
+            Double[] referencePoint, Radium radium,
+            int vertexAmount, boolean lotPoints)
+    {
+        if (lotPoints) vertexAmount *= 4;
         double currentAngle;
         double angleIncrement = 2 * Math.PI / vertexAmount;
 
