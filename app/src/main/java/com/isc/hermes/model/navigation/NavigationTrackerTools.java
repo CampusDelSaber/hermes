@@ -9,8 +9,8 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class NavigationTrackerTools {
     public static double USER_REACHED_DESTINATION_CRITERIA = 0.005;
     public static double USER_MOVED_CRITERIA = 0.001;
-    public static double USER_ON_TRACK_CRITERIA = 0.02;
-    public static double USER_IN_RANGE_PRECISION = 0.001;
+    public static double USER_ON_TRACK_CRITERIA = 0.01;
+    public static double USER_IN_RANGE_PRECISION = 0.0001;
 
     /**
      * Checks if a point has been reached based on the target and the current point.

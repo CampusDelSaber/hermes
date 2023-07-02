@@ -22,13 +22,15 @@ public class UserRouteTracker {
     private final CoordinatesDistanceCalculator distanceCalculator;
     private final CurrentLocationModel currentLocation;
     private final UserLocationTracker userLocationTracker;
+    private RouteDistanceHandler routeDistanceHandler;
+    private TrackRecoveryProtocol trackRecoveryProtocol;
+
     private List<RouteSegmentRecord> routeSegments;
     private RouteSegmentRecord currentSegment;
     private int routeSegmentIndex;
     private JSONObject routeInformation;
     private LatLng usersDestination;
     private boolean isUserTrackLost;
-    private TrackRecoveryProtocol trackRecoveryProtocol;
 
     /**
      * Constructs a UserRouteTracker object with the provided GeoJSON route information.
@@ -57,6 +59,7 @@ public class UserRouteTracker {
         usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
         routeSegments.get(0).setStart(currentLocation.getLatLng());
         trackRecoveryProtocol = new TrackRecoveryProtocol(routeSegments);
+        routeDistanceHandler = new RouteDistanceHandler(routeSegments);
         System.out.printf("Starting route with: %s Tracks\n", routeSegments.size());
 
         try {
@@ -107,6 +110,7 @@ public class UserRouteTracker {
         if (!routeSegments.isEmpty() && routeSegmentIndex < routeSegments.size()) {
             currentSegment = routeSegments.get(routeSegmentIndex);
             routeSegmentIndex++;
+            routeDistanceHandler.update(routeSegmentIndex);
 
             if (!isPointInsideSegment(currentSegment, userLocation, isUserTrackLost)) {
                 throw new UserOutsideTrackException(currentSegment, userLocation);
@@ -116,7 +120,6 @@ public class UserRouteTracker {
             throw new RouteOutOfTracksException("The current route does not have any more unvisited tracks");
         }
     }
-
 
     /**
      * Checks if the user has arrived at the destination point.
@@ -153,12 +156,7 @@ public class UserRouteTracker {
     }
 
     public double getUnvisitedRouteSize() {
-        double totalDistance = 0.0;
-        for (int i = routeSegmentIndex; i < routeSegments.size(); i++) {
-            totalDistance += routeSegments.get(i).getDistance();
-        }
-
-        return totalDistance;
+        return routeDistanceHandler.getDistance();
     }
 
     public boolean hasUserMoved() {
@@ -174,9 +172,10 @@ public class UserRouteTracker {
 
         if (trackRecoveryProtocol.isAttemptSuccessful()) {
             currentSegment = trackRecoveryProtocol.getTrack();
-            routeSegments.indexOf(currentSegment);
-            isUserTrackLost = false;
+            routeSegmentIndex = routeSegments.indexOf(currentSegment);
+            routeDistanceHandler.update(routeSegmentIndex);
             System.out.printf("User on track #%d\n", routeSegmentIndex);
+            isUserTrackLost = false;
 
         } else if (deepAttempt) {
             System.out.println("Deep recovery has failed");
