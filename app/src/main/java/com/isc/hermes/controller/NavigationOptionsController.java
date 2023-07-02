@@ -502,7 +502,7 @@ public class NavigationOptionsController {
     }
 
     private void startRouteEstimationManager(String JSONRoute){
-        infoRouteController.setLiveEstimationsUpdater(new UserRouteTracker(JSONRoute), transportationType);
+        infoRouteController.startNavigationMode(new UserRouteTracker(JSONRoute), transportationType);
     }
 
     /**

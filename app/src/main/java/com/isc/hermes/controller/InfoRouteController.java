@@ -7,14 +7,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
+import com.isc.hermes.model.navigation.NavigationOrchestrator;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.model.navigation.UserRouteTracker;
+import com.isc.hermes.model.navigation.directions.RouteDirectionsProvider;
 import com.isc.hermes.utils.Animations;
 
 import org.json.JSONException;
@@ -49,11 +52,12 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
-    private LiveRouteEstimationsWorker liveRouteEstimationsWorker;
     private int elapsedSeconds;
     private int timeEstimate;
     private String routes;
     private String selectedRoute = "Route A";
+
+    private NavigationOrchestrator navigationOrchestrator;
 
     /**
      * Constructs a new InfoRouteController object.
@@ -126,7 +130,7 @@ public class InfoRouteController {
         isActive = false;
         cancelButton.setOnClickListener(v -> {
             cancelNavigation();
-            liveRouteEstimationsWorker.stopLiveUpdate();
+            navigationOrchestrator.stopNavigationMode();
         });
 
         buttonRouteA.setOnClickListener(v -> {
@@ -361,23 +365,22 @@ public class InfoRouteController {
     /**
      * Sets the thread used for the live estimations
      */
-    public void setLiveEstimationsUpdater(UserRouteTracker userRouteTracker, TransportationType transportationType){
+    public void startNavigationMode(UserRouteTracker userRouteTracker, TransportationType transportationType){
         try {
             userRouteTracker.parseRoute();
+            new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
+            new RouteDirectionsProvider(userRouteTracker);
+            navigationOrchestrator = new NavigationOrchestrator(userRouteTracker);
+            navigationOrchestrator.startNavigationMode((t, e) -> {
+                Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
+                Timber.e(e);
+                navigationOrchestrator.stopNavigationMode();
+            });
         }catch (Exception e){
-            Toast.makeText(layout.getContext(), "Could not start navigation mode", Toast.LENGTH_SHORT).show();
+            Toast.makeText(layout.getContext(), String.format("%s", e.getMessage()), Toast.LENGTH_SHORT).show();
             cancelNavigation();
             Timber.e(e.getMessage());
-            return;
         }
-
-        liveRouteEstimationsWorker = new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
-        liveRouteEstimationsWorker.startLiveUpdate((Thread t, Throwable e) -> {
-            Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
-            t.interrupt();
-            e.printStackTrace();
-            cancelNavigation();
-        });
     }
     /**
      * help me to obtain the routes

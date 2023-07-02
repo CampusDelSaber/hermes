@@ -7,6 +7,7 @@ import static com.isc.hermes.model.navigation.directions.DirectionEnum.TURN_RIGH
 import android.location.Address;
 import android.location.Geocoder;
 
+import com.isc.hermes.MainActivity;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class DirectionsParser {
 
     public DirectionsParser() {
         prevPoint = null;
-        geocoder = new Geocoder(null);
+        geocoder = new Geocoder(MainActivity.context);
         hasAnchor = false;
     }
 

@@ -1,26 +1,23 @@
 package com.isc.hermes.model.navigation.directions;
 
-import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
-import com.isc.hermes.model.navigation.events.Publisher;
+import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.model.navigation.events.Subscriber;
-
-import java.util.List;
+import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 
 public class RouteDirectionsProvider implements Subscriber {
-    private List<RouteSegmentRecord> routeSegments;
-    private int routeSegmentIndex;
 
-    public RouteDirectionsProvider(List<RouteSegmentRecord> routeSegments, Publisher publisher) {
-        this.routeSegments = routeSegments;
-        publisher.subscribe(this);
-    }
+    private final UserRouteTracker userRouteTracker;
 
-    public DirectionsRecord getTrackDirections(){
-        return routeSegments.get(routeSegmentIndex).getDirections();
+    public RouteDirectionsProvider(UserRouteTracker userRouteTracker) {
+        this.userRouteTracker = userRouteTracker;
+        userRouteTracker.getRouteTrackerNotifier().subscribe(this);
     }
 
     @Override
-    public void update(int routeSegmentIndex){
-        this.routeSegmentIndex = routeSegmentIndex;
+    public void update() {
+        RouteSegmentRecord currentSegment = userRouteTracker.getCurrentSegment();
+        DirectionsRecord checkpoint = currentSegment.getDirections()[0];
+        DirectionsRecord nextCheckpoint = currentSegment.getDirections()[1];
+        // push update to view
     }
 }

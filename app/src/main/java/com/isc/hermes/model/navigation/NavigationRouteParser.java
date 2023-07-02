@@ -17,8 +17,8 @@ import java.util.List;
  * The NavigationRouteParser class is responsible for parsing route information and creating a list of route segments.
  */
 public class NavigationRouteParser {
-    private DirectionsParser directionsParser;
-    private RouteSegmentRecordBuilder segmentRecordBuilder;
+    private final DirectionsParser directionsParser;
+    private final RouteSegmentRecordBuilder segmentRecordBuilder;
 
     public NavigationRouteParser() {
         directionsParser = new DirectionsParser();

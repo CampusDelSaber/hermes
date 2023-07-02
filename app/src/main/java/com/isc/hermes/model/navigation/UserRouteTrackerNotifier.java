@@ -14,8 +14,8 @@ public class UserRouteTrackerNotifier implements Publisher {
     }
 
     @Override
-    public void notifyRouteTrackUpdated(int routeSegmentIndex) {
-        subscribers.forEach(subscriber -> subscriber.update(routeSegmentIndex));
+    public void doNotify() {
+        subscribers.forEach(Subscriber::update);
     }
 
     @Override
