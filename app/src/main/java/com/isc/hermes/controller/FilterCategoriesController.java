@@ -1,8 +1,4 @@
 package com.isc.hermes.controller;
-
-import android.app.AlertDialog;
-import android.content.Intent;
-import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.isc.hermes.R;
 import com.isc.hermes.SpacingItemDecoration;
 import com.isc.hermes.model.CategoryFilter;
+import com.isc.hermes.utils.AndroidRequestActivation;
 import com.isc.hermes.utils.CategoryFilterAdapter;
 import com.isc.hermes.utils.CategoryFilterClickListener;
 import com.isc.hermes.utils.AndroidServicesVerification;
@@ -46,6 +43,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     private String lastClickedCategory = "";
     private boolean isMarkersShown = false;
     private AndroidServicesVerification androidServicesVerification;
+    private AndroidRequestActivation androidRequestActivation;
 
     /**
      * Constructs a new FilterCategoriesController with the specified activity.
@@ -55,6 +53,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     public FilterCategoriesController(AppCompatActivity activity) {
         this.activity = activity;
         androidServicesVerification = new AndroidServicesVerification();
+        androidRequestActivation = new AndroidRequestActivation();
     }
 
     /**
@@ -127,7 +126,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
             addAndRemoveMarkets(locationCategory, center);
         } else {
             markerManager.removeAllMarkers(mapView);
-            showInternetDialog();
+            androidRequestActivation.showInternetRequest(activity);
         }
     }
 
@@ -213,20 +212,5 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
                 Toast.makeText(activity, R.string.no_results_founds, Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    /**
-     * Shows a dialog to enable internet.
-     */
-    private void showInternetDialog() {
-        new AlertDialog.Builder(activity)
-                .setTitle("Internet Connection Needed")
-                .setMessage("You need internet access for this function. Do you want to enable it?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-                    activity.startActivity(intent);
-                })
-                .setNegativeButton("No", null)
-                .show();
     }
 }

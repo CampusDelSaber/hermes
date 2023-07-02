@@ -20,26 +20,32 @@ import java.util.List;
  */
 public class FilterController {
     private final MainActivity mainActivity;
-    private final MapboxMap mapboxMap;
+    private MapboxMap mapboxMap;
     private FiltersView filtersView;
     private CameraAnimator cameraAnimator;
     private StreetValidator streetValidator;
     private GeocodeFiltersManager geocodingManager;
     private LatLng currentLatLng;
 
+    public FiltersView getFiltersView() {
+        return filtersView;
+    }
+
 
     /**
      * Constructor method to initialize the mapbox and main Activity attributes
-     * @param mapBox mapbox instanced in main activity
      * @param mainActivity the actual window set on the emulator
      */
-    public FilterController(MapboxMap mapBox, MainActivity mainActivity) {
-        this.mapboxMap = mapBox;
+    public FilterController(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         this.filtersView = new FiltersView(mainActivity);
-        this.cameraAnimator = new CameraAnimator(mapboxMap);
         this.streetValidator = new StreetValidator();
         this.geocodingManager = new GeocodeFiltersManager(mainActivity);
+    }
+
+    public void setMapboxMap(MapboxMap mapboxMap) {
+        this.mapboxMap = mapboxMap;
+        this.cameraAnimator = new CameraAnimator(mapboxMap);
     }
 
     /**
