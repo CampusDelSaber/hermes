@@ -132,16 +132,14 @@ public class InfoRouteController {
             routeEstimatesManager.stopLiveUpdate();
         });
 
-        buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
-                true, false, false));
-        buttonRouteB.setOnClickListener(v -> setRouteInformation(1,
-                false, true, false));
-        buttonRouteC.setOnClickListener(v -> setRouteInformation(0,
-                false, false, true));
+        buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1, true, false, false));
+        buttonRouteB.setOnClickListener(v -> setRouteInformation(1, false, true, false));
+        buttonRouteC.setOnClickListener(v -> setRouteInformation(0, false, false, true));
 
         startNavigationButton.setOnClickListener(v -> {
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
+            startRouteEstimationManager(null, null);
         });
     }
 
@@ -308,7 +306,7 @@ public class InfoRouteController {
 
     public void startRouteEstimationManager(String JSONRoute, TransportationType transportationType){
         UserRouteTracker tracker = new UserRouteTracker(JSONRoute);
-        routeEstimatesManager = new RouteEstimatesManager(tracker, this, transportationType);
+        routeEstimatesManager = new RouteEstimatesManager(this, transportationType, null);
         routeEstimatesManager.startLiveUpdate();
     }
 }

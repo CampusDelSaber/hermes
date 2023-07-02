@@ -6,29 +6,33 @@ import com.isc.hermes.model.location.LocationIntervals;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 /**
  * The RouteEstimatesManager class manages the estimates for route time and distance during navigation.
  */
 public class RouteEstimatesManager {
-    private final UserRouteTracker userRouteTracker;
+    private UserRouteTracker currentRoute;
     private final InfoRouteController infoRouteController;
     private final TransportationType transportationType;
 
     private double totalEstimatedDistance;
     private Thread liveUpdateThread;
 
+    private HashMap<String, UserRouteTracker> availableRoutes;
+
     /**
      * Constructs a new RouteEstimatesManager object.
      *
-     * @param userRouteTracker    The UserRouteTracker instance for tracking the user's route.
      * @param infoRouteController The InfoRouteController instance for updating route information.
      * @param transportationType  The transportation type used for estimating arrival time.
+     * @param availableRoutes
      */
-    public RouteEstimatesManager(UserRouteTracker userRouteTracker, InfoRouteController infoRouteController, TransportationType transportationType) {
-        this.userRouteTracker = userRouteTracker;
+    public RouteEstimatesManager(InfoRouteController infoRouteController, TransportationType transportationType, HashMap<String, UserRouteTracker> availableRoutes) {
+        this.availableRoutes = availableRoutes;
         this.infoRouteController = infoRouteController;
         this.transportationType = transportationType;
-        setTimeDistanceEstimates(userRouteTracker.getRouteInformation());
+        setTimeDistanceEstimates(currentRoute.getRouteInformation());
     }
 
     /**
@@ -36,8 +40,8 @@ public class RouteEstimatesManager {
      */
     public void startLiveUpdate() {
         liveUpdateThread = new Thread(() -> {
-            while (!userRouteTracker.hasUserArrived()) {
-                updateEstimatedArrivalDistance(userRouteTracker.getPartialSegmentDistance());
+            while (!currentRoute.hasUserArrived()) {
+                updateEstimatedArrivalDistance(currentRoute.getPartialSegmentDistance());
                 updateEstimatedArrivalTime();
                 try {
                     Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
@@ -85,5 +89,9 @@ public class RouteEstimatesManager {
 
     public void stopLiveUpdate() {
         liveUpdateThread.interrupt();
+    }
+
+    public void switchRoute(String routeName){
+        currentRoute = availableRoutes.get(routeName);
     }
 }

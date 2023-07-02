@@ -14,14 +14,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
-import com.isc.hermes.model.navigation.RouteEstimatesManager;
+import com.isc.hermes.model.navigation.RoutesRepository;
 import com.isc.hermes.model.navigation.TransportationType;
-import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
@@ -59,7 +57,7 @@ public class NavigationOptionsController {
     private LinearLayout reroutingLayout;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
 
-    private String selectedRoutGeoJSON;
+    private String selectedRouteGeoJSON;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -345,7 +343,6 @@ public class NavigationOptionsController {
         progressDialog = builder.create();
         progressDialog.show();
         manageGraphBuilding(graphController);
-        infoRouteController.startRouteEstimationManager(selectedRoutGeoJSON, transportationType);
     }
 
     /**
@@ -411,6 +408,8 @@ public class NavigationOptionsController {
                     graphController.getGraph(), graphController.getStartNode(),
                     graphController.getDestinationNode(), transportationType
             );
+
+            RoutesRepository.getInstance().importRoutes(routeOptions);
         } catch (JSONException e) {
             handleErrorLoadingRoutes();
         }
@@ -436,7 +435,6 @@ public class NavigationOptionsController {
         for (String route : routes)
             if (!route.isEmpty()) geoJson.add(route);
 
-        selectedRoutGeoJSON = jsonA;
         renderMapRoutes(geoJson);
     }
 

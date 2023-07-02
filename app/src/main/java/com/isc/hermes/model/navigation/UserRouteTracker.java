@@ -81,7 +81,7 @@ public class UserRouteTracker {
      *
      * @return The list of route segments.
      */
-    private List<RouteSegmentRecord> makeRouteSegments() {
+    public static List<RouteSegmentRecord> makeRouteSegments(JSONObject routeInformation) {
         List<RouteSegmentRecord> routeSegments = new ArrayList<>();
         try {
             JSONArray route = routeInformation.getJSONObject("geometry").getJSONArray("coordinates");
