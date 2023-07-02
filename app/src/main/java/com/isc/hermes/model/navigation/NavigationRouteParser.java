@@ -40,18 +40,14 @@ public class NavigationRouteParser {
         try {
             JSONArray route = routeInformation.getJSONObject("geometry").getJSONArray("coordinates");
 
-            for (int i = 0; i < 10000; i++) {
-                if (route.optJSONArray(i) != null) {
-                    if (route.optJSONArray(i + 1) != null) {
-                        LatLng start = unpack(route.getJSONArray(i));
-                        LatLng end = unpack(route.getJSONArray(i + 1));
-                        segmentRecordBuilder.setStart(start)
-                               .setEnd(end)
-                               .setDirections(parseDirections(start, end));
+            for (int i = 0; i < route.length() - 1; i++) {
+                LatLng start = unpack(route.getJSONArray(i));
+                LatLng end = unpack(route.getJSONArray(i + 1));
+                segmentRecordBuilder.setStart(start)
+                        .setEnd(end)
+                        .setDirections(parseDirections(start, end));
 
-                        routeSegments.add(segmentRecordBuilder.createRouteSegmentRecord());
-                    }
-                }
+                routeSegments.add(segmentRecordBuilder.createRouteSegmentRecord());
             }
         } catch (JSONException e) {
             e.printStackTrace();

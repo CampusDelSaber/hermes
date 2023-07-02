@@ -63,7 +63,7 @@ public class NavigationDirectionController {
 
     public void update(DirectionsRecord current, DirectionsRecord next){
         direction.setText(next.getDirection().getText());
-        streetName.setText(next.getStreetName());
+        streetName.setText(current.getStreetName());
         setDirectionIcon(next.getDirection());
     }
 

@@ -51,7 +51,7 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
-    private NavigationOrchestrator navigationOrchestrator
+    private NavigationOrchestrator navigationOrchestrator;
 
     private int elapsedSeconds;
     private int timeEstimate;
