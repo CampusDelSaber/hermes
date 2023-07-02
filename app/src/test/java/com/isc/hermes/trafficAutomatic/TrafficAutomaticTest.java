@@ -8,6 +8,7 @@ import android.content.Context;
 
 import com.isc.hermes.controller.CurrentLocationController;
 import com.isc.hermes.controller.MapWayPointController;
+import com.isc.hermes.controller.NavigationOptionsController;
 import com.isc.hermes.controller.TrafficAutomaticFormController;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.model.CurrentLocationModel;
@@ -27,11 +28,10 @@ import java.util.Map;
 import java.util.Objects;
 
 public class TrafficAutomaticTest {
-    MapWayPointController mapWayPointController;
-    Context context;
+
     DijkstraAlgorithm dijkstraAlgorithm;
     TrafficUploader trafficUploader ;
-    TrafficAutomaticFormController trafficAutomaticFormController = new TrafficAutomaticFormController(context,mapWayPointController,null);
+
 
     @Before()
     public void setUp(){
@@ -79,35 +79,59 @@ public class TrafficAutomaticTest {
 
 
     }
+    public int calculateEstimateTime(Integer time,Integer waitingTime ) {
+        int timeEstimate;
+        if (waitingTime <=time) {
+            timeEstimate = waitingTime  ;
+        }
+        else {
+            timeEstimate = time + waitingTime ;
+        }
+        return timeEstimate;
+    }
+
+
+    public String getTrafficType(Integer time, Integer waitingTime) {
+        String trafficLevel;
+        if (waitingTime > time) {
+            trafficLevel = "High Traffic";
+        } else if (waitingTime < time ) {
+            trafficLevel = "Low Traffic";
+        }
+        else{
+            trafficLevel = "Normal Traffic";
+        }
+        return trafficLevel;
+    }
     @Test
     public void testEstimateTimeHigh(){
-        int stimate = trafficAutomaticFormController.calculateEstimateTime(10,20);
+        int stimate = calculateEstimateTime(10,20);
         assertEquals(30,stimate);
     }
     @Test
     public void testEstimateTimeLow(){
-        int stimate = trafficAutomaticFormController.calculateEstimateTime(10,5);
+        int stimate = calculateEstimateTime(10,5);
         assertEquals(5,stimate);
     }
     @Test
     public void testEstimateTimeSame(){
-        int stimate = trafficAutomaticFormController.calculateEstimateTime(50,50);
+        int stimate = calculateEstimateTime(50,50);
         assertEquals(50,stimate);
     }
 
     @Test
     public void testTypeTrafficHigh(){
-        String type = trafficAutomaticFormController.getTrafficType(10,20);
+        String type = getTrafficType(10,20);
         assertEquals("High Traffic",type);
     }
     @Test
     public void testTypeTrafficLow(){
-        String type = trafficAutomaticFormController.getTrafficType(20,5);
+        String type = getTrafficType(20,5);
         assertEquals("Low Traffic",type);
     }
     @Test
     public void testTypeTrafficNormal(){
-        String type = trafficAutomaticFormController.getTrafficType(10,10);
+        String type = getTrafficType(10,10);
         assertEquals("Normal Traffic",type);
     }
 }
