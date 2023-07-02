@@ -156,11 +156,6 @@ public class WaypointOptionsController {
         if (!hasValidStreetContext(point)) {
             hideReportIncidentsView();
         } else {
-            if(UserRepository.getInstance().getUserContained() == null){
-                UserRepository.getInstance().setUserContained(DataAccountOffline.getInstance((Activity) context).loadDataLogged());
-                User user = UserRepository.getInstance().getUserContained();
-                System.out.println(user.getTypeUser());
-            }
             if(UserRepository.getInstance().getUserContained().isAdministrator()){
                 System.out.println("es admin cuando click");
                 showReportIncidentsView();
