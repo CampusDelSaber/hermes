@@ -8,6 +8,7 @@ import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -25,13 +26,11 @@ public class MapWayPointController implements MapClickConfigurationController {
 
     /**
      * This is the constructor method.
-     *
-     * @param mapboxMap Is the map.
      * @param context Is the context application.
      */
-    public MapWayPointController(MapboxMap mapboxMap, Context context ) {
+    public MapWayPointController(Context context ) {
         this.context = context;
-        this.mapboxMap = mapboxMap;
+        this.mapboxMap = MapManager.getInstance().getMapboxMap();
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
         Animations.loadAnimations();
