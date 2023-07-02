@@ -47,7 +47,7 @@ public class WaypointOptionsController {
         trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
         streetValidator = new StreetValidator();
         waypointOptions = ((AppCompatActivity)context).findViewById(R.id.waypoint_options);
-        incidentFormController = new IncidentFormController(context, mapWayPointController);
+        incidentFormController = IncidentFormController.getInstance(context,mapWayPointController);
         navigationOptionsFormController = new NavigationOptionsController(context, mapWayPointController);
         navigateButton = ((AppCompatActivity) context).findViewById(R.id.navigate_button);
         trafficAutomaticFormController = new TrafficAutomaticFormController(context, mapWayPointController);
@@ -150,10 +150,44 @@ public class WaypointOptionsController {
      * @param point is the coordinate point market.
      */
     public void setReportIncidentStatus(LatLng point) {
-        if (!streetValidator.hasStreetContext(point) || UserRepository.getInstance().
-                getUserContained().getTypeUser().equals(TypeUser.GENERAL.getTypeUser())) {
-            generatePopUpDependingOnTypeUser();
-            reportIncidentsView.setVisibility(View.GONE);
-        } else reportIncidentsView.setVisibility(View.VISIBLE);
+        if (!hasValidStreetContext(point) || isGeneralUser()) {
+            hideReportIncidentsView();
+        } else {
+            showReportIncidentsView();
+        }
     }
+
+    /**
+     * This method validates if the street has a valid context
+     *
+     * @param point is the coordinate point market.
+     * @return a boolean type.
+     */
+    private boolean hasValidStreetContext(LatLng point) {
+        return streetValidator.hasStreetContext(point);
+    }
+
+    /**
+     * This method validates if the user is a general type
+     *
+     * @return a boolean type
+     */
+    private boolean isGeneralUser() {
+        return UserRepository.getInstance().getUserContained().getTypeUser().equals(TypeUser.GENERAL.getTypeUser());
+    }
+
+    /**
+     *  This method hides the Incident Report
+     */
+    private void hideReportIncidentsView() {
+        reportIncidentsView.setVisibility(View.GONE);
+    }
+
+    /**
+     * This method shows the Incident Report
+     */
+    private void showReportIncidentsView() {
+        reportIncidentsView.setVisibility(View.VISIBLE);
+    }
+
 }

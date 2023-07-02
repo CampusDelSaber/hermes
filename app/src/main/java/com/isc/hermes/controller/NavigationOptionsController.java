@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -40,7 +39,8 @@ import timber.log.Timber;
  * Setting methods to render and manage the different ui component's behaviour
  */
 public class NavigationOptionsController {
-    static boolean isActive, isCurrentLocationSelected;
+    static boolean isActive;
+    private boolean isCurrentLocationSelected;
     private final Context context;
     private RelativeLayout navOptionsForm;
     private Button cancelButton, startButton, chooseStartPointButton, startPointButton,
@@ -56,10 +56,7 @@ public class NavigationOptionsController {
     private TransportationType transportationType;
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
-    private ImageView reroutingButton;
-    private LinearLayout reroutingLayout;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
-
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -105,8 +102,6 @@ public class NavigationOptionsController {
         startPointButton = activity.findViewById(R.id.startPoint_button);
         finalPointButton = activity.findViewById(R.id.finalPoint_Button);
         transportationTypesContainer = activity.findViewById(R.id.transportationTypesContainer);
-        reroutingLayout = activity.findViewById(R.id.reroutingLayout);
-        reroutingButton = activity.findViewById(R.id.reloadTheWayButton);
     }
 
     /**
@@ -123,8 +118,6 @@ public class NavigationOptionsController {
             if (i != 0) button.setAlpha(0.3f);
             button.setOnClickListener(buttonClickListener);
         }
-        reroutingLayout.setOnClickListener(v -> handleReloadButtonClick());
-
     }
 
     /**
@@ -144,12 +137,8 @@ public class NavigationOptionsController {
     /**
      * Creates an OnClickListener for the transportation type buttons.
      */
-    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+    private View.OnClickListener buttonClickListener = view ->
             handleTransportationTypeButtonClick((Button) view);
-        }
-    };
 
     /**
      * Method to manage the cancel button behavior
@@ -187,7 +176,8 @@ public class NavigationOptionsController {
      */
     public void handleHiddeItemsView() {
         mapWayPointController.setMarked(false);
-        getNavOptionsForm().startAnimation(Animations.exitAnimation);
+        if (getNavOptionsForm().getVisibility() == View.VISIBLE)
+            getNavOptionsForm().startAnimation(Animations.exitAnimation);
         getNavOptionsForm().setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
     }
@@ -326,9 +316,8 @@ public class NavigationOptionsController {
     /**
      * This method handles the actions performed when the accept button is clicked.
      */
-    private void handleAcceptButtonClick() {
+    public void handleAcceptButtonClick() {
         handleHiddeItemsView();
-        reroutingLayout.setVisibility(View.VISIBLE);
         isActive = false;
         if (isCurrentLocationSelected)
             startPoint = CurrentLocationModel.getInstance().getLatLng();
@@ -345,29 +334,6 @@ public class NavigationOptionsController {
         progressDialog.show();
         manageGraphBuilding(graphController);
     }
-
-    /**
-     * This method handles the actions performed when the accept button is clicked.
-     */
-    public void handleReloadButtonClick() {
-        if (isCurrentLocationSelected) {
-            startPoint = CurrentLocationModel.getInstance().getLatLng();
-            this.start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
-        }
-
-        //HARD-CODE THE START POSITION TO A NEW POSITION
-        start = new LatLng(-17.388395706866092, -66.16068443101761);
-
-        GraphController graphController = new GraphController(start, destination);
-        markStartEndPoint(start, destination);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(R.layout.loader_route_dialog);
-        builder.setCancelable(false);
-        progressDialog = builder.create();
-        progressDialog.show();
-        manageGraphBuilding(graphController);
-    }
-
 
     /**
      * Method to mark the start and destination point on map
@@ -452,6 +418,7 @@ public class NavigationOptionsController {
                 infoRouteController.showInfoRoute(geoJson, mapPolyline);
                 updateNavigatedRoute();
             } catch (Exception e){
+                e.printStackTrace();
                 handleErrorLoadingRoutes();
             }
         } else {
@@ -479,5 +446,19 @@ public class NavigationOptionsController {
 
     private void startRouteEstimationManager(String JSONRoute){
         infoRouteController.setLiveEstimationsUpdater(new UserRouteTracker(JSONRoute), transportationType);
+    }
+
+    /**
+     * Gets if the current location is selected as start point
+     */
+    public boolean isCurrentLocationSelected() {
+        return isCurrentLocationSelected;
+    }
+
+    /**
+     * Sets the current location selected to a new boolean value
+     */
+    public void setIsCurrentLocationSelected(boolean isCurrentLocationSelected) {
+        this.isCurrentLocationSelected = isCurrentLocationSelected;
     }
 }
