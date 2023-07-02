@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import com.isc.hermes.R;
+import com.isc.hermes.utils.AndroidServicesVerification;
 import com.isc.hermes.utils.KeyBoardManager;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -21,6 +24,7 @@ public class FiltersView {
     private CircleImageView filtersButton;
     private Button startGeocodeButton;
     private Button chooseCityButton;
+    private AndroidServicesVerification androidServicesVerification;
 
     /**
      * This constructor initializes the components of the filters view.
@@ -30,6 +34,7 @@ public class FiltersView {
     public FiltersView(Activity activity) {
         this.activity = activity;
         initComponents();
+        androidServicesVerification = new AndroidServicesVerification();
     }
 
     /**
@@ -63,6 +68,14 @@ public class FiltersView {
                 KeyBoardManager.getInstance().closeKeyBoard(v, activity);
             }
         });
+    }
+
+    private void networkVerified() {
+        if (androidServicesVerification.isInternetEnabled((AppCompatActivity) activity)) {
+            filtersContainer.setVisibility(View.VISIBLE);
+        } else {
+            filtersContainer.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
