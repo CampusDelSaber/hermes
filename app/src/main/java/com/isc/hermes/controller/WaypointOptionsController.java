@@ -154,7 +154,6 @@ public class WaypointOptionsController {
             hideReportIncidentsView();
         } else {
             if(UserRepository.getInstance().getUserContained().isAdministrator()){
-                System.out.println("es admin cuando click");
                 showReportIncidentsView();
             }
         }
