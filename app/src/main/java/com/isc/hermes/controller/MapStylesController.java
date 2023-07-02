@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapStylePreference;
 import com.isc.hermes.utils.MapManager;
+import com.mapbox.mapboxsdk.maps.Style;
 
 public class MapStylesController {
     private String mapStyle;
@@ -37,5 +38,17 @@ public class MapStylesController {
         styleOptionsWindow.setVisibility(View.GONE);
         mapStyle = ((ImageButton) view).getTag().toString();
         MapManager.getInstance().getMapboxMap().setStyle(mapStyle);
+        updateMapStyle();
+    }
+
+    public void updateMapStyle(){
+        MapStylePreference.setMapStyle(activity.getBaseContext(), mapStyle);
+    }
+
+    public String getCurrentMapStyle(){
+        if (mapStyle == null) {
+            mapStyle = Style.MAPBOX_STREETS;
+        }
+        return mapStyle;
     }
 }
