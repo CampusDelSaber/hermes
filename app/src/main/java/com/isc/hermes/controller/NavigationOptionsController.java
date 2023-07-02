@@ -456,16 +456,18 @@ public class NavigationOptionsController   {
     //TODO: complete Mau
 
     public String getJson() {
+        if (routeOptions == null) {
+            return "[]";
+        }
         String jsonA = routeOptions.getOrDefault("Route A", "");
         String jsonB = routeOptions.getOrDefault("Route B", "");
         String jsonC = routeOptions.getOrDefault("Route C", "");
 
-        String[] routes = {jsonC, jsonB, jsonA};
+        String[] routes = { jsonC, jsonB, jsonA };
         List<List<Double>> coordinatesList = new ArrayList<>();
 
         for (String route : routes) {
             if (!route.isEmpty()) {
-                // Parse el JSON y extraiga solo las coordenadas
                 JsonObject jsonObject = JsonParser.parseString(route).getAsJsonObject();
                 JsonArray coordinatesArray = jsonObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
                 List<Double> coordinates = new ArrayList<>();
@@ -490,12 +492,10 @@ public class NavigationOptionsController   {
                 coordinates.add(element.getAsDouble());
             }
         }
-
         if (!coordinates.isEmpty()) {
             coordinatesList.add(coordinates);
         }
     }
-
 
     /**
      * This method render the routes on the map.

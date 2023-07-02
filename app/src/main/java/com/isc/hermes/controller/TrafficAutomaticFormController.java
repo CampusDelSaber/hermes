@@ -18,12 +18,6 @@ public class TrafficAutomaticFormController {
     private final MapWayPointController mapController;
     private InfoRouteController infoRouteController ;
 
-
-
-
-
-
-
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -109,7 +103,7 @@ public class TrafficAutomaticFormController {
     }
 
     public String getTrafficTime2(){
-        int selectedTrafficTime = calculateEstimateTime(20,30);
+        int selectedTrafficTime = calculateEstimateTime(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds());
 
         return selectedTrafficTime+ " " + "Minutes";
     }
@@ -119,19 +113,21 @@ public class TrafficAutomaticFormController {
      *
      * @return The HTTP response code indicating the status of the upload.
      */
-    public int uploadTrafficDataBase(){
+    public int uploadTrafficDataBase() {
         String id = IncidentsUtils.getInstance().generateObjectId();
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getTrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds()),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),infoRouteController.getRoutes());
-
-
-        //System.out.println("MIO: "+waypointOptionsController.getNavigationOptionsFormController().getJson());
-        System.out.println("ESTO ES "+infoRouteController.getRoutes());
-        System.out.println(coordinates);
+        String coordinatesNavigation = infoRouteController.getRoutes();
+        String JsonString;
+        if (coordinatesNavigation == null) {
+            JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(infoRouteController.getTimeEstimate(), infoRouteController.getElapsedSeconds()), "Traffic", dateCreated, deathDate, GeometryType.LINE_STRING.getName(), coordinates);
+        } else {
+            JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(infoRouteController.getTimeEstimate(), infoRouteController.getElapsedSeconds()), "Traffic", dateCreated, deathDate, GeometryType.LINE_STRING.getName(), coordinatesNavigation);
+        }
         return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
+
 
 
 }
