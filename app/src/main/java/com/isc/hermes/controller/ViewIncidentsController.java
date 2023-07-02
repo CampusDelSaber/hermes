@@ -70,7 +70,7 @@ public class ViewIncidentsController{
                 if (naturalDisasters.isChecked()) {
                     PolygonVisualizationController
                             .getInstance()
-                            .displayPointsPolygonOnMap(
+                            .displayPolygons(
                                     requesting.getAllPolygonPoints(),"#Ff0000"
                             );
                 }
