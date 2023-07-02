@@ -29,14 +29,13 @@ public class PolylineRouteUpdaterController {
      *
      * @param startPoint  The starting point of the polyline. If null, the current location is used.
      * @param destination The destination point of the polyline.
-     * @param mapPolyline The MapPolyline object for drawing the polyline on the map.
      */
-    public PolylineRouteUpdaterController(LatLng startPoint, LatLng destination, MapPolyline mapPolyline) {
+    public PolylineRouteUpdaterController(LatLng startPoint, LatLng destination) {
         handler = new Handler(Looper.getMainLooper());
         this.startPoint = startPoint == null ? CurrentLocationModel.getInstance().getLatLng() : startPoint;
         this.finalPoint = CurrentLocationModel.getInstance().getLatLng();
         this.destination = destination;
-        this.mapPolyline = mapPolyline;
+        this.mapPolyline = new MapPolyline();
     }
 
     /**

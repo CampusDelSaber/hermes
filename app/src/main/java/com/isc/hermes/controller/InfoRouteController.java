@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
+import com.isc.hermes.model.navigation.TransportationType;
+import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 
 import org.json.JSONException;
@@ -20,6 +23,8 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 
 /**
@@ -35,6 +40,7 @@ public class InfoRouteController {
     private Button buttonRouteB;
     private Button buttonRouteC;
     private Button startNavigationButton;
+    private Button recalculateRouteButton;
     private TextView timeText;
     private TextView distanceText;
     private ArrayList<Integer> colorsInfoRoutes;
@@ -43,7 +49,11 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
-
+    private LiveRouteEstimationsWorker liveRouteEstimationsWorker;
+    private int elapsedSeconds;
+    private int timeEstimate;
+    private String routes;
+    private String selectedRoute = "Route A";
 
     /**
      * Constructs a new InfoRouteController object.
@@ -91,9 +101,10 @@ public class InfoRouteController {
         buttonRouteC = activity.findViewById(R.id.ButtonRouteThree);
         buttonRouteB = activity.findViewById(R.id.ButtonRouteTwo);
         buttonRouteA = activity.findViewById(R.id.ButtonRouteOne);
+        recalculateRouteButton = activity.findViewById(R.id.recalculateFromCurrentLocation);
         buttonRouteB.setAlpha(0.3f);
         buttonRouteC.setAlpha(0.3f);
-        startNavigationButton = activity.findViewById(R.id.startNavegationButton);
+        startNavigationButton = activity.findViewById(R.id.startNavigationButton);
     }
 
     /**
@@ -108,42 +119,86 @@ public class InfoRouteController {
         colorsInfoRoutes.add(size > 1 ? 0XFFFF6E26 : 0XFF686C6C);
     }
 
-    public MapPolyline getMapPolyline(){
-        return mapPolyline;
-    }
-
     /**
      * Sets the action listeners for the buttons.
      */
     private void setActionButtons() {
         isActive = false;
         cancelButton.setOnClickListener(v -> {
-            mapPolyline.hidePolylines();
-            layout.startAnimation(Animations.exitAnimation);
-            layout.setVisibility(View.GONE);
-            navigationDirectionController.getDirectionsForm().startAnimation(Animations.exitAnimation);
-            navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
-            navigationOptionsController.getMapWayPointController().deleteMarks();
-            isActive = false;
+            cancelNavigation();
+            liveRouteEstimationsWorker.stopLiveUpdate();
         });
 
-        buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
-                true, false, false));
-        buttonRouteB.setOnClickListener(v -> setRouteInformation(1,
-                false, true, false));
-        buttonRouteC.setOnClickListener(v -> setRouteInformation(0,
-                false, false, true));
+        buttonRouteA.setOnClickListener(v -> {
+            setRouteInformation(jsonObjects.size() - 1, true, false, false);
+            selectedRoute = "Route A";
+        });
+        buttonRouteB.setOnClickListener(v -> {
+            setRouteInformation(1, false, true, false);
+            selectedRoute = "Route B";
+        });
+        buttonRouteC.setOnClickListener(v -> {
+            setRouteInformation(0, false, false, true);
+            selectedRoute = "Route C";
+        });
 
-        startNavigationButton.setOnClickListener(v -> {
+        setNavigationButtonsEvent();
+    }
+    /**
+     * Cancels the navigation hiding the routes modal and the routes in map
+     */
+    private void cancelNavigation(){
+        mapPolyline.hidePolylines();
+        layout.startAnimation(Animations.exitAnimation);
+        layout.setVisibility(View.GONE);
+        if (navigationOptionsController.getNavOptionsForm().getVisibility() == View.VISIBLE)
+            navigationDirectionController.getDirectionsForm()
+                    .startAnimation(Animations.exitAnimation);
+        navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
+        navigationOptionsController.getMapWayPointController().deleteMarks();
+        isActive = false;
+    }
+
+    /**
+     * Shows or hides start navigation or recalculate buttons depending on start point if
+     * it was the current location selected or not
+     */
+    private void setNavigationButtonsVisibility(){
+        startNavigationButton.setVisibility(
+                navigationOptionsController.isCurrentLocationSelected() ? View.VISIBLE : View.GONE);
+        recalculateRouteButton.setVisibility(
+                navigationOptionsController.isCurrentLocationSelected() ? View.GONE : View.VISIBLE);
+    }
+
+    /**
+     * Sets the start navigation and recalculate buttons on click listeners actions
+     */
+    private void setNavigationButtonsEvent(){
+        recalculateRouteButton.setOnClickListener(event -> {
+            cancelNavigation();
+            navigationOptionsController.setIsCurrentLocationSelected(true);
+            navigationOptionsController.handleAcceptButtonClick();
+        });
+
+        startNavigationButton.setOnClickListener(event -> {
+            long startTime = System.currentTimeMillis();
+
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
+            long endTime = System.currentTimeMillis();
+            long elapsedTime = endTime - startTime;
+
+            int elapsedSeconds2 = (int) (elapsedTime / 1000);
+            setElapsedSeconds(elapsedSeconds2);
         });
     }
 
     /**
      * This method shows which route is selected
      */
-    private void setRouteInformation(int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected) {
+    private void setRouteInformation(
+            int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected
+    ) {
         setTimeAndDistanceInformation(jsonObjects.get(index));
         this.isRouteASelected = isRouteASelected;
         this.isRouteBSelected = isRouteBSelected;
@@ -167,11 +222,14 @@ public class InfoRouteController {
      * @param mapPolyline     The MapPolyline object for displaying the routes.
      */
     public void showInfoRoute(List<String> jsonCoordinates, MapPolyline mapPolyline) {
+        Toast.makeText(layout.getContext(), "Drawing routes", Toast.LENGTH_SHORT).show();
         this.mapPolyline = mapPolyline;
         isActive = true;
         layout.setVisibility(View.VISIBLE);
         jsonObjects = new ArrayList<>();
         try {
+            setNavigationButtonsVisibility();
+
             for (String currentJson : jsonCoordinates)
                 jsonObjects.add(new JSONObject(currentJson));
             setColorsInfoRoutes(jsonCoordinates.size());
@@ -299,5 +357,75 @@ public class InfoRouteController {
         }
         if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
         else timeText.setText(timeInMinutes + " min");
+    }
+
+    /**
+     * Sets the thread used for the live estimations
+     */
+    public void setLiveEstimationsUpdater(UserRouteTracker userRouteTracker, TransportationType transportationType){
+        try {
+            userRouteTracker.parseRoute();
+        }catch (Exception e){
+            Toast.makeText(layout.getContext(), "Could not start navigation mode", Toast.LENGTH_SHORT).show();
+            cancelNavigation();
+            Timber.e(e.getMessage());
+            return;
+        }
+
+        liveRouteEstimationsWorker = new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
+        liveRouteEstimationsWorker.startLiveUpdate((Thread t, Throwable e) -> {
+            Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
+            t.interrupt();
+            e.printStackTrace();
+            cancelNavigation();
+        });
+    }
+    /**
+     * help me to obtain the routes
+     * @return routes
+     */
+    public String getRoutes() {
+        return routes;
+    }
+
+    /**
+     * help me to set the routes
+     */
+    public void setRoutes(String routes) {
+        this.routes = routes;
+    }
+
+    /**
+     * help me to set the time Estimate
+     */
+    public void setTimeEstimate(int timeEstimate) {
+        this.timeEstimate = timeEstimate;
+    }
+
+    /**
+     * help me to obtain the time Estimate
+     * @return time Estimate
+     */
+    public int getTimeEstimate() {
+        return timeEstimate;
+    }
+
+    /**
+     * help me to obtain the elapsed Seconds
+     * @return elapsed Seconds
+     */
+    public int getElapsedSeconds() {
+        return elapsedSeconds;
+    }
+
+    /**
+     * help me to set the elapsed Seconds
+     */
+    public void setElapsedSeconds(int elapsedSeconds) {
+        this.elapsedSeconds = elapsedSeconds;
+    }
+
+    public String getSelectedRoute() {
+        return selectedRoute;
     }
 }

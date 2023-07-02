@@ -1,11 +1,13 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,14 +18,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
+import com.isc.hermes.controller.PopUp.DialogListener;
+import com.isc.hermes.controller.PopUp.PopUpConfirmIncidentCanceling;
+import com.isc.hermes.controller.PopUp.PopUpWarningUpdateUserType;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.utils.regex.InputValidator;
 import com.isc.hermes.view.IncidentTypeButton;
 
 import timber.log.Timber;
@@ -45,6 +52,7 @@ public class IncidentFormController {
     public static String incidentType;
     private String incidentTypeReported;
     private final MapWayPointController mapWayPointController;
+    private static IncidentFormController instance;
 
     /**
      * This is the constructor method. Init all the necessary components.
@@ -52,7 +60,7 @@ public class IncidentFormController {
      * @param context Is the context application.
      * @param mapWayPointController Is the controller of the map.
      */
-    public IncidentFormController(Context context, MapWayPointController mapWayPointController) {
+    private IncidentFormController(Context context, MapWayPointController mapWayPointController) {
         this.context = context;
         this.mapWayPointController = mapWayPointController;
         incidentForm = ((AppCompatActivity)context).findViewById(R.id.incident_form);
@@ -76,22 +84,55 @@ public class IncidentFormController {
      */
     private void setButtonsOnClick() {
         cancelButton.setOnClickListener(v -> {
-            handleCancelButtonClick();
+            new PopUpConfirmIncidentCanceling((AppCompatActivity) context).show();
+            hideKeyboard(v);
         });
 
         acceptButton.setOnClickListener(v -> {
-            handleAcceptButtonClick();
+            if (validateDescription()){
+                handleAcceptButtonClick();
+                hideKeyboard(v);
+            }
         });
+    }
+
+    /**
+     * This method validates the incident form description input
+     *
+     * @return if the input is correct or not
+     */
+    private boolean validateDescription(){
+        String description = reasonTextField.getEditText().getText().toString();
+        return IncidentDialogController.getInstance(context).validateInput(description);
+    }
+
+    /**
+     * This method hides the keyboard
+     *
+     * @param view View class
+     */
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     /**
      * This method handles the actions performed when the cancel button is clicked.
      */
-    private void handleCancelButtonClick() {
+    public void handleCancelButtonClick() {
         mapWayPointController.setMarked(false);
         incidentForm.startAnimation(Animations.exitAnimation);
         incidentForm.setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
+        resetDefaultIncidents();
+    }
+
+    /**
+     * This method resets the value of the text fields in the incidents form
+     */
+    private void resetDefaultIncidents(){
+        incidentText.setText("");
+        reasonTextField.getEditText().setText("");
     }
 
     /**
@@ -293,5 +334,19 @@ public class IncidentFormController {
         incidentType = null;
         changeTypeTitle("PointIncidet Type: ");
         Objects.requireNonNull(reasonTextField.getEditText()).setText("");
+    }
+
+    /**
+     * This method returns this instance class.
+     *
+     * @param context Is the context application.
+     * @param mapWayPointController Is the controller of the map.
+     * @return The instance of this class.
+     */
+    public static IncidentFormController getInstance(Context context, MapWayPointController mapWayPointController){
+        if (instance == null){
+            instance = new IncidentFormController(context, mapWayPointController);
+        }
+        return instance;
     }
 }
