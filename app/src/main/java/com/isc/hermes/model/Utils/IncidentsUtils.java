@@ -1,5 +1,7 @@
 package com.isc.hermes.model.Utils;
 
+import android.util.Log;
+
 import org.bson.types.ObjectId;
 
 import java.text.SimpleDateFormat;
@@ -49,10 +51,17 @@ public class IncidentsUtils {
         String[] parts = timeDuration.split(" ");
         int amount = Integer.parseInt(parts[0]);
         String unit = parts[1].toLowerCase();
+        Log.i("MauTag", unit);
+        if(unit.equals("min")){
+            unit = "minute";
+        }else if(unit.equals("hr")){
+            unit = "hour";
+        }
 
         Integer unitValue = unitMap.get(unit);
         if (unitValue != null) {
             calendar.add(unitValue, amount);
+            Log.i("MauTag", unitValue.toString());
         }
 
         Date modifiedDate = calendar.getTime();

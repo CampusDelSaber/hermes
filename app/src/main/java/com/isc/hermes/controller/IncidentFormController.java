@@ -68,7 +68,7 @@ public class IncidentFormController {
 
         setButtonsOnClick();
         setIncidentComponents();
-
+        initializeDefaultIncidentType();
     }
 
     public MapWayPointController getMapController() {
@@ -108,24 +108,19 @@ public class IncidentFormController {
         incidentForm.startAnimation(Animations.exitAnimation);
         incidentForm.setVisibility(View.GONE);
         mapWayPointController.deleteMarks();
-        resetDefaultIncidents();
     }
 
-    /**
-     * This method resets the value of the text fields in the incidents form
-     */
-    private void resetDefaultIncidents(){
-        incidentText.setText("");
-        reasonTextField.getEditText().setText("");
-    }
 
     /**
      * This method handles the actions performed when the accept button is clicked.
      */
     private void handleAcceptButtonClick() {
         IncidentsUploader uploader = new IncidentsUploader();
+        String reasonInserted = reasonTextField.getEditText().getText().toString();
+        String reasonSelected = reasonTextField.equals("")? reasonInserted: incidentTypeReported;
+        Log.i("MauTag", IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime()));
         uploader.uploadIncident(uploader.generateJsonIncident(
-                incidentTypeReported,reasonTextField.getEditText().getText().toString(),
+                incidentTypeReported,reasonSelected,
                 IncidentsUtils.getInstance().generateCurrentDateCreated(),
                 IncidentsUtils.getInstance().addTimeToCurrentDate(getIncidentTime()),
                 "Point",
@@ -167,14 +162,30 @@ public class IncidentFormController {
                         incidentTypes[i].toLowerCase(),
                         Color.parseColor((String) incidentTypeColors[i]),
                         incidentTypeIcons[i]);
-                setIncidentButtonAction(button);
+                setIncidentButtonAction(button, i);
                 incidentTypesContainer.addView(button);
             }
+
         } else {
             Timber.i(String.valueOf(R.string.array_size_text_timber));
         }
 
         setEstimatedTimePicker();
+    }
+
+    /**
+     * This method sets the default option for incident type.
+     */
+    private void initializeDefaultIncidentType(){
+        for (int i = 0; i < incidentTypesContainer.getChildCount(); i++) {
+            Button button = (Button) incidentTypesContainer.getChildAt(i);
+            if(i == 0 ){
+                incidentTypeReported = button.getText().toString();
+                IncidentFormController.incidentType = button.getText().toString();
+                changeTypeTitle("Point incident type: " + button.getText());
+            }
+            if (i != 0) button.setAlpha(0.3f);
+        }
     }
 
     /**
@@ -255,15 +266,19 @@ public class IncidentFormController {
     /**
      * This method set the event to the incident buttons.
      * @param typeButton button to set the event.
+     * @param numberButton number button in the incidentTypesContainer.
      */
-    private void setIncidentButtonAction(Button typeButton) {
+    private void setIncidentButtonAction(Button typeButton, int numberButton) {
         typeButton.setOnClickListener(
                 v -> {
                     incidentTypeReported = typeButton.getText().toString();
-                    Log.i("tag",reasonTextField.getEditText().getText().toString());
-
                     IncidentFormController.incidentType = typeButton.getText().toString();
                     changeTypeTitle("PointIncidet Type: " + typeButton.getText());
+                    typeButton.setAlpha(1.0f);
+                    for (int i = 0; i < incidentTypesContainer.getChildCount(); i++) {
+                        Button button = (Button) incidentTypesContainer.getChildAt(i);
+                        if (i != numberButton) button.setAlpha(0.3f);
+                    }
                 }
         );
     }
