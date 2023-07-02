@@ -90,16 +90,9 @@ public class TrackRecoveryProtocol {
     }
 
     private void doubleWayStrategy(int routeSegmentIndex) {
-        int upper = routeSegmentIndex + 1;
-        int lower = routeSegmentIndex - 1;
-        RouteSegmentRecord candidate;
+        int nexTrackIndex = (routeSegmentIndex == 1) ? 0 : 1;
+        RouteSegmentRecord candidate = routeSegments.get(nexTrackIndex);
         RouteSegmentRecord current = routeSegments.get(routeSegmentIndex);
-
-        if (upper < routeSegments.size()) {
-            candidate = routeSegments.get(upper);
-        } else {
-            candidate = routeSegments.get(lower);
-        }
 
         foundedTrack = extractSegmentWithUser(new RouteSegmentRecord[]{candidate, current});
     }

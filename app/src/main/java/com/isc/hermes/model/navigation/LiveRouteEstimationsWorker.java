@@ -1,7 +1,5 @@
 package com.isc.hermes.model.navigation;
 
-import android.widget.Toast;
-
 import com.isc.hermes.controller.InfoRouteController;
 import com.isc.hermes.model.location.LocationIntervals;
 

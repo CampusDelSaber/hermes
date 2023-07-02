@@ -61,12 +61,7 @@ public class UserRouteTracker {
         trackRecoveryProtocol = new TrackRecoveryProtocol(routeSegments);
         routeDistanceHandler = new RouteDistanceHandler(routeSegments);
         System.out.printf("Starting route with: %s Tracks\n", routeSegments.size());
-
-        try {
-            nextTrack(currentLocation.getLatLng());
-        } catch (UserOutsideTrackException e) {
-            recoverTrack(false);
-        }
+        nextTrack(currentLocation.getLatLng());
     }
 
     /**
@@ -80,19 +75,14 @@ public class UserRouteTracker {
             recoverTrack(true);
         }
 
-        if (isUserOnTrack(userLocation)){
+        if (isUserOnTrack(userLocation)) {
             System.out.printf("User on track #%d\n", routeSegmentIndex);
             return distanceCalculator.calculateDistance(
                     userLocation,
                     currentSegment.getEnd()
             );
-        }else {
-            try {
-                nextTrack(userLocation);
-            } catch (UserOutsideTrackException e) {
-                recoverTrack(false);
-                return -0.0;
-            }
+        } else {
+            nextTrack(userLocation);
         }
 
         return -0.0;
@@ -104,16 +94,15 @@ public class UserRouteTracker {
      * If the user is outside the current segment, a UserOutsideRouteException is thrown.
      *
      * @param userLocation The user's current location.
-     * @throws UserOutsideTrackException If the user is outside the current route segment.
      */
-    private void nextTrack(LatLng userLocation) throws UserOutsideTrackException {
+    private void nextTrack(LatLng userLocation) {
         if (!routeSegments.isEmpty() && routeSegmentIndex < routeSegments.size()) {
             currentSegment = routeSegments.get(routeSegmentIndex);
-            routeSegmentIndex++;
-            routeDistanceHandler.update(routeSegmentIndex);
-
-            if (!isPointInsideSegment(currentSegment, userLocation, isUserTrackLost)) {
-                throw new UserOutsideTrackException(currentSegment, userLocation);
+            if (isPointInsideSegment(currentSegment, userLocation, isUserTrackLost)) {
+                routeSegmentIndex++;
+                routeDistanceHandler.update(routeSegmentIndex);
+            }else {
+                recoverTrack(false);
             }
 
         } else {
