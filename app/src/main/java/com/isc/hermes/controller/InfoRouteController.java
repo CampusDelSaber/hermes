@@ -24,6 +24,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 
 /**
  * The InfoRouteController class is responsible for managing the information related to routes,
@@ -350,8 +352,8 @@ public class InfoRouteController {
             userRouteTracker.parseRoute();
         }catch (Exception e){
             Toast.makeText(layout.getContext(), "Could not start navigation mode", Toast.LENGTH_SHORT).show();
-            stopNavigationMode();
-            System.err.println(e.getMessage());
+            cancelNavigation();
+            Timber.e(e.getMessage());
             return;
         }
 
