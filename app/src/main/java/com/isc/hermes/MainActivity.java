@@ -11,8 +11,10 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +38,7 @@ import com.isc.hermes.utils.AndroidRequestActivation;
 import com.isc.hermes.utils.AndroidServicesVerification;
 import com.isc.hermes.utils.NetworkChangeReceiver;
 import com.isc.hermes.utils.OnNetworkChangeListener;
+import com.isc.hermes.utils.Animations;
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
     private MapView mapView;
     private String mapStyle;
     private ImageButton buttonClear;
+    private Button exitOffLineModeButton;
     private final String resetSearchText = "Search...";
     private NetworkChangeReceiver networkChangeReceiver;
     private FilterController filterController;
@@ -170,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
             public void onStyleLoaded(@NonNull Style style) {filterController.initComponents();}
         });
         MapManager.getInstance().setMapboxMap(mapboxMap);
-        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(mapboxMap, this));
+        MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
     }
 
     /**
@@ -314,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         }
         addMarkers();
         onActionButtonClear();
+        handleOffLineMode();
     }
 
     /**
@@ -567,5 +572,25 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
                                 .getPolygonPoints().toString()
                 );
         IncidentsUploader.getInstance().uploadIncident(JsonString);
+    }
+
+    /**
+     * Method to determinate if map will change its mode
+     */
+    private void handleOffLineMode(){
+        if (MapManager.getInstance().isOffLine()) initExitOffLineModeButton();
+    }
+
+    /**
+     * Method to init the button and configure a new MapWayPoint configuration to it
+     */
+    private void initExitOffLineModeButton(){
+        exitOffLineModeButton = findViewById(R.id.exitOfflineModeButton);
+        exitOffLineModeButton.setVisibility(View.VISIBLE);
+        exitOffLineModeButton.setOnClickListener(v->{
+            MapManager.getInstance().setOfflineMode(false);
+            MapManager.getInstance().setMapClickConfiguration(new MapWayPointController(this));
+            exitOffLineModeButton.setVisibility(View.GONE);
+        });
     }
 }
