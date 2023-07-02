@@ -10,10 +10,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -28,19 +26,12 @@ import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
-
-import org.json.JSONArray;
 import org.json.JSONException;
-
-import org.json.JSONObject;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import timber.log.Timber;
 
 
@@ -53,8 +44,7 @@ public class NavigationOptionsController {
     private boolean isCurrentLocationSelected;
     private final Context context;
     private RelativeLayout navOptionsForm;
-    private Button cancelButton, startButton, chooseStartPointButton, startPointButton,
-            finalPointButton, currentLocationButton;
+    private Button cancelButton, startButton, chooseStartPointButton, startPointButton, finalPointButton, currentLocationButton;
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
@@ -336,6 +326,9 @@ public class NavigationOptionsController {
         } else showAlertToChangeStartPoint();
     }
 
+    /**
+     * Method to show the loader alert while calculating route
+     */
     private void showLoaderAlertLabel() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(R.layout.loader_route_dialog);
@@ -344,10 +337,17 @@ public class NavigationOptionsController {
         progressDialog.show();
     }
 
+    /**
+     * Method to show an alert to change the start point when start/destination points are equals
+     */
     private void showAlertToChangeStartPoint() {
         Toast.makeText(context, R.string.choose_start_again, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Method to get if the start point hast the same location as the destination point
+     * @return true if they are the same destination
+     */
     private boolean isStartEqualsDestinationPoint() {
         return startPoint.getLatitude() == finalPoint.getLatitude() &&
                 startPoint.getLongitude() == finalPoint.getLongitude();
