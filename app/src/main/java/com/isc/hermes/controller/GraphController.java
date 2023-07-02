@@ -66,7 +66,7 @@ public class GraphController {
      * @throws JSONException If there is an issue with parsing the JSON data.
      */
     public void buildGraph(TransportationType transportationType) throws JSONException {
-        int radius = (int) (getRadius() * 1000) + 200;
+        int radius = (int) ((getRadius() * 1000) * 1.5);
         loadIntersections(intersectionRequest.getIntersections(midpoint.getLatitude(), midpoint.getLongitude(), radius));
         loadEdges(wayRequest.getEdges(midpoint.getLatitude(), midpoint.getLongitude(), radius), transportationType);
         GraphManager graphManager = GraphManager.getInstance();
@@ -177,7 +177,6 @@ public class GraphController {
                                 currentNode, calculator.calculateDistance(lastNode, currentNode)
                             );
                     }
-
                 }
             }
         }
@@ -189,22 +188,26 @@ public class GraphController {
      * @throws JSONException If there is an issue with parsing the JSON data.
      */
     private void addStartNode() throws JSONException {
-        String response = intersectionRequest.getIntersections(start.getLatitude(), startNode.getLongitude(), 210);
+        String response = intersectionRequest.getIntersections(start.getLatitude(), startNode.getLongitude(), 200);
         if (response != null) {
             JSONObject json = new JSONObject(response);
             JSONArray intersection = json.getJSONArray("elements");
             Node node;
+            Node nearbyNode =  null;
+            double distance = calculator.calculateDistance(destinationNode, graph.getNode(String.valueOf(intersection.getJSONObject(0).get("id"))));
 
             for (int i = 0; i < intersection.length(); i++) {
-                for (int j = 1 ; j< intersection.length() ; j++) {
-                    node = graph.getNode(String.valueOf(intersection.getJSONObject(i).get("id")));
-                    if(node != null) {
-                        startNode.addBidirectionalEdge(node, calculator.calculateDistance(startNode, node));
-                        graph.addNode(startNode);
-                        return;
+                node = graph.getNode(String.valueOf(intersection.getJSONObject(i).get("id")));
+                if(node != null) {
+                    double distanceAux = calculator.calculateDistance(startNode, node);
+                    if(distanceAux < distance) {
+                        distance = distanceAux;
+                        nearbyNode = node;
                     }
                 }
             }
+            startNode.addBidirectionalEdge(nearbyNode, distance);
+            graph.addNode(startNode);
         }
     }
 
@@ -219,17 +222,21 @@ public class GraphController {
             JSONObject json = new JSONObject(response);
             JSONArray intersection = json.getJSONArray("elements");
             Node node;
+            Node nearbyNode =  null;
+            double distance = calculator.calculateDistance(destinationNode, graph.getNode(String.valueOf(intersection.getJSONObject(0).get("id"))));
 
             for (int i = 0; i < intersection.length(); i++) {
-                for (int j = 1 ; j< intersection.length() ; j++) {
-                    node = graph.getNode(String.valueOf(intersection.getJSONObject(i).get("id")));
-                    if(node != null) {
-                        destinationNode.addBidirectionalEdge(node, calculator.calculateDistance(destinationNode, node));
-                        graph.addNode(destinationNode);
-                        return;
+                node = graph.getNode(String.valueOf(intersection.getJSONObject(i).get("id")));
+                if(node != null) {
+                    double distanceAux = calculator.calculateDistance(destinationNode, node);
+                    if(distanceAux < distance) {
+                        distance = distanceAux;
+                        nearbyNode = node;
                     }
                 }
             }
+            destinationNode.addBidirectionalEdge(nearbyNode, distance);
+            graph.addNode(destinationNode);
         }
     }
 
