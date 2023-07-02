@@ -45,6 +45,7 @@ public class InfoRouteController {
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
     private int elapsedSeconds;
     private int timeEstimate;
+    private String routes;
 
     /**
      * Constructs a new InfoRouteController object.
@@ -314,6 +315,13 @@ public class InfoRouteController {
         else timeText.setText(timeInMinutes + " min");
     }
 
+    public String getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(String routes) {
+        this.routes = routes;
+    }
 
     public void setTimeEstimate(int timeEstimate) {
         this.timeEstimate = timeEstimate;

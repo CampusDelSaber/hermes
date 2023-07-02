@@ -35,6 +35,8 @@ public class WaypointOptionsController {
     private final Button reportNaturalDisasterButton;
     private final Context context;
     private TextView placeName;
+    private static WaypointOptionsController waypointOptionsController;
+
 
     /**
      * This is the constructor method. Init all the components of UI.
@@ -57,6 +59,9 @@ public class WaypointOptionsController {
         reportIncidentsView = ((AppCompatActivity) context).findViewById(R.id.report_incidents);
         setButtonsOnClick();
     }
+
+
+
 
     /**
      * Method to assign functionality to the buttons of the view.
@@ -85,6 +90,8 @@ public class WaypointOptionsController {
             System.out.println("MIO "+navigationOptionsFormController.getJson());
 
 
+
+
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected Integer doInBackground(Void... voids) {
@@ -110,6 +117,14 @@ public class WaypointOptionsController {
             waypointOptions.startAnimation(Animations.exitAnimation);
             waypointOptions.setVisibility(View.GONE);
         });
+    }
+
+    public void getRoute(){
+        navigationOptionsFormController.getJson();
+    }
+
+    public NavigationOptionsController getNavigationOptionsFormController() {
+        return navigationOptionsFormController;
     }
 
     /**
@@ -158,5 +173,12 @@ public class WaypointOptionsController {
             generatePopUpDependingOnTypeUser();
             reportIncidentsView.setVisibility(View.GONE);
         } else reportIncidentsView.setVisibility(View.VISIBLE);
+    }
+
+    public static WaypointOptionsController getInstance(Context context, MapWayPointController mapWayPointController) {
+        if (waypointOptionsController == null) {
+            waypointOptionsController = new WaypointOptionsController(context, mapWayPointController);
+        }
+        return waypointOptionsController;
     }
 }

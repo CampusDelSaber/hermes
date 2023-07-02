@@ -31,6 +31,7 @@ public class TrafficAutomaticFormController {
      * @param mapController Is the controller of the map.
      */
     public TrafficAutomaticFormController(Context context, MapWayPointController mapController,NavigationOptionsController navigationOptionsController) {
+
         this.context = context;
         this.mapController = mapController;
         this.infoRouteController = InfoRouteController.getInstance(context,  navigationOptionsController);
@@ -107,6 +108,12 @@ public class TrafficAutomaticFormController {
         return selectedTrafficTime+ " " + "Minutes";
     }
 
+    public String getTrafficTime2(){
+        int selectedTrafficTime = calculateEstimateTime(20,30);
+
+        return selectedTrafficTime+ " " + "Minutes";
+    }
+
     /**
      * This method uploads an incident to the database by generating the necessary data and invoking the appropriate methods.
      *
@@ -117,10 +124,12 @@ public class TrafficAutomaticFormController {
         String dateCreated = IncidentsUtils.getInstance().generateCurrentDateCreated();
         String deathDate = IncidentsUtils.getInstance().addTimeToCurrentDate(getTrafficTime());
         String coordinates = TrafficUploader.getInstance().getCoordinates();
-        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds()),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),coordinates);
+        String JsonString = TrafficUploader.getInstance().generateJsonIncident(getTrafficType(infoRouteController.getTimeEstimate(),infoRouteController.getElapsedSeconds()),"Traffic",dateCreated, deathDate , GeometryType.LINE_STRING.getName(),infoRouteController.getRoutes());
 
 
-       // System.out.println("MIO: "+navigationOptionsController.getJson());
+        //System.out.println("MIO: "+waypointOptionsController.getNavigationOptionsFormController().getJson());
+        System.out.println("ESTO ES "+infoRouteController.getRoutes());
+        System.out.println(coordinates);
         return TrafficUploader.getInstance().uploadIncident(JsonString);
     }
 

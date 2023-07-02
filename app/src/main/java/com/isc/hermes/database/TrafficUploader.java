@@ -25,6 +25,7 @@ public class TrafficUploader extends IncidentsUploader {
     private Graph graph;
     private GraphController graph2;
     private NavigationOptionsController navigationOptionsController;
+
     /**
      * This method generates the current traffic coordinates.
      * <p>
@@ -58,6 +59,7 @@ public class TrafficUploader extends IncidentsUploader {
         int indexCoordinates = route.indexOf("coordinates");
         String coordinates = route.substring(indexCoordinates);
         coordinates = coordinates.substring(13,coordinates.length()-2);
+
         return coordinates;
     }
 
@@ -75,7 +77,6 @@ public class TrafficUploader extends IncidentsUploader {
 
         graph2 = new GraphController(location,destiny);
 
-        navigationOptionsController = new NavigationOptionsController(context,mapWayPointController);
 
 
         Map<String, String> trafficLine =

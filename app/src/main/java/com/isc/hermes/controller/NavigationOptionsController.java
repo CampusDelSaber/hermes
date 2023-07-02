@@ -16,6 +16,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
@@ -26,10 +30,15 @@ import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
@@ -38,7 +47,7 @@ import timber.log.Timber;
  * Class to represent the navigation controller options' class for the view
  * Setting methods to render and manage the different ui component's behaviour
  */
-public class NavigationOptionsController {
+public class NavigationOptionsController   {
     static boolean isActive, isCurrentLocationSelected;
     private final Context context;
     private RelativeLayout navOptionsForm;
@@ -445,20 +454,46 @@ public class NavigationOptionsController {
     }
 
     //TODO: complete Mau
+
     public String getJson() {
         String jsonA = routeOptions.getOrDefault("Route A", "");
         String jsonB = routeOptions.getOrDefault("Route B", "");
         String jsonC = routeOptions.getOrDefault("Route C", "");
 
         String[] routes = {jsonC, jsonB, jsonA};
-        ArrayList<String> geoJson = new ArrayList<>();
-        for (String route : routes)
-            if (!route.isEmpty()) geoJson.add(route);
+        List<List<Double>> coordinatesList = new ArrayList<>();
+
+        for (String route : routes) {
+            if (!route.isEmpty()) {
+                // Parse el JSON y extraiga solo las coordenadas
+                JsonObject jsonObject = JsonParser.parseString(route).getAsJsonObject();
+                JsonArray coordinatesArray = jsonObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
+                List<Double> coordinates = new ArrayList<>();
+                extractCoordinates(coordinatesArray, coordinatesList);
+            }
+        }
 
         Gson gson = new Gson();
-        String json = gson.toJson(geoJson);
-        System.out.println(routes.toString());
+        String json = gson.toJson(coordinatesList);
+        System.out.println(json);
+        infoRouteController.setRoutes(json);
         return json;
+    }
+
+    private void extractCoordinates(JsonArray jsonArray, List<List<Double>> coordinatesList) {
+        List<Double> coordinates = new ArrayList<>();
+
+        for (JsonElement element : jsonArray) {
+            if (element.isJsonArray()) {
+                extractCoordinates(element.getAsJsonArray(), coordinatesList);
+            } else if (element.isJsonPrimitive()) {
+                coordinates.add(element.getAsDouble());
+            }
+        }
+
+        if (!coordinates.isEmpty()) {
+            coordinatesList.add(coordinates);
+        }
     }
 
 
