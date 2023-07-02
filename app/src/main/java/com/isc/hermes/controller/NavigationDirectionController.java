@@ -39,7 +39,7 @@ public class NavigationDirectionController {
     }
 
     /**
-     * Sets the start navigation and recalculate buttons on click listeners actions
+     * Sets the close button on click listeners actions
      */
     private void setButtonsEvent(){
         closeButton.setOnClickListener(event -> {
@@ -48,6 +48,9 @@ public class NavigationDirectionController {
         });
     }
 
+    /**
+     * This method hide the view.
+     */
     private void closeDirectionsForm() {
         directionsForm.setVisibility(View.GONE);
     }
@@ -67,6 +70,11 @@ public class NavigationDirectionController {
         setDirectionIcon(next.getDirection());
     }
 
+    /**
+     * This method set the image of the indication.
+     *
+     * @param directionEnum is the indication type.
+     */
     public void setDirectionIcon(DirectionEnum directionEnum) {
         switch (directionEnum) {
             case GO_STRAIGHT:

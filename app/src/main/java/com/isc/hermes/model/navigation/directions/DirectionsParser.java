@@ -1,5 +1,6 @@
 package com.isc.hermes.model.navigation.directions;
 
+import static com.isc.hermes.MainActivity.context;
 import static com.isc.hermes.model.navigation.directions.DirectionEnum.GO_STRAIGHT;
 import static com.isc.hermes.model.navigation.directions.DirectionEnum.TURN_LEFT;
 import static com.isc.hermes.model.navigation.directions.DirectionEnum.TURN_RIGHT;
@@ -20,7 +21,7 @@ public class DirectionsParser {
 
     public DirectionsParser() {
         prevPoint = null;
-        geocoder = new Geocoder(MainActivity.context);
+        geocoder = new Geocoder(context);
         hasAnchor = false;
     }
 

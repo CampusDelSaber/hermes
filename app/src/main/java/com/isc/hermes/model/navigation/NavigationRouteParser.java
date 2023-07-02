@@ -56,10 +56,25 @@ public class NavigationRouteParser {
         return routeSegments;
     }
 
+    /**
+     * This method takes a JSON object containing route information and creates a list of route segments.
+     *
+     * @param cords are the coordinates.
+     * @return Returns the list of route segments.
+     * @throws JSONException
+     */
     private LatLng unpack(JSONArray cords) throws JSONException {
         return new LatLng(cords.getDouble(GEO_JSON_LATITUDE), cords.getDouble(GEO_JSON_LONGITUDE));
     }
 
+    /**
+     * This method unpacks the coordinates from a JSON object and creates a LatLng object.
+     * It receives a JSONArray containing the coordinates and returns the corresponding LatLng object.
+     *
+     * @param start coordinate.
+     * @param end coordinate.
+     * @return an array of DirectionsRecord objects.
+     */
     private DirectionsRecord[] parseDirections(LatLng start, LatLng end){
         if (!directionsParser.hasAnchor()) {
             directionsParser.setAnchor(start);
