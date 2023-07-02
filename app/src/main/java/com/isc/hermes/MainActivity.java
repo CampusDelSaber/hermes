@@ -330,6 +330,10 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         }
     }
 
+    /**
+     * Method for detect if the network is connected or not.
+     * @param isConnected Boolean indicating whether the device is connected to the internet.
+     */
     @Override
     public void onNetworkChange(boolean isConnected) {
         if (isConnected) {
@@ -343,6 +347,9 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         }
     }
 
+    /**
+     * Request internet connection.
+     */
     private void internetRequest() {
         noInternetConnectionMessage.setOnClickListener(v -> {
             if (noInternetConnectionMessage.getVisibility() == View.VISIBLE) androidRequestActivation.showInternetRequest(this);
