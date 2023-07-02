@@ -53,7 +53,7 @@ public class InfoRouteController {
     private int elapsedSeconds;
     private int timeEstimate;
     private String routes;
-    private String selectedRoute;
+    private String selectedRoute = "Route A";
 
     /**
      * Constructs a new InfoRouteController object.
