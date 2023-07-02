@@ -5,12 +5,16 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
+import com.isc.hermes.model.navigation.TransportationType;
+import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 
 import org.json.JSONException;
@@ -19,6 +23,8 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 
 /**
@@ -29,8 +35,12 @@ public class InfoRouteController {
     private static InfoRouteController instanceNavigationController;
     private ConstraintLayout layout;
     private boolean isActive;
-    private Button cancelButton, buttonRouteA, buttonRouteB, buttonRouteC,
-            startNavigationButton, recalculateRouteButton;
+    private Button cancelButton;
+    private Button buttonRouteA;
+    private Button buttonRouteB;
+    private Button buttonRouteC;
+    private Button startNavigationButton;
+    private Button recalculateRouteButton;
     private TextView timeText;
     private TextView distanceText;
     private ArrayList<Integer> colorsInfoRoutes;
@@ -39,6 +49,8 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
+
+    private LiveRouteEstimationsWorker liveRouteEstimationsWorker;
 
 
     /**
@@ -110,7 +122,10 @@ public class InfoRouteController {
      */
     private void setActionButtons() {
         isActive = false;
-        cancelButton.setOnClickListener(v -> cancelNavigation());
+        cancelButton.setOnClickListener(v -> {
+            cancelNavigation();
+            liveRouteEstimationsWorker.stopLiveUpdate();
+        });
 
         buttonRouteA.setOnClickListener(v -> setRouteInformation(jsonObjects.size() - 1,
                 true, false, false));
@@ -163,7 +178,6 @@ public class InfoRouteController {
             navigationDirectionController.getDirectionsForm().setVisibility(View.VISIBLE);
         });
     }
-
     /**
      * This method shows which route is selected
      */
@@ -193,6 +207,7 @@ public class InfoRouteController {
      * @param mapPolyline     The MapPolyline object for displaying the routes.
      */
     public void showInfoRoute(List<String> jsonCoordinates, MapPolyline mapPolyline) {
+        Toast.makeText(layout.getContext(), "Drawing routes", Toast.LENGTH_SHORT).show();
         this.mapPolyline = mapPolyline;
         isActive = true;
         layout.setVisibility(View.VISIBLE);
@@ -327,5 +342,27 @@ public class InfoRouteController {
         }
         if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
         else timeText.setText(timeInMinutes + " min");
+    }
+
+    /**
+     * Sets the thread used for the live estimations
+     */
+    public void setLiveEstimationsUpdater(UserRouteTracker userRouteTracker, TransportationType transportationType){
+        try {
+            userRouteTracker.parseRoute();
+        }catch (Exception e){
+            Toast.makeText(layout.getContext(), "Could not start navigation mode", Toast.LENGTH_SHORT).show();
+            cancelNavigation();
+            Timber.e(e.getMessage());
+            return;
+        }
+
+        liveRouteEstimationsWorker = new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
+        liveRouteEstimationsWorker.startLiveUpdate((Thread t, Throwable e) -> {
+            Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
+            t.interrupt();
+            e.printStackTrace();
+            cancelNavigation();
+        });
     }
 }
