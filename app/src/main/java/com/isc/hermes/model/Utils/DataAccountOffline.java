@@ -11,6 +11,7 @@ import com.isc.hermes.model.User.User;
 public class DataAccountOffline {
 
     private Context context;
+    private SharedPreferences preferences;
     private static final String EMAIL = "EMAIL", ID = "ID", FULL_NAME = "FULL_NAME", USER_NAME = "USER_NAME",
             PATH_IMG_US = "PATH_IMG_US", USER_TYPE = "USER_TYPE";
     private static DataAccountOffline dataAccountOffline;
@@ -21,6 +22,7 @@ public class DataAccountOffline {
      * @param context The context instance.
      */
     private DataAccountOffline(Context context) {
+        this.preferences = context.getSharedPreferences("credentials", Context.MODE_PRIVATE);
         this.context = context;
     }
 
@@ -43,7 +45,6 @@ public class DataAccountOffline {
      * @param user The user object representing the logged account.
      */
     public void saveDataLoggedAccount(User user) {
-        SharedPreferences preferences = context.getSharedPreferences("credentials", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(EMAIL, user.getEmail());
         editor.putString(ID, user.getId());
@@ -65,7 +66,6 @@ public class DataAccountOffline {
      * @return The User object representing the logged account.
      */
     public User loadDataLogged() {
-        SharedPreferences preferences = context.getSharedPreferences("credentials",Context.MODE_PRIVATE);
         return new User(
                 preferences.getString(EMAIL, "Email"),
                 preferences.getString(FULL_NAME, "Full Name"),
@@ -77,9 +77,15 @@ public class DataAccountOffline {
     }
 
     public void deleteDataLogged(){
-        SharedPreferences preferences = context.getSharedPreferences("credentials", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(EMAIL).remove(FULL_NAME).remove(USER_NAME).remove(USER_TYPE).remove(ID).remove(PATH_IMG_US);
+        editor.apply();
+    }
+
+    public void setUserType(String userType){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(USER_TYPE);
+        editor.putString(USER_TYPE,userType);
         editor.apply();
     }
 }

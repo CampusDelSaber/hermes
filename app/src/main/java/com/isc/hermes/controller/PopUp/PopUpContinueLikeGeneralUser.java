@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.Utils.DataAccountOffline;
 
 /**
  * The {@code PopUpContinueLikeGeneralUser} class extends {@code PopUp} and represents a specific
@@ -44,6 +48,8 @@ public class PopUpContinueLikeGeneralUser extends PopUp{
     @Override
     public void onClick(View v) {
         if (v == super.confirmButton){
+            UserRepository.getInstance().getUserContained().setTypeUser("General");
+            DataAccountOffline.getInstance(activity).setUserType("General");
             Intent intent = new Intent(this.activity, MainActivity.class);
             this.activity.startActivity(intent);
         } dismiss();
