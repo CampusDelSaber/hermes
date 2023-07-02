@@ -53,8 +53,6 @@ public class NavigationOptionsController {
     private TransportationType transportationType;
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
-    private ImageView reroutingButton;
-    private LinearLayout reroutingLayout;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
     private Thread routeEstimationManagerThread;
     private MapPolyline mapPolyline;
@@ -107,8 +105,6 @@ public class NavigationOptionsController {
         startPointButton = activity.findViewById(R.id.startPoint_button);
         finalPointButton = activity.findViewById(R.id.finalPoint_Button);
         transportationTypesContainer = activity.findViewById(R.id.transportationTypesContainer);
-        reroutingLayout = activity.findViewById(R.id.reroutingLayout);
-        reroutingButton = activity.findViewById(R.id.reloadTheWayButton);
     }
 
     /**
@@ -125,11 +121,6 @@ public class NavigationOptionsController {
             if (i != 0) button.setAlpha(0.3f);
             button.setOnClickListener(buttonClickListener);
         }
-
-        reroutingLayout.setOnClickListener(v -> {
-            isCurrentLocationSelected = true;
-            handleAcceptButtonClick();
-        });
     }
 
     /**
@@ -332,7 +323,6 @@ public class NavigationOptionsController {
      */
     public void handleAcceptButtonClick() {
         handleHiddeItemsView();
-        reroutingLayout.setVisibility(View.VISIBLE);
         isActive = false;
         if (isCurrentLocationSelected)
             startPoint = CurrentLocationModel.getInstance().getLatLng();
