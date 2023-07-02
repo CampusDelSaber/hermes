@@ -13,4 +13,9 @@ public class MapStylePreference {
         editor.putString(KEY_MAP_STYLE, mapStyle);
         editor.apply();
     }
+
+    public static String getMapStyle(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(KEY_MAP_STYLE, null);
+    }
 }
