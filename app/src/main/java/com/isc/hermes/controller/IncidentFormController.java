@@ -1,6 +1,7 @@
 package com.isc.hermes.controller;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -17,16 +18,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
+import com.isc.hermes.controller.PopUp.DialogListener;
 import com.isc.hermes.controller.PopUp.PopUpConfirmIncidentCanceling;
 import com.isc.hermes.controller.PopUp.PopUpWarningUpdateUserType;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.model.Utils.IncidentsUtils;
 import com.isc.hermes.model.incidents.GeometryType;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.utils.regex.InputValidator;
 import com.isc.hermes.view.IncidentTypeButton;
 
 import timber.log.Timber;
@@ -85,9 +89,21 @@ public class IncidentFormController {
         });
 
         acceptButton.setOnClickListener(v -> {
-            handleAcceptButtonClick();
-            hideKeyboard(v);
+            if (validateDescription()){
+                handleAcceptButtonClick();
+                hideKeyboard(v);
+            }
         });
+    }
+
+    /**
+     * This method validates the incident form description input
+     *
+     * @return if the input is correct or not
+     */
+    private boolean validateDescription(){
+        String description = reasonTextField.getEditText().getText().toString();
+        return IncidentDialogController.getInstance(context).validateInput(description);
     }
 
     /**
@@ -107,7 +123,7 @@ public class IncidentFormController {
         mapWayPointController.setMarked(false);
         incidentForm.startAnimation(Animations.exitAnimation);
         incidentForm.setVisibility(View.GONE);
-        mapWayPointController.deleteMarks();
+        mapWayPointController.deleteLastMark();
         resetDefaultIncidents();
     }
 

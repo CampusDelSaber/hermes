@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.model.incidents.IncidentGetterModel;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -17,6 +20,8 @@ public class IncidentDialogController {
     private final Context context;
     private Dialog dialog;
     private IncidentGetterModel incidents = new IncidentGetterModel();
+    private final int MAX_CHARACTERS = 25;
+    private final String REGEX_SPACES = ".*\\s{3,}.*";
 
     private IncidentDialogController(Context context) {
         this.context = context;
@@ -54,6 +59,41 @@ public class IncidentDialogController {
         });
 
         dialog.show();
+    }
+
+    /**
+     * This method validates an incident input text
+     *
+     * @param text the text to be validated
+     * @return if the text is correct or not
+     */
+    public boolean validateInput(String text) {
+        boolean textCorrect = true;
+        if (text.length() > MAX_CHARACTERS){
+            textCorrect = false;
+            showAlertDialog("This description is too long", "You surpassed the 25 character limit.");
+        } else if (text.length() == 0) {
+            textCorrect = false;
+            showAlertDialog("The description is empty", "Please write a correct description.");
+        } else if (text.matches(REGEX_SPACES)) {
+            textCorrect = false;
+            showAlertDialog("The description contains only spaces", "Please write a correct description.");
+        }
+        return textCorrect;
+    }
+
+    /**
+     * This method shows an dialog alert
+     *
+     * @param title the title of the dialog
+     * @param message the message of the dialog
+     */
+    public void showAlertDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     public static synchronized IncidentDialogController getInstance(Context context) {

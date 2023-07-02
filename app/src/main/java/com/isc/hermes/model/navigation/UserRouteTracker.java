@@ -27,6 +27,7 @@ public class UserRouteTracker {
     private final UserLocationTracker userLocationTracker;
     private final UserRouteTrackerNotifier routeTrackerNotifier;
     private final NavigationRouteParser navigationRouteParser;
+
     private RouteDistanceHelper routeDistanceHelper;
     private TrackRecoveryHandler trackRecoveryHandler;
     private List<RouteSegmentRecord> routeSegments;
