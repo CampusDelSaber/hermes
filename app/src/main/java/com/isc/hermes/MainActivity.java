@@ -531,12 +531,6 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
                 drawerLayout.closeDrawer(GravityCompat.START);
                 goToAccountInformation(new View(context));
                 return true;
-            case R.id.thirdDimensionMode:
-                //TODO: Implement the third dimension mode;
-                return true;
-            case R.id.changeDisplayMode:
-                //TODO: Implement the change dimension mode;
-                return true;
         }
         return true;
     }

@@ -27,6 +27,7 @@ public class User {
         this.email = email;
         this.pathImageUser = pathImageUser;
         this.id = id;
+        this.isRegistered = true;
     }
 
     /**
@@ -44,6 +45,7 @@ public class User {
         this.userName = userName;
         this.typeUser = typeUser;
         this.pathImageUser = pathImageUser;
+        this.isRegistered = true;
     }
 
     /**
@@ -63,6 +65,7 @@ public class User {
         this.typeUser = typeUser;
         this.id = id;
         this.pathImageUser = pathImageUser;
+        this.isRegistered = true;
     }
 
     /**
@@ -187,30 +190,43 @@ public class User {
     }
 
     /**
-     * Sets the registration status of the object.
+     * Sets the administrator status of the object.
      *
-     * @param administrator the registration status to be set
+     * @param administrator the administrator status to be set
      */
     public void setAdministrator(boolean administrator) {
         isAdministrator = administrator;
     }
 
     /**
-     * Returns the registration status of the object.
+     * Returns the administrator status of the object.
      *
-     * @return isAdministrator true if the object is registered, false otherwise
+     * @return isAdministrator true if the object is administrator, false otherwise
      */
     public boolean isAdministrator() {
         return typeUser.equals("Administrator");
     }
+
+    /**
+     * Returns the registration status of the object.
+     * @return isRegistered true if the object is registered or otherwise.
+     */
     public boolean isRegistered() {
         return isRegistered;
     }
 
+    /**
+     * Sets the registered status of the object.
+     * @param registered the registered status to be set.
+     */
     public void setRegistered(boolean registered) {
         isRegistered = registered;
     }
 
+    /**
+     * Returns information about user.
+     * @return all information.
+     */
     @Override
     public String toString() {
         return "User{" +
