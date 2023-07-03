@@ -177,7 +177,8 @@ public class AccountInformation extends AppCompatActivity {
         verifyAdministratorUser();
         textFieldFullName.setEnabled(true);
         textFieldUserName.setEnabled(true);
-        buttonUploadImage.setVisibility(View.VISIBLE);
+        // TODO : change profile image, future implementation
+        //buttonUploadImage.setVisibility(View.VISIBLE);
     }
 
     /**
