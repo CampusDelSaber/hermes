@@ -160,7 +160,7 @@ public class AccountInformation extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             saveProfileImage.saveProfileImage(selectedImageUri, AccountInformation.this);
-            userPathImageProfile = selectedImageUri.getPath();
+            userPathImageProfile = selectedImageUri.getEncodedPath();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
