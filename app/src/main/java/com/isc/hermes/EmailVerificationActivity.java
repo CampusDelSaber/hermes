@@ -8,10 +8,8 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpContinueLikeGeneralUser;
 import com.isc.hermes.controller.PopUp.PopUpWarningIncorrectData;
@@ -19,12 +17,9 @@ import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
 import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
-import com.isc.hermes.model.User.UserRepositoryUpdaterUsingDBRunnable;
 import com.isc.hermes.model.Validator;
 import com.isc.hermes.model.VerificationCode;
-
 import org.json.JSONException;
-
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -215,8 +210,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
         Intent intent = new Intent(EmailVerificationActivity.this, AccountInformation.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
-            Thread thread = new Thread(new UserRepositoryUpdaterUsingDBRunnable());
-            thread.start();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                new AccountInfoManager().editUser(UserRepository.getInstance().getUserContained());
             verificationCodeUpdate(intent);
         } else visualizedWarningPop();
     }
@@ -238,7 +233,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
     private void verificationCodeUpdate(Intent intent){
         VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
         verificationCodesManager.deleteVerificationCode(VerificationCode.getVerificationCodeInstance().getId());
-        VerificationCode.getVerificationCodeInstance().setVerificationCode(null);
         startActivity(intent);
     }
 
