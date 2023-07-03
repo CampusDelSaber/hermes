@@ -156,6 +156,7 @@ public class WaypointOptionsController {
         } else {
             System.out.println("pregunta si es admin");
             if(UserRepository.getInstance().getUserContained().isAdministrator()){
+                System.out.println("si es administrador");
                 System.out.println(UserRepository.getInstance().getUserContained().getTypeUser());
                 showReportIncidentsView();
             }
