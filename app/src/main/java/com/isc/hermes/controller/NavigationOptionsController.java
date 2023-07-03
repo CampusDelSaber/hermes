@@ -22,6 +22,7 @@ import com.google.gson.JsonParser;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.navigation.RoutesRepository;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
@@ -29,10 +30,7 @@ import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 
-import org.json.JSONArray;
 import org.json.JSONException;
-
-import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -411,7 +409,7 @@ public class NavigationOptionsController {
             if (!route.isEmpty()) geoJson.add(route);
 
         renderMapRoutes(geoJson);
-        startRouteEstimationManager(jsonA);
+        startRouteEstimationManager();
     }
 
     /**
@@ -501,8 +499,8 @@ public class NavigationOptionsController {
         polylineRouteUpdaterController.drawPolylineEverySecond();
     }
 
-    private void startRouteEstimationManager(String JSONRoute){
-        infoRouteController.startNavigationMode(new UserRouteTracker(JSONRoute), transportationType);
+    private void startRouteEstimationManager(){
+        infoRouteController.startNavigationMode("Route A", transportationType);
     }
 
     /**

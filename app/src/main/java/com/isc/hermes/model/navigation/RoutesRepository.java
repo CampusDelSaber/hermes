@@ -22,7 +22,7 @@ public class RoutesRepository {
         self.availableRoutes = routes;
     }
 
-    public Map<String, String> getRoutes(){
-        return availableRoutes;
+    public String getRouteInformation(String key){
+        return availableRoutes.get(key);
     }
 }

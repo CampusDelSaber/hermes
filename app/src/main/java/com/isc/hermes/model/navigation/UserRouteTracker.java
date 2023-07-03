@@ -27,6 +27,7 @@ public class UserRouteTracker {
     private final UserLocationTracker userLocationTracker;
     private final UserRouteTrackerNotifier routeTrackerNotifier;
     private final NavigationRouteParser navigationRouteParser;
+
     private RouteDistanceHelper routeDistanceHelper;
     private TrackRecoveryHandler trackRecoveryHandler;
     private List<RouteSegmentRecord> routeSegments;
@@ -64,7 +65,7 @@ public class UserRouteTracker {
         }
 
         if (isUserOnTrack(userLocation)) {
-            Timber.i(String.format("User on track #%d\n", routeSegmentIndex));
+            Timber.i("User on track #%d\n", routeSegmentIndex);
         }else {
             nextTrack(userLocation);
         }
@@ -194,9 +195,5 @@ public class UserRouteTracker {
 
     public UserRouteTrackerNotifier getRouteTrackerNotifier() {
         return routeTrackerNotifier;
-    }
-
-    public RouteSegmentRecord getCurrentSegment() {
-        return currentSegment;
     }
 }

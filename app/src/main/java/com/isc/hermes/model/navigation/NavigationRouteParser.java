@@ -1,7 +1,5 @@
 package com.isc.hermes.model.navigation;
 
-import com.isc.hermes.model.navigation.directions.DirectionsParser;
-import com.isc.hermes.model.navigation.directions.DirectionsRecord;
 import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecordBuilder;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -17,11 +15,9 @@ import java.util.List;
  * The NavigationRouteParser class is responsible for parsing route information and creating a list of route segments.
  */
 public class NavigationRouteParser {
-    private final DirectionsParser directionsParser;
     private final RouteSegmentRecordBuilder segmentRecordBuilder;
 
     public NavigationRouteParser() {
-        directionsParser = new DirectionsParser();
         segmentRecordBuilder = new RouteSegmentRecordBuilder();
     }
 
@@ -45,9 +41,7 @@ public class NavigationRouteParser {
                     if (route.optJSONArray(i + 1) != null) {
                         LatLng start = unpack(route.getJSONArray(i));
                         LatLng end = unpack(route.getJSONArray(i + 1));
-                        segmentRecordBuilder.setStart(start)
-                               .setEnd(end)
-                               .setDirections(parseDirections(start, end));
+                        segmentRecordBuilder.setStart(start).setEnd(end);
 
                         routeSegments.add(segmentRecordBuilder.createRouteSegmentRecord());
                     }
@@ -62,12 +56,5 @@ public class NavigationRouteParser {
 
     private LatLng unpack(JSONArray cords) throws JSONException {
         return new LatLng(cords.getDouble(GEO_JSON_LATITUDE), cords.getDouble(GEO_JSON_LONGITUDE));
-    }
-
-    private DirectionsRecord[] parseDirections(LatLng start, LatLng end){
-        if (!directionsParser.hasAnchor()) {
-            directionsParser.setAnchor(start);
-        }
-        return new DirectionsRecord[]{directionsParser.translate(start), directionsParser.translate(end)};
     }
 }

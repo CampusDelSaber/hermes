@@ -2,19 +2,23 @@ package com.isc.hermes.model.navigation;
 
 import com.isc.hermes.model.location.LocationIntervals;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
 public class NavigationOrchestrator implements Runnable {
     private final AtomicBoolean caRun;
-    private final UserRouteTrackerNotifier userRouteTrackerNotifier;
-    private final UserRouteTracker userRouteTracker;
+    private UserRouteTrackerNotifier userRouteTrackerNotifier;
+    private UserRouteTracker userRouteTracker;
+    private final RoutesRepository routesRepository;
 
-    public NavigationOrchestrator(UserRouteTracker userRouteTracker) {
-        this.userRouteTracker = userRouteTracker;
+    private final HashMap<String, UserRouteTracker> availableRoutes;
+
+    public NavigationOrchestrator() {
         caRun = new AtomicBoolean(true);
-        userRouteTrackerNotifier = userRouteTracker.getRouteTrackerNotifier();
+        routesRepository = RoutesRepository.getInstance();
+        availableRoutes = new HashMap<>();
     }
 
     public void startNavigationMode(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
@@ -50,5 +54,19 @@ public class NavigationOrchestrator implements Runnable {
         if (!caRun.get()){
             Timber.d("[%s] has finished", Thread.currentThread().getName());
         }
+    }
+
+    public void changeRoute(String key){
+       userRouteTracker = availableRoutes.get(key);
+       if (userRouteTracker == null){
+           userRouteTracker = new UserRouteTracker(routesRepository.getRouteInformation(key));
+           userRouteTracker.parseRoute();
+           availableRoutes.put(key, userRouteTracker);
+       }
+       userRouteTrackerNotifier = userRouteTracker.getRouteTrackerNotifier();
+    }
+
+    public UserRouteTracker getUserRouteTracker() {
+        return userRouteTracker;
     }
 }

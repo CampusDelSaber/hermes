@@ -132,6 +132,8 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         } catch(Exception e){
             e.printStackTrace();
         }
+
+        Timber.plant(new Timber.DebugTree());
     }
 
 
