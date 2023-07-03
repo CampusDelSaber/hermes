@@ -398,6 +398,13 @@ public class InfoRouteController {
     }
 
     /**
+     * help me to set the routes
+     */
+    public void setRoutes(String routes) {
+        this.routes = routes;
+    }
+
+    /**
      * help me to set the time Estimate
      */
     public void setTimeEstimate(int timeEstimate) {
@@ -454,5 +461,13 @@ public class InfoRouteController {
             Toast.makeText(layout.getContext(), "Closing navigation mode", Toast.LENGTH_SHORT).show();
             closeNavigation();
         });
+    }
+
+    /**
+     * Method to get the selected route
+     * @return selected route
+     */
+    public String getSelectedRoute() {
+        return selectedRoute;
     }
 }

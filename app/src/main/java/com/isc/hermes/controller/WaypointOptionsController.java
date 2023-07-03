@@ -79,6 +79,7 @@ public class WaypointOptionsController {
         });
 
         reportTrafficButton.setOnClickListener(v -> {
+            navigationOptionsFormController.getJson();
 
             waypointOptions.startAnimation(Animations.exitAnimation);
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
