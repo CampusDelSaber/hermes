@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi;
 
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
@@ -56,6 +57,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     @Override
     public void onClick(View view) {
         if (view == super.confirmButton) {
+            updateDataUser();
             updateTypeUser();
             button.setVisibility(View.INVISIBLE);
             fullName.setEnabled(false);
@@ -63,6 +65,16 @@ public class PopUpOverwriteInformationAccount extends PopUp{
             comboBoxField.setEnabled(false);
             buttonUploadImage.setVisibility(View.GONE);
         } dismiss();
+    }
+
+    private void updateDataUser(){
+        UserRepository.getInstance().getUserContained().setUserName(String.valueOf(username.getText()));
+        UserRepository.getInstance().getUserContained().setFullName(String.valueOf(fullName.getText()));
+
+        AccountInfoManager manager = new AccountInfoManager();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            manager.editUser(UserRepository.getInstance().getUserContained());
+        }
     }
 
     /**
