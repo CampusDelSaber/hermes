@@ -52,7 +52,6 @@ public class AccountInformation extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private SaveProfileImage saveProfileImage;
     private boolean isModifiable;
-    private String userPathImageProfile;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -88,9 +87,9 @@ public class AccountInformation extends AppCompatActivity {
     private void updateComponentsByUserInformation() {
         AccountInfoManager accountInfoManager = new AccountInfoManager();
         accountInfoManager.updateUserInformationLocal();
-        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
+        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null){
             Glide.with(this).load(Uri.parse(
-                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);
+                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);}
         textFieldUserName.setText(UserRepository.getInstance().getUserContained().getUserName());
         textFieldFullName.setText(UserRepository.getInstance().getUserContained().getFullName());
         textFieldEmail.setText(UserRepository.getInstance().getUserContained().getEmail());
@@ -160,7 +159,6 @@ public class AccountInformation extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             saveProfileImage.saveProfileImage(selectedImageUri, AccountInformation.this);
-            userPathImageProfile = selectedImageUri.getEncodedPath();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
@@ -220,7 +218,7 @@ public class AccountInformation extends AppCompatActivity {
         boolean verifyChangeFullName = UserRepository.getInstance().getUserContained().getFullName().equals(fullName);
         boolean verifyChangeTypeUser = UserRepository.getInstance().getUserContained().getTypeUser().equals(typeChoose);
         popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser, verifyChangeTypeUser, userPathImageProfile);
+                textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser, verifyChangeTypeUser);
         if (!verifyChangeTypeUser || !verifyChangeUsername || !verifyChangeFullName) {
             updateInformationUser();
             popUpDialogEdit.show();
