@@ -68,6 +68,7 @@ public class WaypointOptionsController {
         navigateButton.setOnClickListener(v -> {
             waypointOptions.startAnimation(Animations.exitAnimation);
             navigationOptionsFormController.setStartPoint(CurrentLocationModel.getInstance().getLatLng());
+            navigationOptionsFormController.setIsCurrentLocationSelected(true);
             navigationOptionsFormController.getNavOptionsForm().startAnimation(Animations.entryAnimation);
             navigationOptionsFormController.getNavOptionsForm().setVisibility(View.VISIBLE);
             waypointOptions.setVisibility(View.GONE);

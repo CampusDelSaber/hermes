@@ -40,11 +40,11 @@ import timber.log.Timber;
  * Setting methods to render and manage the different ui component's behaviour
  */
 public class NavigationOptionsController {
-    static boolean isActive;
-    private boolean isCurrentLocationSelected;
+    static boolean isActive, isCurrentLocationSelected;
     private final Context context;
     private RelativeLayout navOptionsForm;
-    private Button cancelButton, startButton, chooseStartPointButton, startPointButton, finalPointButton, currentLocationButton;
+    private Button cancelButton, startButton, chooseStartPointButton, startPointButton,
+            finalPointButton, currentLocationButton;
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
@@ -165,6 +165,8 @@ public class NavigationOptionsController {
     @SuppressLint("SetTextI18n")
     private void handleCurrentLocationChosen() {
         isCurrentLocationSelected = true;
+        startPoint = CurrentLocationModel.getInstance().getLatLng();
+        mapWayPointController.deleteMarks();
         startPointButton.setText("Your Location");
     }
 
@@ -293,7 +295,7 @@ public class NavigationOptionsController {
      * Otherwise, it displays a default text indicating that the final point is not selected.
      */
     private void setPointsButtonShownTexts() {
-        startPointButton.setText((!isCurrentLocationSelected) ?
+        startPointButton.setText(!(startPoint.equals(CurrentLocationModel.getInstance().getLatLng())) ?
                 formatLatLng(startPoint.getLatitude(), startPoint.getLongitude()) : "Your Location");
         finalPointButton.setText((finalPoint != null) ?
                 formatLatLng(finalPoint.getLatitude(), finalPoint.getLongitude()) : "Not selected");

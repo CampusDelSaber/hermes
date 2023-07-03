@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
+import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
 import com.isc.hermes.model.navigation.TransportationType;
@@ -176,6 +177,7 @@ public class InfoRouteController {
     private void setNavigationButtonsEvent(){
         recalculateRouteButton.setOnClickListener(event -> {
             cancelNavigation();
+            navigationOptionsController.setStartPoint(CurrentLocationModel.getInstance().getLatLng());
             navigationOptionsController.setIsCurrentLocationSelected(true);
             navigationOptionsController.handleAcceptButtonClick();
         });
