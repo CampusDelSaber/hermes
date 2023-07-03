@@ -1,6 +1,5 @@
 package com.isc.hermes.controller;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -9,10 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
-import com.isc.hermes.model.incidentsRequesting.NaturalDisasterRequesting;
+import com.isc.hermes.requests.incidents.PolygonRequester;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.view.IncidentViewNavigation;
-import com.mapbox.mapboxsdk.annotations.Polygon;
 
 /**
  * Class to manage all view elements in view incidents form
@@ -26,7 +24,7 @@ public class ViewIncidentsController {
     private final CheckBox naturalDisasters;
     private final CheckBox traffic;
     private final CheckBox streetIncident;
-    private final NaturalDisasterRequesting requesting;
+    private final PolygonRequester requesting;
 
     /**
      * Constructor for ViewIncidentsController.
@@ -35,7 +33,7 @@ public class ViewIncidentsController {
      */
     public ViewIncidentsController(AppCompatActivity activity) {
         this.activity = activity;
-        this.requesting = new NaturalDisasterRequesting();
+        this.requesting = new PolygonRequester();
         displayIncidentsButton = activity.findViewById(R.id.displayIncidentsButton);
         displayIncidents = activity.findViewById(R.id.display_incidents);
         okButton = activity.findViewById(R.id.okButton);
@@ -71,19 +69,21 @@ public class ViewIncidentsController {
     private void showIncidentOptions() {
         okButton.setOnClickListener(v -> {
             MapManager.getInstance().getMapboxMap().clear();
-            if (naturalDisasters.isChecked()) {
-                PolygonVisualizationController
-                        .getInstance()
-                        .displayPointsPolygonOnMap(
-                                requesting.getAllPolygonPoints(), "#Ff0000"
-                        );
-            }else {MapManager.getInstance().getMapboxMap().setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri());}
-            if (traffic.isChecked()) {
-                ShowTrafficController.getInstance().getTraffic(activity);
-            }
-            if (streetIncident.isChecked()) {
-                IncidentsGetterController.getInstance().getNearIncidentsWithinRadius(activity);
-            }
+                if (naturalDisasters.isChecked()) {
+                    PolygonVisualizationController
+                            .getInstance()
+                            .displayPolygons(
+                                    requesting.getPolygons(),"#Ff0000"
+                            );
+                } else {
+                    MapManager.getInstance().getMapboxMap().setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri());
+                } if (traffic.isChecked()) {
+                    ShowTrafficController.getInstance().getTraffic(activity);
+                    System.out.println();
+                }
+                if (streetIncident.isChecked()) {
+                    IncidentsGetterController.getInstance().getNearIncidentsWithinRadius(activity);
+                }
             hideOptions();
         });
     }
