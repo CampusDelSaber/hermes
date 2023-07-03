@@ -30,7 +30,7 @@ public class WaypointOptionsController {
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
-    private final LinearLayout reportIncidentsView;
+    private final LinearLayout reportIncidentsView ;
     private final Button navigateButton;
     private TrafficAutomaticFormController trafficAutomaticFormController;
     private final Button reportIncidentButton;
@@ -150,14 +150,9 @@ public class WaypointOptionsController {
      * @param point is the coordinate point market.
      */
     public void setReportIncidentStatus(LatLng point) {
-        if (!hasValidStreetContext(point)) {
-            System.out.println("no es street");
-            hideReportIncidentsView();
-        } else {
-            System.out.println("pregunta si es admin");
-            if(UserRepository.getInstance().getUserContained().isAdministrator()){
-                System.out.println("si es administrador");
-                System.out.println(UserRepository.getInstance().getUserContained().getTypeUser());
+        hideReportIncidentsView();
+        if (hasValidStreetContext(point)) {
+            if(UserRepository.getInstance().getUserContained().getTypeUser().equals("Administrator")){
                 showReportIncidentsView();
             }
         }
