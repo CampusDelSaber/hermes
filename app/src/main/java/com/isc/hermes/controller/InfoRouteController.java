@@ -2,6 +2,8 @@ package com.isc.hermes.controller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.isc.hermes.R;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
+import com.isc.hermes.model.navigation.NavigationOrchestrator;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
@@ -49,11 +52,13 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
-    private LiveRouteEstimationsWorker liveRouteEstimationsWorker;
     private int elapsedSeconds;
     private int timeEstimate;
     private String routes;
     private String selectedRoute = "Route A";
+
+    private final NavigationOrchestrator navigationOrchestrator;
+    private TransportationType transportationType;
 
     /**
      * Constructs a new InfoRouteController object.
@@ -72,6 +77,8 @@ public class InfoRouteController {
         isRouteCSelected = false;
         jsonObjects = new ArrayList<>();
         setActionButtons();
+
+        navigationOrchestrator = new NavigationOrchestrator("Route A", this);
     }
 
     /**
@@ -90,7 +97,7 @@ public class InfoRouteController {
     /**
      * This method set the view of the components.
      *
-     * @param context is the contex.
+     * @param context is the context.
      */
     private void setViewComponents(Context context) {
         Activity activity = ((AppCompatActivity) context);
@@ -125,21 +132,24 @@ public class InfoRouteController {
     private void setActionButtons() {
         isActive = false;
         cancelButton.setOnClickListener(v -> {
-            cancelNavigation();
-            liveRouteEstimationsWorker.stopLiveUpdate();
+            closeNavigation();
+            Toast.makeText(layout.getContext(), "Closing navigation mode", Toast.LENGTH_SHORT).show();
         });
 
         buttonRouteA.setOnClickListener(v -> {
             setRouteInformation(jsonObjects.size() - 1, true, false, false);
             selectedRoute = "Route A";
+            navigationOrchestrator.setRoute("Route A");
         });
         buttonRouteB.setOnClickListener(v -> {
             setRouteInformation(1, false, true, false);
             selectedRoute = "Route B";
+            navigationOrchestrator.setRoute("Route B");
         });
         buttonRouteC.setOnClickListener(v -> {
             setRouteInformation(0, false, false, true);
             selectedRoute = "Route C";
+            navigationOrchestrator.setRoute("Route C");
         });
 
         setNavigationButtonsEvent();
@@ -147,16 +157,17 @@ public class InfoRouteController {
     /**
      * Cancels the navigation hiding the routes modal and the routes in map
      */
-    private void cancelNavigation(){
+    private void closeNavigation(){
         mapPolyline.hidePolylines();
         layout.startAnimation(Animations.exitAnimation);
         layout.setVisibility(View.GONE);
+        navigationOptionsController.handleCancelAction();
         if (navigationOptionsController.getNavOptionsForm().getVisibility() == View.VISIBLE)
             navigationDirectionController.getDirectionsForm()
                     .startAnimation(Animations.exitAnimation);
         navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
-        navigationOptionsController.getMapWayPointController().deleteMarks();
         isActive = false;
+        navigationOrchestrator.stopLiveUpdates();
     }
 
     /**
@@ -175,12 +186,13 @@ public class InfoRouteController {
      */
     private void setNavigationButtonsEvent(){
         recalculateRouteButton.setOnClickListener(event -> {
-            cancelNavigation();
+            closeNavigation();
             navigationOptionsController.setIsCurrentLocationSelected(true);
             navigationOptionsController.handleAcceptButtonClick();
         });
 
         startNavigationButton.setOnClickListener(event -> {
+            startLiveUpdates();
             long startTime = System.currentTimeMillis();
 
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
@@ -190,15 +202,14 @@ public class InfoRouteController {
 
             int elapsedSeconds2 = (int) (elapsedTime / 1000);
             setElapsedSeconds(elapsedSeconds2);
+            Toast.makeText(layout.getContext(), "Navigation mode started", Toast.LENGTH_SHORT).show();
         });
     }
 
     /**
      * This method shows which route is selected
      */
-    private void setRouteInformation(
-            int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected
-    ) {
+    private void setRouteInformation(int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected) {
         setTimeAndDistanceInformation(jsonObjects.get(index));
         this.isRouteASelected = isRouteASelected;
         this.isRouteBSelected = isRouteBSelected;
@@ -302,7 +313,7 @@ public class InfoRouteController {
                     kilometers + " km " + decimalFormat.format(meters).substring(1) + " m");
             else distanceText.setText(decimalFormat.format(meters).substring(1) + " m.");
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -319,8 +330,8 @@ public class InfoRouteController {
                 timeInMinutes -= 60;
                 hours++;
             }
-            if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
-            else timeText.setText(timeInMinutes + " min");
+            if (hours > 0) timeText.setText(String.format("%s h %s min", hours, timeInMinutes));
+            else timeText.setText(String.format("%s min", timeInMinutes));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -362,23 +373,21 @@ public class InfoRouteController {
     /**
      * Sets the thread used for the live estimations
      */
-    public void setLiveEstimationsUpdater(UserRouteTracker userRouteTracker, TransportationType transportationType){
+    public void startLiveUpdates(){
         try {
-            userRouteTracker.parseRoute();
-        }catch (Exception e){
-            Toast.makeText(layout.getContext(), "Could not start navigation mode", Toast.LENGTH_SHORT).show();
-            cancelNavigation();
-            Timber.e(e.getMessage());
-            return;
-        }
+            UserRouteTracker userRouteTracker = navigationOrchestrator.getUserRouteTracker();
+            new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
 
-        liveRouteEstimationsWorker = new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
-        liveRouteEstimationsWorker.startLiveUpdate((Thread t, Throwable e) -> {
-            Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
-            t.interrupt();
-            e.printStackTrace();
-            cancelNavigation();
-        });
+            navigationOrchestrator.startNavigationMode((t, e) -> {
+                Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
+                Timber.e(e);
+                navigationOrchestrator.stopLiveUpdates();
+            });
+        }catch (Exception e){
+            Toast.makeText(layout.getContext(), "Navigation mode startup has failed", Toast.LENGTH_LONG).show();
+            closeNavigation();
+            Timber.e(e);
+        }
     }
     /**
      * help me to obtain the routes
@@ -425,6 +434,39 @@ public class InfoRouteController {
         this.elapsedSeconds = elapsedSeconds;
     }
 
+    /**
+     * Sets the transportation type.
+     *
+     * @param transportationType the transportation type as enum.
+     */
+    public void setTransportationType(TransportationType transportationType) {
+        this.transportationType = transportationType;
+    }
+
+    /**
+     * Method to delete all polyline routes
+     */
+    public void deletePolylineRoutes() {
+        if (mapPolyline != null) mapPolyline.hidePolylines();
+    }
+
+    /**
+     * Performs the protocol when the user has arrived at their destination.
+     * This method displays two Toast messages and then closes the navigation mode.
+     * It ensures that the UI-related operations are executed on the main thread.
+     */
+    public void performUserHasArrivedProtocol(){
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Toast.makeText(layout.getContext(), "Destination reached", Toast.LENGTH_SHORT).show();
+            Toast.makeText(layout.getContext(), "Closing navigation mode", Toast.LENGTH_SHORT).show();
+            closeNavigation();
+        });
+    }
+
+    /**
+     * Method to get the selected route
+     * @return selected route
+     */
     public String getSelectedRoute() {
         return selectedRoute;
     }

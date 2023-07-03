@@ -1,25 +1,15 @@
 package com.isc.hermes.model.navigation;
 
 import com.isc.hermes.controller.InfoRouteController;
-import com.isc.hermes.model.location.LocationIntervals;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import timber.log.Timber;
+import com.isc.hermes.model.navigation.events.Subscriber;
 
 /**
  * The LiveRouteEstimationsWorker class manages the estimates for route time and distance during navigation.
  */
-public class LiveRouteEstimationsWorker implements Runnable {
-
+public class LiveRouteEstimationsWorker implements Subscriber {
     private final UserRouteTracker userRouteTracker;
     private final InfoRouteController infoRouteController;
     private final TransportationType transportationType;
-    private final AtomicBoolean canRun;
-    private double totalEstimatedDistance;
 
     /**
      * Constructs a new LiveRouteEstimationsWorker object.
@@ -32,23 +22,7 @@ public class LiveRouteEstimationsWorker implements Runnable {
         this.userRouteTracker = userRouteTracker;
         this.infoRouteController = infoRouteController;
         this.transportationType = transportationType;
-        canRun = new AtomicBoolean();
-        setTimeDistanceEstimates(userRouteTracker.getRouteInformation());
-    }
-
-    /**
-     * Sets the time and distance estimates based on the provided geoJSON object.
-     *
-     * @param geoJSON The JSON object containing route information.
-     */
-    private void setTimeDistanceEstimates(JSONObject geoJSON) {
-        try {
-            totalEstimatedDistance = geoJSON.getDouble("distance");
-        } catch (JSONException e) {
-            Timber.e("Could not get distance", e);
-        }
-
-        updateEstimatedArrivalTime(totalEstimatedDistance);
+        userRouteTracker.getRouteTrackerNotifier().subscribe(this);
     }
 
     /**
@@ -72,49 +46,11 @@ public class LiveRouteEstimationsWorker implements Runnable {
     }
 
     @Override
-    public void run() {
-        while (canRun.get()) {
-            if (userRouteTracker.hasUserArrived()) {
-                canRun.set(false);
-                updateEstimatedArrivalDistance(0.0);
-                updateEstimatedArrivalTime(0.0);
-                continue;
-            }
-
-            if (userRouteTracker.hasUserMoved()) {
-                double distanceLeft = userRouteTracker.getTraveledDistance() + userRouteTracker.getUnvisitedRouteSize();
-                updateEstimatedArrivalDistance(distanceLeft);
-                updateEstimatedArrivalTime(distanceLeft);
-            }
-
-            try {
-                Thread.sleep((long) LocationIntervals.UPDATE_INTERVAL_MS.getValue());
-            } catch (InterruptedException e) {
-                Timber.e("Route Estimation Thread has been interrupted");
-                canRun.set(false);
-            }
+    public void update() {
+        if (userRouteTracker.hasUserMoved()) {
+            double distanceLeft = userRouteTracker.getTraveledDistance() + userRouteTracker.getUnvisitedRouteSize();
+            updateEstimatedArrivalDistance(distanceLeft);
+            updateEstimatedArrivalTime(distanceLeft);
         }
-
-        Timber.d("Live estimations worker is closing");
-    }
-
-    /**
-     * Starts updating the estimates for arrival time and distance.
-     *
-     * @param exceptionHandler The exception handler for the estimations thread.
-     */
-    public void startLiveUpdate(Thread.UncaughtExceptionHandler exceptionHandler) {
-        Thread estimationsThread = new Thread(this, "Estimations Thread");
-        estimationsThread.setUncaughtExceptionHandler(exceptionHandler);
-        canRun.set(true);
-        estimationsThread.start();
-    }
-
-
-    /**
-     * Stops updating the estimates for arrival time and distance.
-     */
-    public void stopLiveUpdate() {
-        canRun.set(false);
     }
 }

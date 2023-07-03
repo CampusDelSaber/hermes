@@ -123,7 +123,7 @@ public class IncidentFormController {
         mapWayPointController.setMarked(false);
         incidentForm.startAnimation(Animations.exitAnimation);
         incidentForm.setVisibility(View.GONE);
-        mapWayPointController.deleteMarks();
+        mapWayPointController.deleteLastMark();
         resetDefaultIncidents();
     }
 

@@ -8,6 +8,7 @@ import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
 import com.isc.hermes.utils.Animations;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -26,13 +27,11 @@ public class MapWayPointController implements MapClickConfigurationController {
 
     /**
      * This is the constructor method.
-     *
-     * @param mapboxMap Is the map.
      * @param context Is the context application.
      */
-    public MapWayPointController(MapboxMap mapboxMap, Context context ) {
+    public MapWayPointController(Context context ) {
         this.context = context;
-        this.mapboxMap = mapboxMap;
+        this.mapboxMap = MapManager.getInstance().getMapboxMap();
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
         Animations.loadAnimations();
@@ -46,13 +45,21 @@ public class MapWayPointController implements MapClickConfigurationController {
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
         if (NavigationOptionsController.isActive) {
+            deleteMarks();
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
             markPointBehavior(point);
-        } else if (!InfoRouteController.getInstance(context,
-                waypointOptionsController.getNavOptionsFormController()).isActive()) {
+        } else if (!InfoRouteController.getInstance(context, waypointOptionsController.getNavOptionsFormController()).isActive()) {
             doMarkOnMapAction(point);
             waypointOptionsController.getNavOptionsFormController().setFinalNavigationPoint(point);
-        }
+        } setIncidentComponents(point);
+        return true;
+    }
+
+    /**
+     * Method to set the incident components alerts' dialog lebales
+     * @param point latlng point to set the mark on map
+     */
+    private void setIncidentComponents(LatLng point) {
         IncidentsUploader.getInstance().setLastClickedPoint(point);
         try {
             IncidentDialogController.getInstance(context).showDialogCorrect(point);
@@ -60,8 +67,6 @@ public class MapWayPointController implements MapClickConfigurationController {
             throw new RuntimeException(e);
         }
         TrafficUploader.getInstance().setLastClickedPoint(point);
-
-        return true;
     }
 
     /**
@@ -88,7 +93,6 @@ public class MapWayPointController implements MapClickConfigurationController {
      * @param point geocode point to set
      */
     private void markPointBehavior(LatLng point) {
-            deleteMarks();
             setMarkerOnMap(point);
     }
 
@@ -98,7 +102,7 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
     private void doMarkOnMapAction(LatLng point){
         if (isMarked){
-            deleteMarks();
+            deleteLastMark();
             handleVisibilityPropertiesForLayouts();
             isMarked = false;
         } else {
@@ -111,6 +115,15 @@ public class MapWayPointController implements MapClickConfigurationController {
     }
 
     /**
+     * Method to delete all waypoint marks on the map
+     */
+    public void deleteMarks() {
+        for (Marker marker:mapboxMap.getMarkers()) {
+            mapboxMap.removeMarker(marker);
+        }
+    }
+
+    /**
      * Method to render a marker on map
      */
     public void setMarkerOnMap(LatLng point) {
@@ -118,14 +131,11 @@ public class MapWayPointController implements MapClickConfigurationController {
         mapboxMap.addMarker(markerOptions);
     }
 
-
     /**
-     * Method to delete all the marks in the map.
+     * Method to delete last mark set on map
      */
-    public void deleteMarks() {
-        for (Marker marker:mapboxMap.getMarkers()) {
-            mapboxMap.removeMarker(marker);
-        }
+    public void deleteLastMark(){
+        mapboxMap.removeMarker(mapboxMap.getMarkers().remove(mapboxMap.getMarkers().size()-1));
     }
 
     /**

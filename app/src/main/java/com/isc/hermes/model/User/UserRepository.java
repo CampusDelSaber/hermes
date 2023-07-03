@@ -19,6 +19,14 @@ public class UserRepository {
         return userRepository;
     }
 
+    /**
+     * This method is used to verify if repository has a user.
+     *
+     * @return a boolean to compro
+     */
+    public boolean hasUser() {
+        return userContained != null;
+    }
 
     /**
      * Retrieves the user contained in the repository.

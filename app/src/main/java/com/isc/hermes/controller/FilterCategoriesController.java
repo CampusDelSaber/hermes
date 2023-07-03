@@ -1,5 +1,4 @@
 package com.isc.hermes.controller;
-
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.isc.hermes.R;
 import com.isc.hermes.SpacingItemDecoration;
 import com.isc.hermes.model.CategoryFilter;
+import com.isc.hermes.utils.AndroidRequestActivation;
 import com.isc.hermes.utils.CategoryFilterAdapter;
 import com.isc.hermes.utils.CategoryFilterClickListener;
+import com.isc.hermes.utils.AndroidServicesVerification;
 import com.isc.hermes.utils.MapManager;
 import com.isc.hermes.utils.MarkerManager;
 import com.isc.hermes.utils.PlacesType;
@@ -41,6 +42,8 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
     private CategoryFilterAdapter locationCategoryAdapter;
     private String lastClickedCategory = "";
     private boolean isMarkersShown = false;
+    private AndroidServicesVerification androidServicesVerification;
+    private AndroidRequestActivation androidRequestActivation;
 
     /**
      * Constructs a new FilterCategoriesController with the specified activity.
@@ -49,6 +52,8 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     public FilterCategoriesController(AppCompatActivity activity) {
         this.activity = activity;
+        androidServicesVerification = new AndroidServicesVerification();
+        androidRequestActivation = new AndroidRequestActivation();
     }
 
     /**
@@ -116,8 +121,13 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     @Override
     public void onLocationCategoryClick(CategoryFilter locationCategory) {
-        LatLng center = getLocationEnable();
-        addAndRemoveMarkets(locationCategory, center);
+        if (androidServicesVerification.isInternetEnabled(activity)) {
+            LatLng center = getLocationEnable();
+            addAndRemoveMarkets(locationCategory, center);
+        } else {
+            markerManager.removeAllMarkers(mapView);
+            androidRequestActivation.showInternetRequest(activity);
+        }
     }
 
     /**
@@ -147,7 +157,7 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      */
     private LatLng getLocationEnable() {
         LatLng center;
-        if (CurrentLocationController.getControllerInstance(activity).locationEnabled()) {
+        if (androidServicesVerification.isLocationEnabled(activity)) {
             center = new LatLng(
                     CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLatitude(),
                     CurrentLocationController.getControllerInstance(activity).getCurrentLocationModel().getLongitude()
@@ -162,12 +172,11 @@ public class FilterCategoriesController implements CategoryFilterClickListener {
      * @param tag the tag to search for
      */
     private void searchPlacesByTag(String tag, double latitude, double longitude) {
-        Point currentUserLocation = Point.fromLngLat(longitude, latitude);
         MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
                 .accessToken(activity.getString(R.string.access_token))
                 .query(tag)
                 .geocodingTypes(GeocodingCriteria.TYPE_POI)
-                .proximity(currentUserLocation)
+                .proximity(Point.fromLngLat(longitude, latitude))
                 .limit(10)
                 .build();
 
