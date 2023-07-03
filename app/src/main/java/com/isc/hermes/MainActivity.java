@@ -403,14 +403,11 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
      * This method set the information of the user in the header of the drop down menu
      */
     private void setTheUserInformationInTheDropMenu(){
-        TextView userNameText = navigationView.getHeaderView(0)
-                .findViewById(R.id.userNameText);
+        TextView userNameText = navigationView.getHeaderView(0).findViewById(R.id.userNameText);
         userNameText.setText(UserRepository.getInstance().getUserContained().getUserName());
-        TextView userEmailText = navigationView.getHeaderView(0)
-                .findViewById(R.id.userEmailText);
+        TextView userEmailText = navigationView.getHeaderView(0).findViewById(R.id.userEmailText);
         userEmailText.setText(UserRepository.getInstance().getUserContained().getEmail());
-        ImageView userImage = navigationView.getHeaderView(0)
-                .findViewById(R.id.userAccountImage);
+        ImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.userAccountImage);
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
                     UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
@@ -505,27 +502,31 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
      * @param item The selected item
      * @return a boolean if all is correct
      */
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.logOut:
+        switch (item.getItemId()) {
+            case R.id.logOut -> {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 logOut(new View(context));
                 return true;
-            case R.id.mapStyle:
+            }
+            case R.id.mapStyle -> {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 mapStylesController.openStylesMenu();
                 return true;
-            case R.id.offlineMaps:
+            }
+            case R.id.offlineMaps -> {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 goOfflineMaps(new View(context));
                 return true;
-            case R.id.userAccount:
+            }
+            case R.id.userAccount -> {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 goToAccountInformation(new View(context));
                 return true;
-        }
-        return true;
+            }
+        } return true;
     }
 
     /**
