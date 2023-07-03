@@ -133,6 +133,7 @@ public class InfoRouteController {
         isActive = false;
         cancelButton.setOnClickListener(v -> {
             closeNavigation();
+            Toast.makeText(layout.getContext(), "Closing navigation mode", Toast.LENGTH_SHORT).show();
         });
 
         buttonRouteA.setOnClickListener(v -> {
@@ -201,6 +202,7 @@ public class InfoRouteController {
 
             int elapsedSeconds2 = (int) (elapsedTime / 1000);
             setElapsedSeconds(elapsedSeconds2);
+            Toast.makeText(layout.getContext(), "Navigation mode started", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -328,8 +330,8 @@ public class InfoRouteController {
                 timeInMinutes -= 60;
                 hours++;
             }
-            if (hours > 0) timeText.setText(hours + " h " + timeInMinutes + " min");
-            else timeText.setText(timeInMinutes + " min");
+            if (hours > 0) timeText.setText(String.format("%s h %s min", hours, timeInMinutes));
+            else timeText.setText(String.format("%s min", timeInMinutes));
         } catch (JSONException e) {
             e.printStackTrace();
         }

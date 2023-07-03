@@ -311,7 +311,6 @@ public class NavigationOptionsController {
 
             new Handler().postDelayed(() -> {
                 progressDialog.dismiss();
-                Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
             }, 3000);
         } catch (Exception e) {
             handleErrorLoadingRoutes();
@@ -413,7 +412,7 @@ public class NavigationOptionsController {
      * This method show a Toast when don't have routes.
      */
     private void handleErrorLoadingRoutes(){
-        Toast.makeText(context, "Not possible to get the routes", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Could not get the route", Toast.LENGTH_SHORT).show();
         mapWayPointController.setMarked(false);
         mapWayPointController.deleteMarks();
     }
@@ -491,7 +490,10 @@ public class NavigationOptionsController {
                 JSONArray coordinates = new JSONObject(geoJSON).getJSONObject("geometry").getJSONArray("coordinates");
                 if (coordinates.length() > 1){
                     isValid = true;
+                    Timber.d("Validated route\n %s", geoJSON);
                     break;
+                }else {
+                    Timber.d("Invalidated route\n %s", geoJSON);
                 }
             }
 
