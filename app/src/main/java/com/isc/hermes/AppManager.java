@@ -8,6 +8,7 @@ import android.content.Intent;
  */
 public class AppManager extends Application {
     private Activity lastActivity;
+    private Activity map;
     /**
      * Returns the intent representing the last activity used in the app.
      *
@@ -15,6 +16,11 @@ public class AppManager extends Application {
      */
     public Intent getLastActivity() {
         Intent intent = null;
+        if (map != null) {
+            intent = new Intent(this, map.getClass());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            return intent;
+        }
         if (lastActivity != null) {
             intent = new Intent(this, lastActivity.getClass());
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -28,5 +34,10 @@ public class AppManager extends Application {
      */
     public void setLastActivity(Activity activity) {
         lastActivity = activity;
+    }
+
+
+    public void setMap(Activity activity) {
+        map = activity;
     }
 }
