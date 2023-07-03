@@ -100,6 +100,7 @@ public class AccountInformation extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println(UserRepository.getInstance().getUserContained());
         setContentView(R.layout.activity_account_information);
         assignValuesToComponentsView();
         updateComponentsByUserInformation();
