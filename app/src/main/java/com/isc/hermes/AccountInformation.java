@@ -63,7 +63,6 @@ public class AccountInformation extends AppCompatActivity {
     private void generateActionToComboBox() {
         generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
             String item = parent.getItemAtPosition(position).toString();
-            Toast.makeText(getApplicationContext(), "Item: " + item, Toast.LENGTH_SHORT).show();
         });
     }
 
