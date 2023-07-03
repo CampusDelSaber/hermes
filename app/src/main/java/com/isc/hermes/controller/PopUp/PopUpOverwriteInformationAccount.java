@@ -34,6 +34,8 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     private boolean isModifiable;
     private boolean typeUserIsSame;
 
+    private String userPathImageProfile;
+
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
      *
@@ -89,6 +91,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     private void updateDataUser(){
         UserRepository.getInstance().getUserContained().setUserName(String.valueOf(username.getText()));
         UserRepository.getInstance().getUserContained().setFullName(String.valueOf(fullName.getText()));
+        UserRepository.getInstance().getUserContained().setPathImageUser(userPathImageProfile);
 
         AccountInfoManager manager = new AccountInfoManager();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -134,7 +137,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      */
     public void setInformationToAbleEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
                                          AutoCompleteTextView comboBoxField, Button buttonUploadImage,
-                                         TextInputLayout textInputLayout, boolean typeUserIsSame) {
+                                         TextInputLayout textInputLayout, boolean typeUserIsSame, String userPathImageProfile) {
         this.button = button;
         this.fullName = fullName;
         this.username = username;
@@ -142,6 +145,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         this.buttonUploadImage = buttonUploadImage;
         this.textInputLayout = textInputLayout;
         this.typeUserIsSame = typeUserIsSame;
+        this.userPathImageProfile = userPathImageProfile;
     }
 
 

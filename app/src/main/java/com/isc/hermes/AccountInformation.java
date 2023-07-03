@@ -48,6 +48,7 @@ public class AccountInformation extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private SaveProfileImage saveProfileImage;
     private boolean isModifiable;
+    private String userPathImageProfile;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -155,6 +156,7 @@ public class AccountInformation extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             saveProfileImage.saveProfileImage(selectedImageUri, AccountInformation.this);
+            userPathImageProfile = data.getDataString();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
@@ -213,7 +215,7 @@ public class AccountInformation extends AppCompatActivity {
         boolean verifyChangeFullName = UserRepository.getInstance().getUserContained().getFullName().equals(fullName);
         boolean verifyChangeTypeUser = UserRepository.getInstance().getUserContained().getTypeUser().equals(typeChoose);
         popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser, verifyChangeTypeUser);
+                textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser, verifyChangeTypeUser, userPathImageProfile);
         if (!verifyChangeTypeUser || !verifyChangeUsername || !verifyChangeFullName) {
             updateInformationUser();
             popUpDialogEdit.show();
