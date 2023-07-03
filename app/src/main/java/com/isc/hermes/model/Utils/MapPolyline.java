@@ -110,6 +110,13 @@ public class MapPolyline {
         }
     }
 
+    /**
+     * This method will hide all the polylines in the map
+     */
+    public void hidePolylines() {
+        mapboxMap.setStyle(mapboxMap.getStyle().getUri());
+    }
+
     private class DrawPolylineRunnable implements Runnable {
         @Override
         public void run() {
