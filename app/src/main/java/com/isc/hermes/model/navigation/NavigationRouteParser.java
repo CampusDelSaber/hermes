@@ -54,6 +54,13 @@ public class NavigationRouteParser {
         return routeSegments;
     }
 
+    /**
+     * Unpacks a JSONArray containing latitude and longitude coordinates and creates a new LatLng object.
+     *
+     * @param cords the JSONArray containing latitude and longitude coordinates
+     * @return a new LatLng object with the unpacked coordinates
+     * @throws JSONException if there is an error accessing the coordinates from the JSONArray
+     */
     private LatLng unpack(JSONArray cords) throws JSONException {
         return new LatLng(cords.getDouble(GEO_JSON_LATITUDE), cords.getDouble(GEO_JSON_LONGITUDE));
     }

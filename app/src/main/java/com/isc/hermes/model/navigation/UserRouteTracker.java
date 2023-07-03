@@ -1,7 +1,7 @@
 package com.isc.hermes.model.navigation;
 
-import static com.isc.hermes.model.navigation.NavigationTrackerTools.isPointInsideSegment;
 import static com.isc.hermes.model.navigation.NavigationTrackerTools.isNearPoint;
+import static com.isc.hermes.model.navigation.NavigationTrackerTools.isPointInsideSegment;
 
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.navigation.exceptions.RouteOutOfTracksException;
@@ -58,19 +58,28 @@ public class UserRouteTracker {
         isUserTrackLost = false;
     }
 
+    /**
+     * Updates the user's location and determines the next action based on the current state.
+     * If the user's track is lost, it attempts to recover the track.
+     * If the user is on the current track segment, it logs the track index.
+     * If the user is off the current track segment, it proceeds to the next track segment.
+     *
+     * @throws RouteOutOfTracksException if the current route has no more unvisited tracks
+     */
     public void update() {
         LatLng userLocation = currentLocation.getLatLng();
+
         if (isUserTrackLost) {
             recoverTrack(true);
         }
 
-        if (routeSegmentIndex >= routeSegments.size()){
+        if (routeSegmentIndex >= routeSegments.size()) {
             throw new RouteOutOfTracksException("The current route does not have any more unvisited tracks");
         }
 
         if (isUserOnTrack(userLocation)) {
             Timber.i("User on track #%d\n", routeSegmentIndex);
-        }else {
+        } else {
             nextTrack(userLocation);
         }
     }
@@ -188,6 +197,11 @@ public class UserRouteTracker {
         }
     }
 
+    /**
+     * Gets the UserRouteTrackerNotifier instance associated with this UserRouteTracker.
+     *
+     * @return the UserRouteTrackerNotifier instance
+     */
     public UserRouteTrackerNotifier getRouteTrackerNotifier() {
         return routeTrackerNotifier;
     }

@@ -427,6 +427,11 @@ public class InfoRouteController {
         this.elapsedSeconds = elapsedSeconds;
     }
 
+    /**
+     * Sets the transportation type.
+     *
+     * @param transportationType the transportation type as enum.
+     */
     public void setTransportationType(TransportationType transportationType) {
         this.transportationType = transportationType;
     }
@@ -438,6 +443,11 @@ public class InfoRouteController {
         if (mapPolyline != null) mapPolyline.hidePolylines();
     }
 
+    /**
+     * Performs the protocol when the user has arrived at their destination.
+     * This method displays two Toast messages and then closes the navigation mode.
+     * It ensures that the UI-related operations are executed on the main thread.
+     */
     public void performUserHasArrivedProtocol(){
         new Handler(Looper.getMainLooper()).post(() -> {
             Toast.makeText(layout.getContext(), "Destination reached", Toast.LENGTH_SHORT).show();

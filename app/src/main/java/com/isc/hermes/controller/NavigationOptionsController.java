@@ -482,6 +482,11 @@ public class NavigationOptionsController {
         this.isCurrentLocationSelected = isCurrentLocationSelected;
     }
 
+    /**
+     * Validates the routes by checking if each route has more than one coordinate point.
+     *
+     * @return true if at least one route is valid (having more than one coordinate point), false otherwise
+     */
     private boolean validateRoutes(){
         boolean isValid = false;
         try {

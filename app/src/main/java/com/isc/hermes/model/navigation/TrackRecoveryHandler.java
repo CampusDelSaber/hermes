@@ -60,7 +60,6 @@ public class TrackRecoveryHandler {
             attemptSimpleRecovery(index);
             if (isAttemptSuccessful()) {
                 break;
-            } else {
             }
         }
     }
