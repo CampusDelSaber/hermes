@@ -23,18 +23,18 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
  */
 public class WaypointOptionsController {
 
-    private StreetValidator streetValidator;
+    private final StreetValidator streetValidator;
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
     private final LinearLayout reportIncidentsView;
     private final Button navigateButton;
-    private TrafficAutomaticFormController trafficAutomaticFormController;
+    private final TrafficAutomaticFormController trafficAutomaticFormController;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
     private final Button reportNaturalDisasterButton;
     private final Context context;
-    private TextView placeName;
+    private final TextView placeName;
     private static WaypointOptionsController waypointOptionsController;
 
 
@@ -79,9 +79,9 @@ public class WaypointOptionsController {
         });
 
         reportTrafficButton.setOnClickListener(v -> {
+            navigationOptionsFormController.getJson();
 
             waypointOptions.startAnimation(Animations.exitAnimation);
-            System.out.println("MIO "+navigationOptionsFormController.getJson());
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected Integer doInBackground(Void... voids) {
@@ -170,7 +170,10 @@ public class WaypointOptionsController {
      * @return a boolean type
      */
     private boolean isGeneralUser() {
-        return UserRepository.getInstance().getUserContained().getTypeUser().equals(TypeUser.GENERAL.getTypeUser());
+        if (UserRepository.getInstance().hasUser())
+            return UserRepository.getInstance().getUserContained().getTypeUser().equals(TypeUser.GENERAL.getTypeUser());
+        else
+            return true;
     }
 
     /**
