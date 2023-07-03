@@ -151,9 +151,12 @@ public class WaypointOptionsController {
      */
     public void setReportIncidentStatus(LatLng point) {
         if (!hasValidStreetContext(point)) {
+            System.out.println("no es street");
             hideReportIncidentsView();
         } else {
+            System.out.println("pregunta si es admin");
             if(UserRepository.getInstance().getUserContained().isAdministrator()){
+                System.out.println(UserRepository.getInstance().getUserContained().getTypeUser());
                 showReportIncidentsView();
             }
         }
