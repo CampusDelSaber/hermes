@@ -1,6 +1,9 @@
 package com.isc.hermes.generators;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.isc.hermes.model.Radium;
@@ -11,8 +14,10 @@ import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Polygon;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class IncidentGeneratorTest {
 
@@ -71,8 +76,12 @@ public class IncidentGeneratorTest {
     @Test
     public void polygonGeneratorTest() {
         PolygonGenerator polygonGenerator = new PolygonGenerator();
-        printPolygon("1", polygonGenerator.generate(new Double[]{-66.17597619693515, -17.366472604202826}, Radium.ONE_HUNDRED_METERS, 5));
-        printPolygon("2", polygonGenerator.generate(new Double[]{-66.17500318590098, -17.36683304740737}, Radium.FIFTY_METERS, 7));
-        printPolygon("3", polygonGenerator.generate(new Double[]{-66.17549150939814, -17.36621852918228}, Radium.ONE_HUNDRED_METERS, 10));
+        List<Double[]> polygon1 = polygonGenerator.generate(new Double[]{-66.17597619693515, -17.366472604202826}, Radium.ONE_HUNDRED_METERS, 5);
+        List<Double[]> polygon2 = polygonGenerator.generate(new Double[]{-66.17500318590098, -17.36683304740737}, Radium.FIFTY_METERS, 7);
+        List<Double[]> polygon3 = polygonGenerator.generate(new Double[]{-66.17549150939814, -17.36621852918228}, Radium.ONE_HUNDRED_METERS, 10);
+
+        assertNotEquals(polygon1.get(0)[0], polygon2.get(0)[0], 0.0);
+        assertNotEquals(polygon2.get(0)[0], polygon3.get(0)[0], 0.0);
+        assertNotEquals(polygon1.get(0)[0], polygon3.get(0)[0], 0.0);
     }
 }

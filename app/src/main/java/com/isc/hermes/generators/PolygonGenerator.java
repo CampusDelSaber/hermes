@@ -19,23 +19,23 @@ import java.util.List;
  */
 public class PolygonGenerator extends CoordinateGen implements CoordinatesGenerable {
 
-    //private Geometry polygon;
-    /*private PointGenerator pointGenerator;
+    private Geometry polygon;
+    private PointGenerator pointGenerator;
     private List<Coordinate> polygonCoordinates;
     private GeometryFactory geometryFactory;
+    private CoordinateParser coordinateParser;
     private DelaunayTriangulationBuilder triangulationBuilder;
-    private CoordinateParser coordinateParser;*/
 
     /**
      * This is the constructor method to initialize all necessary variables to
      * generate polygon coordinates data.
      */
     public PolygonGenerator() {
-       /* this.coordinateParser = new CoordinateParser();
+        this.coordinateParser = new CoordinateParser();
         this.pointGenerator = new PointGenerator();
         this.polygonCoordinates = new ArrayList<>();
         this.geometryFactory = new GeometryFactory();
-        this.triangulationBuilder = new DelaunayTriangulationBuilder();*/
+        this.triangulationBuilder = new DelaunayTriangulationBuilder();
     }
 
     /**
@@ -48,9 +48,7 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
      */
     @Override
     public List<Double[]> generate(Double[] referencePoint, Radium radium, int vertexAmount) {
-        List<Coordinate> polygonCoordinates = new ArrayList<>();
-        CoordinateParser coordinateParser = new CoordinateParser();
-        Geometry polygon = null;
+        polygonCoordinates.clear();
         if (isValidReferencePoint(referencePoint)) {
             polygonCoordinates.add(coordinateParser.doubleToCoordinate(referencePoint));
             polygonCoordinates = genSymmetricPolygon(referencePoint, radium, vertexAmount);
@@ -71,13 +69,8 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
     public List<Coordinate> genSymmetricPolygon(
             Double[] referencePoint, Radium radium, int vertexAmount)
     {
-        PointGenerator pointGenerator = new PointGenerator();
-        List<Coordinate> polygonCoordinates = new ArrayList<>();
-        CoordinateParser coordinateParser = new CoordinateParser();
-
         double currentAngle;
         double angleIncrement = 2 * Math.PI / vertexAmount;
-
 
         for (int i = 0; i < vertexAmount; i++) {
             currentAngle = i * angleIncrement;
@@ -105,8 +98,7 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
      * @return triangulation built.
      */
     public Geometry buildTriangulation(List<Coordinate> polygonCoordinates) {
-        DelaunayTriangulationBuilder triangulationBuilder = new DelaunayTriangulationBuilder();
-        GeometryFactory geometryFactory = new GeometryFactory();
+        triangulationBuilder = new DelaunayTriangulationBuilder();
         triangulationBuilder.setSites(polygonCoordinates);
         return triangulationBuilder.getTriangles(geometryFactory).union();
     }
