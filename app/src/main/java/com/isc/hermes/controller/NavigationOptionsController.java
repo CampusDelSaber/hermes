@@ -146,11 +146,14 @@ public class NavigationOptionsController {
         cancelButton.setOnClickListener(v -> {
             handleHiddeItemsView();
             isActive = false;
-            mapWayPointController.setMarked(false);
-            mapWayPointController.deleteMarks();
-            if (polylineRouteUpdaterController != null) polylineRouteUpdaterController.setStartPoint(finalPoint);
+            handleCancelAction();
             if (infoRouteController!= null) infoRouteController.deletePolylineRoutes();
         });
+    }
+
+    public void handleCancelAction() {
+        mapWayPointController.setMarked(false);
+        mapWayPointController.deleteMarks();
     }
 
     /**
