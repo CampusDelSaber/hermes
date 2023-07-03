@@ -126,12 +126,8 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         internetRequest();
         filterController = new FilterController(this);
         androidRequestActivation = new AndroidRequestActivation();
-        try{
-            setTheUserInformationInTheDropMenu();
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-
+        try{ setTheUserInformationInTheDropMenu();}
+        catch(Exception e){ e.printStackTrace(); }
         Timber.plant(new Timber.DebugTree());
         changeCompassPosition();
     }
@@ -531,7 +527,6 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
 
     /**
      * Accept natural disasters and upload a corresponding incident.
-     *
      * Generates a JSON for the natural disaster incident and sends it to the server.
      */
     public void acceptNaturalDisasters(){
