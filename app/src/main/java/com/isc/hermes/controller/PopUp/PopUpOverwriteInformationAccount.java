@@ -59,13 +59,21 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     public void onClick(View view) {
         if (view == super.confirmButton) {
             updateTypeUser();
-            button.setVisibility(View.INVISIBLE);
-            fullName.setEnabled(false);
-            username.setEnabled(false);
-            comboBoxField.setEnabled(false);
-            textInputLayout.setEnabled(false);
-            buttonUploadImage.setVisibility(View.GONE);
+            disableOptions();
         } dismiss();
+    }
+
+    /**
+     * Disables the options in the account information activity.
+     * This method makes the specified components invisible or disabled, preventing user interaction.
+     */
+    public void disableOptions() {
+        button.setVisibility(View.INVISIBLE);
+        fullName.setEnabled(false);
+        username.setEnabled(false);
+        comboBoxField.setEnabled(false);
+        textInputLayout.setEnabled(false);
+        buttonUploadImage.setVisibility(View.GONE);
     }
 
     /**

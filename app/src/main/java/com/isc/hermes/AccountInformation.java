@@ -207,10 +207,21 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void saveAccountInformationAction(View view) {
-        updateInformationUser();
+        String typeChoose = String.valueOf(comboBoxField.getText());
+        String username = String.valueOf(textFieldUserName.getText());
+        String fullName = String.valueOf(textFieldFullName.getText());
+        boolean verifyChangeUsername = UserRepository.getInstance().getUserContained().getUserName().equals(username);
+        boolean verifyChangeFullName = UserRepository.getInstance().getUserContained().getFullName().equals(fullName);
+        boolean verifyChangeTypeUser = UserRepository.getInstance().getUserContained().getTypeUser().equals(typeChoose);
         popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
                 textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser);
-        popUpDialogEdit.show();
+        if (!verifyChangeTypeUser || !verifyChangeUsername || !verifyChangeFullName) {
+            updateInformationUser();
+            popUpDialogEdit.show();
+        } else {
+            popUpDialogEdit.disableOptions();
+        }
+
     }
 
     /**
