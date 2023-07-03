@@ -9,17 +9,9 @@
                     android:title="@string/offline_mode"
                     android:icon="@drawable/offline_button_icon"/>
                 <item
-                    android:id="@+id/changeDisplayMode"
-                    android:title="@string/change_display_mode"
-                    android:icon="@drawable/traveler_button_icon"/>
-                <item
                     android:id="@+id/mapStyle"
                     android:title="@string/map_style"
                     android:icon="@drawable/map_button_icon"/>
-                <item
-                    android:id="@+id/thirdDimensionMode"
-                    android:title="@string/third_dimension_mode"
-                    android:icon="@drawable/third_dimension_button_icon"/>
             </menu>
         </item>
     </group>
