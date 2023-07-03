@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.common.api.ApiException;
@@ -19,14 +18,10 @@ import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.utils.offline.NetworkManager;
 import org.json.JSONException;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-
-import timber.log.Timber;
-
 
 /**
  * This class is in charge of controlling the user's authentication activity.
@@ -84,9 +79,7 @@ public class SignUpActivityView extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        authenticationServices.forEach((key, authentication) -> {
-            getUserDependingAbleNetwork(authentication);
-        });
+        authenticationServices.forEach((key, authentication) -> getUserDependingAbleNetwork(authentication));
     }
 
     /**
@@ -95,16 +88,11 @@ public class SignUpActivityView extends AppCompatActivity {
      * @param authentication The authentication object representing the signed-in user.
      */
     private void getUserDependingAbleNetwork(IAuthentication authentication){
-
         if (authentication.checkUserSignIn(this)) {
-
             authenticator = authentication;
-            User user = null;
-            if(NetworkManager.isOnline(this)){
-                user = obtainUserUsingInternet(authentication);
-            }else{
-                user = DataAccountOffline.getInstance(this).loadDataLogged();
-            }
+            User user;
+            if(NetworkManager.isOnline(this)) user = obtainUserUsingInternet(authentication);
+            else user = DataAccountOffline.getInstance(this).loadDataLogged();
             UserRepository.getInstance().setUserContained(user);
             changeActivityToMap();
         }
@@ -124,9 +112,7 @@ public class SignUpActivityView extends AppCompatActivity {
                 String id = manager.getIdByEmail(authentication.getUserSignIn().getEmail());
                 user =  manager.getUserById(id);
                 DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
-            } catch (ExecutionException | InterruptedException | JSONException e) {
-                e.printStackTrace();
-            }
+            } catch (ExecutionException | InterruptedException | JSONException e) {e.printStackTrace(); }
         } return user;
     }
 
@@ -146,10 +132,8 @@ public class SignUpActivityView extends AppCompatActivity {
     public void signUp(View view) {
         authenticator = authenticationServices.get(AuthenticationServices.valueOf((String) view.getTag()));
         if (authenticator == null) return;
-        startActivityForResult( //TODO: Solve this is a deprecated method.
-                authenticator.signIn()
-                , REQUEST_CODE
-        );
+        //TODO: Solve this is a deprecated method.
+        startActivityForResult(authenticator.signIn(), REQUEST_CODE);
     }
 
     /**
@@ -187,12 +171,12 @@ public class SignUpActivityView extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try {
-            changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(data));
-        } catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
-            Toast.makeText(SignUpActivityView.this,"Wait a moment ", Toast.LENGTH_SHORT).show();
-            Timber.tag("LOG").e(e);
-        }
+        if (NetworkManager.isOnline(this)) {
+            try {
+                changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(data)); }
+            catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
+                e.printStackTrace(); }}
+        else
+            Toast.makeText(SignUpActivityView.this,"Internet access is required", Toast.LENGTH_SHORT).show();
     }
-
 }
