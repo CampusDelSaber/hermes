@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.isc.hermes.R;
+import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
 import com.isc.hermes.model.navigation.NavigationOrchestrator;
@@ -161,6 +162,7 @@ public class InfoRouteController {
         mapPolyline.hidePolylines();
         layout.startAnimation(Animations.exitAnimation);
         layout.setVisibility(View.GONE);
+        navigationOptionsController.setStartPoint(CurrentLocationModel.getInstance().getLatLng());
         navigationOptionsController.handleCancelAction();
         if (navigationOptionsController.getNavOptionsForm().getVisibility() == View.VISIBLE)
             navigationDirectionController.getDirectionsForm()
@@ -186,6 +188,7 @@ public class InfoRouteController {
      */
     private void setNavigationButtonsEvent(){
         recalculateRouteButton.setOnClickListener(event -> {
+            navigationOptionsController.setStartPoint(CurrentLocationModel.getInstance().getLatLng());
             closeNavigation();
             navigationOptionsController.setIsCurrentLocationSelected(true);
             navigationOptionsController.handleAcceptButtonClick();

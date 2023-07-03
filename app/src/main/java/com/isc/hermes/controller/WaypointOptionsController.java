@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.controller.PopUp.PopUpWarningUpdateUserType;
+import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.requests.geocoders.StreetValidator;
@@ -66,6 +67,8 @@ public class WaypointOptionsController {
     private void setButtonsOnClick(){
         navigateButton.setOnClickListener(v -> {
             waypointOptions.startAnimation(Animations.exitAnimation);
+            navigationOptionsFormController.setStartPoint(CurrentLocationModel.getInstance().getLatLng());
+            navigationOptionsFormController.setIsCurrentLocationSelected(true);
             navigationOptionsFormController.getNavOptionsForm().startAnimation(Animations.entryAnimation);
             navigationOptionsFormController.getNavOptionsForm().setVisibility(View.VISIBLE);
             waypointOptions.setVisibility(View.GONE);
