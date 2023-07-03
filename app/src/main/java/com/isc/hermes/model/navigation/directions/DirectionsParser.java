@@ -68,10 +68,10 @@ public class DirectionsParser {
         String streetName = "";
 
         try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 3);
 
-            if (addresses != null && addresses.size() > 0) {
-                Address address = addresses.get(0);
+            if (addresses != null && addresses.size() > 2) {
+                Address address = addresses.get(2);
                 streetName = address.getAddressLine(0);
             }
         } catch (IOException e) {
