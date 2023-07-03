@@ -21,7 +21,7 @@ public class ViewIncidentsController {
     private Button okButton;
     private final Button cancelButton;
     private final ConstraintLayout displayIncidents;
-    private final CheckBox naturalDisasters;
+    public static CheckBox naturalDisasters;
     private final CheckBox traffic;
     private final CheckBox streetIncident;
     private PolygonRequester polygonRequester;

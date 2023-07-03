@@ -27,8 +27,8 @@ public class PolygonViewer implements Style.OnStyleLoaded {
 
     private List<List<Point>> polygon;
     private List<List<List<Point>>> polygons;
-    private final String POLYGON_COLOR = "#6527BE";
-    private final String POLYGONS_COLOR = "#FF2171";
+    private final String POLYGON_COLOR = "#6F1AB6";
+    private final String POLYGONS_COLOR = "#FF0303";
 
     /**
      * This is the constructor method to render a polygon on map.
@@ -51,6 +51,11 @@ public class PolygonViewer implements Style.OnStyleLoaded {
         if (polygons != null && !polygons.isEmpty()) loadPolygons(style);
     }
 
+    /**
+     * This method render a only polygon on the map.
+     *
+     * @param style map style.
+     */
     private void loadPolygon(@NonNull Style style) {
         style.addSource(new GeoJsonSource("source-id", Polygon.fromLngLats(polygon)));
         style.addLayerBelow(new LineLayer("border-layer-id", "source-id")
@@ -63,11 +68,16 @@ public class PolygonViewer implements Style.OnStyleLoaded {
                 ), "settlement-label");
         style.addLayerBelow(new FillLayer("layer-id", "source-id").withProperties(
                         fillColor(Color.parseColor(POLYGON_COLOR)),
-                        fillOpacity(0.3f)
+                        fillOpacity(0.15f)
                 ), "settlement-label"
         );
     }
 
+    /**
+     * This method render a polygons on the map.
+     *
+     * @param style map style,
+     */
     private void loadPolygons(@NonNull Style style) {
         List<List<Point>> currentPolygon;
         for (int i = 0; i < polygons.size(); i++) {
@@ -86,7 +96,7 @@ public class PolygonViewer implements Style.OnStyleLoaded {
             style.addLayerBelow(new FillLayer("fill-layer-id-" + i, "source-id-" + i)
                     .withProperties(
                             PropertyFactory.fillColor(Color.parseColor(POLYGONS_COLOR)),
-                            PropertyFactory.fillOpacity(0.3f)
+                            PropertyFactory.fillOpacity(0.15f)
                     ), "border-layer-id-" + i);
         }
     }

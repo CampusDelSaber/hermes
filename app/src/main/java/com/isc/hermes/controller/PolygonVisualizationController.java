@@ -30,6 +30,11 @@ public class PolygonVisualizationController {
                 MapManager.getInstance().getMapboxMap(), polygons, polygon));
     }
 
+    /**
+     * This method display a polygons using a style map loader.
+     *
+     * @param polygons to render on the map.
+     */
     public void displayPolygons(List<List<List<Point>>> polygons) {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> new PolygonViewer(
@@ -48,6 +53,9 @@ public class PolygonVisualizationController {
         return instance;
     }
 
+    /**
+     * This is the constructor method to initialize the polygon requester.
+     */
     private PolygonVisualizationController() {
         this.polygonRequester = new PolygonRequester();
     }
