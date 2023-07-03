@@ -121,7 +121,6 @@ public class ApiRequestHandler {
     public void deleteDataById(String apiUrl, String id) {
         try {
             URL url = new URL(apiUrl + "/" + id);
-            System.out.println(url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.connect();

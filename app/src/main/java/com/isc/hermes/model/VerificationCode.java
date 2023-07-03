@@ -53,10 +53,21 @@ public class VerificationCode {
         return isValid;
     }
 
+    /**
+     * Retrieves the ID associated with the current object.
+     *
+     * @return The ID value.
+     */
     public String getId() {
         return id;
     }
 
+
+    /**
+     * Sets the ID for the current object.
+     *
+     * @param id The ID to be set.
+     */
     public void setId(String id) {
         this.id = id;
     }
@@ -70,10 +81,20 @@ public class VerificationCode {
         isValid = valid;
     }
 
+    /**
+     * Sets the email address for the current instance.
+     *
+     * @param email The email address to be set.
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Retrieves an instance of the VerificationCode class. If an instance doesn't exist, a new instance is created.
+     *
+     * @return The VerificationCode instance.
+     */
     public static VerificationCode getVerificationCodeInstance() {
         if (verificationCodeInstance == null) {
             verificationCodeInstance = new VerificationCode();

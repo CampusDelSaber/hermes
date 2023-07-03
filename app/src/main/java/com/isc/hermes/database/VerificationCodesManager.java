@@ -92,6 +92,11 @@ public class VerificationCodesManager {
         return verificationCodeObject;
     }
 
+    /**
+     * Deletes a verification code from the specified collection.
+     *
+     * @param idVerificationCode The ID of the verification code to be deleted.
+     */
     public void deleteVerificationCode(String idVerificationCode) {
         apiHandler.deleteFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, idVerificationCode);
     }
