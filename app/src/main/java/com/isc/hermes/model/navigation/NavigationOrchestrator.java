@@ -1,5 +1,6 @@
 package com.isc.hermes.model.navigation;
 
+import com.isc.hermes.controller.InfoRouteController;
 import com.isc.hermes.model.location.LocationIntervals;
 
 import java.util.HashMap;
@@ -12,12 +13,14 @@ public class NavigationOrchestrator implements Runnable {
     private final RoutesRepository routesRepository;
     private final HashMap<String, UserRouteTracker> availableRoutes;
     private final String defaultKey;
+    private final InfoRouteController infoRouteController;
 
     private UserRouteTrackerNotifier userRouteTrackerNotifier;
     private UserRouteTracker userRouteTracker;
 
-    public NavigationOrchestrator(String defaultKey) {
+    public NavigationOrchestrator(String defaultKey, InfoRouteController infoRouteController) {
         this.defaultKey = defaultKey;
+        this.infoRouteController = infoRouteController;
         caRun = new AtomicBoolean(true);
         routesRepository = RoutesRepository.getInstance();
         availableRoutes = new HashMap<>();
@@ -34,7 +37,7 @@ public class NavigationOrchestrator implements Runnable {
         thread.start();
     }
 
-    public void stopNavigationMode() {
+    public void stopLiveUpdates() {
         caRun.set(false);
         availableRoutes.clear();
         routesRepository.clean();
@@ -45,7 +48,7 @@ public class NavigationOrchestrator implements Runnable {
         Timber.d("%s has started", Thread.currentThread().getName());
         while (caRun.get()) {
             if (userRouteTracker.hasUserArrived()){
-                Timber.i("User has arrived");
+                infoRouteController.performUserHasArrivedProtocol();
                 caRun.set(false);
                 continue;
 
@@ -70,6 +73,7 @@ public class NavigationOrchestrator implements Runnable {
 
         if (!caRun.get()) {
             Timber.d("[%s] has finished", Thread.currentThread().getName());
+            stopLiveUpdates();
         }
     }
 
