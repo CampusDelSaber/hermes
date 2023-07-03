@@ -1,5 +1,6 @@
 package com.isc.hermes.model.navigation;
 
+import com.isc.hermes.R;
 import com.isc.hermes.model.navigation.directions.DirectionEnum;
 import com.isc.hermes.model.navigation.directions.DirectionsParser;
 import com.isc.hermes.model.navigation.directions.DirectionsRecord;
@@ -15,7 +16,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -53,29 +58,44 @@ public class NavigationRouteParser {
             try {
                 JSONArray route = routeInformation.getJSONObject("geometry").getJSONArray("coordinates");
 
+                System.out.println("RUTA KARI KARI");
+                System.out.println(route);
                 for (int i = 0; i < route.length() - 1; i++) {
-                    LatLng start = unpack(route.getJSONArray(i));
-                    LatLng end = unpack(route.getJSONArray(i + 1));
+                    LatLng start = new LatLng(route.getJSONArray(i).getDouble(1), route.getJSONArray(i).getDouble(0));
+                    LatLng end = new LatLng(route.getJSONArray(i + 1).getDouble(1), route.getJSONArray(i + 1).getDouble(0));
 
+                    System.out.println("COMO ES KARISIRIIIIIIIIIIIII");
                     // Convert LatLng coordinates to Mapbox Point
                     Point startPoint = Point.fromLngLat(start.getLongitude(), start.getLatitude());
                     Point endPoint = Point.fromLngLat(end.getLongitude(), end.getLatitude());
 
-                    // Retrieve the instructions using Mapbox Geocoder
-                    List<CarmenFeature> startFeatures = reverseGeocode(startPoint);
-                    List<CarmenFeature> endFeatures = reverseGeocode(endPoint);
+                    System.out.println("COMO ES KARISIRIIIIIIIIIIIII  1");
 
-                    String startStreetName = startFeatures.isEmpty() ? "" : startFeatures.get(0).text();
-                    String endStreetName = endFeatures.isEmpty() ? "" : endFeatures.get(0).text();
+                    // Retrieve the instructions using Mapbox Geocoder
+                    String startFeatures = reverseGeocode(startPoint);
+                    String endFeatures = reverseGeocode(endPoint);
+
+                    System.out.println("COMO ES KARISIRIIIIIIIIIIIII  2");
+
+                    String startStreetName = startFeatures.isEmpty() ? "" : startFeatures;
+                    String endStreetName = endFeatures.isEmpty() ? "" : endFeatures;
+
+                    System.out.println("COMO ES KARISIRIIIIIIIIIIIII  3");
+                    System.out.println(startStreetName);
+                    System.out.println(endStreetName);
 
                     DirectionsRecord[] directions = new DirectionsRecord[]{
                             new DirectionsRecord(startStreetName, DirectionEnum.GO_STRAIGHT),
                             new DirectionsRecord(endStreetName, getTurnDirection(start, end))
                     };
 
+                    System.out.println("COMO ES KARISIRIIIIIIIIIIIII  4");
+
                     // Create RouteSegmentRecord object and add it to the list
                     RouteSegmentRecord routeSegment = new RouteSegmentRecord(start, end, directions);
                     routeSegments.add(routeSegment);
+
+                    System.out.println("COMO ES KARISIRIIIIIIIIIIIII  5");
                 }
 
                 // Complete the future with the route segments
@@ -121,24 +141,32 @@ public class NavigationRouteParser {
         return bearing;
     }
 
-    private List<CarmenFeature> reverseGeocode(Point point) {
+    private String reverseGeocode(Point point) {
         try {
-            MapboxGeocoding client = MapboxGeocoding.builder()
-                    .accessToken("YOUR_MAPBOX_ACCESS_TOKEN")
-                    .query(Point.fromLngLat(point.longitude(), point.latitude()))
-                    .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
-                    .build();
-            Response<GeocodingResponse> response = client.executeCall();
-            if (response.isSuccessful()) {
-                GeocodingResponse geocodingResponse = response.body();
-                if (geocodingResponse != null) {
-                    return geocodingResponse.features();
-                }
-            }
-        } catch (IOException e) {
+            String apiUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={latitude}&lon={longitude}";
+            apiUrl = apiUrl.replace("{latitude}", String.valueOf(point.latitude()));
+            apiUrl = apiUrl.replace("{longitude}", String.valueOf(point.longitude()));
+
+            System.out.println(apiUrl);
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            reader.close();
+
+            JSONObject jsonObject = new JSONObject(response);
+
+            // Get the street name from the address object
+            String streetName = jsonObject.getString("display_name");
+
+            // Return the street name
+            return streetName;
+        } catch (Exception e) {
             e.printStackTrace();
+            return "";
         }
-        return new ArrayList<>();
     }
 
     /**
