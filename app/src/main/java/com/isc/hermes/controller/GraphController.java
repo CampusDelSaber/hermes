@@ -1,8 +1,6 @@
 package com.isc.hermes.controller;
 
-import android.widget.Toast;
 
-import com.isc.hermes.R;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.GraphManager;
 import com.isc.hermes.model.graph.Node;
@@ -188,11 +186,15 @@ public class GraphController {
         Point startPoint = Point.fromLngLat(startNode.getLongitude(), startNode.getLatitude());
         List<String> nearbyNodes = graphManager.searchNodesNearby(startPoint);
 
-        for(String nodeID : nearbyNodes) {
-            Node node = graph.getNode(nodeID);
-            if(node != null) {
+        for(int i = 0; i < nearbyNodes.size() - 1; i++) {
+            Node node = graph.getNode(nearbyNodes.get(i));
+            if(node != null && graphManager.isOnStreet(graph.getNode(nearbyNodes.get(i)), graph.getNode(nearbyNodes.get(i+1)), startPoint)) {
                 startNode.addBidirectionalEdge(node);
             }
+        }
+
+        if(startNode.getEdges().size() == 0 && graph.getNode(nearbyNodes.get(0)) != null) {
+            startNode.addBidirectionalEdge(graph.getNode(nearbyNodes.get(0)));
         }
 
         graph.addNode(startNode);
@@ -205,11 +207,15 @@ public class GraphController {
         Point destinationPoint = Point.fromLngLat(destinationNode.getLongitude(), destinationNode.getLatitude());
         List<String> nearbyNodes = graphManager.searchNodesNearby(destinationPoint);
 
-        for(String nodeID : nearbyNodes) {
-            Node node = graph.getNode(nodeID);
-            if(node != null) {
+        for(int i = 0; i < nearbyNodes.size() - 1; i++) {
+            Node node = graph.getNode(nearbyNodes.get(i));
+            if(node != null && graphManager.isOnStreet(graph.getNode(nearbyNodes.get(i)), graph.getNode(nearbyNodes.get(i+1)), destinationPoint)) {
                 destinationNode.addBidirectionalEdge(node);
             }
+        }
+
+        if(destinationNode.getEdges().size() == 0 && graph.getNode(nearbyNodes.get(0)) != null) {
+            destinationNode.addBidirectionalEdge(graph.getNode(nearbyNodes.get(0)));
         }
 
         graph.addNode(destinationNode);
