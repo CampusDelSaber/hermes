@@ -67,7 +67,7 @@ public class Searcher {
             MapboxGeocoding client = buildGeocodingClient(userLocation, query, country, geocodingType);
             Response<GeocodingResponse> geocodingResponse = executeGeocodingCall(client);
             if (isGeocodingResponseValid(geocodingResponse)) {
-                features = getFeaturesFromGeocodingResponse(geocodingResponse);
+                features.addAll(getFeaturesFromGeocodingResponse(geocodingResponse));
                 break;
             }
         }
@@ -80,6 +80,7 @@ public class Searcher {
      */
     private List<String> getGeocodingTypeOrders() {
         return Arrays.asList(
+                GeocodingCriteria.TYPE_POI,
                 GeocodingCriteria.TYPE_ADDRESS,
                 GeocodingCriteria.TYPE_LOCALITY,
                 GeocodingCriteria.TYPE_PLACE,
