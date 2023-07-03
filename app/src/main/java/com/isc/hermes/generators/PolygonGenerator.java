@@ -49,7 +49,7 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
         polygonCoordinates.clear();
         if (isValidReferencePoint(referencePoint)) {
             polygonCoordinates.add(coordinateParser.doubleToCoordinate(referencePoint));
-            polygonCoordinates = genSymmetricPolygon(referencePoint, radium, vertexAmount, true);
+            polygonCoordinates = genSymmetricPolygon(referencePoint, radium, vertexAmount);
             polygon = buildTriangulation(polygonCoordinates);
         }
 
@@ -65,10 +65,8 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
      * @return symmetric polygon coordinates generated.
      */
     public List<Coordinate> genSymmetricPolygon(
-            Double[] referencePoint, Radium radium,
-            int vertexAmount, boolean lotPoints)
+            Double[] referencePoint, Radium radium, int vertexAmount)
     {
-        if (lotPoints) vertexAmount *= 4;
         double currentAngle;
         double angleIncrement = 2 * Math.PI / vertexAmount;
 

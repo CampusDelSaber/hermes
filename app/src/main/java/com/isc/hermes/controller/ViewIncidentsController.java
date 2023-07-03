@@ -3,8 +3,10 @@ package com.isc.hermes.controller;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.isc.hermes.R;
 import com.isc.hermes.requests.incidents.PolygonRequester;
 import com.isc.hermes.utils.MapManager;
@@ -13,7 +15,7 @@ import com.isc.hermes.view.IncidentViewNavigation;
 /**
  * Class to manage all view elements in view incidents form
  */
-public class ViewIncidentsController{
+public class ViewIncidentsController {
     private final AppCompatActivity activity;
     private final Button displayIncidentsButton;
     private Button okButton;
@@ -29,7 +31,7 @@ public class ViewIncidentsController{
      *
      * @param activity The activity associated with the controller.
      */
-    public ViewIncidentsController(AppCompatActivity activity){
+    public ViewIncidentsController(AppCompatActivity activity) {
         this.activity = activity;
         this.requesting = new PolygonRequester();
         displayIncidentsButton = activity.findViewById(R.id.displayIncidentsButton);
@@ -55,7 +57,7 @@ public class ViewIncidentsController{
     /**
      * This method hides the screen Display IncidentsButton screen.
      */
-    public void hideOptions(){
+    public void hideOptions() {
         displayIncidents.setVisibility(View.GONE);
     }
 
@@ -64,7 +66,7 @@ public class ViewIncidentsController{
      * Displays incidents based on the selected checkboxes and hides
      * the screen Display IncidentsButton.
      */
-    private void showIncidentOptions(){
+    private void showIncidentOptions() {
         okButton.setOnClickListener(v -> {
             MapManager.getInstance().getMapboxMap().clear();
                 if (naturalDisasters.isChecked()) {
@@ -73,8 +75,9 @@ public class ViewIncidentsController{
                             .displayPolygons(
                                     requesting.getPolygons(),"#Ff0000"
                             );
-                }
-                if (traffic.isChecked()) {
+                } else {
+                    MapManager.getInstance().getMapboxMap().setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri());
+                } if (traffic.isChecked()) {
                     ShowTrafficController.getInstance().getTraffic(activity);
                     System.out.println();
                 }

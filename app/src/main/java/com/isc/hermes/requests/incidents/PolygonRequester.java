@@ -104,9 +104,7 @@ public class PolygonRequester {
      * @return All polygons with its coordinates located in database
      */
     public List<List<List<Point>>> getPolygons() {
-        if (polygons.isEmpty())
-            requestIncidents();
-
+        requestIncidents();
         return polygons;
     }
 }

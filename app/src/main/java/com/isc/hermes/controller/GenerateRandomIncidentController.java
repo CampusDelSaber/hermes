@@ -56,7 +56,7 @@ public class GenerateRandomIncidentController {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initGeneration() {
         CurrentLocationModel currentLocation = CurrentLocationController.getControllerInstance(null).getCurrentLocationModel();
-        Double[] referencePoint = {currentLocation.getLongitude(), currentLocation.getLatitude()};
+        Double[] referencePoint = {-66.17558339723521, -17.366337924269107};
         Radium radium = generateRandomIncidentView.getRadiumSelected();
         int quantity = generateRandomIncidentView.getNumberIncidentsSelected();
         if (radium != null && quantity != 0) {
