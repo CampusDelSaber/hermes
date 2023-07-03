@@ -1,30 +1,21 @@
 package com.isc.hermes.model;
 
 import com.isc.hermes.database.VerificationCodesManager;
-import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
-
-import org.json.JSONException;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * The Validator class is responsible for validating a verification code entered by the user.
  */
 public class Validator {
     private String code;
-    private User user;
     private String id;
     private final VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
 
     /**
      * Creates a new Validator instance with the specified user.
-     *
-     * @param user The user associated with the validator.
      */
-    public Validator(User user) {
-        this.user = user;
+    public Validator() {
         this.verificationCodesManager = new VerificationCodesManager();
         getVerificationCode();
     }
@@ -36,7 +27,7 @@ public class Validator {
      */
     public void obtainVerificationCode() {
         try {
-            if (user != null)
+            if (UserRepository.getInstance().getUserContained() != null)
                 verificationCode = verificationCodesManager.getLastVerificationCode(UserRepository.getInstance().getUserContained().getEmail());
             else throw new NullPointerException("User object is null");
         } catch (Exception exception) {
@@ -50,8 +41,8 @@ public class Validator {
      */
     public void getVerificationCode() {
         obtainVerificationCode();
-        if (verificationCode == null) {
-            verificationCodesManager.addVerificationCode(user.getEmail());
+        if (verificationCode.getVerificationCode() == null) {
+            verificationCodesManager.addVerificationCode(UserRepository.getInstance().getUserContained().getEmail());
             getVerificationCode();
         }
         code = verificationCode.getVerificationCode();
@@ -78,31 +69,11 @@ public class Validator {
     }
 
     /**
-     * Returns the associated user.
-     *
-     * @return The associated user.
-     */
-    public User getUser() {
-        return user;
-    }
-
-    /**
      * Returns the ID of the current verification code.
      *
      * @return The ID of the current verification code.
      */
     public String getId() {
         return id;
-    }
-
-    public String getIdByEmail() {
-        System.out.println(UserRepository.getInstance().getUserContained().getEmail());
-        try {
-            verificationCode = verificationCodesManager.getLastVerificationCode(UserRepository.getInstance().getUserContained().getEmail());
-            System.out.println(verificationCode.getId());
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return verificationCode.getId();
     }
 }

@@ -39,7 +39,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_verification);
-        this.validator = new Validator(UserRepository.getInstance().getUserContained());
+        this.validator = new Validator();
         this.popUpToConfirmUser = new PopUpContinueLikeGeneralUser(this);
         this.warningPopUp = new PopUpWarningIncorrectData(this);
         initComponents();
@@ -226,6 +226,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
     private void verificationCodeUpdate(Intent intent){
         VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
         verificationCodesManager.deleteVerificationCode(VerificationCode.getVerificationCodeInstance().getId());
+        VerificationCode.getVerificationCodeInstance().setVerificationCode(null);
         startActivity(intent);
     }
 

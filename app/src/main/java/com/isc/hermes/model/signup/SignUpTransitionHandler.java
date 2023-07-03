@@ -76,7 +76,7 @@ public class SignUpTransitionHandler {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(String roles, String email) {
         if (roles.equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
-            Validator validator = new Validator(UserRepository.getInstance().getUserContained());
+            Validator validator = new Validator();
             validator.obtainVerificationCode();
             SendEmailManager sendEmailManager = new SendEmailManager();
             sendEmailManager.addEmail(email, validator.getCode());
