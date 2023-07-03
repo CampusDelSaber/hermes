@@ -1,23 +1,16 @@
 package com.isc.hermes.generators;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.isc.hermes.model.Radium;
-import com.isc.hermes.model.incidents.Incident;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Polygon;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class IncidentGeneratorTest {
 
@@ -29,27 +22,6 @@ public class IncidentGeneratorTest {
     public void initSetup() {
         incidentGenerator = new IncidentGenerator();
         coordinateReference = new Double[]{-66.17558339723521, -17.366337924269107};
-    }
-
-    @Test
-    public void incidentGeneratedTest() {
-        List<Incident> incidents = incidentGenerator
-                .getIncidentsRandomly(coordinateReference, Radium.FIFTY_METERS, 5);
-        incidents.forEach(incident -> {
-            if (incident.getGeometry().getType().equals("Polygon")) {
-                System.out.println(incident.getType());
-                System.out.println(incident.getReason());
-                printPolygon("polygon", incident.getGeometry().getCoordinates());
-            }
-        });
-    }
-
-    private void printPolygon(String message, List<Double[]> coordinates) {
-        System.out.println("-------------------------" + message + "-------------------------");
-        coordinates.forEach(point -> {
-            System.out.println(Arrays.toString(point) + ", ");
-        });
-        System.out.println("-------------------------" + message + "-------------------------");
     }
 
     @Test
