@@ -427,4 +427,8 @@ public class InfoRouteController {
     public String getSelectedRoute() {
         return selectedRoute;
     }
+
+    public void deletePolylineRoutes() {
+        if (mapPolyline != null) mapPolyline.hidePolylines();
+    }
 }

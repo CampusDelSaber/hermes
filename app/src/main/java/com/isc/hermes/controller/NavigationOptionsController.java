@@ -148,8 +148,8 @@ public class NavigationOptionsController {
             isActive = false;
             mapWayPointController.setMarked(false);
             mapWayPointController.deleteMarks();
-            if (polylineRouteUpdaterController != null)
-                polylineRouteUpdaterController.setStartPoint(finalPoint);
+            if (polylineRouteUpdaterController != null) polylineRouteUpdaterController.setStartPoint(finalPoint);
+            if (infoRouteController!= null) infoRouteController.deletePolylineRoutes();
         });
     }
 
@@ -493,14 +493,6 @@ public class NavigationOptionsController {
         } else {
             handleErrorLoadingRoutes();
         }
-    }
-
-    /**
-     * Method to get the waypoint controller
-     * @return map waypoint controller
-     */
-    public MapWayPointController getMapWayPointController() {
-        return mapWayPointController;
     }
 
     /**
