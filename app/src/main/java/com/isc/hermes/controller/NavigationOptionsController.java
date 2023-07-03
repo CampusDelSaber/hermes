@@ -403,7 +403,7 @@ public class NavigationOptionsController {
                     graphController.getDestinationNode(), transportationType
             );
 
-            RoutesRepository.getInstance().importRoutes(routeOptions);
+            RoutesRepository.getInstance().populate(routeOptions);
         } catch (JSONException e) {
             handleErrorLoadingRoutes();
         }

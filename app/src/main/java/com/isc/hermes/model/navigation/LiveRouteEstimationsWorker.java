@@ -47,11 +47,6 @@ public class LiveRouteEstimationsWorker implements Subscriber {
 
     @Override
     public void update() {
-        if (userRouteTracker.hasUserArrived()) {
-            updateEstimatedArrivalDistance(0.0);
-            updateEstimatedArrivalTime(0.0);
-        }
-
         if (userRouteTracker.hasUserMoved()) {
             double distanceLeft = userRouteTracker.getTraveledDistance() + userRouteTracker.getUnvisitedRouteSize();
             updateEstimatedArrivalDistance(distanceLeft);

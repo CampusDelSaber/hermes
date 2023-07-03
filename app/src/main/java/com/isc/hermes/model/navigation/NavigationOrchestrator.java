@@ -9,19 +9,26 @@ import timber.log.Timber;
 
 public class NavigationOrchestrator implements Runnable {
     private final AtomicBoolean caRun;
+    private final RoutesRepository routesRepository;
+    private final HashMap<String, UserRouteTracker> availableRoutes;
+    private final String defaultKey;
+
     private UserRouteTrackerNotifier userRouteTrackerNotifier;
     private UserRouteTracker userRouteTracker;
-    private final RoutesRepository routesRepository;
 
-    private final HashMap<String, UserRouteTracker> availableRoutes;
-
-    public NavigationOrchestrator() {
+    public NavigationOrchestrator(String defaultKey) {
+        this.defaultKey = defaultKey;
         caRun = new AtomicBoolean(true);
         routesRepository = RoutesRepository.getInstance();
         availableRoutes = new HashMap<>();
     }
 
     public void startNavigationMode(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+        if (availableRoutes.isEmpty()){
+            setRoute(defaultKey);
+        }
+
+        caRun.set(true);
         Thread thread = new Thread(this, "Navigation Thread");
         thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
         thread.start();
@@ -29,15 +36,24 @@ public class NavigationOrchestrator implements Runnable {
 
     public void stopNavigationMode() {
         caRun.set(false);
+        availableRoutes.clear();
+        routesRepository.clean();
     }
 
     @Override
     public void run() {
         while (caRun.get()) {
-            userRouteTracker.update();
-            userRouteTrackerNotifier.doNotify();
+            if (userRouteTracker.hasUserArrived()){
+                Timber.i("User has arrived");
+                caRun.set(false);
+                continue;
 
-            if (Thread.currentThread().isInterrupted()){
+            }else {
+                userRouteTracker.update();
+                userRouteTrackerNotifier.doNotify();
+            }
+
+            if (Thread.currentThread().isInterrupted()) {
                 Timber.e("[%s] Has been interrupted", Thread.currentThread().getName());
                 caRun.set(false);
                 continue;
@@ -51,22 +67,32 @@ public class NavigationOrchestrator implements Runnable {
             }
         }
 
-        if (!caRun.get()){
+        if (!caRun.get()) {
             Timber.d("[%s] has finished", Thread.currentThread().getName());
         }
     }
 
-    public void changeRoute(String key){
-       userRouteTracker = availableRoutes.get(key);
-       if (userRouteTracker == null){
-           userRouteTracker = new UserRouteTracker(routesRepository.getRouteInformation(key));
-           userRouteTracker.parseRoute();
-           availableRoutes.put(key, userRouteTracker);
-       }
-       userRouteTrackerNotifier = userRouteTracker.getRouteTrackerNotifier();
+    public void setRoute(String key) {
+        long start = System.nanoTime();
+        userRouteTracker = availableRoutes.get(key);
+        Timber.d("UserRouteTracker is: %s", userRouteTracker);
+        Timber.d("Changed to: %s", key);
+        if (userRouteTracker == null) {
+            userRouteTracker = new UserRouteTracker(routesRepository.getRouteInformation(key));
+            userRouteTracker.parseRoute();
+            availableRoutes.put(key, userRouteTracker);
+        }
+        userRouteTrackerNotifier = userRouteTracker.getRouteTrackerNotifier();
+        long finish = System.nanoTime();
+        Timber.d("Change route execution time : %s ms", ((finish - start)/1_000_000));
+
     }
 
     public UserRouteTracker getUserRouteTracker() {
+        if (availableRoutes.isEmpty()){
+            setRoute(defaultKey);
+        }
+
         return userRouteTracker;
     }
 }

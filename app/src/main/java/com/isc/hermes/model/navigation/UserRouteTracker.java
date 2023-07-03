@@ -64,6 +64,10 @@ public class UserRouteTracker {
             recoverTrack(true);
         }
 
+        if (routeSegmentIndex >= routeSegments.size()){
+            throw new RouteOutOfTracksException("The current route does not have any more unvisited tracks");
+        }
+
         if (isUserOnTrack(userLocation)) {
             Timber.i("User on track #%d\n", routeSegmentIndex);
         }else {
@@ -85,7 +89,7 @@ public class UserRouteTracker {
         usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
         trackRecoveryHandler = new TrackRecoveryHandler(routeSegments);
         routeDistanceHelper = new RouteDistanceHelper(routeSegments);
-        Timber.i(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
+        Timber.d(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
         nextTrack(currentLocation.getLatLng());
     }
 
@@ -109,17 +113,12 @@ public class UserRouteTracker {
      * @param userLocation The user's current location.
      */
     private void nextTrack(LatLng userLocation) {
-        if (!routeSegments.isEmpty() && routeSegmentIndex < routeSegments.size()) {
-            currentSegment = routeSegments.get(routeSegmentIndex);
-            if (isPointInsideSegment(currentSegment, userLocation)) {
-                routeSegmentIndex++;
-                routeDistanceHelper.updateTrackIndex(routeSegmentIndex);
-            } else {
-                recoverTrack(false);
-            }
-
+        currentSegment = routeSegments.get(routeSegmentIndex);
+        if (isPointInsideSegment(currentSegment, userLocation)) {
+            routeSegmentIndex++;
+            routeDistanceHelper.updateTrackIndex(routeSegmentIndex);
         } else {
-            throw new RouteOutOfTracksException("The current route does not have any more unvisited tracks");
+            recoverTrack(false);
         }
     }
 
@@ -129,11 +128,7 @@ public class UserRouteTracker {
      * @return true if the user has arrived, false otherwise.
      */
     public boolean hasUserArrived() {
-        boolean pointReached = isNearPoint(usersDestination, currentLocation.getLatLng());
-        if (pointReached) {
-            Timber.i("USER HAS ARRIVED LOCATION");
-        }
-        return pointReached;
+        return isNearPoint(usersDestination, currentLocation.getLatLng());
     }
 
     /**

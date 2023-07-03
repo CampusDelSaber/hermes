@@ -18,11 +18,15 @@ public class RoutesRepository {
         return self;
     }
 
-    public void importRoutes(Map<String, String> routes){
+    public void populate(Map<String, String> routes){
         self.availableRoutes = routes;
     }
 
     public String getRouteInformation(String key){
         return availableRoutes.get(key);
+    }
+
+    public void clean(){
+        availableRoutes.clear();
     }
 }

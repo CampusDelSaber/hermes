@@ -55,7 +55,7 @@ public class InfoRouteController {
     private String routes;
     private String selectedRoute = "Route A";
 
-    private NavigationOrchestrator navigationOrchestrator;
+    private final NavigationOrchestrator navigationOrchestrator;
     private TransportationType transportationType;
 
     /**
@@ -75,6 +75,8 @@ public class InfoRouteController {
         isRouteCSelected = false;
         jsonObjects = new ArrayList<>();
         setActionButtons();
+
+        navigationOrchestrator = new NavigationOrchestrator("Route A");
     }
 
     /**
@@ -129,23 +131,22 @@ public class InfoRouteController {
         isActive = false;
         cancelButton.setOnClickListener(v -> {
             cancelNavigation();
-            navigationOrchestrator.stopNavigationMode();
         });
 
         buttonRouteA.setOnClickListener(v -> {
             setRouteInformation(jsonObjects.size() - 1, true, false, false);
             selectedRoute = "Route A";
-            navigationOrchestrator.changeRoute("Route A");
+            navigationOrchestrator.setRoute("Route A");
         });
         buttonRouteB.setOnClickListener(v -> {
             setRouteInformation(1, false, true, false);
             selectedRoute = "Route B";
-            navigationOrchestrator.changeRoute("Route B");
+            navigationOrchestrator.setRoute("Route B");
         });
         buttonRouteC.setOnClickListener(v -> {
             setRouteInformation(0, false, false, true);
             selectedRoute = "Route C";
-            navigationOrchestrator.changeRoute("Route C");
+            navigationOrchestrator.setRoute("Route C");
         });
 
         setNavigationButtonsEvent();
@@ -163,6 +164,7 @@ public class InfoRouteController {
                     .startAnimation(Animations.exitAnimation);
         navigationDirectionController.getDirectionsForm().setVisibility(View.GONE);
         isActive = false;
+        navigationOrchestrator.stopNavigationMode();
     }
 
     /**
@@ -187,7 +189,7 @@ public class InfoRouteController {
         });
 
         startNavigationButton.setOnClickListener(event -> {
-            startNavigationMode("Route A");
+            startNavigationMode();
             long startTime = System.currentTimeMillis();
 
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
@@ -203,9 +205,7 @@ public class InfoRouteController {
     /**
      * This method shows which route is selected
      */
-    private void setRouteInformation(
-            int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected
-    ) {
+    private void setRouteInformation(int index, boolean isRouteASelected, boolean isRouteBSelected, boolean isRouteCSelected) {
         setTimeAndDistanceInformation(jsonObjects.get(index));
         this.isRouteASelected = isRouteASelected;
         this.isRouteBSelected = isRouteBSelected;
@@ -309,7 +309,7 @@ public class InfoRouteController {
                     kilometers + " km " + decimalFormat.format(meters).substring(1) + " m");
             else distanceText.setText(decimalFormat.format(meters).substring(1) + " m.");
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -369,10 +369,8 @@ public class InfoRouteController {
     /**
      * Sets the thread used for the live estimations
      */
-    public void startNavigationMode(String routeKey){
+    public void startNavigationMode(){
         try {
-            navigationOrchestrator = new NavigationOrchestrator();
-            navigationOrchestrator.changeRoute(routeKey);
             UserRouteTracker userRouteTracker = navigationOrchestrator.getUserRouteTracker();
             new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
 
@@ -382,7 +380,7 @@ public class InfoRouteController {
                 navigationOrchestrator.stopNavigationMode();
             });
         }catch (Exception e){
-            Toast.makeText(layout.getContext(), String.format("%s", e.getMessage()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(layout.getContext(), String.format("%s", e.getMessage()), Toast.LENGTH_LONG).show();
             cancelNavigation();
             Timber.e(e);
         }

@@ -36,13 +36,13 @@ public class NavigationRouteParser {
         try {
             JSONArray route = routeInformation.getJSONObject("geometry").getJSONArray("coordinates");
 
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < route.length(); i++) {
                 if (route.optJSONArray(i) != null) {
                     if (route.optJSONArray(i + 1) != null) {
                         LatLng start = unpack(route.getJSONArray(i));
                         LatLng end = unpack(route.getJSONArray(i + 1));
-                        segmentRecordBuilder.setStart(start).setEnd(end);
 
+                        segmentRecordBuilder.setStart(start).setEnd(end);
                         routeSegments.add(segmentRecordBuilder.createRouteSegmentRecord());
                     }
                 }
