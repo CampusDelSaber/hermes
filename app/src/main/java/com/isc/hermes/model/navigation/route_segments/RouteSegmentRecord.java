@@ -1,5 +1,6 @@
-package com.isc.hermes.model.navigation;
+package com.isc.hermes.model.navigation.route_segments;
 
+import com.isc.hermes.model.navigation.directions.DirectionsRecord;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -7,9 +8,10 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
  * The RouteSegmentRecord class represents a segment of a route defined by its start and end coordinates.
  */
 public class RouteSegmentRecord {
-    private LatLng start;
+    private final LatLng start;
     private final LatLng end;
     private final double distance;
+    private final DirectionsRecord[] directions;
 
     /**
      * Constructs a new RouteSegmentRecord object.
@@ -17,9 +19,10 @@ public class RouteSegmentRecord {
      * @param start The start coordinates of the route segment.
      * @param end   The end coordinates of the route segment.
      */
-    public RouteSegmentRecord(LatLng start, LatLng end) {
+    public RouteSegmentRecord(LatLng start, LatLng end, DirectionsRecord[] directions) {
         this.start = start;
         this.end = end;
+        this.directions = directions;
         this.distance = CoordinatesDistanceCalculator.getInstance().calculateDistance(start, end);
     }
 
@@ -50,12 +53,7 @@ public class RouteSegmentRecord {
         return distance;
     }
 
-    /**
-     * Sets the start point of the route segment.
-     *
-     * @param start the coordinates of the start point.
-     */
-    public void setStart(LatLng start) {
-        this.start = start;
+    public DirectionsRecord[] getDirections() {
+        return directions;
     }
 }

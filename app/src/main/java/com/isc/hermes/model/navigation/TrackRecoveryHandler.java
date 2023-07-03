@@ -3,6 +3,7 @@ package com.isc.hermes.model.navigation;
 import static com.isc.hermes.model.navigation.NavigationTrackerTools.isPointInsideSegment;
 
 import com.isc.hermes.model.CurrentLocationModel;
+import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 
 import java.util.List;
 

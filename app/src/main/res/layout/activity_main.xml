@@ -277,6 +277,10 @@
             layout="@layout/navigation_view"
             mapbox:layout_anchor="@+id/mapView"
             mapbox:layout_anchorGravity="center" />
+        <include
+            layout="@layout/directions_view"
+            mapbox:layout_anchor="@+id/mapView"
+            mapbox:layout_anchorGravity="center" />
 
         <include
             layout="@layout/distance_and_time_view"

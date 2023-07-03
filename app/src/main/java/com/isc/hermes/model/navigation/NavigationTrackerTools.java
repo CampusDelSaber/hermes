@@ -1,5 +1,6 @@
 package com.isc.hermes.model.navigation;
 
+import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -19,7 +20,7 @@ public class NavigationTrackerTools {
      * @param point  The current point.
      * @return true if the point has been reached, false otherwise.
      */
-    public static boolean isPointReached(LatLng target, LatLng point) {
+    public static boolean isNearPoint(LatLng target, LatLng point) {
         CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         double distance = distanceCalculator.calculateDistance(point, target);
         int comparative = Double.compare(distance, USER_REACHED_DESTINATION_CRITERIA);
