@@ -15,6 +15,7 @@ import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
+import com.isc.hermes.model.VerificationCode;
 
 import org.json.JSONException;
 
@@ -81,10 +82,9 @@ public class SignUpTransitionHandler {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(String roles, String email) {
         if (roles.equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
-            Validator validator = new Validator(UserRepository.getInstance().getUserContained());
-            validator.obtainVerificationCode();
+            new Validator();
             SendEmailManager sendEmailManager = new SendEmailManager();
-            sendEmailManager.addEmail(email, validator.getCode());
+            sendEmailManager.addEmail(email, VerificationCode.getVerificationCodeInstance().getVerificationCode());
         }
     }
 }

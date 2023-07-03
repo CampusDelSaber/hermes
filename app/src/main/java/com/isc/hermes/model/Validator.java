@@ -1,25 +1,22 @@
 package com.isc.hermes.model;
 
 import com.isc.hermes.database.VerificationCodesManager;
-import com.isc.hermes.model.User.User;
+import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.utils.CreateVerificationCode;
 
 /**
  * The Validator class is responsible for validating a verification code entered by the user.
  */
 public class Validator {
     private String code;
-    private final User user;
     private String id;
     private final VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
 
     /**
      * Creates a new Validator instance with the specified user.
-     *
-     * @param user The user associated with the validator.
      */
-    public Validator(User user) {
-        this.user = user;
+    public Validator() {
         this.verificationCodesManager = new VerificationCodesManager();
         getVerificationCode();
     }
@@ -31,8 +28,8 @@ public class Validator {
      */
     public void obtainVerificationCode() {
         try {
-            if (user != null)
-                verificationCode = verificationCodesManager.getLastVerificationCode(user.getEmail());
+            if (UserRepository.getInstance().getUserContained() != null)
+                verificationCode = verificationCodesManager.getLastVerificationCode(UserRepository.getInstance().getUserContained().getEmail());
             else throw new NullPointerException("User object is null");
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -45,9 +42,14 @@ public class Validator {
      */
     public void getVerificationCode() {
         obtainVerificationCode();
-        if (verificationCode == null) { verificationCodesManager.addVerificationCode(user.getEmail());
+        if (verificationCode.getVerificationCode() == null) {
+            CreateVerificationCode createVerificationCode = new CreateVerificationCode();
+            verificationCode.setVerificationCode(createVerificationCode.generateVerificationCode());
+            verificationCode.setEmail(UserRepository.getInstance().getUserContained().getEmail());
+            verificationCodesManager.addVerificationCode(UserRepository.getInstance().getUserContained().getEmail());
             getVerificationCode();
-        } code = verificationCode.getVerificationCode();
+        }
+        code = verificationCode.getVerificationCode();
         id = verificationCode.getId();
     }
 
@@ -68,15 +70,6 @@ public class Validator {
      */
     public String getCode() {
         return code;
-    }
-
-    /**
-     * Returns the associated user.
-     *
-     * @return The associated user.
-     */
-    public User getUser() {
-        return user;
     }
 
     /**

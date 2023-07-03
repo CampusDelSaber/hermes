@@ -19,6 +19,7 @@ import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.User.UserRepositoryUpdaterUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.utils.lifecycle.LastSessionTracker;
 import com.isc.hermes.utils.offline.NetworkManager;
@@ -143,6 +144,22 @@ public class SignUpActivityView extends AppCompatActivity {
         finish();
     }
 
+
+    /**
+     * Updates user information using a database.
+     * @param user the User object containing the updated information
+     * @throws JSONException if there is an error parsing JSON data
+     * @throws ExecutionException if there is an error while executing the update process
+     * @throws InterruptedException if the update process is interrupted
+     */
+    private void updateInformationUserUsingDB(User user) throws JSONException, ExecutionException,
+            InterruptedException {
+        if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail())) {
+            Thread userRepositoryUpdaterThread = new Thread(new UserRepositoryUpdaterUsingDBRunnable());
+            userRepositoryUpdaterThread.start();
+        }
+    }
+
     /**
      * This method allows the user to register the user
      *
@@ -164,17 +181,13 @@ public class SignUpActivityView extends AppCompatActivity {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void changeActivityDependingIsUserIsRegistered(User user) throws ExecutionException, InterruptedException, JSONException {
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
         UserRepository.getInstance().setUserContained(user);
         DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
         Intent intent;
 
-        if (accountInfoManager.verifyIfAccountIsRegistered(user.getEmail())) {
+        if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail())) {
             intent = new Intent(this, MainActivity.class);
-            UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(user.getEmail()));
-        } else {
-            intent = new Intent(this, UserSignUpCompletionActivity.class);
-        }
+        } else intent = new Intent(this, UserSignUpCompletionActivity.class);
         startActivity(intent);
         finish();
     }
@@ -190,7 +203,10 @@ public class SignUpActivityView extends AppCompatActivity {
                 result -> {
                     if (NetworkManager.isOnline(this)) {
                         try {
-                            changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(result.getData()));}
+                            User user = authenticator.getUserBySignInResult(result.getData());
+                            changeActivityDependingIsUserIsRegistered(user);
+                            updateInformationUserUsingDB(user);
+                        }
                         catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
                             e.printStackTrace(); }}
                     else

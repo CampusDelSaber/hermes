@@ -66,6 +66,15 @@ public class AccountInfoManager {
                 jsonObject.getString("_id"), jsonObject.getString("pathImageUser"));
     }
 
+    /**
+     * Verifies if an account is registered based on the provided email.
+     *
+     * @param email the email address to check for registration.
+     * @return true if the account is registered, false otherwise
+     * @throws ExecutionException if there is an error while executing the verification process
+     * @throws InterruptedException if the verification process is interrupted
+     * @throws JSONException if there is an error parsing the JSON response
+     */
     public boolean verifyIfAccountIsRegistered(String email) throws ExecutionException, InterruptedException, JSONException {
         boolean isRegistered = false;
         JSONArray arrayAccounts = getJSONArrayByEmail(email);
@@ -74,6 +83,15 @@ public class AccountInfoManager {
         } return isRegistered;
     }
 
+    /**
+     * Retrieves a JSONArray of account information associated with the provided email.
+     *
+     * @param email the email address to search for in the account information collection
+     * @return a JSONArray containing account information
+     * @throws ExecutionException if there is an error while executing the retrieval process
+     * @throws InterruptedException if the retrieval process is interrupted
+     * @throws JSONException if there is an error parsing the JSON response
+     */
     private JSONArray getJSONArrayByEmail(String email) throws ExecutionException, InterruptedException, JSONException {
         String apiUrl = ACCOUNT_INFO_COLLECTION + "/email/" +  email;
         Future<String> future = apiHandler.getFutureCollectionString(apiUrl);
@@ -122,7 +140,7 @@ public class AccountInfoManager {
     /**
      Edits a user's information.
      @param user the user will be used to update their information in db.
-     @requiresApi(api = Build.VERSION_CODES.O) Requires API level O or higher
+     &#064;requiresApi(api  = Build.VERSION_CODES.O) Requires API level O or higher
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void editUser(User user) {

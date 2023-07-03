@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
     private DrawerLayout drawerLayout;
     private TextView searchView;
 
-    private boolean visibilityMenu;
-
     @SuppressLint("StaticFieldLeak")
     public static Context context;
     private Toolbar toolbar;
