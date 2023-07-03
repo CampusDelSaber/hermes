@@ -8,12 +8,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.model.Validator;
 
 /**
@@ -59,6 +62,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     @Override
     public void onClick(View view) {
         if (view == super.confirmButton) {
+            updateDataUser();
             if (!typeUserIsSame) {
                 updateTypeUser();
             }
@@ -77,6 +81,20 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         comboBoxField.setEnabled(false);
         textInputLayout.setEnabled(false);
         buttonUploadImage.setVisibility(View.GONE);
+    }
+
+    /**
+     * This method saves the changes of the account information in the database.
+     */
+    private void updateDataUser(){
+        UserRepository.getInstance().getUserContained().setUserName(String.valueOf(username.getText()));
+        UserRepository.getInstance().getUserContained().setFullName(String.valueOf(fullName.getText()));
+
+        AccountInfoManager manager = new AccountInfoManager();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            manager.editUser(UserRepository.getInstance().getUserContained());
+        }
+        DataAccountOffline.getInstance(activity).saveDataLoggedAccount(UserRepository.getInstance().getUserContained());
     }
 
     /**

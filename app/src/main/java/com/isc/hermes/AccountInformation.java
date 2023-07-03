@@ -88,9 +88,9 @@ public class AccountInformation extends AppCompatActivity {
     private void updateComponentsByUserInformation() {
         AccountInfoManager accountInfoManager = new AccountInfoManager();
         accountInfoManager.updateUserInformationLocal();
-        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
+        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null){
             Glide.with(this).load(Uri.parse(
-                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);
+                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);}
         textFieldUserName.setText(UserRepository.getInstance().getUserContained().getUserName());
         textFieldFullName.setText(UserRepository.getInstance().getUserContained().getFullName());
         textFieldEmail.setText(UserRepository.getInstance().getUserContained().getEmail());
@@ -181,7 +181,8 @@ public class AccountInformation extends AppCompatActivity {
         verifyAdministratorUser();
         textFieldFullName.setEnabled(true);
         textFieldUserName.setEnabled(true);
-        buttonUploadImage.setVisibility(View.VISIBLE);
+        // TODO : change profile image, future implementation
+        //buttonUploadImage.setVisibility(View.VISIBLE);
     }
 
     /**
