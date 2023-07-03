@@ -5,6 +5,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -210,6 +214,7 @@ public class AccountInformation extends AppCompatActivity {
         String typeChoose = String.valueOf(comboBoxField.getText());
         String username = String.valueOf(textFieldUserName.getText());
         String fullName = String.valueOf(textFieldFullName.getText());
+        if (!TextUtils.isEmpty(fullName)){
         boolean verifyChangeUsername = UserRepository.getInstance().getUserContained().getUserName().equals(username);
         boolean verifyChangeFullName = UserRepository.getInstance().getUserContained().getFullName().equals(fullName);
         boolean verifyChangeTypeUser = UserRepository.getInstance().getUserContained().getTypeUser().equals(typeChoose);
@@ -221,6 +226,7 @@ public class AccountInformation extends AppCompatActivity {
         } else {
             popUpDialogEdit.disableOptions();
         }
+        } else textFieldFullName.setError("Your full name is requested");
 
     }
 
@@ -247,6 +253,7 @@ public class AccountInformation extends AppCompatActivity {
         textInputTypeUser = findViewById(R.id.comboBoxTextField);
         comboBoxField = textInputTypeUser.findViewById(R.id.textFieldUserTypeUpdate);
         textFieldFullName = findViewById(R.id.textFieldFullName);
+        textFieldFullName.setFilters(new InputFilter[] {charFilter()});
         textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldUserName = findViewById(R.id.textFieldUserName);
         textFieldFullName.setEnabled(false);
@@ -254,5 +261,26 @@ public class AccountInformation extends AppCompatActivity {
         textInputTypeUser.setEnabled(false);
         comboBoxField.setEnabled(false);
         saveProfileImage = new SaveProfileImage();
+    }
+
+    /**
+     * This method is the filter for textFieldFullName.
+     * This method verifies if the char entered isn't in numbers.
+     * @return An InputFilter configured to regex any number.
+     */
+    private InputFilter charFilter(){
+        InputFilter inputFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                String regex = "^[a-zA-Z\\s]+$";
+
+                if (source.toString().matches(regex)) {
+                    return source;
+                } else {
+                    return "";
+                }
+            }
+        };
+        return inputFilter;
     }
 }
