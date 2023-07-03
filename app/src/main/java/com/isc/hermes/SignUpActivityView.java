@@ -15,6 +15,7 @@ import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.User.UserRepositoryUpdaterUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.utils.offline.NetworkManager;
 import org.json.JSONException;
@@ -124,6 +125,14 @@ public class SignUpActivityView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void updateInformationUserUsingDB(User user) throws JSONException, ExecutionException,
+            InterruptedException {
+        if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail())) {
+            Thread userRepositoryUpdaterThread = new Thread(new UserRepositoryUpdaterUsingDBRunnable());
+            userRepositoryUpdaterThread.start();
+        }
+    }
+
     /**
      * This method allows the user to register the user
      *
@@ -146,14 +155,12 @@ public class SignUpActivityView extends AppCompatActivity {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void changeActivityDependingIsUserIsRegistered(User user) throws ExecutionException, InterruptedException, JSONException {
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
         UserRepository.getInstance().setUserContained(user);
         DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
         Intent intent;
 
-        if (accountInfoManager.verifyIfAccountIsRegistered(user.getEmail())) {
+        if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail())) {
             intent = new Intent(this, MainActivity.class);
-            UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(user.getEmail()));
         } else intent = new Intent(this, UserSignUpCompletionActivity.class);
         startActivity(intent);
     }
@@ -173,8 +180,10 @@ public class SignUpActivityView extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (NetworkManager.isOnline(this)) {
             try {
-                changeActivityDependingIsUserIsRegistered(authenticator.getUserBySignInResult(data)); }
-            catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
+                User user = authenticator.getUserBySignInResult(data);
+                changeActivityDependingIsUserIsRegistered(user);
+                updateInformationUserUsingDB(user);
+            } catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
                 e.printStackTrace(); }}
         else
             Toast.makeText(SignUpActivityView.this,"Internet access is required", Toast.LENGTH_SHORT).show();
