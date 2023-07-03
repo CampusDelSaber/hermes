@@ -18,12 +18,16 @@ import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.RoutesRepository;
 import com.isc.hermes.model.navigation.TransportationType;
+import com.isc.hermes.model.navigation.exceptions.RouteOutOfTracksException;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -311,6 +315,7 @@ public class NavigationOptionsController {
             }, 3000);
         } catch (Exception e) {
             handleErrorLoadingRoutes();
+            Timber.e(e);
         }
     }
 
@@ -398,9 +403,9 @@ public class NavigationOptionsController {
                     graphController.getDestinationNode(), transportationType
             );
 
-            RoutesRepository.getInstance().populate(routeOptions);
-        } catch (JSONException e) {
+        } catch (Exception e){
             handleErrorLoadingRoutes();
+            Timber.e(e);
         }
     }
 
@@ -409,22 +414,29 @@ public class NavigationOptionsController {
      */
     private void handleErrorLoadingRoutes(){
         Toast.makeText(context, "Not possible to get the routes", Toast.LENGTH_SHORT).show();
+        mapWayPointController.setMarked(false);
+        mapWayPointController.deleteMarks();
     }
 
     /**
      * Renders the routes on the map
      */
     private void showRoutes() {
-        String jsonA = routeOptions.getOrDefault("Route A", "");
-        String jsonB = routeOptions.getOrDefault("Route B", "");
-        String jsonC = routeOptions.getOrDefault("Route C", "");
+        if (validateRoutes()){
+            String jsonA = routeOptions.getOrDefault("Route A", "");
+            String jsonB = routeOptions.getOrDefault("Route B", "");
+            String jsonC = routeOptions.getOrDefault("Route C", "");
 
-        String[] routes = {jsonC, jsonB, jsonA};
-        ArrayList<String> geoJson = new ArrayList<>();
-        for (String route : routes)
-            if (!route.isEmpty()) geoJson.add(route);
+            String[] routes = {jsonC, jsonB, jsonA};
+            ArrayList<String> geoJson = new ArrayList<>();
+            for (String route : routes)
+                if (!route.isEmpty()) geoJson.add(route);
 
-        renderMapRoutes(geoJson);
+            RoutesRepository.getInstance().populate(routeOptions);
+            renderMapRoutes(geoJson);
+        }else {
+            handleErrorLoadingRoutes();
+        }
     }
 
     /**
@@ -469,5 +481,23 @@ public class NavigationOptionsController {
      */
     public void setIsCurrentLocationSelected(boolean isCurrentLocationSelected) {
         this.isCurrentLocationSelected = isCurrentLocationSelected;
+    }
+
+    private boolean validateRoutes(){
+        boolean isValid = false;
+        try {
+            for (String geoJSON:
+                    routeOptions.values()) {
+                JSONArray coordinates = new JSONObject(geoJSON).getJSONObject("geometry").getJSONArray("coordinates");
+                if (coordinates.length() > 1){
+                    isValid = true;
+                    break;
+                }
+            }
+
+        }catch (JSONException e) {
+            Timber.e(e);
+        }
+        return isValid;
     }
 }

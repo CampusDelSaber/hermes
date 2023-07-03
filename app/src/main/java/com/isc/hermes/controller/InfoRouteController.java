@@ -380,7 +380,7 @@ public class InfoRouteController {
                 navigationOrchestrator.stopNavigationMode();
             });
         }catch (Exception e){
-            Toast.makeText(layout.getContext(), String.format("%s", e.getMessage()), Toast.LENGTH_LONG).show();
+            Toast.makeText(layout.getContext(), "Navigation mode startup has failed", Toast.LENGTH_LONG).show();
             cancelNavigation();
             Timber.e(e);
         }
@@ -391,13 +391,6 @@ public class InfoRouteController {
      */
     public String getRoutes() {
         return routes;
-    }
-
-    /**
-     * help me to set the routes
-     */
-    public void setRoutes(String routes) {
-        this.routes = routes;
     }
 
     /**
@@ -428,14 +421,6 @@ public class InfoRouteController {
      */
     public void setElapsedSeconds(int elapsedSeconds) {
         this.elapsedSeconds = elapsedSeconds;
-    }
-
-    /**
-     * Method to get the selected route
-     * @return selected route
-     */
-    public String getSelectedRoute() {
-        return selectedRoute;
     }
 
     public void setTransportationType(TransportationType transportationType) {

@@ -42,6 +42,7 @@ public class NavigationOrchestrator implements Runnable {
 
     @Override
     public void run() {
+        Timber.d("%s has started", Thread.currentThread().getName());
         while (caRun.get()) {
             if (userRouteTracker.hasUserArrived()){
                 Timber.i("User has arrived");
