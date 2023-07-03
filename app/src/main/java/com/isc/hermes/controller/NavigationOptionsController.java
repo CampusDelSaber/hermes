@@ -23,7 +23,6 @@ import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.TransportationType;
-import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
@@ -67,6 +66,7 @@ public class NavigationOptionsController {
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
+    private String selectedRouteGeoJSON;
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -383,6 +383,8 @@ public class NavigationOptionsController {
                     graphController.getGraph(), graphController.getStartNode(),
                     graphController.getDestinationNode(), transportationType
             );
+
+            RoutesRepository.getInstance().importRoutes(routeOptions);
         } catch (JSONException e) {
             handleErrorLoadingRoutes();
         }
@@ -408,8 +410,6 @@ public class NavigationOptionsController {
         for (String route : routes)
             if (!route.isEmpty()) geoJson.add(route);
 
-
-        // TODO: Use the best available route
         renderMapRoutes(geoJson);
         startRouteEstimationManager(jsonA);
     }
