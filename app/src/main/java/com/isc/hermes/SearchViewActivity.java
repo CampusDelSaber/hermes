@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -69,6 +71,11 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     private void setupSearchView() {
         searcherController = new SearcherController(searcher, adapterUpdater);
         searchView.setOnQueryTextListener(searcherController.getOnQueryTextListener());
+        int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        EditText editText = (EditText) searchView.findViewById(id);
+        InputFilter[] filters = new InputFilter[1];
+        filters[0] = new InputFilter.LengthFilter(80);
+        editText.setFilters(filters);
         searchView.requestFocus();
     }
 
