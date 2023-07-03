@@ -29,6 +29,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     private AutoCompleteTextView comboBoxField;
     private TextInputLayout textInputLayout;
     private boolean isModifiable;
+    private boolean typeUserIsSame;
 
     /**
      * Warning Popup constructor class within which the dialog, activity and buttons are initialized
@@ -58,7 +59,9 @@ public class PopUpOverwriteInformationAccount extends PopUp{
     @Override
     public void onClick(View view) {
         if (view == super.confirmButton) {
-            updateTypeUser();
+            if (!typeUserIsSame) {
+                updateTypeUser();
+            }
             disableOptions();
         } dismiss();
     }
@@ -113,13 +116,14 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      */
     public void setInformationToAbleEdit(Button button, AutoCompleteTextView fullName, AutoCompleteTextView username,
                                          AutoCompleteTextView comboBoxField, Button buttonUploadImage,
-                                         TextInputLayout textInputLayout) {
+                                         TextInputLayout textInputLayout, boolean typeUserIsSame) {
         this.button = button;
         this.fullName = fullName;
         this.username = username;
         this.comboBoxField = comboBoxField;
         this.buttonUploadImage = buttonUploadImage;
         this.textInputLayout = textInputLayout;
+        this.typeUserIsSame = typeUserIsSame;
     }
 
 

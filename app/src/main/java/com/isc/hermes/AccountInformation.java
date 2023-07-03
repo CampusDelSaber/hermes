@@ -214,7 +214,7 @@ public class AccountInformation extends AppCompatActivity {
         boolean verifyChangeFullName = UserRepository.getInstance().getUserContained().getFullName().equals(fullName);
         boolean verifyChangeTypeUser = UserRepository.getInstance().getUserContained().getTypeUser().equals(typeChoose);
         popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
-                textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser);
+                textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser, verifyChangeTypeUser);
         if (!verifyChangeTypeUser || !verifyChangeUsername || !verifyChangeFullName) {
             updateInformationUser();
             popUpDialogEdit.show();
