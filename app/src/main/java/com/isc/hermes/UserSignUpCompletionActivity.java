@@ -88,8 +88,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         generateComponentsToComboBox().setOnItemClickListener((parent, view, position, id) -> {
             String item = parent.getItemAtPosition(position).toString();
             UserRepository.getInstance().getUserContained().setTypeUser(item);
-            Toast.makeText(getApplicationContext(), "Item: " + item,
-                    Toast.LENGTH_SHORT).show();
         });
     }
 

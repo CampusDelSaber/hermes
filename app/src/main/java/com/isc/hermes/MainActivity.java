@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -132,6 +133,9 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         } catch(Exception e){
             e.printStackTrace();
         }
+
+        Timber.plant(new Timber.DebugTree());
+        changeCompassPosition();
     }
 
 
@@ -523,12 +527,6 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
                 drawerLayout.closeDrawer(GravityCompat.START);
                 goToAccountInformation(new View(context));
                 return true;
-            case R.id.thirdDimensionMode:
-                //TODO: Implement the third dimension mode;
-                return true;
-            case R.id.changeDisplayMode:
-                //TODO: Implement the change dimension mode;
-                return true;
         }
         return true;
     }
@@ -553,6 +551,19 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         IncidentsUploader.getInstance().uploadIncident(JsonString);
     }
 
+    /**
+     * This method change the compass position in the map.
+     */
+    public void changeCompassPosition(){
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull final MapboxMap mapboxMap) {
+                mapboxMap.getUiSettings().setCompassEnabled(true);
+                mapboxMap.getUiSettings().setCompassGravity(Gravity.TOP | Gravity.END);
+                mapboxMap.getUiSettings().setCompassMargins(0, 110, 10, 0);
+            }
+        });
+    }
     /**
      * Method to determinate if map will change its mode
      */
