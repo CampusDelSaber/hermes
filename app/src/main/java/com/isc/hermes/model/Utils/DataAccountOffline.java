@@ -53,11 +53,7 @@ public class DataAccountOffline {
         editor.putString(PATH_IMG_US, user.getPathImageUser());
         editor.putString(USER_TYPE, user.getTypeUser());
 
-        System.out.println("user:" + user.getTypeUser());
-
         editor.apply();
-
-        System.out.println("guardado:" + preferences.getString(USER_TYPE, "Type User"));
     }
 
     /**
