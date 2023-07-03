@@ -11,24 +11,27 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This class has the responsibility to generate data randomly.
+ */
 public class RandomGenerator {
 
     private Random random;
     private List<Integer> generatedIntegers;
-    private List<List<Double[]>> generatedCoordinates;
     private final List<IncidentType> INCIDENT_TYPES = (List.of(
             IncidentType.SOCIAL_INCIDENT, IncidentType.DANGER_ZONE, IncidentType.NATURAL_DISASTER));
     private final List<Radium> RADII = List.of(Radium.TEN_METERS, Radium.TWENTY_FIVE_METERS,
             Radium.FIFTY_METERS, Radium.ONE_HUNDRED_METERS);
 
+    /**
+     * This is the constructor method to initialize the random generator.
+     */
     public RandomGenerator() {
         this.random = new Random();
-        this.generatedCoordinates = new ArrayList<>();
         this.generatedIntegers = new ArrayList<>();
     }
 

@@ -7,36 +7,29 @@ import androidx.annotation.RequiresApi;
 import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * This class handles incident generators to randomly generate incidents.
  */
 public class IncidentGenerator {
 
-    private Random random;
+    private RandomGenerator randomGenerator;
     private LocalDateTime timeout;
-    private PolygonGenerator polygonGenerator;
+    private PointGenerator pointGenerator;
     private IncidentType incidentType;
     private List<Incident> incidents;
-    private final List<IncidentType> INCIDENT_TYPES = (List.of(
-            IncidentType.SOCIAL_INCIDENT, IncidentType.DANGER_ZONE, IncidentType.NATURAL_DISASTER));
-    private final List<Radium> RADII = List.of(Radium.TEN_METERS, Radium.TWENTY_FIVE_METERS,
-            Radium.FIFTY_METERS, Radium.ONE_HUNDRED_METERS);
 
     /**
      * Constructor, initializes the generator types in an array.
      */
     public IncidentGenerator() {
-        this.random = new Random();
-        this.polygonGenerator = new PolygonGenerator();
+        this.randomGenerator = new RandomGenerator();
+        this.pointGenerator = new PointGenerator();
         this.incidents = new ArrayList<>();
     }
 
@@ -52,12 +45,11 @@ public class IncidentGenerator {
     public List<Incident> getIncidentsRandomly(Double[] referencePoint, Radium radium, int amount) {
         incidents.clear();
         if (withoutTimeout()) {
-            polygonGenerator
-                    .genSymmetricPolygon(referencePoint, radium, amount, false)
+            pointGenerator
+                    .getMultiPoint(referencePoint, radium, amount)
                     .forEach(reference -> {
-                        incidentType = getIncidentTypeRandomly();
-                        incidents.add(buildIncident(incidentType,
-                                new Double[]{reference.getX(), reference.getY()}));
+                        incidentType = randomGenerator.getIncidentTypeRandomly();
+                        incidents.add(buildIncident(incidentType, reference));
                     });
             timeout = LocalDateTime.now().plus(5, ChronoUnit.MINUTES);
         }
@@ -75,32 +67,13 @@ public class IncidentGenerator {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private Incident buildIncident(IncidentType incidentType, Double[] referencePoint) {
         List<Double[]> incidentCoordinates = incidentType.getGenerator().generate(referencePoint,
-                getRadiumRandomly(), getIntegerRandomly(3, 10));
+                randomGenerator.getRadiumRandomly(), randomGenerator.getIntegerRandomly(3, 10));
         Geometry geometry = new Geometry(
                 incidentType.getGenerator().getTypeGeometry().getName(), incidentCoordinates);
 
         return new Incident(incidentType.getType(),
-                getReasonRandomly(incidentType), new Date(),
-                generateDeathDateRandomly(), geometry);
-    }
-
-    /**
-     * This method generate a death date randomly.
-     *
-     * @return valid death date.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private Date generateDeathDateRandomly() {
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
-        LocalDate fourteenDaysLater = tomorrow.plusDays(14);
-        LocalDateTime startDateTime = tomorrow.atStartOfDay();
-        LocalDateTime endDateTime = fourteenDaysLater.atStartOfDay();
-
-        long startMillis = startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        long endMillis = endDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        long randomMillis = startMillis + (long) (random.nextDouble() * (endMillis - startMillis));
-
-        return new Date(randomMillis);
+                randomGenerator.getReasonRandomly(incidentType), new Date(),
+                randomGenerator.generateDeathDateRandomly(), geometry);
     }
 
     /**
@@ -132,47 +105,5 @@ public class IncidentGenerator {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public long getSecondsBetweenTimeout() {
         return timeout == null ? 0 : ChronoUnit.SECONDS.between(LocalDateTime.now(), timeout);
-    }
-
-    /**
-     * This method generate a random reason using the reason list of a incident type,
-     *
-     * @param incidentType to get the reason type list.
-     * @return random reason of the list of reason.
-     */
-    private String getReasonRandomly(IncidentType incidentType) {
-        int randomIndex = getIntegerRandomly(0, incidentType.getReasons().size());
-        return incidentType.getReasons().get(randomIndex);
-    }
-
-    /**
-     * This method generate a random incident type.
-     *
-     * @return random incident type.
-     */
-    private IncidentType getIncidentTypeRandomly() {
-        int randomIndex = getIntegerRandomly(0, INCIDENT_TYPES.size());
-        return INCIDENT_TYPES.get(randomIndex);
-    }
-
-    /**
-     * This method generate a random radium.
-     *
-     * @return random radium.
-     */
-    private Radium getRadiumRandomly() {
-        int randomIndex = getIntegerRandomly(0, RADII.size());
-        return RADII.get(randomIndex);
-    }
-
-    /**
-     * This method generate a random integer using a range.
-     *
-     * @param min is the min value of the range.
-     * @param max is the max value of the range.
-     * @return random integer generated.
-     */
-    private int getIntegerRandomly(int min, int max) {
-        return random.nextInt((max - 1) - min + 1) + min;
     }
 }
