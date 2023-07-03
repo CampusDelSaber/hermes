@@ -3,6 +3,7 @@ package com.isc.hermes.model.navigation;
 import static com.isc.hermes.model.navigation.NavigationTrackerTools.isPointInsideSegment;
 
 import com.isc.hermes.model.CurrentLocationModel;
+import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 
 import java.util.List;
 
@@ -49,8 +50,6 @@ public class TrackRecoveryHandler {
         } else {
             threeWayStrategy(routeSegmentIndex);
         }
-
-        Timber.d("Simple recovery is done");
     }
 
     /**
@@ -58,12 +57,9 @@ public class TrackRecoveryHandler {
      */
     public void attemptDeepRecovery() {
         for (int index = 0; index < routeSegments.size(); index++) {
-            Timber.d("ATTEMPT RECOVERY ON TRACK #%d\n", index);
             attemptSimpleRecovery(index);
             if (isAttemptSuccessful()) {
                 break;
-            } else {
-                Timber.d("ATTEMPT FAILED");
             }
         }
     }
