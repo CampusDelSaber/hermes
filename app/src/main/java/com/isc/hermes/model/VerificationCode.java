@@ -1,11 +1,5 @@
 package com.isc.hermes.model;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
-import com.isc.hermes.utils.CreateVerificationCode;
-
 /**
  * The VerificationCode class represents a verification code associated with a user email.
  */
@@ -19,7 +13,7 @@ public class VerificationCode {
      * Constructs a VerificationCode object with the specified ID and user email.
      */
     public VerificationCode() {
-        this.verificationCode = new CreateVerificationCode().generateVerificationCode();
+        this.verificationCode = null;
         this.isValid = true;
     }
 

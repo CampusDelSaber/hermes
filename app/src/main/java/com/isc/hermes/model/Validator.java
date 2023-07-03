@@ -2,6 +2,7 @@ package com.isc.hermes.model;
 
 import com.isc.hermes.database.VerificationCodesManager;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.utils.CreateVerificationCode;
 
 /**
  * The Validator class is responsible for validating a verification code entered by the user.
@@ -42,6 +43,9 @@ public class Validator {
     public void getVerificationCode() {
         obtainVerificationCode();
         if (verificationCode.getVerificationCode() == null) {
+            CreateVerificationCode createVerificationCode = new CreateVerificationCode();
+            verificationCode.setVerificationCode(createVerificationCode.generateVerificationCode());
+            verificationCode.setEmail(UserRepository.getInstance().getUserContained().getEmail());
             verificationCodesManager.addVerificationCode(UserRepository.getInstance().getUserContained().getEmail());
             getVerificationCode();
         }
