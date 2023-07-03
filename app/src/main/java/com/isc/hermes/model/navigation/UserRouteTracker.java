@@ -80,7 +80,8 @@ public class UserRouteTracker {
         if (isUserOnTrack(userLocation)) {
             Timber.i("User on track #%d\n", routeSegmentIndex);
         } else {
-            nextTrack(userLocation);
+            recoverTrack(false);
+            Timber.d("Track has been switched");
         }
     }
 
@@ -99,7 +100,7 @@ public class UserRouteTracker {
         trackRecoveryHandler = new TrackRecoveryHandler(routeSegments);
         routeDistanceHelper = new RouteDistanceHelper(routeSegments);
         Timber.d(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
-        nextTrack(currentLocation.getLatLng());
+        currentSegment = routeSegments.get(routeSegmentIndex);
     }
 
     /**
@@ -112,23 +113,6 @@ public class UserRouteTracker {
                 currentLocation.getLatLng(),
                 currentSegment.getEnd()
         );
-    }
-
-    /**
-     * Updates the current route segment based on the user's current location.
-     * If there are available segments, the next segment is assigned as the current segment.
-     * If the user is outside the current segment, a UserOutsideRouteException is thrown.
-     *
-     * @param userLocation The user's current location.
-     */
-    private void nextTrack(LatLng userLocation) {
-        currentSegment = routeSegments.get(routeSegmentIndex);
-        if (isPointInsideSegment(currentSegment, userLocation)) {
-            routeSegmentIndex++;
-            routeDistanceHelper.updateTrackIndex(routeSegmentIndex);
-        } else {
-            recoverTrack(false);
-        }
     }
 
     /**
