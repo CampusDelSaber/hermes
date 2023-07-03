@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         Timber.plant(new Timber.DebugTree());
+        changeCompassPosition();
     }
 
 
@@ -524,5 +526,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .getPolygonPoints().toString()
                 );
         IncidentsUploader.getInstance().uploadIncident(JsonString);
+    }
+
+    /**
+     * This method change the compass position in the map.
+     */
+    public void changeCompassPosition(){
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull final MapboxMap mapboxMap) {
+                mapboxMap.getUiSettings().setCompassEnabled(true);
+                mapboxMap.getUiSettings().setCompassGravity(Gravity.TOP | Gravity.END);
+                mapboxMap.getUiSettings().setCompassMargins(0, 110, 10, 0);
+            }
+        });
     }
 }
