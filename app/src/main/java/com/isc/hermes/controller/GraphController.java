@@ -80,7 +80,6 @@ public class GraphController {
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     /**

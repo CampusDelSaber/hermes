@@ -4,9 +4,11 @@ import android.util.Log;
 
 import com.isc.hermes.model.Radium;
 import com.isc.hermes.model.incidents.GeometryType;
+import com.mongodb.client.model.geojson.PolygonCoordinates;
 
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
+import org.locationtech.jts.triangulate.tri.TriangulationBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,8 +23,8 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
     private PointGenerator pointGenerator;
     private List<Coordinate> polygonCoordinates;
     private GeometryFactory geometryFactory;
-    private DelaunayTriangulationBuilder triangulationBuilder;
     private CoordinateParser coordinateParser;
+    private DelaunayTriangulationBuilder triangulationBuilder;
 
     /**
      * This is the constructor method to initialize all necessary variables to
@@ -96,6 +98,7 @@ public class PolygonGenerator extends CoordinateGen implements CoordinatesGenera
      * @return triangulation built.
      */
     public Geometry buildTriangulation(List<Coordinate> polygonCoordinates) {
+        triangulationBuilder = new DelaunayTriangulationBuilder();
         triangulationBuilder.setSites(polygonCoordinates);
         return triangulationBuilder.getTriangles(geometryFactory).union();
     }
