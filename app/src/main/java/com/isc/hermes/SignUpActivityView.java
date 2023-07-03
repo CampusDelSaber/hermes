@@ -125,6 +125,14 @@ public class SignUpActivityView extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    /**
+     * Updates user information using a database.
+     * @param user the User object containing the updated information
+     * @throws JSONException if there is an error parsing JSON data
+     * @throws ExecutionException if there is an error while executing the update process
+     * @throws InterruptedException if the update process is interrupted
+     */
     private void updateInformationUserUsingDB(User user) throws JSONException, ExecutionException,
             InterruptedException {
         if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail())) {
