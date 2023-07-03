@@ -133,6 +133,7 @@
         Longitude must be between -180 and 180.</string>
     <string name="search_a_city">Search a City</string>
     <string name="array_size_text_timber">The arrays about colors, icons and the type buttons have a different size</string>
+    <string name="choose_start_again">Start Point can\'t be the same as destination</string>
 
     <!--  Offline Maps Settings  -->
     <string name="downloaded_maps">Downloaded Maps</string>
