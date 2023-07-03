@@ -35,7 +35,7 @@ public class Validator {
                 verificationCode = verificationCodesManager.getLastVerificationCode(user.getEmail());
             else throw new NullPointerException("User object is null");
         } catch (Exception exception) {
-            throw new RuntimeException(exception);
+            exception.printStackTrace();
         }
     }
 
