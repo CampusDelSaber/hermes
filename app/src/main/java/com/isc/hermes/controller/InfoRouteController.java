@@ -203,6 +203,7 @@ public class InfoRouteController {
             int elapsedSeconds2 = (int) (elapsedTime / 1000);
             setElapsedSeconds(elapsedSeconds2);
             Toast.makeText(layout.getContext(), "Navigation mode started", Toast.LENGTH_SHORT).show();
+            startNavigationButton.setVisibility(View.GONE);
         });
     }
 
