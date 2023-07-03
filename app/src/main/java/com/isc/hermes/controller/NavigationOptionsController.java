@@ -55,8 +55,6 @@ public class NavigationOptionsController {
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
-    private LatLng destination;
-    private LatLng start;
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
@@ -64,7 +62,7 @@ public class NavigationOptionsController {
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
-    private String selectedRouteGeoJSON;
+
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -329,8 +327,6 @@ public class NavigationOptionsController {
             startPoint = CurrentLocationModel.getInstance().getLatLng();
         LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
         LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
-        this.destination = destination;
-        this.start = start;
         GraphController graphController = new GraphController(start, destination);
         markStartEndPoint(start, destination);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -339,6 +335,7 @@ public class NavigationOptionsController {
         progressDialog = builder.create();
         progressDialog.show();
         manageGraphBuilding(graphController);
+        infoRouteController.setTransportationType(transportationType);
     }
 
     /**
@@ -409,7 +406,6 @@ public class NavigationOptionsController {
             if (!route.isEmpty()) geoJson.add(route);
 
         renderMapRoutes(geoJson);
-        startRouteEstimationManager();
     }
 
     /**
@@ -497,10 +493,6 @@ public class NavigationOptionsController {
         polylineRouteUpdaterController = polylineRouteUpdaterController == null ? new PolylineRouteUpdaterController(startPoint,finalPoint) :
         polylineRouteUpdaterController;
         polylineRouteUpdaterController.drawPolylineEverySecond();
-    }
-
-    private void startRouteEstimationManager(){
-        infoRouteController.startNavigationMode("Route A", transportationType);
     }
 
     /**

@@ -50,8 +50,6 @@ public class TrackRecoveryHandler {
         } else {
             threeWayStrategy(routeSegmentIndex);
         }
-
-        Timber.d("Simple recovery is done");
     }
 
     /**
@@ -59,12 +57,10 @@ public class TrackRecoveryHandler {
      */
     public void attemptDeepRecovery() {
         for (int index = 0; index < routeSegments.size(); index++) {
-            Timber.d("ATTEMPT RECOVERY ON TRACK #%d\n", index);
             attemptSimpleRecovery(index);
             if (isAttemptSuccessful()) {
                 break;
             } else {
-                Timber.d("ATTEMPT FAILED");
             }
         }
     }

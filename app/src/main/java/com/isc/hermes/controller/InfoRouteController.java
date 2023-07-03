@@ -56,6 +56,7 @@ public class InfoRouteController {
     private String selectedRoute = "Route A";
 
     private NavigationOrchestrator navigationOrchestrator;
+    private TransportationType transportationType;
 
     /**
      * Constructs a new InfoRouteController object.
@@ -185,6 +186,7 @@ public class InfoRouteController {
         });
 
         startNavigationButton.setOnClickListener(event -> {
+            startNavigationMode("Route A");
             long startTime = System.currentTimeMillis();
 
             navigationDirectionController.getDirectionsForm().startAnimation(Animations.entryAnimation);
@@ -366,7 +368,7 @@ public class InfoRouteController {
     /**
      * Sets the thread used for the live estimations
      */
-    public void startNavigationMode(String routeKey, TransportationType transportationType){
+    public void startNavigationMode(String routeKey){
         try {
             navigationOrchestrator = new NavigationOrchestrator();
             navigationOrchestrator.changeRoute(routeKey);
@@ -431,5 +433,9 @@ public class InfoRouteController {
 
     public String getSelectedRoute() {
         return selectedRoute;
+    }
+
+    public void setTransportationType(TransportationType transportationType) {
+        this.transportationType = transportationType;
     }
 }
