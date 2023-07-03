@@ -139,7 +139,9 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
     public void deleteLastMark(){
         mapboxMap = MapManager.getInstance().getMapboxMap();
-        mapboxMap.removeMarker(mapboxMap.getMarkers().remove(mapboxMap.getMarkers().size()-1));
+        if(mapboxMap.getMarkers().size()>0){
+            mapboxMap.removeMarker(mapboxMap.getMarkers().remove(mapboxMap.getMarkers().size()-1));
+        }
     }
 
     /**
