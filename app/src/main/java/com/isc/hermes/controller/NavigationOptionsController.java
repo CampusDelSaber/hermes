@@ -65,6 +65,7 @@ public class NavigationOptionsController {
         this.context = context;
         isCurrentLocationSelected = true;
         this.mapWayPointController = mapWayPointController;
+        this.startPoint = CurrentLocationModel.getInstance().getLatLng();
         transportationType = TransportationType.CAR;
         setNavigationViewComponents();
         infoRouteController = InfoRouteController.getInstance(context, this);
