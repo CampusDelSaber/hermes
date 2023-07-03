@@ -97,7 +97,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void sendEmail(){
-        Validator validator = new Validator(UserRepository.getInstance().getUserContained());
+        Validator validator = new Validator();
         validator.obtainVerificationCode();
         SendEmailManager sendEmailManager = new SendEmailManager();
         sendEmailManager.addEmail(UserRepository.getInstance().getUserContained().getEmail(),

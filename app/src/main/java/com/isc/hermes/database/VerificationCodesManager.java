@@ -1,5 +1,6 @@
 package com.isc.hermes.database;
 
+import com.isc.hermes.model.Validator;
 import com.isc.hermes.model.VerificationCode;
 
 import org.json.JSONArray;
@@ -19,6 +20,7 @@ public class VerificationCodesManager {
     private ApiResponseParser apiResponseParser;
     private ApiRequestHandler apiRequestHandler;
     private static String VERIFICATION_CODES_COLLECTION_NAME = "VerificationCodes";
+    private VerificationCode verificationCodeObject;
 
     /**
      * Constructs a VerificationCodesManager object.
@@ -27,14 +29,14 @@ public class VerificationCodesManager {
         apiHandler = ApiHandler.getInstance();
         apiRequestHandler = ApiRequestHandler.getInstance();
         apiResponseParser = ApiResponseParser.getInstance();
+        verificationCodeObject = VerificationCode.getVerificationCodeInstance();
     }
 
     /**
      * Adds a verification code for the specified user email.
      */
     public void addVerificationCode(String email) {
-        VerificationCode verificationCode = new VerificationCode("0", email);
-        apiHandler.postFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, verificationCode);
+        apiHandler.postFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, verificationCodeObject);
     }
 
     /**
@@ -73,7 +75,6 @@ public class VerificationCodesManager {
      */
     public VerificationCode getLastVerificationCode(String email) throws ExecutionException, InterruptedException, JSONException {
         JSONArray array = getSpecificVerificationCode(email);
-        VerificationCode verificationCodeObject = null;
         for (int index = 0; index < array.length(); index++) {
             JSONObject verificationCodesArray = array.getJSONObject(index);
             String id = verificationCodesArray.getString("_id");
@@ -81,12 +82,22 @@ public class VerificationCodesManager {
             String verificationCode = verificationCodesArray.getString("verificationCode");
             boolean valid = verificationCodesArray.getBoolean("isValid");
             if (valid) {
-                verificationCodeObject = new VerificationCode(id, userEmail);
+                verificationCodeObject.setEmail(userEmail);
                 verificationCodeObject.setVerificationCode(verificationCode);
                 verificationCodeObject.setValid(true);
+                verificationCodeObject.setId(id);
                 index = array.length();
             }
         }
         return verificationCodeObject;
+    }
+
+    /**
+     * Deletes a verification code from the specified collection.
+     *
+     * @param idVerificationCode The ID of the verification code to be deleted.
+     */
+    public void deleteVerificationCode(String idVerificationCode) {
+        apiHandler.deleteFutureCollections(VERIFICATION_CODES_COLLECTION_NAME, idVerificationCode);
     }
 }
