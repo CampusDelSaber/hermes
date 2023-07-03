@@ -5,11 +5,9 @@ import com.isc.hermes.model.navigation.directions.DirectionsRecord;
 import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecordBuilder;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
