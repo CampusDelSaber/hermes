@@ -10,10 +10,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -29,15 +27,12 @@ import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-
 import org.json.JSONException;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import timber.log.Timber;
 
 
@@ -50,8 +45,7 @@ public class NavigationOptionsController {
     private boolean isCurrentLocationSelected;
     private final Context context;
     private RelativeLayout navOptionsForm;
-    private Button cancelButton, startButton, chooseStartPointButton, startPointButton,
-            finalPointButton, currentLocationButton;
+    private Button cancelButton, startButton, chooseStartPointButton, startPointButton, finalPointButton, currentLocationButton;
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
@@ -73,6 +67,7 @@ public class NavigationOptionsController {
         this.context = context;
         isCurrentLocationSelected = true;
         this.mapWayPointController = mapWayPointController;
+        this.startPoint = CurrentLocationModel.getInstance().getLatLng();
         transportationType = TransportationType.CAR;
         setNavigationViewComponents();
         infoRouteController = InfoRouteController.getInstance(context, this);
@@ -153,9 +148,17 @@ public class NavigationOptionsController {
         cancelButton.setOnClickListener(v -> {
             handleHiddeItemsView();
             isActive = false;
-            mapWayPointController.setMarked(false);
-            polylineRouteUpdaterController.setStartPoint(finalPoint);
+            handleCancelAction();
+            if (infoRouteController!= null) infoRouteController.deletePolylineRoutes();
         });
+    }
+
+    /**
+     * Method to handle cancel action and delete all map waypoints marked
+     */
+    public void handleCancelAction() {
+        mapWayPointController.setMarked(false);
+        mapWayPointController.deleteMarks();
     }
 
     /**
@@ -171,6 +174,7 @@ public class NavigationOptionsController {
      * Handles the action when the choose start point button is clicked.
      */
     private void handleChooseStartPointButton() {
+        mapWayPointController.deleteMarks();
         isActive = true;
         isCurrentLocationSelected = false;
         handleHiddeItemsView();
@@ -221,11 +225,9 @@ public class NavigationOptionsController {
      */
     private void setTransportationButtonBehavior(Button button) {
         if (button != null) {
-            button.setOnClickListener(v -> {
-                transportationType = transportationTypeMap.getOrDefault(
-                        button.getText(), TransportationType.CAR
-                );
-            });
+            button.setOnClickListener(v -> transportationType = transportationTypeMap.getOrDefault(
+                    button.getText(), TransportationType.CAR
+            ));
         }
     }
 
@@ -261,7 +263,7 @@ public class NavigationOptionsController {
      * @return The formatted string in the format "Lt: {latitude}\nLg: {longitude}".
      */
     private String formatLatLng(double latitude, double longitude) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
+        DecimalFormat decimalFormat = new DecimalFormat("#.#######");
         String formattedLatitude = decimalFormat.format(latitude);
         String formattedLongitude = decimalFormat.format(longitude);
         return "Lt: " + formattedLatitude + "\n" + "Lg: " + formattedLongitude;
@@ -321,22 +323,44 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     public void handleAcceptButtonClick() {
-        handleHiddeItemsView();
-        isActive = false;
-        if (isCurrentLocationSelected)
-            startPoint = CurrentLocationModel.getInstance().getLatLng();
-        LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
-        LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
-        GraphController graphController = new GraphController(start, destination);
-        markStartEndPoint(start, destination);
+        if (!isStartEqualsDestinationPoint()) {
+            handleHiddeItemsView();
+            isActive = false;
+            if (isCurrentLocationSelected) startPoint = CurrentLocationModel.getInstance().getLatLng();
+            GraphController graphController = new GraphController(startPoint, finalPoint);
+            markStartEndPoint(startPoint, finalPoint);
+            showLoaderAlertLabel();
+            manageGraphBuilding(graphController);
+        } else showAlertToChangeStartPoint();
+    }
+
+    /**
+     * Method to show the loader alert while calculating route
+     */
+    private void showLoaderAlertLabel() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(R.layout.loader_route_dialog);
         builder.setCancelable(false);
         progressDialog = builder.create();
         progressDialog.show();
-        manageGraphBuilding(graphController);
         infoRouteController.setTransportationType(transportationType);
     }
+
+    /**
+     * Method to show an alert to change the start point when start/destination points are equals
+     */
+    private void showAlertToChangeStartPoint() {
+        Toast.makeText(context, R.string.choose_start_again, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Method to get if the start point hast the same location as the destination point
+     * @return true if they are the same destination
+     */
+    private boolean isStartEqualsDestinationPoint() {
+        return startPoint.getLatitude() == finalPoint.getLatitude() &&
+                startPoint.getLongitude() == finalPoint.getLongitude();
+    };
 
     /**
      * Method to mark the start and destination point on map
@@ -416,9 +440,10 @@ public class NavigationOptionsController {
         if (routeOptions == null) {
             return "[]";
         }
-        String selectedRoute = routeOptions.getOrDefault(infoRouteController.getSelectedRoute(), ""); // Obtener la ruta seleccionada por el usuario
+        String selectedRoute = routeOptions.getOrDefault(infoRouteController.getSelectedRoute(), "");
         List<List<Double>> coordinatesList = new ArrayList<>();
 
+        assert selectedRoute != null;
         if (!selectedRoute.isEmpty()) {
             JsonObject jsonObject = JsonParser.parseString(selectedRoute).getAsJsonObject();
             JsonArray coordinatesArray = jsonObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
@@ -475,14 +500,6 @@ public class NavigationOptionsController {
         } else {
             handleErrorLoadingRoutes();
         }
-    }
-
-    /**
-     * Method to get the waypoint controller
-     * @return map waypoint controller
-     */
-    public MapWayPointController getMapWayPointController() {
-        return mapWayPointController;
     }
 
     /**
