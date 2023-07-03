@@ -151,6 +151,9 @@ public class NavigationOptionsController {
         });
     }
 
+    /**
+     * Method to handle cancel action and delete all map waypoints marked
+     */
     public void handleCancelAction() {
         mapWayPointController.setMarked(false);
         mapWayPointController.deleteMarks();
@@ -220,11 +223,9 @@ public class NavigationOptionsController {
      */
     private void setTransportationButtonBehavior(Button button) {
         if (button != null) {
-            button.setOnClickListener(v -> {
-                transportationType = transportationTypeMap.getOrDefault(
-                        button.getText(), TransportationType.CAR
-                );
-            });
+            button.setOnClickListener(v -> transportationType = transportationTypeMap.getOrDefault(
+                    button.getText(), TransportationType.CAR
+            ));
         }
     }
 
@@ -437,9 +438,10 @@ public class NavigationOptionsController {
         if (routeOptions == null) {
             return "[]";
         }
-        String selectedRoute = routeOptions.getOrDefault(infoRouteController.getSelectedRoute(), ""); // Obtener la ruta seleccionada por el usuario
+        String selectedRoute = routeOptions.getOrDefault(infoRouteController.getSelectedRoute(), "");
         List<List<Double>> coordinatesList = new ArrayList<>();
 
+        assert selectedRoute != null;
         if (!selectedRoute.isEmpty()) {
             JsonObject jsonObject = JsonParser.parseString(selectedRoute).getAsJsonObject();
             JsonArray coordinatesArray = jsonObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
@@ -508,6 +510,10 @@ public class NavigationOptionsController {
         polylineRouteUpdaterController.drawPolylineEverySecond();
     }
 
+    /**
+     * Method to start the route estimation manager
+     * @param JSONRoute to start route
+     */
     private void startRouteEstimationManager(String JSONRoute){
         infoRouteController.setLiveEstimationsUpdater(new UserRouteTracker(JSONRoute), transportationType);
     }

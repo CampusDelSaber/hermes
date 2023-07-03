@@ -90,7 +90,7 @@ public class InfoRouteController {
     /**
      * This method set the view of the components.
      *
-     * @param context is the contex.
+     * @param context is the context.
      */
     private void setViewComponents(Context context) {
         Activity activity = ((AppCompatActivity) context);
@@ -425,10 +425,17 @@ public class InfoRouteController {
         this.elapsedSeconds = elapsedSeconds;
     }
 
+    /**
+     * Method to get the selected route
+     * @return selected route
+     */
     public String getSelectedRoute() {
         return selectedRoute;
     }
 
+    /**
+     * Method to delete all polyline routes
+     */
     public void deletePolylineRoutes() {
         if (mapPolyline != null) mapPolyline.hidePolylines();
     }
