@@ -81,7 +81,6 @@ public class WaypointOptionsController {
         reportTrafficButton.setOnClickListener(v -> {
 
             waypointOptions.startAnimation(Animations.exitAnimation);
-            System.out.println("MIO "+navigationOptionsFormController.getJson());
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected Integer doInBackground(Void... voids) {
