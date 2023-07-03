@@ -18,6 +18,7 @@ import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
+import com.isc.hermes.model.VerificationCode;
 
 /**
  * This class manages the email verification when the user declares themself as a Administrator.
@@ -224,7 +225,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
      */
     private void verificationCodeUpdate(Intent intent){
         VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
-        verificationCodesManager.updateVerificationCode(validator.getId(), false);
+        verificationCodesManager.deleteVerificationCode(VerificationCode.getVerificationCodeInstance().getId());
         startActivity(intent);
     }
 

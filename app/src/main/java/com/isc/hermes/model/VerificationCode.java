@@ -13,14 +13,12 @@ public class VerificationCode {
 
     private String id, email, verificationCode;
     private Boolean isValid;
+    private static VerificationCode verificationCodeInstance;
 
     /**
      * Constructs a VerificationCode object with the specified ID and user email.
-     *
-     * @param userEmail The email associated with the verification code.
      */
-    public VerificationCode(String id, String userEmail) {
-        this.email = userEmail;
+    public VerificationCode() {
         this.verificationCode = new CreateVerificationCode().generateVerificationCode();
         this.isValid = true;
     }
@@ -65,6 +63,10 @@ public class VerificationCode {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     /**
      * Sets the validity status of the verification code.
      *
@@ -72,5 +74,16 @@ public class VerificationCode {
      */
     public void setValid(Boolean valid) {
         isValid = valid;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public static VerificationCode getVerificationCodeInstance() {
+        if (verificationCodeInstance == null) {
+            verificationCodeInstance = new VerificationCode();
+        }
+        return verificationCodeInstance;
     }
 }

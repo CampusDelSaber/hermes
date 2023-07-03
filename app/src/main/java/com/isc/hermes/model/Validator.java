@@ -2,13 +2,18 @@ package com.isc.hermes.model;
 
 import com.isc.hermes.database.VerificationCodesManager;
 import com.isc.hermes.model.User.User;
+import com.isc.hermes.model.User.UserRepository;
+
+import org.json.JSONException;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * The Validator class is responsible for validating a verification code entered by the user.
  */
 public class Validator {
     private String code;
-    private final User user;
+    private User user;
     private String id;
     private final VerificationCodesManager verificationCodesManager;
     private VerificationCode verificationCode;
@@ -32,7 +37,7 @@ public class Validator {
     public void obtainVerificationCode() {
         try {
             if (user != null)
-                verificationCode = verificationCodesManager.getLastVerificationCode(user.getEmail());
+                verificationCode = verificationCodesManager.getLastVerificationCode(UserRepository.getInstance().getUserContained().getEmail());
             else throw new NullPointerException("User object is null");
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -45,9 +50,11 @@ public class Validator {
      */
     public void getVerificationCode() {
         obtainVerificationCode();
-        if (verificationCode == null) { verificationCodesManager.addVerificationCode(user.getEmail());
+        if (verificationCode == null) {
+            verificationCodesManager.addVerificationCode(user.getEmail());
             getVerificationCode();
-        } code = verificationCode.getVerificationCode();
+        }
+        code = verificationCode.getVerificationCode();
         id = verificationCode.getId();
     }
 
@@ -86,5 +93,16 @@ public class Validator {
      */
     public String getId() {
         return id;
+    }
+
+    public String getIdByEmail() {
+        System.out.println(UserRepository.getInstance().getUserContained().getEmail());
+        try {
+            verificationCode = verificationCodesManager.getLastVerificationCode(UserRepository.getInstance().getUserContained().getEmail());
+            System.out.println(verificationCode.getId());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return verificationCode.getId();
     }
 }
