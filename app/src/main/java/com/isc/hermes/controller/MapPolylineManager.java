@@ -1,7 +1,5 @@
 package com.isc.hermes.controller;
 
-
-
 import android.graphics.Color;
 
 import com.isc.hermes.utils.MapManager;
@@ -49,12 +47,12 @@ public class MapPolylineManager {
         }
     }
 
-    public List<Point> initializeCoordinates(String geoJson) {
+    private List<Point> initializeCoordinates(String geoJson) {
         LineString lineString = LineString.fromJson(geoJson);
         return getCoordinates(lineString);
     }
 
-    public List<Point> getCoordinates(LineString lineString) {
+    private List<Point> getCoordinates(LineString lineString) {
         return new ArrayList<>(lineString.coordinates());
     }
 
@@ -67,12 +65,11 @@ public class MapPolylineManager {
             style.addSource(new GeoJsonSource("polyline-source", featureCollection));
             style.addLayer(new LineLayer("polyline-layer", "polyline-source")
                     .withProperties(
-                            PropertyFactory.lineColor(colors.get(0)), // Utiliza el primer color
+                            PropertyFactory.lineColor(colors.get(0)), // Use the first color
                             PropertyFactory.lineWidth(4.5f)
                     ));
         });
     }
-
 
     private List<LineString> getPointsList(List<List<Point>> points, List<Integer> colors, Style style) {
         List<LineString> polyLineGeoJson = new ArrayList<>();
