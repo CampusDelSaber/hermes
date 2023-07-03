@@ -55,8 +55,8 @@ public class CurrentLocationController {
      */
     public void initLocation(){
         new Thread(() -> {
-            mapboxMap = MapManager.getInstance().getMapboxMap();
-            while (mapboxMap == null) {
+            MapboxMap map = MapManager.getInstance().getMapboxMap();
+            while (mapboxMap == null || map== mapboxMap) {
                 mapboxMap = MapManager.getInstance().getMapboxMap();
             }
             activity.runOnUiThread(this::enableLocationComponent);
@@ -189,9 +189,9 @@ public class CurrentLocationController {
      * @return Returns a instance of this class.
      */
     public static CurrentLocationController getControllerInstance(AppCompatActivity activity){
+        if(activity == null){return controllerInstance;}
         if(controllerInstance == null || controllerInstance.isNewInstanceNeeded(activity)){
-            controllerInstance = new CurrentLocationController(activity);
-        }
+            controllerInstance = new CurrentLocationController(activity);}
         return controllerInstance;
     }
     /**

@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         }
         Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
-        this.finish();
+        finish();
     }
 
     /**
