@@ -13,6 +13,8 @@ import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
+import com.isc.hermes.model.VerificationCode;
+
 import org.json.JSONException;
 
 import java.util.concurrent.ExecutionException;
@@ -40,7 +42,6 @@ public class SignUpTransitionHandler {
                     UserRepository.getInstance().getUserContained().getTypeUser(),
                     UserRepository.getInstance().getUserContained().getPathImageUser());
         try {
-            UserRepository.getInstance().getUserContained().setRegistered(true);
             UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(UserRepository.getInstance().getUserContained().getEmail()));}
         catch (ExecutionException | InterruptedException | JSONException e) {
             throw new RuntimeException(e); }
@@ -62,7 +63,8 @@ public class SignUpTransitionHandler {
         } else {
             loadUserDataInDB();
             intent = new Intent(packageContext, MainActivity.class);
-        } packageContext.startActivity(intent);
+        }
+        packageContext.startActivity(intent);
     }
 
     /**
@@ -75,10 +77,9 @@ public class SignUpTransitionHandler {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(String roles, String email) {
         if (roles.equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
-            Validator validator = new Validator(UserRepository.getInstance().getUserContained());
-            validator.obtainVerificationCode();
+            new Validator();
             SendEmailManager sendEmailManager = new SendEmailManager();
-            sendEmailManager.addEmail(email, validator.getCode());
+            sendEmailManager.addEmail(email, VerificationCode.getVerificationCodeInstance().getVerificationCode());
         }
     }
 }

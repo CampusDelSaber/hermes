@@ -22,17 +22,15 @@ import com.google.gson.JsonParser;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.navigation.RoutesRepository;
 import com.isc.hermes.model.navigation.TransportationType;
-import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
@@ -49,8 +47,7 @@ import timber.log.Timber;
  * Setting methods to render and manage the different ui component's behaviour
  */
 public class NavigationOptionsController {
-    static boolean isActive;
-    private boolean isCurrentLocationSelected;
+    static boolean isActive, isCurrentLocationSelected;
     private final Context context;
     private RelativeLayout navOptionsForm;
     private Button cancelButton, startButton, chooseStartPointButton, startPointButton,
@@ -58,8 +55,6 @@ public class NavigationOptionsController {
     private LinearLayout transportationTypesContainer;
     private final MapWayPointController mapWayPointController;
     private LatLng startPoint, finalPoint;
-    private LatLng destination;
-    private LatLng start;
     private InfoRouteController infoRouteController;
     private DijkstraAlgorithm dijkstraAlgorithm;
     private Map<String, String> routeOptions;
@@ -67,6 +62,7 @@ public class NavigationOptionsController {
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
+
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -77,6 +73,7 @@ public class NavigationOptionsController {
         this.context = context;
         isCurrentLocationSelected = true;
         this.mapWayPointController = mapWayPointController;
+        this.startPoint = CurrentLocationModel.getInstance().getLatLng();
         transportationType = TransportationType.CAR;
         setNavigationViewComponents();
         infoRouteController = InfoRouteController.getInstance(context, this);
@@ -157,9 +154,17 @@ public class NavigationOptionsController {
         cancelButton.setOnClickListener(v -> {
             handleHiddeItemsView();
             isActive = false;
-            mapWayPointController.setMarked(false);
-            polylineRouteUpdaterController.setStartPoint(finalPoint);
+            handleCancelAction();
+            if (infoRouteController!= null) infoRouteController.deletePolylineRoutes();
         });
+    }
+
+    /**
+     * Method to handle cancel action and delete all map waypoints marked
+     */
+    public void handleCancelAction() {
+        mapWayPointController.setMarked(false);
+        mapWayPointController.deleteMarks();
     }
 
     /**
@@ -168,6 +173,8 @@ public class NavigationOptionsController {
     @SuppressLint("SetTextI18n")
     private void handleCurrentLocationChosen() {
         isCurrentLocationSelected = true;
+        startPoint = CurrentLocationModel.getInstance().getLatLng();
+        mapWayPointController.deleteMarks();
         startPointButton.setText("Your Location");
     }
 
@@ -175,6 +182,7 @@ public class NavigationOptionsController {
      * Handles the action when the choose start point button is clicked.
      */
     private void handleChooseStartPointButton() {
+        mapWayPointController.deleteMarks();
         isActive = true;
         isCurrentLocationSelected = false;
         handleHiddeItemsView();
@@ -225,11 +233,9 @@ public class NavigationOptionsController {
      */
     private void setTransportationButtonBehavior(Button button) {
         if (button != null) {
-            button.setOnClickListener(v -> {
-                transportationType = transportationTypeMap.getOrDefault(
-                        button.getText(), TransportationType.CAR
-                );
-            });
+            button.setOnClickListener(v -> transportationType = transportationTypeMap.getOrDefault(
+                    button.getText(), TransportationType.CAR
+            ));
         }
     }
 
@@ -265,7 +271,7 @@ public class NavigationOptionsController {
      * @return The formatted string in the format "Lt: {latitude}\nLg: {longitude}".
      */
     private String formatLatLng(double latitude, double longitude) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
+        DecimalFormat decimalFormat = new DecimalFormat("#.#######");
         String formattedLatitude = decimalFormat.format(latitude);
         String formattedLongitude = decimalFormat.format(longitude);
         return "Lt: " + formattedLatitude + "\n" + "Lg: " + formattedLongitude;
@@ -297,7 +303,7 @@ public class NavigationOptionsController {
      * Otherwise, it displays a default text indicating that the final point is not selected.
      */
     private void setPointsButtonShownTexts() {
-        startPointButton.setText((!isCurrentLocationSelected) ?
+        startPointButton.setText(!(startPoint.equals(CurrentLocationModel.getInstance().getLatLng())) ?
                 formatLatLng(startPoint.getLatitude(), startPoint.getLongitude()) : "Your Location");
         finalPointButton.setText((finalPoint != null) ?
                 formatLatLng(finalPoint.getLatitude(), finalPoint.getLongitude()) : "Not selected");
@@ -314,10 +320,10 @@ public class NavigationOptionsController {
 
             new Handler().postDelayed(() -> {
                 progressDialog.dismiss();
-                Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
             }, 3000);
         } catch (Exception e) {
             handleErrorLoadingRoutes();
+            Timber.e(e);
         }
     }
 
@@ -325,23 +331,44 @@ public class NavigationOptionsController {
      * This method handles the actions performed when the accept button is clicked.
      */
     public void handleAcceptButtonClick() {
-        handleHiddeItemsView();
-        isActive = false;
-        if (isCurrentLocationSelected)
-            startPoint = CurrentLocationModel.getInstance().getLatLng();
-        LatLng start = new LatLng(startPoint.getLatitude(), startPoint.getLongitude());
-        LatLng destination = new LatLng(finalPoint.getLatitude(), finalPoint.getLongitude());
-        this.destination = destination;
-        this.start = start;
-        GraphController graphController = new GraphController(start, destination);
-        markStartEndPoint(start, destination);
+        if (!isStartEqualsDestinationPoint()) {
+            handleHiddeItemsView();
+            isActive = false;
+            if (isCurrentLocationSelected) startPoint = CurrentLocationModel.getInstance().getLatLng();
+            GraphController graphController = new GraphController(startPoint, finalPoint);
+            markStartEndPoint(startPoint, finalPoint);
+            showLoaderAlertLabel();
+            manageGraphBuilding(graphController);
+        } else showAlertToChangeStartPoint();
+    }
+
+    /**
+     * Method to show the loader alert while calculating route
+     */
+    private void showLoaderAlertLabel() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(R.layout.loader_route_dialog);
         builder.setCancelable(false);
         progressDialog = builder.create();
         progressDialog.show();
-        manageGraphBuilding(graphController);
+        infoRouteController.setTransportationType(transportationType);
     }
+
+    /**
+     * Method to show an alert to change the start point when start/destination points are equals
+     */
+    private void showAlertToChangeStartPoint() {
+        Toast.makeText(context, R.string.choose_start_again, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Method to get if the start point hast the same location as the destination point
+     * @return true if they are the same destination
+     */
+    private boolean isStartEqualsDestinationPoint() {
+        return startPoint.getLatitude() == finalPoint.getLatitude() &&
+                startPoint.getLongitude() == finalPoint.getLongitude();
+    };
 
     /**
      * Method to mark the start and destination point on map
@@ -383,8 +410,10 @@ public class NavigationOptionsController {
                     graphController.getGraph(), graphController.getStartNode(),
                     graphController.getDestinationNode(), transportationType
             );
-        } catch (JSONException e) {
+
+        } catch (Exception e){
             handleErrorLoadingRoutes();
+            Timber.e(e);
         }
     }
 
@@ -392,26 +421,30 @@ public class NavigationOptionsController {
      * This method show a Toast when don't have routes.
      */
     private void handleErrorLoadingRoutes(){
-        Toast.makeText(context, "Not possible to get the routes", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Could not get the route", Toast.LENGTH_SHORT).show();
+        mapWayPointController.setMarked(false);
+        mapWayPointController.deleteMarks();
     }
 
     /**
      * Renders the routes on the map
      */
     private void showRoutes() {
-        String jsonA = routeOptions.getOrDefault("Route A", "");
-        String jsonB = routeOptions.getOrDefault("Route B", "");
-        String jsonC = routeOptions.getOrDefault("Route C", "");
+        if (validateRoutes()){
+            String jsonA = routeOptions.getOrDefault("Route A", "");
+            String jsonB = routeOptions.getOrDefault("Route B", "");
+            String jsonC = routeOptions.getOrDefault("Route C", "");
 
-        String[] routes = {jsonC, jsonB, jsonA};
-        ArrayList<String> geoJson = new ArrayList<>();
-        for (String route : routes)
-            if (!route.isEmpty()) geoJson.add(route);
+            String[] routes = {jsonC, jsonB, jsonA};
+            ArrayList<String> geoJson = new ArrayList<>();
+            for (String route : routes)
+                if (!route.isEmpty()) geoJson.add(route);
 
-
-        // TODO: Use the best available route
-        renderMapRoutes(geoJson);
-        startRouteEstimationManager(jsonA);
+            RoutesRepository.getInstance().populate(routeOptions);
+            renderMapRoutes(geoJson);
+        }else {
+            handleErrorLoadingRoutes();
+        }
     }
 
     /**
@@ -422,9 +455,10 @@ public class NavigationOptionsController {
         if (routeOptions == null) {
             return "[]";
         }
-        String selectedRoute = routeOptions.getOrDefault(infoRouteController.getSelectedRoute(), ""); // Obtener la ruta seleccionada por el usuario
+        String selectedRoute = routeOptions.getOrDefault(infoRouteController.getSelectedRoute(), "");
         List<List<Double>> coordinatesList = new ArrayList<>();
 
+        assert selectedRoute != null;
         if (!selectedRoute.isEmpty()) {
             JsonObject jsonObject = JsonParser.parseString(selectedRoute).getAsJsonObject();
             JsonArray coordinatesArray = jsonObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
@@ -462,7 +496,6 @@ public class NavigationOptionsController {
         }
     }
 
-
     /**
      * This method render the routes on the map.
      *
@@ -484,14 +517,6 @@ public class NavigationOptionsController {
     }
 
     /**
-     * Method to get the waypoint controller
-     * @return map waypoint controller
-     */
-    public MapWayPointController getMapWayPointController() {
-        return mapWayPointController;
-    }
-
-    /**
      * Method to update the navigated route by invoking the polylineRouteUpdaterController's
      * drawPolylineEverySecond method.
      */
@@ -499,10 +524,6 @@ public class NavigationOptionsController {
         polylineRouteUpdaterController = polylineRouteUpdaterController == null ? new PolylineRouteUpdaterController(startPoint,finalPoint) :
         polylineRouteUpdaterController;
         polylineRouteUpdaterController.drawPolylineEverySecond();
-    }
-
-    private void startRouteEstimationManager(String JSONRoute){
-        infoRouteController.setLiveEstimationsUpdater(new UserRouteTracker(JSONRoute), transportationType);
     }
 
     /**
@@ -517,5 +538,31 @@ public class NavigationOptionsController {
      */
     public void setIsCurrentLocationSelected(boolean isCurrentLocationSelected) {
         this.isCurrentLocationSelected = isCurrentLocationSelected;
+    }
+
+    /**
+     * Validates the routes by checking if each route has more than one coordinate point.
+     *
+     * @return true if at least one route is valid (having more than one coordinate point), false otherwise
+     */
+    private boolean validateRoutes(){
+        boolean isValid = false;
+        try {
+            for (String geoJSON:
+                    routeOptions.values()) {
+                JSONArray coordinates = new JSONObject(geoJSON).getJSONObject("geometry").getJSONArray("coordinates");
+                if (coordinates.length() > 1){
+                    isValid = true;
+                    Timber.d("Validated route\n %s", geoJSON);
+                    break;
+                }else {
+                    Timber.d("Invalidated route\n %s", geoJSON);
+                }
+            }
+
+        }catch (JSONException e) {
+            Timber.e(e);
+        }
+        return isValid;
     }
 }

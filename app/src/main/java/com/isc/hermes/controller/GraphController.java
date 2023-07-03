@@ -1,8 +1,6 @@
 package com.isc.hermes.controller;
 
-import android.widget.Toast;
 
-import com.isc.hermes.R;
 import com.isc.hermes.model.graph.Graph;
 import com.isc.hermes.model.graph.GraphManager;
 import com.isc.hermes.model.graph.Node;
@@ -10,11 +8,13 @@ import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.requests.overpass.IntersectionRequest;
 import com.isc.hermes.requests.overpass.WayRequest;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -41,6 +41,7 @@ public class GraphController {
     private final CoordinatesDistanceCalculator calculator;
     private final IntersectionRequest intersectionRequest;
     private final WayRequest wayRequest;
+    private GraphManager graphManager;
 
     /**
      * Constructor method.
@@ -58,6 +59,7 @@ public class GraphController {
         this.destinationNode = new Node("destination", destination.getLatitude(), destination.getLongitude());
         this.intersectionRequest = new IntersectionRequest();
         this.wayRequest = new WayRequest();
+        this.graphManager = GraphManager.getInstance();
     }
 
     /**
@@ -66,17 +68,16 @@ public class GraphController {
      * @throws JSONException If there is an issue with parsing the JSON data.
      */
     public void buildGraph(TransportationType transportationType) throws JSONException {
-        int radius = (int) (getRadius() * 1000) + 200;
+        int radius = (int) ((getRadius() * 1000) * 1.5);
         loadIntersections(intersectionRequest.getIntersections(midpoint.getLatitude(), midpoint.getLongitude(), radius));
         loadEdges(wayRequest.getEdges(midpoint.getLatitude(), midpoint.getLongitude(), radius), transportationType);
-        GraphManager graphManager = GraphManager.getInstance();
         graphManager.setGraph(graph);
+        addStartNode();
+        addDestinationNode();
         try {
             graphManager.disconnectBlockedStreets(start, destination);
             graph = graphManager.getGraph();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -111,7 +112,6 @@ public class GraphController {
         double latAvg = Math.toDegrees(latAvgRad);
         double lonAvg = Math.toDegrees(lonAvgRad);
 
-
         return new LatLng(latAvg, lonAvg);
     }
 
@@ -142,9 +142,6 @@ public class GraphController {
                         (Double) intersections.getJSONObject(i).getDouble("lon"));
                 graph.addNode(node);
             }
-
-            addStartNode();
-            addDestinationNode();
         }
 
     }
@@ -176,7 +173,6 @@ public class GraphController {
                                 currentNode, calculator.calculateDistance(lastNode, currentNode)
                             );
                     }
-
                 }
             }
         }
@@ -184,52 +180,44 @@ public class GraphController {
 
     /**
      * Method to add  the start node to graph with an edge.
-     *
-     * @throws JSONException If there is an issue with parsing the JSON data.
      */
-    private void addStartNode() throws JSONException {
-        String response = intersectionRequest.getIntersections(start.getLatitude(), startNode.getLongitude(), 210);
-        if (response != null) {
-            JSONObject json = new JSONObject(response);
-            JSONArray intersection = json.getJSONArray("elements");
-            Node node;
+    private void addStartNode() {
+        Point startPoint = Point.fromLngLat(startNode.getLongitude(), startNode.getLatitude());
+        List<String> nearbyNodes = graphManager.searchNodesNearby(startPoint);
 
-            for (int i = 0; i < intersection.length(); i++) {
-                for (int j = 1 ; j< intersection.length() ; j++) {
-                    node = graph.getNode(String.valueOf(intersection.getJSONObject(i).get("id")));
-                    if(node != null) {
-                        startNode.addBidirectionalEdge(node, calculator.calculateDistance(startNode, node));
-                        graph.addNode(startNode);
-                        return;
-                    }
-                }
+        for(int i = 0; i < nearbyNodes.size() - 1; i++) {
+            Node node = graph.getNode(nearbyNodes.get(i));
+            if(node != null && graphManager.isOnStreet(graph.getNode(nearbyNodes.get(i)), graph.getNode(nearbyNodes.get(i+1)), startPoint)) {
+                startNode.addBidirectionalEdge(node);
             }
         }
+
+        if(startNode.getEdges().size() == 0 && graph.getNode(nearbyNodes.get(0)) != null) {
+            startNode.addBidirectionalEdge(graph.getNode(nearbyNodes.get(0)));
+        }
+
+        graph.addNode(startNode);
     }
 
     /**
      * Method to add the destination node to graph with one edge
-     *
-     * @throws JSONException If there is an issue with parsing the JSON data.
      */
-    private void addDestinationNode() throws JSONException {
-        String response = intersectionRequest.getIntersections(destinationNode.getLatitude(), destinationNode.getLongitude(), 150);
-        if (response != null) {
-            JSONObject json = new JSONObject(response);
-            JSONArray intersection = json.getJSONArray("elements");
-            Node node;
+    private void addDestinationNode() {
+        Point destinationPoint = Point.fromLngLat(destinationNode.getLongitude(), destinationNode.getLatitude());
+        List<String> nearbyNodes = graphManager.searchNodesNearby(destinationPoint);
 
-            for (int i = 0; i < intersection.length(); i++) {
-                for (int j = 1 ; j< intersection.length() ; j++) {
-                    node = graph.getNode(String.valueOf(intersection.getJSONObject(i).get("id")));
-                    if(node != null) {
-                        destinationNode.addBidirectionalEdge(node, calculator.calculateDistance(destinationNode, node));
-                        graph.addNode(destinationNode);
-                        return;
-                    }
-                }
+        for(int i = 0; i < nearbyNodes.size() - 1; i++) {
+            Node node = graph.getNode(nearbyNodes.get(i));
+            if(node != null && graphManager.isOnStreet(graph.getNode(nearbyNodes.get(i)), graph.getNode(nearbyNodes.get(i+1)), destinationPoint)) {
+                destinationNode.addBidirectionalEdge(node);
             }
         }
+
+        if(destinationNode.getEdges().size() == 0 && graph.getNode(nearbyNodes.get(0)) != null) {
+            destinationNode.addBidirectionalEdge(graph.getNode(nearbyNodes.get(0)));
+        }
+
+        graph.addNode(destinationNode);
     }
 
     /**

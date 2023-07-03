@@ -1,8 +1,6 @@
 package com.isc.hermes.model.graph;
 
 
-import android.util.Log;
-
 import com.isc.hermes.database.IncidentsDataProcessor;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.geojson.Point;
@@ -125,10 +123,10 @@ public class GraphManager {
      * This method iterate each node of the graph to search the closest node,
      * with the closest node compare the edges destination,
      * if they are inside the radio is consider a nearby node
-     * @param incident the point to search nodes nearby.
+     * @param point the point to search nodes nearby.
      * @return an list with the IDs of the nearby nodes.
      */
-    public List<String> searchNodesNearby(Point incident) {
+    public List<String> searchNodesNearby(Point point) {
         Node referenceNode = null;
         double minDistance = Double.MAX_VALUE;
         CoordinatesDistanceCalculator coordinatesDistanceCalculator = CoordinatesDistanceCalculator.getInstance();
@@ -136,7 +134,7 @@ public class GraphManager {
 
         for (Node node : graph.getNodes().values()) {
             double distance = coordinatesDistanceCalculator.calculateDistance(node,
-                    new Node("incidentPoint", incident.latitude(), incident.longitude()));
+                    new Node("point", point.latitude(), point.longitude()));
             if (distance <= radius && distance < minDistance) {
                 referenceNode = node;
                 minDistance = distance;
@@ -154,6 +152,7 @@ public class GraphManager {
             }
         }
 
+        System.out.println(nearbyNodesIDs);
         return nearbyNodesIDs;
     }
 

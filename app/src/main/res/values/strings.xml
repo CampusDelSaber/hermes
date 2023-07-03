@@ -72,10 +72,10 @@
         <item>Street Fix</item>
     </string-array>
     <string-array name="incidents_type_colors">
-        <item>#002147</item>
         <item>#0038E1</item>
-        <item>#333333</item>
-        <item>#CCCCCC</item>
+        <item>#0038E1</item>
+        <item>#0038E1</item>
+        <item>#0038E1</item>
     </string-array>
     <string-array name="incidents_type_icons">
         <item>car_crash_car_accident_traffic_accident_traffic_collision_svgrepo_com</item>
@@ -133,6 +133,7 @@
         Longitude must be between -180 and 180.</string>
     <string name="search_a_city">Search a City</string>
     <string name="array_size_text_timber">The arrays about colors, icons and the type buttons have a different size</string>
+    <string name="choose_start_again">Start Point can\'t be the same as destination</string>
 
     <!--  Offline Maps Settings  -->
     <string name="downloaded_maps">Downloaded Maps</string>

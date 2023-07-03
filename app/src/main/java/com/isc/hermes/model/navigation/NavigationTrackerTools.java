@@ -1,5 +1,6 @@
 package com.isc.hermes.model.navigation;
 
+import com.isc.hermes.model.navigation.route_segments.RouteSegmentRecord;
 import com.isc.hermes.utils.CoordinatesDistanceCalculator;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -7,9 +8,9 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
  * The NavigationTrackerTools class provides utility methods for navigation tracking.
  */
 public class NavigationTrackerTools {
-    public static double USER_REACHED_DESTINATION_CRITERIA = 0.005;
+    public static double DESTINATION_REACHED_CRITERIA = 0.005;
     public static double USER_MOVED_CRITERIA = 0.001;
-    public static double USER_ON_TRACK_CRITERIA = 0.01;
+    public static double USER_ON_TRACK_CRITERIA = 0.001;
     public static double USER_IN_RANGE_PRECISION = 0.0001;
 
     /**
@@ -19,10 +20,10 @@ public class NavigationTrackerTools {
      * @param point  The current point.
      * @return true if the point has been reached, false otherwise.
      */
-    public static boolean isPointReached(LatLng target, LatLng point) {
+    public static boolean isNearPoint(LatLng target, LatLng point) {
         CoordinatesDistanceCalculator distanceCalculator = CoordinatesDistanceCalculator.getInstance();
         double distance = distanceCalculator.calculateDistance(point, target);
-        int comparative = Double.compare(distance, USER_REACHED_DESTINATION_CRITERIA);
+        int comparative = Double.compare(distance, DESTINATION_REACHED_CRITERIA);
         return comparative <= 0;
     }
 

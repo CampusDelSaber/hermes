@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.controller.PopUp.PopUpWarningUpdateUserType;
+import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.requests.geocoders.StreetValidator;
@@ -23,18 +24,18 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
  */
 public class WaypointOptionsController {
 
-    private StreetValidator streetValidator;
+    private final StreetValidator streetValidator;
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
     private final LinearLayout reportIncidentsView;
     private final Button navigateButton;
-    private TrafficAutomaticFormController trafficAutomaticFormController;
+    private final TrafficAutomaticFormController trafficAutomaticFormController;
     private final Button reportIncidentButton;
     private final Button reportTrafficButton;
     private final Button reportNaturalDisasterButton;
     private final Context context;
-    private TextView placeName;
+    private final TextView placeName;
     private static WaypointOptionsController waypointOptionsController;
 
 
@@ -66,6 +67,8 @@ public class WaypointOptionsController {
     private void setButtonsOnClick(){
         navigateButton.setOnClickListener(v -> {
             waypointOptions.startAnimation(Animations.exitAnimation);
+            navigationOptionsFormController.setStartPoint(CurrentLocationModel.getInstance().getLatLng());
+            navigationOptionsFormController.setIsCurrentLocationSelected(true);
             navigationOptionsFormController.getNavOptionsForm().startAnimation(Animations.entryAnimation);
             navigationOptionsFormController.getNavOptionsForm().setVisibility(View.VISIBLE);
             waypointOptions.setVisibility(View.GONE);
@@ -79,9 +82,9 @@ public class WaypointOptionsController {
         });
 
         reportTrafficButton.setOnClickListener(v -> {
+            navigationOptionsFormController.getJson();
 
             waypointOptions.startAnimation(Animations.exitAnimation);
-            System.out.println("MIO "+navigationOptionsFormController.getJson());
             AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected Integer doInBackground(Void... voids) {
@@ -170,7 +173,10 @@ public class WaypointOptionsController {
      * @return a boolean type
      */
     private boolean isGeneralUser() {
-        return UserRepository.getInstance().getUserContained().getTypeUser().equals(TypeUser.GENERAL.getTypeUser());
+        if (UserRepository.getInstance().hasUser())
+            return UserRepository.getInstance().getUserContained().getTypeUser().equals(TypeUser.GENERAL.getTypeUser());
+        else
+            return true;
     }
 
     /**

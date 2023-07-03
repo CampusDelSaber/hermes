@@ -16,8 +16,9 @@ import com.isc.hermes.controller.PopUp.PopUpContinueLikeGeneralUser;
 import com.isc.hermes.controller.PopUp.PopUpWarningIncorrectData;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
-import com.isc.hermes.model.Validator;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.Validator;
+import com.isc.hermes.model.VerificationCode;
 
 /**
  * This class manages the email verification when the user declares themself as a Administrator.
@@ -38,7 +39,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_verification);
-        this.validator = new Validator(UserRepository.getInstance().getUserContained());
+        this.validator = new Validator();
         this.popUpToConfirmUser = new PopUpContinueLikeGeneralUser(this);
         this.warningPopUp = new PopUpWarningIncorrectData(this);
         initComponents();
@@ -224,7 +225,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
      */
     private void verificationCodeUpdate(Intent intent){
         VerificationCodesManager verificationCodesManager = new VerificationCodesManager();
-        verificationCodesManager.updateVerificationCode(validator.getId(), false);
+        verificationCodesManager.deleteVerificationCode(VerificationCode.getVerificationCodeInstance().getId());
+        VerificationCode.getVerificationCodeInstance().setVerificationCode(null);
         startActivity(intent);
     }
 
@@ -234,14 +236,11 @@ public class EmailVerificationActivity extends AppCompatActivity {
      * @param view The View that triggered the method call.
      */
     public void continueVerification(View view) {
-        System.out.println("2334");
-        if (!UserRepository.getInstance().getUserContained().isRegistered()){
-            System.out.println("edeed");
-            if (!UserRepository.getInstance().getUserContained().isAdministrator()){
-                addAdministratorUser();
-                System.out.println("666666");
-            }
-            else updateToAdministratorUser();
+        if (UserRepository.getInstance().getUserContained().isRegistered() && UserRepository.getInstance().getUserContained().getTypeUser().equals("General")){
+            UserRepository.getInstance().getUserContained().setTypeUser("Administrator");
+            updateToAdministratorUser();
+        } else {
+            addAdministratorUser();
         }
     }
 
