@@ -1,18 +1,21 @@
 package com.isc.hermes.model.signup;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.RequiresApi;
-
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.MainActivity;
+import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
+import com.isc.hermes.model.VerificationCode;
 
 import org.json.JSONException;
 
@@ -33,37 +36,38 @@ public class SignUpTransitionHandler {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadUserDataInDB() {
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            accountInfoManager.addUser(UserRepository.getInstance().getUserContained().getEmail(),
-                    UserRepository.getInstance().getUserContained().getFullName(),
-                    UserRepository.getInstance().getUserContained().getUserName(),
-                    UserRepository.getInstance().getUserContained().getTypeUser(),
-                    UserRepository.getInstance().getUserContained().getPathImageUser());
+        AccountInfoManager manager = new AccountInfoManager();
+        User user = UserRepository.getInstance().getUserContained();
         try {
-            UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(UserRepository.getInstance().getUserContained().getEmail()));}
-        catch (ExecutionException | InterruptedException | JSONException e) {
-            throw new RuntimeException(e); }
+            manager.addUser(user.getEmail(), user.getFullName(), user.getUserName(), user.getTypeUser(), user.getPathImageUser());
+            user.setId(manager.getIdByEmail(user.getEmail()));
+            UserRepository.getInstance().setUserContained(user);
+        } catch (ExecutionException | InterruptedException | JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Launch's another activity, based on a role.
      *
-     * @param packageContext the context, so the activity can be launched.
+     * @param packageContext       the context, so the activity can be launched.
+     * @param verificationLauncher
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void transitionBasedOnRole(Context packageContext) {
+    public void transitionBasedOnRole(Activity packageContext, ActivityResultLauncher<Intent> verificationLauncher) {
         Intent intent;
         if (UserRepository.getInstance().getUserContained().getTypeUser().equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 sendVerificationCode(UserRepository.getInstance().getUserContained().getTypeUser(),
                         UserRepository.getInstance().getUserContained().getEmail());
             intent = new Intent(packageContext, EmailVerificationActivity.class);
+            verificationLauncher.launch(intent);
         } else {
             loadUserDataInDB();
             intent = new Intent(packageContext, MainActivity.class);
+            packageContext.startActivity(intent);
+            packageContext.finish();
         }
-        packageContext.startActivity(intent);
     }
 
     /**
@@ -76,10 +80,9 @@ public class SignUpTransitionHandler {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendVerificationCode(String roles, String email) {
         if (roles.equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
-            Validator validator = new Validator(UserRepository.getInstance().getUserContained());
-            validator.obtainVerificationCode();
+            new Validator();
             SendEmailManager sendEmailManager = new SendEmailManager();
-            sendEmailManager.addEmail(email, validator.getCode());
+            sendEmailManager.addEmail(email, VerificationCode.getVerificationCodeInstance().getVerificationCode());
         }
     }
 }

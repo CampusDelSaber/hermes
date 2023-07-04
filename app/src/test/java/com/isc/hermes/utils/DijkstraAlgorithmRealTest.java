@@ -100,13 +100,14 @@ public class DijkstraAlgorithmRealTest {
     }
 
     @Test
-    public void getRoutesRealGraph2() throws JSONException {
+    public void getRoutesRealGraph() throws JSONException {
         LatLng start = new LatLng(-17.376973, -66.179360);
         LatLng destination = new LatLng(-17.377594, -66.181011);
         GraphController graphController = new GraphController(start, destination);
         graphController.buildGraph(TransportationType.CAR);
         Graph graph = graphController.getGraph();
 
+        graph.printGraph();
         System.out.println(
                 dijkstraAlgorithm.getGeoJsonRoutes(graph, graphController.getStartNode(), graphController.getDestinationNode(), TransportationType.CAR));
     }

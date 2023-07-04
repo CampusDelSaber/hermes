@@ -23,7 +23,7 @@ import java.util.List;
  * This class will be in charge of displaying the Polyline.
  */
 public class MapPolyline {
-    private final MapboxMap mapboxMap;
+    private MapboxMap mapboxMap;
     private ArrayList<GeoJsonSource> idPolyLinesList;
 
 
@@ -89,6 +89,7 @@ public class MapPolyline {
      */
 
     public void drawPolyline(List<List<Point>> points, List<Integer> colors){
+        mapboxMap = MapManager.getInstance().getMapboxMap();
         mapboxMap.getStyle(style -> {
             List<LineString> polyLineGeoJson = getPointsList(points, colors, style);
             List<Feature> features = setFeatures(polyLineGeoJson);
@@ -108,6 +109,7 @@ public class MapPolyline {
      * This method will hide all the polylines in the map
      */
     public void hidePolylines() {
+        mapboxMap = MapManager.getInstance().getMapboxMap();
         mapboxMap.setStyle(mapboxMap.getStyle().getUri());
     }
     /**
@@ -170,6 +172,7 @@ public class MapPolyline {
      * @param point2 The second point of the polyline.
      */
     public void displayPolyline(LatLng point1, LatLng point2) {
+        mapboxMap = MapManager.getInstance().getMapboxMap();
         if (mapboxMap != null) {
             mapboxMap.addPolyline(new PolylineOptions()
                     .add(point1, point2)

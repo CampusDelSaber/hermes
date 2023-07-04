@@ -1,5 +1,6 @@
 package com.isc.hermes;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -87,9 +88,9 @@ public class AccountInformation extends AppCompatActivity {
     private void updateComponentsByUserInformation() {
         AccountInfoManager accountInfoManager = new AccountInfoManager();
         accountInfoManager.updateUserInformationLocal();
-        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
+        if (UserRepository.getInstance().getUserContained().getPathImageUser() != null){
             Glide.with(this).load(Uri.parse(
-                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);
+                    UserRepository.getInstance().getUserContained().getPathImageUser())).into(imageView);}
         textFieldUserName.setText(UserRepository.getInstance().getUserContained().getUserName());
         textFieldFullName.setText(UserRepository.getInstance().getUserContained().getFullName());
         textFieldEmail.setText(UserRepository.getInstance().getUserContained().getEmail());
@@ -109,6 +110,7 @@ public class AccountInformation extends AppCompatActivity {
         updateComponentsByUserInformation();
         generateActionToComboBox();
         initializePopups();
+        ((AppManager) getApplication()).setLastActivity(this);
     }
 
     /**
@@ -117,8 +119,10 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void goToPrincipalView(View view) {
+        ((AppManager) getApplication()).setLastActivity(null);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -177,7 +181,8 @@ public class AccountInformation extends AppCompatActivity {
         verifyAdministratorUser();
         textFieldFullName.setEnabled(true);
         textFieldUserName.setEnabled(true);
-        buttonUploadImage.setVisibility(View.VISIBLE);
+        // TODO : change profile image, future implementation
+        //buttonUploadImage.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -281,5 +286,10 @@ public class AccountInformation extends AppCompatActivity {
             }
         };
         return inputFilter;
+    }
+
+    @Override
+    public void onBackPressed() {
+        goToPrincipalView(null);
     }
 }

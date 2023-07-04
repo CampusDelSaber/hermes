@@ -27,6 +27,7 @@ public class AboutUs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
         creationLabelLine();
+        ((AppManager)getApplication()).setLastActivity(this);
     }
 
     /**
@@ -57,7 +58,14 @@ public class AboutUs extends AppCompatActivity {
      *  You will find the button, and by clicking it you can go back.
      */
     public void goToPrincipalView(View view) {
-        Intent intent = new Intent(AboutUs.this,SignUpActivityView.class);
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        ((AppManager)getApplication()).setLastActivity(null);
+        Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
+        finish();
     }
 }

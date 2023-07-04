@@ -124,7 +124,8 @@ public class ApiRequestHandler {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.connect();
-            connection.getResponseCode();
+            int code = connection.getResponseCode();
+            System.out.println("CODE: " + code);
             connection.disconnect();
         } catch (IOException ioException) {
             ioException.printStackTrace();

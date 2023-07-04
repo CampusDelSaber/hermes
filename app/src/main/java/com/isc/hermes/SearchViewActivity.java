@@ -1,6 +1,7 @@
 package com.isc.hermes;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -46,6 +47,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
         initRecyclerView();
         setupSearchView();
         goBackMainPage();
+        ((AppManager) getApplication()).setLastActivity(this);
     }
 
     /**
@@ -83,6 +85,7 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ((AppManager) getApplication()).setLastActivity(null);
         searcherController.shutdown();
         finish();
     }
@@ -109,7 +112,14 @@ public class SearchViewActivity extends AppCompatActivity implements WayPointCli
     private void goBackMainPage() {
         imageView.setOnClickListener(v -> {
             searcherController.shutdown();
-            finish();
+            onBackPressed();
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

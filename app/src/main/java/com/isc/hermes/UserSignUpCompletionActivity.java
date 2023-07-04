@@ -1,22 +1,27 @@
 package com.isc.hermes;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.signup.SignUpTransitionHandler;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.utils.lifecycle.LastSessionTracker;
 
 /**
  * This class is used  for completing the user sign-up process.
@@ -31,8 +36,8 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldEmail;
     private TextInputLayout comboBoxTextField;
-    private Button buttonRegister;
     private ImageView imgUser;
+    private ActivityResultLauncher<Intent> verificationLauncher;
 
     /**
      * Assigns values to the components view.
@@ -43,7 +48,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         textFieldUserName = findViewById(R.id.textFieldUserName);
         textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldEmail.setHorizontallyScrolling(true);
-        buttonRegister = findViewById(R.id.buttonRegister);
         imgUser = findViewById(R.id.imgUser);
         comboBoxTextField = findViewById(R.id.comboBoxTextField);
     }
@@ -52,7 +56,7 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * Charges information about the user in the text fields.
      * Sets the name, username, and email of the user to the respective TextView and AutoCompleteTextView components.
      */
-    private void loadInformationAboutUserInTextFields(){
+    private void loadInformationAboutUserInTextFields() {
         textNameComplete.setText(UserRepository.getInstance().getUserContained().getFullName());
         textFieldUserName.setText(UserRepository.getInstance().getUserContained().getUserName());
         textFieldEmail.setText(UserRepository.getInstance().getUserContained().getEmail());
@@ -91,20 +95,18 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * and navigates the user to the main activity.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void generateActionToButtonSignUp() {
-        buttonRegister.setOnClickListener(v -> {
-            if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
-                UserRepository.getInstance().getUserContained().setAdministrator(false);
-                new  SignUpTransitionHandler().transitionBasedOnRole(this);
-            } else comboBoxTextField.setHelperText("Required");
-        });
+    public void createUserAccount(View view) {
+        if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
+            UserRepository.getInstance().getUserContained().setAdministrator(false);
+            new  SignUpTransitionHandler().transitionBasedOnRole(this,verificationLauncher);
+        } else comboBoxTextField.setHelperText("Required");
     }
 
     /**
      * Charges the user's profile image into the ImageView if available.
      * If the user has a path to their profile image, it uses Glide to load the image into the ImageView.
      */
-    private void loadUserImageInView(){
+    private void loadUserImageInView() {
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
                     UserRepository.getInstance().getUserContained().getPathImageUser())).into(imgUser);
@@ -122,8 +124,42 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_sign_up_completion_view);
         generateActionToComboBox();
         assignValuesToComponentsView();
-        generateActionToButtonSignUp();
         loadUserImageInView();
         loadInformationAboutUserInTextFields();
+        verificationLauncher = createActivityResult();
+        LastSessionTracker.saveLastActivity(this, getClass().getSimpleName());
+        ((AppManager) getApplication()).setLastActivity(this);
+    }
+
+
+    /**
+     * This method creates an {@link ActivityResultLauncher} for starting an activity and handling the result.
+     *
+     * @return The created {@link ActivityResultLauncher} object.
+     */
+    private ActivityResultLauncher<Intent> createActivityResult() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        startActivity(result.getData());
+                        finish();
+                    }
+                });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ((AppManager) getApplication()).setLastActivity(null);
+        Intent intent = new Intent(this, SignUpActivityView.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((AppManager) getApplication()).setLastActivity(null);
+        LastSessionTracker.saveLastActivity(this, "");
     }
 }

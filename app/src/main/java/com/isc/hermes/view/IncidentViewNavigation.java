@@ -88,9 +88,19 @@ public class IncidentViewNavigation {
      * @return The IncidentViewNavigation instance.
      */
     public static IncidentViewNavigation getInstance(AppCompatActivity activity) {
-        if (instance == null) {
+        if (instance == null || instance.isNewInstanceNeeded(activity)) {
             instance = new IncidentViewNavigation(activity);
         }
         return instance;
+    }
+
+    /**
+     * This method checks if a new instance of IncidentViewNavigation should be created.
+     *
+     * @param appActivity The activity in which the IncidentViewNavigation is used.
+     * @return True if a new instance should be created, false otherwise.
+     */
+    private boolean isNewInstanceNeeded(AppCompatActivity appActivity) {
+        return activity == null || activity != appActivity;
     }
 }

@@ -1,5 +1,6 @@
 package com.isc.hermes.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
@@ -10,8 +11,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.controller.PopUp.PopUpWarningUpdateUserType;
+import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.requests.geocoders.StreetValidator;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapManager;
@@ -27,7 +31,7 @@ public class WaypointOptionsController {
     private final RelativeLayout waypointOptions;
     private final IncidentFormController incidentFormController;
     private final NavigationOptionsController navigationOptionsFormController;
-    private final LinearLayout reportIncidentsView;
+    private final LinearLayout reportIncidentsView ;
     private final Button navigateButton;
     private final TrafficAutomaticFormController trafficAutomaticFormController;
     private final Button reportIncidentButton;
@@ -66,6 +70,8 @@ public class WaypointOptionsController {
     private void setButtonsOnClick(){
         navigateButton.setOnClickListener(v -> {
             waypointOptions.startAnimation(Animations.exitAnimation);
+            navigationOptionsFormController.setStartPoint(CurrentLocationModel.getInstance().getLatLng());
+            navigationOptionsFormController.setIsCurrentLocationSelected(true);
             navigationOptionsFormController.getNavOptionsForm().startAnimation(Animations.entryAnimation);
             navigationOptionsFormController.getNavOptionsForm().setVisibility(View.VISIBLE);
             waypointOptions.setVisibility(View.GONE);
@@ -147,10 +153,11 @@ public class WaypointOptionsController {
      * @param point is the coordinate point market.
      */
     public void setReportIncidentStatus(LatLng point) {
-        if (!hasValidStreetContext(point) || isGeneralUser()) {
-            hideReportIncidentsView();
-        } else {
-            showReportIncidentsView();
+        hideReportIncidentsView();
+        if (hasValidStreetContext(point)) {
+            if(UserRepository.getInstance().getUserContained().getTypeUser().equals("Administrator")){
+                showReportIncidentsView();
+            }
         }
     }
 

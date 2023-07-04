@@ -14,7 +14,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
-import java.util.Map;
+import java.lang.ref.WeakReference;
 
 
 /**
@@ -23,6 +23,7 @@ import java.util.Map;
 public class MarkerManager {
     private Marker currentMarker;
     private SharedPreferences sharedPreferences;
+    private static WeakReference<Context> activityRef;
     private static volatile MarkerManager instance;
 
     /**
@@ -41,16 +42,25 @@ public class MarkerManager {
      * @return The unique instance of MarkerManager.
      */
     public static MarkerManager getInstance(Context context) {
-        if (instance == null) {
+        if (isNewInstanceNeeded(context)) {
             synchronized (MarkerManager.class) {
-                if (instance == null) {
+                if (isNewInstanceNeeded(context)) {
+                    activityRef = new WeakReference<>(context);
                     instance = new MarkerManager(context);
                 }
             }
         }
         return instance;
     }
-
+    /**
+     * This method checks if a new instance of MarkerManager should be created based on the context.
+     *
+     * @param context The context to check against the current instance.
+     * @return True if a new instance should be created, false otherwise.
+     */
+    private static boolean isNewInstanceNeeded(Context context) {
+        return instance == null || activityRef == null || activityRef.get() != context;
+    }
 
     /**
      * Adds a marker to the map at the specified location.

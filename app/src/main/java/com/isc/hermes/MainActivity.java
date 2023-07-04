@@ -36,10 +36,14 @@ import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+
+import com.isc.hermes.model.Utils.DataAccountOffline;
+
 import com.isc.hermes.utils.AndroidRequestActivation;
 import com.isc.hermes.utils.AndroidServicesVerification;
 import com.isc.hermes.utils.NetworkChangeReceiver;
 import com.isc.hermes.utils.OnNetworkChangeListener;
+
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -79,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView searchView;
-
-    private boolean visibilityMenu;
 
     @SuppressLint("StaticFieldLeak")
     public static Context context;
@@ -128,12 +130,8 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         internetRequest();
         filterController = new FilterController(this);
         androidRequestActivation = new AndroidRequestActivation();
-        try{
-            setTheUserInformationInTheDropMenu();
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-
+        try{ setTheUserInformationInTheDropMenu();}
+        catch(Exception e){ e.printStackTrace(); }
         Timber.plant(new Timber.DebugTree());
         changeCompassPosition();
     }
@@ -259,6 +257,8 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         }
         Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
+        DataAccountOffline.getInstance(this).deleteDataLogged();
+        finish();
     }
 
     /**
@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
     @Override
     protected void onStart() {
         super.onStart();
+        ((AppManager)getApplication()).setMap(null);
         networkChangeReceiver = new NetworkChangeReceiver(this);
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
@@ -405,14 +406,11 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
      * This method set the information of the user in the header of the drop down menu
      */
     private void setTheUserInformationInTheDropMenu(){
-        TextView userNameText = navigationView.getHeaderView(0)
-                .findViewById(R.id.userNameText);
+        TextView userNameText = navigationView.getHeaderView(0).findViewById(R.id.userNameText);
         userNameText.setText(UserRepository.getInstance().getUserContained().getUserName());
-        TextView userEmailText = navigationView.getHeaderView(0)
-                .findViewById(R.id.userEmailText);
+        TextView userEmailText = navigationView.getHeaderView(0).findViewById(R.id.userEmailText);
         userEmailText.setText(UserRepository.getInstance().getUserContained().getEmail());
-        ImageView userImage = navigationView.getHeaderView(0)
-                .findViewById(R.id.userAccountImage);
+        ImageView userImage = navigationView.getHeaderView(0).findViewById(R.id.userAccountImage);
         if (UserRepository.getInstance().getUserContained().getPathImageUser() != null)
             Glide.with(this).load(Uri.parse(
                     UserRepository.getInstance().getUserContained().getPathImageUser())).into(userImage);
@@ -507,32 +505,35 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
      * @param item The selected item
      * @return a boolean if all is correct
      */
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.logOut:
+        switch (item.getItemId()) {
+            case R.id.logOut -> {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 logOut(new View(context));
                 return true;
-            case R.id.mapStyle:
+            }
+            case R.id.mapStyle -> {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 mapStylesController.openStylesMenu();
                 return true;
-            case R.id.offlineMaps:
+            }
+            case R.id.offlineMaps -> {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 goOfflineMaps(new View(context));
                 return true;
-            case R.id.userAccount:
+            }
+            case R.id.userAccount -> {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 goToAccountInformation(new View(context));
                 return true;
-        }
-        return true;
+            }
+        } return true;
     }
 
     /**
      * Accept natural disasters and upload a corresponding incident.
-     *
      * Generates a JSON for the natural disaster incident and sends it to the server.
      */
     public void acceptNaturalDisasters(){
@@ -586,6 +587,11 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        ((AppManager)getApplication()).setMap(this);
+        moveTaskToBack(true);
+    }
 
     /**
      * Method for detect if the network is connected or not.
