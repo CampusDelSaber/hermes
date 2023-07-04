@@ -3,11 +3,6 @@ package com.isc.hermes.model.navigation;
 import com.isc.hermes.controller.InfoRouteController;
 import com.isc.hermes.model.navigation.events.Subscriber;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import timber.log.Timber;
-
 /**
  * The LiveRouteEstimationsWorker class manages the estimates for route time and distance during navigation.
  */
@@ -52,11 +47,6 @@ public class LiveRouteEstimationsWorker implements Subscriber {
 
     @Override
     public void update() {
-        if (userRouteTracker.hasUserArrived()) {
-            updateEstimatedArrivalDistance(0.0);
-            updateEstimatedArrivalTime(0.0);
-        }
-
         if (userRouteTracker.hasUserMoved()) {
             double distanceLeft = userRouteTracker.getTraveledDistance() + userRouteTracker.getUnvisitedRouteSize();
             updateEstimatedArrivalDistance(distanceLeft);
