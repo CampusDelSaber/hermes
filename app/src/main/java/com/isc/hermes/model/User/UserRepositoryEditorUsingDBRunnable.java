@@ -23,12 +23,21 @@ public class UserRepositoryEditorUsingDBRunnable implements Runnable {
 
     private final User user;
 
-
+    /**
+     * Constructs a new {@code UserRepositoryCreateUsingDBRunnable} object with the specified user.
+     *
+     * @param user the user object to be created in the {@link UserRepository}.
+     */
     public UserRepositoryEditorUsingDBRunnable(User user) {
         this.user = user;
     }
 
 
+    /**
+     * Executes the background task for editing a user's account information.
+     * This method edits the user's account information using an AccountInfoManager object.
+     * Note: This method requires API level O (Android 8.0) or higher.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void run() {
