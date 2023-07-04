@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import timber.log.Timber;
 
@@ -78,24 +77,16 @@ public class UserRouteTracker {
      * @throws RouteOutOfTracksException If the route is empty and navigation cannot be started.
      */
     public void parseRoute() throws RouteOutOfTracksException {
-        CompletableFuture<List<RouteSegmentRecord>> futureRouteSegments = navigationRouteParser.makeRouteSegments(routeInformation);
+        routeSegments = navigationRouteParser.makeRouteSegments(routeInformation);
+        if (routeSegments.isEmpty()) {
+            throw new RouteOutOfTracksException("Could not start the navigation, route is empty");
+        }
 
-        futureRouteSegments.thenAccept(routeSegments -> {
-            this.routeSegments = routeSegments;
-
-            if (routeSegments.isEmpty()) {
-                throw new RouteOutOfTracksException("Could not start the navigation, route is empty");
-            }
-
-            usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
-            trackRecoveryHandler = new TrackRecoveryHandler(routeSegments);
-            routeDistanceHelper = new RouteDistanceHelper(routeSegments);
-            Timber.i(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
-            nextTrack(currentLocation.getLatLng());
-        }).exceptionally(throwable -> {
-            throwable.printStackTrace();
-            throw new RouteOutOfTracksException("Failed to retrieve route segments");
-        });
+        usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
+        trackRecoveryHandler = new TrackRecoveryHandler(routeSegments);
+        routeDistanceHelper = new RouteDistanceHelper(routeSegments);
+        Timber.i(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
+        nextTrack(currentLocation.getLatLng());
     }
 
     /**
