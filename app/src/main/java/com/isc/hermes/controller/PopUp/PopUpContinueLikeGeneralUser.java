@@ -2,16 +2,12 @@ package com.isc.hermes.controller.PopUp;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.view.View;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
-import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.model.User.TypeUser;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.User.UserRepositoryCreatorUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 
 /**
@@ -49,12 +45,10 @@ public class PopUpContinueLikeGeneralUser extends PopUp{
     public void onClick(View v) {
         if (v == super.confirmButton){
             UserRepository.getInstance().getUserContained().setTypeUser("General");
+            Thread thread = new Thread(new UserRepositoryCreatorUsingDBRunnable(
+                    UserRepository.getInstance().getUserContained()));
+            thread.start();
             DataAccountOffline.getInstance(activity).setUserType("General");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                new AccountInfoManager().addUser(UserRepository.getInstance().getUserContained().getEmail(),
-                        UserRepository.getInstance().getUserContained().getFullName(), UserRepository.getInstance().getUserContained().getUserName(),
-                        UserRepository.getInstance().getUserContained().getTypeUser(), UserRepository.getInstance().getUserContained().getPathImageUser());
-            }
             Intent intent = new Intent(this.activity, MainActivity.class);
             this.activity.startActivity(intent);
         } dismiss();

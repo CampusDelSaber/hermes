@@ -15,6 +15,7 @@ import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
+import com.isc.hermes.model.User.EmailVerificationRunnable;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 import com.isc.hermes.model.Validator;
@@ -113,13 +114,9 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      * The email is sent using the SendEmailManager class.
      * The verification code is obtained from the Validator class.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void sendEmail(){
-        Validator validator = new Validator();
-        validator.obtainVerificationCode();
-        SendEmailManager sendEmailManager = new SendEmailManager();
-        sendEmailManager.addEmail(UserRepository.getInstance().getUserContained().getEmail(),
-                validator.getCode());
+        Thread thread = new Thread(new EmailVerificationRunnable());
+        thread.start();
     }
 
     /**
