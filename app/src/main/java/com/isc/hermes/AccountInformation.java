@@ -9,13 +9,11 @@ import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * This class represents the AccountInformation activity, which displays information about the account.
  */
@@ -50,9 +50,11 @@ public class AccountInformation extends AppCompatActivity {
     private PopUp popUpDialogDelete;
     private ImageView imageView;
     private PopUpOverwriteInformationAccount popUpDialogEdit;
+    private CircleImageView imageProfile;
     private static final int PICK_IMAGE_REQUEST = 1;
     private SaveProfileImage saveProfileImage;
     private boolean isModifiable;
+    private String oldImagePath;
 
     /**
      * Generates components for the combo box and returns the AutoCompleteTextView.
@@ -159,10 +161,11 @@ public class AccountInformation extends AppCompatActivity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        oldImagePath = UserRepository.getInstance().getUserContained().getPathImageUser();
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
-            saveProfileImage.saveProfileImage(selectedImageUri, AccountInformation.this);
+            saveProfileImage.saveProfileImage(selectedImageUri, buttonSaveInformation, imageProfile, this);
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
                 Bitmap croppedBitmap = ImageUtil.getInstance().cropToSquare(bitmap);
@@ -181,8 +184,7 @@ public class AccountInformation extends AppCompatActivity {
         verifyAdministratorUser();
         textFieldFullName.setEnabled(true);
         textFieldUserName.setEnabled(true);
-        // TODO : change profile image, future implementation
-        //buttonUploadImage.setVisibility(View.VISIBLE);
+        buttonUploadImage.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -222,9 +224,10 @@ public class AccountInformation extends AppCompatActivity {
         boolean verifyChangeUsername = UserRepository.getInstance().getUserContained().getUserName().equals(username);
         boolean verifyChangeFullName = UserRepository.getInstance().getUserContained().getFullName().equals(fullName);
         boolean verifyChangeTypeUser = UserRepository.getInstance().getUserContained().getTypeUser().equals(typeChoose);
+        boolean verifyChangeImageProfile = UserRepository.getInstance().getUserContained().getPathImageUser().equals(oldImagePath);
         popUpDialogEdit.setInformationToAbleEdit(buttonSaveInformation, textFieldFullName,
                 textFieldUserName, comboBoxField, buttonUploadImage, textInputTypeUser, verifyChangeTypeUser);
-        if (!verifyChangeTypeUser || !verifyChangeUsername || !verifyChangeFullName) {
+        if (!verifyChangeTypeUser || !verifyChangeUsername || !verifyChangeFullName || !verifyChangeImageProfile) {
             updateInformationUser();
             popUpDialogEdit.show();
         } else {
@@ -251,6 +254,7 @@ public class AccountInformation extends AppCompatActivity {
     private void  assignValuesToComponentsView() {
         isModifiable = UserRepository.getInstance().getUserContained().getTypeUser().equals("Administrator");
         UserRepository.getInstance().getUserContained().setAdministrator(true);
+        imageProfile = findViewById(R.id.imageUpload);
         buttonSaveInformation =  findViewById(R.id.buttonSaveInformation);
         buttonUploadImage = findViewById(R.id.buttonUploadImage);
         imageView = findViewById(R.id.imageUpload);
