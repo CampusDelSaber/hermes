@@ -22,6 +22,7 @@ public class EmailVerificationRunnable implements Runnable {
         if (UserRepository.getInstance().getUserContained().getTypeUser().equals(
                 TypeUser.ADMINISTRATOR.getTypeUser())) {
             new Validator();
+
             SendEmailManager sendEmailManager = new SendEmailManager();
             sendEmailManager.addEmail(UserRepository.getInstance().getUserContained().getEmail(),
                     VerificationCode.getVerificationCodeInstance().getVerificationCode());

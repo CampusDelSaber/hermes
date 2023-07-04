@@ -12,8 +12,11 @@ import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.EmailVerificationRunnable;
+import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRelatedThreadManager;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.User.UserRepositoryEditorUsingDBRunnable;
+import com.isc.hermes.model.User.UserRepositoryUpdaterUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 
 /**
@@ -87,9 +90,8 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         UserRepository.getInstance().getUserContained().setUserName(String.valueOf(username.getText()));
         UserRepository.getInstance().getUserContained().setFullName(String.valueOf(fullName.getText()));
 
-        AccountInfoManager manager = new AccountInfoManager();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            manager.editUser(UserRepository.getInstance().getUserContained());
+        UserRelatedThreadManager.getInstance().doActionForThread(
+                new UserRepositoryEditorUsingDBRunnable(UserRepository.getInstance().getUserContained()));
         DataAccountOffline.getInstance(activity).saveDataLoggedAccount(UserRepository.getInstance().getUserContained());
     }
 
@@ -99,6 +101,8 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateTypeUser() {
+        UserRepository.getInstance().getUserContained().setTypeUser(String.valueOf(
+                comboBoxField.getText()));
         UserRelatedThreadManager.getInstance().doActionForThread(new EmailVerificationRunnable());
         Intent intent = new Intent(activity, EmailVerificationActivity.class);
         activity.startActivity(intent);
