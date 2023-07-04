@@ -389,12 +389,11 @@ public class NavigationOptionsController {
         new AsyncTask<Void, Void, Map<String, String>>() {
             @Override
             protected Map<String, String> doInBackground(Void... voids) {
-                getRouteOptionsFromAlgorithm(graphController);
-                return null;
+                return getRouteOptionsFromAlgorithm(graphController);
             }
             @Override
             protected void onPostExecute(Map<String, String> routes) {
-                showRoutes();
+                showRoutes(routes);
             }
         }.execute();
     }
@@ -403,7 +402,7 @@ public class NavigationOptionsController {
      * Method to get the routes' options from the algorithm for the route's suggestions
      * @param graphController  the graph's controller class
      */
-    private void getRouteOptionsFromAlgorithm(GraphController graphController) {
+    private Map<String, String> getRouteOptionsFromAlgorithm(GraphController graphController) {
         try {
             graphController.buildGraph(transportationType);
             routeOptions = dijkstraAlgorithm.getGeoJsonRoutes(
@@ -415,6 +414,7 @@ public class NavigationOptionsController {
             handleErrorLoadingRoutes();
             Timber.e(e);
         }
+        return routeOptions;
     }
 
     /**
@@ -429,7 +429,7 @@ public class NavigationOptionsController {
     /**
      * Renders the routes on the map
      */
-    private void showRoutes() {
+    private void showRoutes(Map<String, String> routeOptions) {
         if (validateRoutes()){
             String jsonA = routeOptions.getOrDefault("Route A", "");
             String jsonB = routeOptions.getOrDefault("Route B", "");

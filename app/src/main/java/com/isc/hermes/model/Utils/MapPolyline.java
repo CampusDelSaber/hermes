@@ -36,15 +36,26 @@ public class MapPolyline {
     }
 
     /**
+     * Draws a polyline on the screen based on the provided GeoJSON, colors, and coordinates.
+     *
+     * @param geoJson      The GeoJSON data representing the polyline.
+     * @param colors       The list of colors to be used for different segments of the polyline.
+     * @param coordinates  The list of coordinate lists defining the polyline.
+     */
+    public void drawPolyline(List<String> geoJson, List<Integer> colors, List<List<Point>> coordinates) {
+        extractCoordinates(coordinates, geoJson);
+        drawPolyline(coordinates, colors);
+    }
+
+    /**
      * This method will display the line with the coordinates.
      * @param geoJson coordinates.
      *
      * @param colors line color.
      */
     public void displaySavedCoordinates(List<String> geoJson, List<Integer> colors){
-        List<List<Point>> coordinates = new ArrayList<>();
-        extractCoordinates(coordinates, geoJson);
-        drawPolyline(coordinates,colors);
+        Thread thread = new Thread(new DrawPolylineRunnable(geoJson, colors));
+        thread.start();
     }
 
     /**
@@ -181,4 +192,30 @@ public class MapPolyline {
         }
     }
 
+    /**
+     * This class represents a runnable for drawing polylines.
+     */
+    private class DrawPolylineRunnable implements Runnable{
+        private List<String> geoJson;
+        private List<Integer> colors;
+
+        /**
+         * Constructs a new DrawPolylineRunnable object with the given GeoJSON and colors.
+         *
+         * @param geoJson The GeoJSON data representing the polyline.
+         * @param colors  The list of colors to be used for different segments of the polyline.
+         */
+        public DrawPolylineRunnable(List<String> geoJson, List<Integer> colors){
+            this.geoJson = geoJson;
+            this.colors = colors;
+        }
+
+        /**
+         * Runs the task to draw the polyline.
+         */
+        @Override
+        public void run() {
+            drawPolyline(geoJson, colors, new ArrayList<>());
+        }
+    }
 }
