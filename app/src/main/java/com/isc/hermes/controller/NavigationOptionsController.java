@@ -312,7 +312,6 @@ public class NavigationOptionsController {
 
             new Handler().postDelayed(() -> {
                 progressDialog.dismiss();
-                Toast.makeText(context, "Calculated route", Toast.LENGTH_SHORT).show();
             }, 3000);
         } catch (Exception e) {
             handleErrorLoadingRoutes();
@@ -452,12 +451,9 @@ public class NavigationOptionsController {
 
         Gson gson = new Gson();
         String json = gson.toJson(coordinatesList);
-        System.out.println(json);
         infoRouteController.setRoutes(json);
         return json;
     }
-
-
 
     /**
      * will only help me to extract the necessary coordinates.
@@ -492,7 +488,6 @@ public class NavigationOptionsController {
             MapPolyline mapPolyline = new MapPolyline();
             try{
                 infoRouteController.showInfoRoute(geoJson, mapPolyline);
-                updateNavigatedRoute();
             } catch (Exception e){
                 e.printStackTrace();
                 handleErrorLoadingRoutes();
