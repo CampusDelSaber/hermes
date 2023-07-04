@@ -8,7 +8,14 @@ import static com.isc.hermes.model.navigation.directions.DirectionEnum.TURN_RIGH
 import android.location.Address;
 import android.location.Geocoder;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -42,6 +49,34 @@ public class DirectionsParser {
     public void setAnchor(LatLng prevPoint) {
         hasAnchor = true;
         this.prevPoint = prevPoint;
+    }
+
+    public String reverseGeocode(LatLng end) {
+        try {
+            String apiUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={latitude}&lon={longitude}";
+            apiUrl = apiUrl.replace("{latitude}", String.valueOf(end.getLatitude()));
+            apiUrl = apiUrl.replace("{longitude}", String.valueOf(end.getLongitude()));
+
+            System.out.println(apiUrl);
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String response = reader.readLine();
+            reader.close();
+
+            JSONObject jsonObject = new JSONObject(response);
+
+            // Get the street name from the address object
+            String streetName = jsonObject.getString("display_name");
+
+            // Return the street name
+            return streetName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     /**

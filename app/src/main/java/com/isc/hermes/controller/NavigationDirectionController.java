@@ -82,10 +82,14 @@ public class NavigationDirectionController {
         return directionsForm;
     }
 
+    /**
+     * Updates the turn by turn real time indications
+     * @param start the current start point
+     * @param end the next point in the route
+     */
     public void update(LatLng start, LatLng end) {
         CompletableFuture.supplyAsync(() -> {
-            Point endPoint = Point.fromLngLat(end.getLongitude(), end.getLatitude());
-            String endFeatures = reverseGeocode(endPoint);
+            String endFeatures = directionsParser.reverseGeocode(end);
             return endFeatures.isEmpty() ? "" : endFeatures;
         }).thenAccept(endStreetName -> ((AppCompatActivity) context).runOnUiThread(() -> {
             DirectionEnum directionEnum = directionsParser.determineDirection(
@@ -95,34 +99,6 @@ public class NavigationDirectionController {
             streetName.setText(endStreetName);
             setDirectionIcon(directionEnum);
         }));
-    }
-
-    private String reverseGeocode(Point point) {
-        try {
-            String apiUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={latitude}&lon={longitude}";
-            apiUrl = apiUrl.replace("{latitude}", String.valueOf(point.latitude()));
-            apiUrl = apiUrl.replace("{longitude}", String.valueOf(point.longitude()));
-
-            System.out.println(apiUrl);
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String response = reader.readLine();
-            reader.close();
-
-            JSONObject jsonObject = new JSONObject(response);
-
-            // Get the street name from the address object
-            String streetName = jsonObject.getString("display_name");
-
-            // Return the street name
-            return streetName;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
     }
 
     /**
