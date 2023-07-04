@@ -17,6 +17,8 @@ import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
 import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
+import com.isc.hermes.model.User.UserRepositoryCreatorUsingDBRunnable;
+import com.isc.hermes.model.User.UserRepositoryEditorUsingDBRunnable;
 import com.isc.hermes.model.Validator;
 import com.isc.hermes.model.VerificationCode;
 import org.json.JSONException;
@@ -189,14 +191,9 @@ public class EmailVerificationActivity extends AppCompatActivity {
         Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
-            AccountInfoManager manager = new AccountInfoManager();
-            try {
-                User user = UserRepository.getInstance().getUserContained();
-                manager.addUser(user.getEmail(), user.getFullName(), user.getUserName(), user.getTypeUser(), user.getPathImageUser());
-                user.setId(manager.getIdByEmail(user.getEmail()));
-                UserRepository.getInstance().setUserContained(user);
-            } catch (ExecutionException | InterruptedException | JSONException e) {
-                throw new RuntimeException(e);}
+            Thread thread = new Thread(new UserRepositoryCreatorUsingDBRunnable(
+                    UserRepository.getInstance().getUserContained()));
+            thread.start();
             verificationCodeUpdate(intent);
         } else visualizedWarningPop();
     }
@@ -210,8 +207,9 @@ public class EmailVerificationActivity extends AppCompatActivity {
         Intent intent = new Intent(EmailVerificationActivity.this, AccountInformation.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                new AccountInfoManager().editUser(UserRepository.getInstance().getUserContained());
+            Thread thread = new Thread(new UserRepositoryEditorUsingDBRunnable(
+                    UserRepository.getInstance().getUserContained()));
+            thread.start();
             verificationCodeUpdate(intent);
         } else visualizedWarningPop();
     }
