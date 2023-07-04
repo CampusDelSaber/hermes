@@ -37,6 +37,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
 
+import com.isc.hermes.model.User.UserRepositoryUpdaterUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 
 import com.isc.hermes.utils.AndroidRequestActivation;
@@ -523,6 +524,9 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
                 return true;
             }
             case R.id.userAccount -> {
+                Thread thread = new Thread(new UserRepositoryUpdaterUsingDBRunnable(
+                        UserRepository.getInstance().getUserContained()));
+                thread.start();
                 drawerLayout.closeDrawer(GravityCompat.START);
                 goToAccountInformation(new View(context));
                 return true;
