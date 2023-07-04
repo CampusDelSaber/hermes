@@ -3,17 +3,10 @@ package com.isc.hermes.controller;
 import android.content.Context;
 
 import android.view.View;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.isc.hermes.R;
 import com.isc.hermes.controller.interfaces.MapClickConfigurationController;
 import com.isc.hermes.database.IncidentsUploader;
 import com.isc.hermes.database.TrafficUploader;
-import com.isc.hermes.model.navigation.directions.DirectionEnum;
-import com.isc.hermes.model.navigation.directions.DirectionsParser;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -21,8 +14,6 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import org.json.JSONException;
-
-import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -33,7 +24,6 @@ public class MapWayPointController implements MapClickConfigurationController {
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
     private Context context;
-    private DirectionsParser directionsParser;
 
     /**
      * This is the constructor method.
@@ -45,7 +35,6 @@ public class MapWayPointController implements MapClickConfigurationController {
         waypointOptionsController = new WaypointOptionsController(context, this);
         isMarked = false;
         Animations.loadAnimations();
-        directionsParser = new DirectionsParser();
     }
 
     /**
@@ -124,14 +113,6 @@ public class MapWayPointController implements MapClickConfigurationController {
             waypointOptionsController.setReportIncidentStatus(point);
             isMarked = true;
         }
-
-        CompletableFuture.supplyAsync(() -> {
-            String endFeatures = directionsParser.reverseGeocode(point);
-            return endFeatures.isEmpty() ? "" : endFeatures;
-        }).thenAccept(endStreetName -> ((AppCompatActivity) context).runOnUiThread(() -> {
-            TextView t = ((AppCompatActivity) context).findViewById(R.id.place_name);
-            t.setText(endStreetName);
-        }));
     }
 
     /**

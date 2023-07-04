@@ -7,8 +7,8 @@
 
     <RelativeLayout
         android:id="@+id/directions_form"
-        android:layout_width="410dp"
-        android:layout_height="770dp"
+        android:layout_width="413dp"
+        android:layout_height="730dp"
         android:animateLayoutChanges="true"
         android:background="@color/oxfordBlue"
         android:clickable="true"
@@ -18,48 +18,28 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         tools:visibility="visible">
 
-        <Button
-            android:id="@+id/close_button"
-            android:layout_width="83dp"
-            android:layout_height="35dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="56dp"
-            android:layout_marginEnd="0dp"
-            android:backgroundTint="#FFFFFF"
-            android:text="Close"
-            android:textColor="#000000"
-            android:textSize="13dp" />
 
-        <ScrollView
+        <TextView
+            android:id="@+id/directions_list"
             android:layout_width="375dp"
             android:layout_height="397dp"
-            android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="45dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="150dp">
-
-            <TextView
-                android:id="@+id/directions_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFFFFF"
-                android:text="    "
-                android:textColor="#000000"
-                android:visibility="visible"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="15dp"
-                tools:layout_editor_absoluteY="194dp" />
-
-        </ScrollView>
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="150dp"
+            android:background="#FFFFFF"
+            android:text="    "
+            android:textColor="#000000"
+            android:visibility="visible"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="15dp"
+            tools:layout_editor_absoluteY="194dp" />
 
         <ImageView
             android:id="@+id/turn_left"
@@ -67,8 +47,8 @@
             android:layout_height="70dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="42dp"
-            android:layout_marginBottom="600dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="580dp"
             app:srcCompat="@drawable/turn_left_icon" />
 
         <ImageView
@@ -78,9 +58,9 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="143dp"
-            android:layout_marginEnd="123dp"
-            android:layout_marginBottom="600dp"
+            android:layout_marginStart="133dp"
+            android:layout_marginEnd="133dp"
+            android:layout_marginBottom="580dp"
             app:srcCompat="@drawable/go_straight_icon" />
 
         <ImageView
@@ -89,8 +69,8 @@
             android:layout_height="70dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="27dp"
-            android:layout_marginBottom="600dp"
+            android:layout_marginEnd="37dp"
+            android:layout_marginBottom="580dp"
             app:srcCompat="@drawable/turn_right_icon" />
 
     </RelativeLayout>
