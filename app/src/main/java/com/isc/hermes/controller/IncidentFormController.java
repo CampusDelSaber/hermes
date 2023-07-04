@@ -359,7 +359,7 @@ public class IncidentFormController {
      * @return The instance of this class.
      */
     public static IncidentFormController getInstance(Context context, MapWayPointController mapWayPointController){
-        if (instance == null){
+        if (instance == null || instance.context == null|| instance.context!= context){
             instance = new IncidentFormController(context, mapWayPointController);
         }
         return instance;

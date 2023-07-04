@@ -1,5 +1,6 @@
 package com.isc.hermes;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -109,6 +110,7 @@ public class AccountInformation extends AppCompatActivity {
         updateComponentsByUserInformation();
         generateActionToComboBox();
         initializePopups();
+        ((AppManager) getApplication()).setLastActivity(this);
     }
 
     /**
@@ -117,8 +119,10 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void goToPrincipalView(View view) {
+        ((AppManager) getApplication()).setLastActivity(null);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -282,5 +286,10 @@ public class AccountInformation extends AppCompatActivity {
             }
         };
         return inputFilter;
+    }
+
+    @Override
+    public void onBackPressed() {
+        goToPrincipalView(null);
     }
 }

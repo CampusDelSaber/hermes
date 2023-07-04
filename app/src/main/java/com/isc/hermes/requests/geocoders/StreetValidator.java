@@ -59,6 +59,7 @@ public class StreetValidator {
      * @return boolean to know if the place has a street context.
      */
     public boolean hasStreetContext(LatLng point) {
+        mapboxMap = MapManager.getInstance().getMapboxMap();
         if (mapboxMap != null) {
             PointF screenPoint = mapboxMap.getProjection().toScreenLocation(point);
             List<Feature> features = mapboxMap.queryRenderedFeatures(screenPoint);

@@ -29,7 +29,7 @@ public class ShowTrafficController {
     private IncidentsDataProcessor incidentsDataProcessor = IncidentsDataProcessor.getInstance();
     private List<Polyline> trafficPolylines = new ArrayList<>();
     private static ShowTrafficController instance;
-    private final MapboxMap mapDisplay;
+    private  MapboxMap mapDisplay;
 
     /**
      * This is the constructor of the ShowTrafficController class
@@ -48,6 +48,7 @@ public class ShowTrafficController {
      */
     public void getTraffic(Activity activity){
         try {
+            mapDisplay = MapManager.getInstance().getMapboxMap();
             showTraffic();
         } catch (JSONException e) {
             Toast.makeText(activity, R.string.incidents_fail_to_load, Toast.LENGTH_SHORT).show();
