@@ -82,82 +82,19 @@ public class NavigationDirectionController {
         return directionsForm;
     }
 
-    public void update(DirectionsRecord current, DirectionsRecord next){
-        System.out.println("UPDATE");
-        direction.setText(next.getDirection().getText());
-        streetName.setText(current.getStreetName());
-        setDirectionIcon(next.getDirection());
-    }
-
     public void update(LatLng start, LatLng end) {
         CompletableFuture.supplyAsync(() -> {
-            System.out.println("COMO ES KARISIRIIIIIIIIIIIII");
-            // Convert LatLng coordinates to Mapbox Point
-            Point startPoint = Point.fromLngLat(start.getLongitude(), start.getLatitude());
             Point endPoint = Point.fromLngLat(end.getLongitude(), end.getLatitude());
-
-            System.out.println("COMO ES KARISIRIIIIIIIIIIIII  1");
-
-            // Retrieve the instructions using Mapbox Geocoder
-            String startFeatures = reverseGeocode(startPoint);
             String endFeatures = reverseGeocode(endPoint);
-
-            System.out.println("COMO ES KARISIRIIIIIIIIIIIII  2");
-
-            String startStreetName = startFeatures.isEmpty() ? "" : startFeatures;
-            String endStreetName = endFeatures.isEmpty() ? "" : endFeatures;
-
-            System.out.println("COMO ES KARISIRIIIIIIIIIIIII  3");
-            System.out.println(startStreetName);
-            System.out.println(endStreetName);
-
-            System.out.println("COMO ES KARISIRIIIIIIIIIIIII  4");
-
-            System.out.println("COMO ES KARISIRIIIIIIIIIIIII  5");
-
-            return endStreetName; // Return the endStreetName as the result
-        }).thenAccept(endStreetName -> {
-            ((AppCompatActivity) context).runOnUiThread(() -> {
-                DirectionEnum directionEnum = directionsParser.determineDirection(
-                        start.getLatitude(), start.getLongitude(), end.getLatitude(), end.getLongitude()
-                );
-                direction.setText(directionEnum.getText());
-                streetName.setText(endStreetName);
-                setDirectionIcon(directionEnum);
-            });
-        });
-    }
-
-    private DirectionEnum getTurnDirection(LatLng start, LatLng end) {
-        double bearing = calculateBearing(start, end);
-
-        // Define the threshold angles for determining the turn direction
-        double leftTurnThreshold = 45.0;
-        double rightTurnThreshold = 315.0;
-
-        if (bearing >= leftTurnThreshold && bearing < rightTurnThreshold) {
-            return DirectionEnum.TURN_LEFT;
-        } else {
-            return DirectionEnum.TURN_RIGHT;
-        }
-    }
-
-    private double calculateBearing(LatLng start, LatLng end) {
-        double startLat = Math.toRadians(start.getLatitude());
-        double startLng = Math.toRadians(start.getLongitude());
-        double endLat = Math.toRadians(end.getLatitude());
-        double endLng = Math.toRadians(end.getLongitude());
-
-        double deltaLng = endLng - startLng;
-
-        double y = Math.sin(deltaLng) * Math.cos(endLat);
-        double x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(deltaLng);
-
-        double bearing = Math.atan2(y, x);
-        bearing = Math.toDegrees(bearing);
-        bearing = (bearing + 360) % 360;
-
-        return bearing;
+            return endFeatures.isEmpty() ? "" : endFeatures;
+        }).thenAccept(endStreetName -> ((AppCompatActivity) context).runOnUiThread(() -> {
+            DirectionEnum directionEnum = directionsParser.determineDirection(
+                    start.getLatitude(), start.getLongitude(), end.getLatitude(), end.getLongitude()
+            );
+            direction.setText(directionEnum.getText());
+            streetName.setText(endStreetName);
+            setDirectionIcon(directionEnum);
+        }));
     }
 
     private String reverseGeocode(Point point) {

@@ -51,23 +51,9 @@ public class DirectionsParser {
      * @return a DirectionsRecord.
      */
     public DirectionsRecord translate(LatLng point){
-        String streetName = getStreetNameForCoordinates(point.getLatitude(), point.getLongitude());
         DirectionEnum direction = determineDirection(prevPoint.getLatitude(), prevPoint.getLongitude(), point.getLatitude(), point.getLongitude());
         prevPoint = point;
-        return new DirectionsRecord(streetName, direction);
-    }
-
-    /**
-     * Retrieves the street name for the given coordinates using a Geocoder.
-     *
-     * @param latitude  The latitude of the coordinates.
-     * @param longitude The longitude of the coordinates.
-     * @return The street name associated with the coordinates.
-     */
-    private String getStreetNameForCoordinates(double latitude, double longitude) {
-        String streetName = "";
-
-        return streetName;
+        return new DirectionsRecord("", direction);
     }
 
     /**
