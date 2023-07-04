@@ -204,7 +204,7 @@ public class User {
      * @return isAdministrator true if the object is administrator, false otherwise
      */
     public boolean isAdministrator() {
-        return isAdministrator;
+        return typeUser.equals("Administrator");
     }
 
     /**
