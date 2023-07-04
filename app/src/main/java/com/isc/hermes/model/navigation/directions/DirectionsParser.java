@@ -67,17 +67,6 @@ public class DirectionsParser {
     private String getStreetNameForCoordinates(double latitude, double longitude) {
         String streetName = "";
 
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-
-            if (addresses != null && addresses.size() > 0) {
-                Address address = addresses.get(0);
-                streetName = address.getAddressLine(0);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         return streetName;
     }
 
@@ -90,7 +79,7 @@ public class DirectionsParser {
      * @param longitude     The longitude of the current coordinate.
      * @return The direction based on the angle between the coordinates.
      */
-    private DirectionEnum determineDirection(double prevLatitude, double prevLongitude, double latitude, double longitude) {
+    public DirectionEnum determineDirection(double prevLatitude, double prevLongitude, double latitude, double longitude) {
         double angle = calculateAngle(
                 Math.toRadians(prevLatitude),
                 Math.toRadians(prevLongitude),

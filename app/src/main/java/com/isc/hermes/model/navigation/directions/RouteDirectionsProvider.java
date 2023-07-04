@@ -35,8 +35,6 @@ public class RouteDirectionsProvider implements Subscriber {
     @Override
     public void update() {
         RouteSegmentRecord currentSegment = userRouteTracker.getCurrentSegment();
-        DirectionsRecord checkpoint = currentSegment.getDirections()[0];
-        DirectionsRecord nextCheckpoint = currentSegment.getDirections()[1];
-        navigationDirectionController.update(checkpoint, nextCheckpoint);
+        navigationDirectionController.update(currentSegment.getStart(), currentSegment.getEnd());
     }
 }
