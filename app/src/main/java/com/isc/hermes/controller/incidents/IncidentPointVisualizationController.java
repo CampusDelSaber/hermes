@@ -7,6 +7,7 @@ import com.isc.hermes.model.incidents.PointIncident;
 import android.widget.Toast;
 
 import com.isc.hermes.model.incidents.IncidentGetterModel;
+import com.isc.hermes.utils.MapManager;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -29,7 +30,7 @@ import android.os.Looper;
  */
 public class IncidentPointVisualizationController {
     private static IncidentPointVisualizationController instance;
-    private final MapboxMap mapboxMap;
+    private MapboxMap mapboxMap;
     private final Context context;
     private IncidentGetterModel pointList = new IncidentGetterModel();
 
@@ -55,6 +56,7 @@ public class IncidentPointVisualizationController {
      * @throws JSONException if there is an error in JSON parsing
      */
     public void displayPoint(List<PointIncident> pointList) throws JSONException {
+        mapboxMap = MapManager.getInstance().getMapboxMap();
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override

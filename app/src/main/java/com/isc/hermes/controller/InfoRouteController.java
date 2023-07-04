@@ -60,6 +60,7 @@ public class InfoRouteController {
 
     private final NavigationOrchestrator navigationOrchestrator;
     private TransportationType transportationType;
+    private Context contextObj;
 
     /**
      * Constructs a new InfoRouteController object.
@@ -89,7 +90,7 @@ public class InfoRouteController {
      * @return The InfoRouteController instance.
      */
     public static InfoRouteController getInstance(Context context, NavigationOptionsController navigationOptionsController) {
-        if (instanceNavigationController == null) {
+        if (instanceNavigationController == null || instanceNavigationController.contextObj== null || instanceNavigationController.contextObj!=context) {
             instanceNavigationController = new InfoRouteController(context, navigationOptionsController);
         }
         return instanceNavigationController;
@@ -101,6 +102,7 @@ public class InfoRouteController {
      * @param context is the context.
      */
     private void setViewComponents(Context context) {
+        contextObj = context;
         Activity activity = ((AppCompatActivity) context);
         layout = activity.findViewById(R.id.distance_time_view);
         cancelButton = activity.findViewById(R.id.cancel_navigation_button);

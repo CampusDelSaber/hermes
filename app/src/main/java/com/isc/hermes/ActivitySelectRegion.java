@@ -49,6 +49,7 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
         mapView.onCreate(savedInstanceState);
         initializeMapBoxMap();
         initializePopup();
+        ((AppManager)getApplication()).setLastActivity(this);
     }
 
     /**
@@ -166,5 +167,11 @@ public class ActivitySelectRegion extends AppCompatActivity implements DialogLis
 
     public MapboxMap getMapboxMap() {
         return mapboxMap;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((AppManager)getApplication()).setLastActivity(null);
     }
 }

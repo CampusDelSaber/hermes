@@ -20,7 +20,7 @@ import org.json.JSONException;
  * Class to configure the event of do click on a map
  */
 public class MapWayPointController implements MapClickConfigurationController {
-    private final MapboxMap mapboxMap;
+    private MapboxMap mapboxMap;
     private final WaypointOptionsController waypointOptionsController;
     private boolean isMarked;
     private Context context;
@@ -44,6 +44,7 @@ public class MapWayPointController implements MapClickConfigurationController {
      */
     @Override
     public boolean onMapClick(@NonNull LatLng point) {
+        mapboxMap = MapManager.getInstance().getMapboxMap();
         if (NavigationOptionsController.isActive) {
             deleteMarks();
             waypointOptionsController.getNavOptionsFormController().setStartPoint(point);
@@ -118,6 +119,7 @@ public class MapWayPointController implements MapClickConfigurationController {
      * Method to delete all waypoint marks on the map
      */
     public void deleteMarks() {
+        this.mapboxMap = MapManager.getInstance().getMapboxMap();
         for (Marker marker:mapboxMap.getMarkers()) {
             mapboxMap.removeMarker(marker);
         }
@@ -127,6 +129,7 @@ public class MapWayPointController implements MapClickConfigurationController {
      * Method to render a marker on map
      */
     public void setMarkerOnMap(LatLng point) {
+        this.mapboxMap = MapManager.getInstance().getMapboxMap();
         MarkerOptions markerOptions = new MarkerOptions().position(point);
         mapboxMap.addMarker(markerOptions);
     }
@@ -135,7 +138,10 @@ public class MapWayPointController implements MapClickConfigurationController {
      * Method to delete last mark set on map
      */
     public void deleteLastMark(){
-        mapboxMap.removeMarker(mapboxMap.getMarkers().remove(mapboxMap.getMarkers().size()-1));
+        mapboxMap = MapManager.getInstance().getMapboxMap();
+        if(mapboxMap.getMarkers().size()>0){
+            mapboxMap.removeMarker(mapboxMap.getMarkers().remove(mapboxMap.getMarkers().size()-1));
+        }
     }
 
     /**

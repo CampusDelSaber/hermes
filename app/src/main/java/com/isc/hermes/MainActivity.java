@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
         DataAccountOffline.getInstance(this).deleteDataLogged();
+        finish();
     }
 
     /**
@@ -306,6 +307,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
     @Override
     protected void onStart() {
         super.onStart();
+        ((AppManager)getApplication()).setMap(null);
         networkChangeReceiver = new NetworkChangeReceiver(this);
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
@@ -590,6 +592,11 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        ((AppManager)getApplication()).setMap(this);
+        moveTaskToBack(true);
+    }
 
     /**
      * Method for detect if the network is connected or not.

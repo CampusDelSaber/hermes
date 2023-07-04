@@ -1,5 +1,6 @@
 package com.isc.hermes;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -14,10 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.controller.PopUp.PopUp;
@@ -106,6 +103,7 @@ public class AccountInformation extends AppCompatActivity {
         updateComponentsByUserInformation();
         generateActionToComboBox();
         initializePopups();
+        ((AppManager) getApplication()).setLastActivity(this);
     }
 
     /**
@@ -114,8 +112,10 @@ public class AccountInformation extends AppCompatActivity {
      * @param view The view that triggers the navigation.
      */
     public void goToPrincipalView(View view) {
+        ((AppManager) getApplication()).setLastActivity(null);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -279,5 +279,10 @@ public class AccountInformation extends AppCompatActivity {
             }
         };
         return inputFilter;
+    }
+
+    @Override
+    public void onBackPressed() {
+        goToPrincipalView(null);
     }
 }

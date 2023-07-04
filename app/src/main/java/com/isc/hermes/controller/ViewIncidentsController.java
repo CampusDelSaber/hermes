@@ -21,10 +21,11 @@ public class ViewIncidentsController {
     private Button okButton;
     private final Button cancelButton;
     private final ConstraintLayout displayIncidents;
-    private final CheckBox naturalDisasters;
+    public static CheckBox naturalDisasters;
     private final CheckBox traffic;
     private final CheckBox streetIncident;
-    private final PolygonRequester requesting;
+    private PolygonRequester polygonRequester;
+    public static boolean withPolygonsDb;
 
     /**
      * Constructor for ViewIncidentsController.
@@ -33,7 +34,8 @@ public class ViewIncidentsController {
      */
     public ViewIncidentsController(AppCompatActivity activity) {
         this.activity = activity;
-        this.requesting = new PolygonRequester();
+        withPolygonsDb = false;
+        polygonRequester = new PolygonRequester();
         displayIncidentsButton = activity.findViewById(R.id.displayIncidentsButton);
         displayIncidents = activity.findViewById(R.id.display_incidents);
         okButton = activity.findViewById(R.id.okButton);
@@ -70,12 +72,11 @@ public class ViewIncidentsController {
         okButton.setOnClickListener(v -> {
             MapManager.getInstance().getMapboxMap().clear();
                 if (naturalDisasters.isChecked()) {
-                    PolygonVisualizationController
-                            .getInstance()
-                            .displayPolygons(
-                                    requesting.getPolygons(),"#Ff0000"
-                            );
+                    withPolygonsDb = true;
+                    PolygonVisualizationController.getInstance()
+                            .displayPolygons(polygonRequester.getPolygons());
                 } else {
+                    withPolygonsDb = false;
                     MapManager.getInstance().getMapboxMap().setStyle(MapManager.getInstance().getMapboxMap().getStyle().getUri());
                 } if (traffic.isChecked()) {
                     ShowTrafficController.getInstance().getTraffic(activity);

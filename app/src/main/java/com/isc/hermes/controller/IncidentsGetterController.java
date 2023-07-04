@@ -43,7 +43,6 @@ public class IncidentsGetterController {
         this.incidentsDataProcessor = IncidentsDataProcessor.getInstance();
         this.incidentGetterModel = new IncidentGetterModel();
         this.executorService = Executors.newSingleThreadExecutor();
-        mapboxMap = MapManager.getInstance().getMapboxMap();
     }
 
     /**
@@ -51,6 +50,7 @@ public class IncidentsGetterController {
      *
      */
     public void getNearIncidentsWithinRadius(Context context) {
+        mapboxMap = MapManager.getInstance().getMapboxMap();
         incidentsPointView = IncidentPointVisualizationController.getInstance(mapboxMap, context);
         loadNearIncidents(context);
     }

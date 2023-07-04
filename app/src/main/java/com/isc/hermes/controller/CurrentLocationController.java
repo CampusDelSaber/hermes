@@ -55,8 +55,8 @@ public class CurrentLocationController {
      */
     public void initLocation(){
         new Thread(() -> {
-            mapboxMap = MapManager.getInstance().getMapboxMap();
-            while (mapboxMap == null) {
+            MapboxMap map = MapManager.getInstance().getMapboxMap();
+            while (mapboxMap == null || map== mapboxMap) {
                 mapboxMap = MapManager.getInstance().getMapboxMap();
             }
             activity.runOnUiThread(this::enableLocationComponent);
@@ -189,10 +189,19 @@ public class CurrentLocationController {
      * @return Returns a instance of this class.
      */
     public static CurrentLocationController getControllerInstance(AppCompatActivity activity){
-        if(controllerInstance == null){
-            controllerInstance = new CurrentLocationController(activity);
-        }
+        if(activity == null){return controllerInstance;}
+        if(controllerInstance == null || controllerInstance.isNewInstanceNeeded(activity)){
+            controllerInstance = new CurrentLocationController(activity);}
         return controllerInstance;
+    }
+    /**
+     * This method checks if a new instance of IncidentViewNavigation should be created.
+     *
+     * @param appActivity The activity in which the IncidentViewNavigation is used.
+     * @return True if a new instance should be created, false otherwise.
+     */
+    private boolean isNewInstanceNeeded(AppCompatActivity appActivity) {
+        return activity == null || activity != appActivity;
     }
 
     /**
