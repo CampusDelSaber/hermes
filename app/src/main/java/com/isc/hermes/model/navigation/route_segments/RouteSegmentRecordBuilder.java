@@ -1,5 +1,6 @@
 package com.isc.hermes.model.navigation.route_segments;
 
+import com.isc.hermes.model.navigation.directions.DirectionsRecord;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 /**
@@ -9,6 +10,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class RouteSegmentRecordBuilder {
     private LatLng start;
     private LatLng end;
+    private DirectionsRecord[] directions;
 
     /**
      * Sets the start point of the route segment.
@@ -32,12 +34,17 @@ public class RouteSegmentRecordBuilder {
         return this;
     }
 
+    public RouteSegmentRecordBuilder setDirections(DirectionsRecord[] directions) {
+        this.directions = directions;
+        return this;
+    }
+
     /**
      * Creates a RouteSegmentRecord object using the provided start and end points.
      *
      * @return a new RouteSegmentRecord instance
      */
     public RouteSegmentRecord createRouteSegmentRecord() {
-        return new RouteSegmentRecord(start, end);
+        return new RouteSegmentRecord(start, end, directions);
     }
 }

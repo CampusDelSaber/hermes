@@ -40,6 +40,10 @@ public class RoutesRepository {
         self.availableRoutes = routes;
     }
 
+    public boolean hasKey(String key){
+        return availableRoutes.containsKey(key);
+    }
+
     /**
      * Retrieves the route information for the given key.
      *
