@@ -17,8 +17,10 @@ import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.LiveRouteEstimationsWorker;
 import com.isc.hermes.model.navigation.NavigationOrchestrator;
+import com.isc.hermes.model.navigation.RoutesRepository;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.model.navigation.UserRouteTracker;
+import com.isc.hermes.model.navigation.directions.RouteDirectionsProvider;
 import com.isc.hermes.utils.Animations;
 
 import org.json.JSONException;
@@ -53,6 +55,7 @@ public class InfoRouteController {
     private NavigationOptionsController navigationOptionsController;
     private NavigationDirectionController navigationDirectionController;
     private boolean isRouteASelected, isRouteBSelected, isRouteCSelected;
+
     private int elapsedSeconds;
     private int timeEstimate;
     private String routes;
@@ -61,7 +64,6 @@ public class InfoRouteController {
     private final NavigationOrchestrator navigationOrchestrator;
     private TransportationType transportationType;
     private Context contextObj;
-
     /**
      * Constructs a new InfoRouteController object.
      *
@@ -79,7 +81,6 @@ public class InfoRouteController {
         isRouteCSelected = false;
         jsonObjects = new ArrayList<>();
         setActionButtons();
-
         navigationOrchestrator = new NavigationOrchestrator("Route A", this);
     }
 
@@ -124,7 +125,7 @@ public class InfoRouteController {
      */
     private void setColorsInfoRoutes(int size) {
         colorsInfoRoutes.clear();
-        colorsInfoRoutes.add(size > 1 ? 0XFF686C6C : 0XFFFF6E26);
+        colorsInfoRoutes.add(size > 2 ? 0XFF686C6C : 0XFFFF6E26);
         colorsInfoRoutes.add(0xFF2350A3);
         colorsInfoRoutes.add(size > 1 ? 0XFFFF6E26 : 0XFF686C6C);
     }
@@ -253,22 +254,9 @@ public class InfoRouteController {
             setTimeAndDistanceInformation(jsonObjects.get(jsonObjects.size() - 1));
             mapPolyline.displaySavedCoordinates(jsonCoordinates, colorsInfoRoutes);
 
-            setButtonsVisibility();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * This method will set the buttons visibility depending on the routes size
-     */
-    private void setButtonsVisibility() {
-        if (jsonObjects.size() < 2) {
-            buttonRouteB.setVisibility(View.GONE);
-        } else buttonRouteB.setVisibility(View.VISIBLE);
-        if (jsonObjects.size() < 2)
-            buttonRouteC.setVisibility(View.GONE);
-        else buttonRouteC.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -297,7 +285,6 @@ public class InfoRouteController {
     private void setTimeAndDistanceInformation(JSONObject jsonObject) {
         setDistanceInfo(jsonObject);
         setEstimatedTimeInfo(jsonObject);
-        navigationDirectionController.processRoute(jsonObject);
     }
 
     /**
@@ -383,7 +370,7 @@ public class InfoRouteController {
         try {
             UserRouteTracker userRouteTracker = navigationOrchestrator.getUserRouteTracker();
             new LiveRouteEstimationsWorker(userRouteTracker, this, transportationType);
-
+            new RouteDirectionsProvider(userRouteTracker, navigationDirectionController);
             navigationOrchestrator.startNavigationMode((t, e) -> {
                 Toast.makeText(layout.getContext(), "Navigation mode interrupted", Toast.LENGTH_SHORT).show();
                 Timber.e(e);
@@ -475,5 +462,33 @@ public class InfoRouteController {
      */
     public String getSelectedRoute() {
         return selectedRoute;
+    }
+
+    public void resetButtonsVisibility(){
+        buttonRouteA.setVisibility(View.VISIBLE);
+        buttonRouteB.setVisibility(View.VISIBLE);
+        buttonRouteC.setVisibility(View.VISIBLE);
+    }
+
+    public void verifyButtonsVisibility(){
+        RoutesRepository repository = RoutesRepository.getInstance();
+        resetButtonsVisibility();
+
+        if (!repository.hasKey("Route A")){
+            buttonRouteA.setVisibility(View.GONE);
+            Timber.d("Route A can't be found button hidden");
+        }
+
+        if (!repository.hasKey("Route B")){
+            buttonRouteB.setVisibility(View.GONE);
+            Timber.d("Route B can't be found button hidden");
+        }
+
+        if (!repository.hasKey("Route C")){
+            buttonRouteC.setVisibility(View.GONE);
+            Timber.d("Route C can't be found button hidden");
+        }
+
+        buttonRouteA.requestFocus();
     }
 }

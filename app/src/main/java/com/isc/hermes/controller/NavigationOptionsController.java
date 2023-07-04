@@ -10,10 +10,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -24,21 +22,19 @@ import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
 import com.isc.hermes.model.navigation.RoutesRepository;
 import com.isc.hermes.model.navigation.TransportationType;
+import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import timber.log.Timber;
 
 
@@ -62,7 +58,6 @@ public class NavigationOptionsController {
     private Map<String, TransportationType> transportationTypeMap;
     private AlertDialog progressDialog;
     private PolylineRouteUpdaterController polylineRouteUpdaterController;
-
     /**
      * This is the constructor method. Init all the necessary components.
      *
@@ -410,7 +405,7 @@ public class NavigationOptionsController {
                     graphController.getGraph(), graphController.getStartNode(),
                     graphController.getDestinationNode(), transportationType
             );
-
+            Timber.d("Available route options: %s", routeOptions.size());
         } catch (Exception e){
             handleErrorLoadingRoutes();
             Timber.e(e);
@@ -439,9 +434,12 @@ public class NavigationOptionsController {
             ArrayList<String> geoJson = new ArrayList<>();
             for (String route : routes)
                 if (!route.isEmpty()) geoJson.add(route);
+            Timber.d("Amount of routes to render %d", geoJson.size());
+
 
             RoutesRepository.getInstance().populate(routeOptions);
             renderMapRoutes(geoJson);
+            infoRouteController.verifyButtonsVisibility();
         }else {
             handleErrorLoadingRoutes();
         }
@@ -467,12 +465,9 @@ public class NavigationOptionsController {
 
         Gson gson = new Gson();
         String json = gson.toJson(coordinatesList);
-        System.out.println(json);
         infoRouteController.setRoutes(json);
         return json;
     }
-
-
 
     /**
      * will only help me to extract the necessary coordinates.
@@ -495,6 +490,7 @@ public class NavigationOptionsController {
             coordinatesList.add(reversedCoordinates);
         }
     }
+
 
     /**
      * This method render the routes on the map.

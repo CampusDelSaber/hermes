@@ -68,7 +68,6 @@ public class UserRouteTracker {
      */
     public void update() {
         LatLng userLocation = currentLocation.getLatLng();
-
         if (isUserTrackLost) {
             recoverTrack(true);
         }
@@ -188,5 +187,9 @@ public class UserRouteTracker {
      */
     public UserRouteTrackerNotifier getRouteTrackerNotifier() {
         return routeTrackerNotifier;
+    }
+
+    public RouteSegmentRecord getCurrentSegment() {
+        return currentSegment;
     }
 }
