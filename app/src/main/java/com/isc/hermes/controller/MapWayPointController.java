@@ -130,8 +130,7 @@ public class MapWayPointController implements MapClickConfigurationController {
             return endFeatures.isEmpty() ? "" : endFeatures;
         }).thenAccept(endStreetName -> ((AppCompatActivity) context).runOnUiThread(() -> {
             TextView t = ((AppCompatActivity) context).findViewById(R.id.place_name);
-            t.setText(endStreetName.length() > 70 ? endStreetName.substring(0, 70) + "..." :
-                    endStreetName);
+            t.setText(endStreetName);
         }));
     }
 
