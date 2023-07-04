@@ -14,9 +14,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import timber.log.Timber;
 
@@ -80,42 +77,25 @@ public class UserRouteTracker {
      *
      * @throws RouteOutOfTracksException If the route is empty and navigation cannot be started.
      */
-
     public void parseRoute() throws RouteOutOfTracksException {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Future<Void> routeParsingFuture = executorService.submit(() -> {
-            CompletableFuture<List<RouteSegmentRecord>> futureRouteSegments = navigationRouteParser.makeRouteSegments(routeInformation);
+        CompletableFuture<List<RouteSegmentRecord>> futureRouteSegments = navigationRouteParser.makeRouteSegments(routeInformation);
 
-            futureRouteSegments.thenAccept(routeSegments -> {
-                this.routeSegments = routeSegments;
+        futureRouteSegments.thenAccept(routeSegments -> {
+            this.routeSegments = routeSegments;
 
-                if (routeSegments.isEmpty()) {
-                    throw new RouteOutOfTracksException("Could not start the navigation, route is empty");
-                }
+            if (routeSegments.isEmpty()) {
+                throw new RouteOutOfTracksException("Could not start the navigation, route is empty");
+            }
 
-                usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
-                trackRecoveryHandler = new TrackRecoveryHandler(routeSegments);
-                routeDistanceHelper = new RouteDistanceHelper(routeSegments);
-                Timber.i(String.format("Starting route with: %s Tracks\n", routeSegments.get(0).getDirections()[0].getStreetName()));
-                nextTrack(currentLocation.getLatLng());
-            }).exceptionally(throwable -> {
-                throwable.printStackTrace();
-                throw new RouteOutOfTracksException("Failed to retrieve route segments");
-            });
-
-            return null;
+            usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
+            trackRecoveryHandler = new TrackRecoveryHandler(routeSegments);
+            routeDistanceHelper = new RouteDistanceHelper(routeSegments);
+            Timber.i(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
+            nextTrack(currentLocation.getLatLng());
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            throw new RouteOutOfTracksException("Failed to retrieve route segments");
         });
-
-        // Wait for the route parsing to complete
-        try {
-            routeParsingFuture.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RouteOutOfTracksException("Route parsing failed");
-        }
-
-        // Shutdown the executor service
-        executorService.shutdown();
     }
 
     /**
@@ -172,7 +152,7 @@ public class UserRouteTracker {
      * @return true if the user is inside the current route segment, false otherwise.
      */
     public boolean isUserOnTrack(LatLng userLocation) {
-        boolean isInsideSegment = isPointInsideSegment(currentSegment, CurrentLocationModel.getInstance().getLatLng());
+        boolean isInsideSegment = isPointInsideSegment(currentSegment, userLocation);
         boolean isEndReached = isNearPoint(currentSegment.getEnd(), userLocation);
         return isInsideSegment && !isEndReached;
     }
