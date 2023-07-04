@@ -36,10 +36,14 @@ import com.isc.hermes.controller.MapPolygonController;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
+
+import com.isc.hermes.model.Utils.DataAccountOffline;
+
 import com.isc.hermes.utils.AndroidRequestActivation;
 import com.isc.hermes.utils.AndroidServicesVerification;
 import com.isc.hermes.utils.NetworkChangeReceiver;
 import com.isc.hermes.utils.OnNetworkChangeListener;
+
 import com.isc.hermes.view.IncidentViewNavigation;
 import com.isc.hermes.controller.authentication.AuthenticationFactory;
 import com.isc.hermes.controller.authentication.AuthenticationServices;
@@ -253,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         }
         Intent intent = new Intent(this, SignUpActivityView.class);
         startActivity(intent);
+        DataAccountOffline.getInstance(this).deleteDataLogged();
     }
 
     /**
