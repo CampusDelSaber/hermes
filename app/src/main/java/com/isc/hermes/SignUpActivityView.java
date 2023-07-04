@@ -135,10 +135,8 @@ public class SignUpActivityView extends AppCompatActivity {
      */
     private void updateInformationUserUsingDB(User user) throws JSONException, ExecutionException,
             InterruptedException {
-        if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail())) {
-            Thread userRepositoryUpdaterThread = new Thread(new UserRepositoryUpdaterUsingDBRunnable());
-            userRepositoryUpdaterThread.start();
-        }
+        Thread userRepositoryUpdaterThread = new Thread(new UserRepositoryUpdaterUsingDBRunnable(user));
+        userRepositoryUpdaterThread.start();
     }
 
     /**
