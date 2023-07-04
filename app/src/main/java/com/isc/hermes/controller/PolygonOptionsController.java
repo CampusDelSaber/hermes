@@ -73,7 +73,6 @@ public class PolygonOptionsController {
         polygonOptions.startAnimation(Animations.exitAnimation);
         polygonOptions.setVisibility(View.GONE);
         resetMapConfiguration();
-        ViewIncidentsController.naturalDisasters.setChecked(false);
     }
 
     /**

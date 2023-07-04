@@ -70,8 +70,7 @@ public class MapPolygonController implements MapClickConfigurationController {
 
         if (coordinates.size() > 2) {
             buildPolygon();
-            PolygonVisualizationController.getInstance().displayPolygons(
-                    allPolygonsPoints, ViewIncidentsController.withPolygonsDb);
+            PolygonVisualizationController.getInstance().displayPolygon(allPolygonsPoints,"#3bb2d0");
         }else {
             polygonOptionsController.showPolygonVertexesMessage(3-coordinates.size());
         }
