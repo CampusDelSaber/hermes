@@ -102,6 +102,7 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         UserRelatedThreadManager.getInstance().doActionForThread(new EmailVerificationRunnable());
         Intent intent = new Intent(activity, EmailVerificationActivity.class);
         activity.startActivity(intent);
+        activity.finish();
     }
 
     /**

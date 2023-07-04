@@ -46,11 +46,12 @@ public class PopUpContinueLikeGeneralUser extends PopUp{
     public void onClick(View v) {
         if (v == super.confirmButton){
             UserRepository.getInstance().getUserContained().setTypeUser("General");
-            UserRelatedThreadManager.getInstance().doActionForThread(new UserRepositoryCreatorUsingDBRunnable(
-                    UserRepository.getInstance().getUserContained()));
+            UserRelatedThreadManager.getInstance().doActionForThread(
+                    new UserRepositoryCreatorUsingDBRunnable(UserRepository.getInstance().getUserContained()));
             DataAccountOffline.getInstance(activity).setUserType("General");
             Intent intent = new Intent(this.activity, MainActivity.class);
-            this.activity.startActivity(intent);
+            activity.setResult(Activity.RESULT_OK, intent);
+            activity.finish();
         } dismiss();
     }
 }

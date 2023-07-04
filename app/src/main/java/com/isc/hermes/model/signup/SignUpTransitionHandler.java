@@ -44,8 +44,9 @@ public class SignUpTransitionHandler {
             verificationLauncher.launch(intent);
         } else {
             loadUserDataInDB();
-            intent = new Intent(packageContext, MainActivity.class);}
-        packageContext.startActivity(intent);
-        packageContext.finish();
+            intent = new Intent(packageContext, MainActivity.class);
+            packageContext.startActivity(intent);
+            packageContext.finish();
+        }
     }
 }
