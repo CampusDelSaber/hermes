@@ -144,9 +144,9 @@ public class SignUpActivityView extends AppCompatActivity {
         finish();
     }
 
-
     /**
      * Updates user information using a database.
+     *
      * @param user the User object containing the updated information
      * @throws JSONException if there is an error parsing JSON data
      * @throws ExecutionException if there is an error while executing the update process
@@ -185,9 +185,9 @@ public class SignUpActivityView extends AppCompatActivity {
         DataAccountOffline.getInstance(this).saveDataLoggedAccount(user);
         Intent intent;
 
-        if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail())) {
+        if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail()))
             intent = new Intent(this, MainActivity.class);
-        } else intent = new Intent(this, UserSignUpCompletionActivity.class);
+        else intent = new Intent(this, UserSignUpCompletionActivity.class);
         startActivity(intent);
         finish();
     }
@@ -204,8 +204,8 @@ public class SignUpActivityView extends AppCompatActivity {
                     if (NetworkManager.isOnline(this)) {
                         try {
                             User user = authenticator.getUserBySignInResult(result.getData());
-                            changeActivityDependingIsUserIsRegistered(user);
                             updateInformationUserUsingDB(user);
+                            changeActivityDependingIsUserIsRegistered(user);
                         }
                         catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
                             e.printStackTrace(); }}

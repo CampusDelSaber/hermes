@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +36,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     private AutoCompleteTextView textFieldUserName;
     private AutoCompleteTextView textFieldEmail;
     private TextInputLayout comboBoxTextField;
-    private Button buttonRegister;
     private ImageView imgUser;
     private ActivityResultLauncher<Intent> verificationLauncher;
 
@@ -49,7 +48,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         textFieldUserName = findViewById(R.id.textFieldUserName);
         textFieldEmail = findViewById(R.id.textFieldEmail);
         textFieldEmail.setHorizontallyScrolling(true);
-        buttonRegister = findViewById(R.id.buttonRegister);
         imgUser = findViewById(R.id.imgUser);
         comboBoxTextField = findViewById(R.id.comboBoxTextField);
     }
@@ -97,13 +95,11 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
      * and navigates the user to the main activity.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void generateActionToButtonSignUp() {
-        buttonRegister.setOnClickListener(v -> {
-            if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
-                UserRepository.getInstance().getUserContained().setAdministrator(false);
-                new SignUpTransitionHandler().transitionBasedOnRole(this, verificationLauncher);
-            } else comboBoxTextField.setHelperText("Required");
-        });
+    public void createUserAccount(View view) {
+        if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
+            UserRepository.getInstance().getUserContained().setAdministrator(false);
+            new  SignUpTransitionHandler().transitionBasedOnRole(this,verificationLauncher);
+        } else comboBoxTextField.setHelperText("Required");
     }
 
     /**
@@ -128,7 +124,6 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_sign_up_completion_view);
         generateActionToComboBox();
         assignValuesToComponentsView();
-        generateActionToButtonSignUp();
         loadUserImageInView();
         loadInformationAboutUserInTextFields();
         verificationLauncher = createActivityResult();

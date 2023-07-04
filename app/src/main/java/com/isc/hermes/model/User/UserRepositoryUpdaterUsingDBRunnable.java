@@ -7,16 +7,25 @@ import org.json.JSONException;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Runnable implementation for updating the user repository using a database.
+ * A {@code Runnable} implementation that updates the user information in the {@link UserRepository}
+ * by retrieving it from the database using an {@link AccountInfoManager}.
+ * <p>
+ * The {@code run} method fetches the user ID associated with the current user's email from the database,
+ * retrieves the user information using the ID, and updates the user information in the {@code UserRepository}.
+ * The updated user information is then printed to the console.
  */
 public class UserRepositoryUpdaterUsingDBRunnable implements Runnable{
 
     /**
-     * Executes the update process for the user repository using a database.
+     * Executes the logic to update user information in the {@link UserRepository} using a database.
+     * <p>
+     * The method fetches the user ID associated with the current user's email from the database
+     * using an {@link AccountInfoManager}. It then retrieves the user information using the ID
+     * and updates the user information in the {@link UserRepository} using the {@code setUserContained} method.
+     * The updated user information is printed to the console using the {@link System#out#println} method.
      *
-     * @throws ExecutionException if there is an error while executing the update process
-     * @throws InterruptedException if the update process is interrupted
-     * @throws JSONException if there is an error parsing JSON data
+     * @throws RuntimeException if an {@link ExecutionException}, {@link InterruptedException},
+     *                          or {@link JSONException} occurs during the process.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override

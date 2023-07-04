@@ -6,13 +6,13 @@ import android.os.Build;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.RequiresApi;
-
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Validator;
 import com.isc.hermes.model.VerificationCode;
@@ -36,17 +36,15 @@ public class SignUpTransitionHandler {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadUserDataInDB() {
-        AccountInfoManager accountInfoManager = new AccountInfoManager();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            accountInfoManager.addUser(UserRepository.getInstance().getUserContained().getEmail(),
-                    UserRepository.getInstance().getUserContained().getFullName(),
-                    UserRepository.getInstance().getUserContained().getUserName(),
-                    UserRepository.getInstance().getUserContained().getTypeUser(),
-                    UserRepository.getInstance().getUserContained().getPathImageUser());
+        AccountInfoManager manager = new AccountInfoManager();
+        User user = UserRepository.getInstance().getUserContained();
         try {
-            UserRepository.getInstance().getUserContained().setId(accountInfoManager.getIdByEmail(UserRepository.getInstance().getUserContained().getEmail()));}
-        catch (ExecutionException | InterruptedException | JSONException e) {
-            throw new RuntimeException(e); }
+            manager.addUser(user.getEmail(), user.getFullName(), user.getUserName(), user.getTypeUser(), user.getPathImageUser());
+            user.setId(manager.getIdByEmail(user.getEmail()));
+            UserRepository.getInstance().setUserContained(user);
+        } catch (ExecutionException | InterruptedException | JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

@@ -141,6 +141,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/blueOxford_app_theme"
+                android:onClick="createUserAccount"
                 android:text="@string/finishSignUp"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
