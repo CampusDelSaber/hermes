@@ -18,6 +18,7 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.User;
+import com.isc.hermes.model.User.UserRelatedThreadManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.User.UserRepositoryUpdaterUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
@@ -105,9 +106,7 @@ public class SignUpActivityView extends AppCompatActivity {
      * @param authentication The authentication object representing the signed-in user.
      */
     private void getUserDependingAbleNetwork(IAuthentication authentication) {
-
         if (authentication.checkUserSignIn(this)) {
-
             authenticator = authentication;
             User user;
             if(NetworkManager.isOnline(this)) user = obtainUserUsingInternet(authentication);
@@ -142,22 +141,6 @@ public class SignUpActivityView extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    /**
-     * Updates user information using a database.
-     *
-     * @param user the User object containing the updated information
-     * @throws JSONException if there is an error parsing JSON data
-     * @throws ExecutionException if there is an error while executing the update process
-     * @throws InterruptedException if the update process is interrupted
-     */
-    private void updateInformationUserUsingDB(User user) throws JSONException, ExecutionException,
-            InterruptedException {
-        if (new AccountInfoManager().verifyIfAccountIsRegistered(user.getEmail())) {
-            Thread userRepositoryUpdaterThread = new Thread(new UserRepositoryUpdaterUsingDBRunnable());
-            userRepositoryUpdaterThread.start();
-        }
     }
 
     /**
@@ -204,10 +187,10 @@ public class SignUpActivityView extends AppCompatActivity {
                     if (NetworkManager.isOnline(this)) {
                         try {
                             User user = authenticator.getUserBySignInResult(result.getData());
-                            updateInformationUserUsingDB(user);
+                            UserRelatedThreadManager.getInstance().doActionForThread(
+                                    new UserRepositoryUpdaterUsingDBRunnable(user));
                             changeActivityDependingIsUserIsRegistered(user);
-                        }
-                        catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
+                        } catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
                             e.printStackTrace(); }}
                     else
                         Toast.makeText(SignUpActivityView.this,"Internet access is required", Toast.LENGTH_SHORT).show();

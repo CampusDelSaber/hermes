@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.view.View;
+
+import com.isc.hermes.AppManager;
 import com.isc.hermes.R;
 import com.isc.hermes.SignUpActivityView;
 import com.isc.hermes.database.AccountInfoManager;
@@ -39,8 +41,10 @@ public class PopUpDeleteAccount extends PopUp{
      */
     private void closeAuthentication() {
         googleAuthentication.revokeAccess(getContext());
+        ((AppManager) activity.getApplication()).setLastActivity(null);
         Intent intent = new Intent(this.activity, SignUpActivityView.class);
-        activity.startActivity(intent);
+        activity.setResult(Activity.RESULT_OK, intent);
+        activity.finish();
     }
 
     /**

@@ -80,7 +80,6 @@ public class ApiHandler {
         String url = API_URL + params;
         Gson gson = new Gson();
         String result = gson.toJson(object);
-        System.out.println("RESULT: " + result);
         return executorService.submit(() -> requestHandler.postDataFromApi(url, result));
     }
 
@@ -107,7 +106,6 @@ public class ApiHandler {
         String url = API_URL + params;
         Gson gson = new Gson();
         String result = gson.toJson(object);
-        System.out.println("RESULT: " + result);
         return executorService.submit(() -> requestHandler.putDataFromApi(url, result));
     }
 

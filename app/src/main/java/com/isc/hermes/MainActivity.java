@@ -37,6 +37,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.isc.hermes.controller.MapWayPointController;
 
+import com.isc.hermes.model.User.UserRelatedThreadManager;
+import com.isc.hermes.model.User.UserRepositoryUpdaterUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
 
 import com.isc.hermes.utils.AndroidRequestActivation;
@@ -74,6 +76,7 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements OnNetworkChangeListener, OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private SharedSearcherPreferencesManager sharedSearcherPreferencesManager;
+    private ActivityResultLauncher<Intent> launcherAccountInformation;
     private CurrentLocationController currentLocationController;
     private FilterCategoriesController filterCategoriesController;
     private ViewIncidentsController viewIncidentsController;
@@ -123,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         MarkerManager.getInstance(this).removeSavedMarker();
         initFilterAdvancedView();
         launcher = createActivityResult();
+        launcherAccountInformation = createAccountResult();
         initShowIncidentsController();
         initCurrentLocationController();
         initializeBurgerButtonToolBar();
@@ -149,6 +153,20 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
         buttonClear.setVisibility(View.GONE);
         noInternetConnectionMessage = findViewById(R.id.noInternetTextView);
         noInternetConnectionMessage.setPaintFlags(noInternetConnectionMessage.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+    }
+
+    /**
+     * Creates an ActivityResultLauncher for starting the account creation activity and handling the result.
+     *
+     * @return The ActivityResultLauncher instance.
+     */
+    private ActivityResultLauncher<Intent> createAccountResult() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        logOut(null);
+                    }
+                });
     }
 
     /**
@@ -188,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
      */
     public void goToAccountInformation(View view) {
         Intent intent = new Intent(this, AccountInformation.class);
-        startActivity(intent);
+        launcherAccountInformation.launch(intent);
     }
 
     /**
@@ -525,6 +543,9 @@ public class MainActivity extends AppCompatActivity implements OnNetworkChangeLi
                 return true;
             }
             case R.id.userAccount -> {
+                UserRelatedThreadManager.getInstance().doActionForThread(
+                        new UserRepositoryUpdaterUsingDBRunnable(UserRepository.getInstance().
+                                getUserContained()));
                 drawerLayout.closeDrawer(GravityCompat.START);
                 goToAccountInformation(new View(context));
                 return true;

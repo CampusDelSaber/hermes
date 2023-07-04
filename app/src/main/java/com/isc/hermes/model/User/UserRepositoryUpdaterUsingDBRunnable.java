@@ -16,6 +16,17 @@ import java.util.concurrent.ExecutionException;
  */
 public class UserRepositoryUpdaterUsingDBRunnable implements Runnable{
 
+    private final User user;
+
+    /**
+     * Constructs a new {@code UserRepositoryCreateUsingDBRunnable} object with the specified user.
+     *
+     * @param user the user object to be created in the {@link UserRepository}.
+     */
+    public UserRepositoryUpdaterUsingDBRunnable(User user) {
+        this.user = user;
+    }
+
     /**
      * Executes the logic to update user information in the {@link UserRepository} using a database.
      * <p>
@@ -32,9 +43,11 @@ public class UserRepositoryUpdaterUsingDBRunnable implements Runnable{
     public void run() {
         AccountInfoManager manager = new AccountInfoManager();
         try {
-            String id = manager.getIdByEmail(UserRepository.getInstance().getUserContained().getEmail());
-            User user = new AccountInfoManager().getUserById(id);
-            UserRepository.getInstance().setUserContained(user);
+            if (manager.verifyIfAccountIsRegistered(user.getEmail())) {
+                String id = manager.getIdByEmail(UserRepository.getInstance().getUserContained().getEmail());
+                User user = manager.getUserById(id);
+                UserRepository.getInstance().setUserContained(user);
+            }
         } catch (ExecutionException | InterruptedException | JSONException e) {
             throw new RuntimeException(e); }
     }

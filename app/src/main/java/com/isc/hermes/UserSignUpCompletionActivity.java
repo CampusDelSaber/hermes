@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
+import com.isc.hermes.model.User.EmailVerificationRunnable;
 import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.UserRelatedThreadManager;
 import com.isc.hermes.model.signup.SignUpTransitionHandler;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.utils.lifecycle.LastSessionTracker;
@@ -97,6 +99,8 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createUserAccount(View view) {
         if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
+            UserRelatedThreadManager.getInstance().doActionForThread(
+                    new EmailVerificationRunnable());
             UserRepository.getInstance().getUserContained().setAdministrator(false);
             new  SignUpTransitionHandler().transitionBasedOnRole(this,verificationLauncher);
         } else comboBoxTextField.setHelperText("Required");

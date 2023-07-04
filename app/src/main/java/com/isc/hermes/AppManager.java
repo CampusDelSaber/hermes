@@ -36,7 +36,11 @@ public class AppManager extends Application {
         lastActivity = activity;
     }
 
-
+    /**
+     * Sets the map activity.
+     *
+     * @param activity The activity to set as the map.
+     */
     public void setMap(Activity activity) {
         map = activity;
     }
