@@ -6,17 +6,9 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.MainActivity;
-import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.TypeUser;
-import com.isc.hermes.model.User.User;
 import com.isc.hermes.model.User.UserRepository;
-import com.isc.hermes.model.Validator;
-import com.isc.hermes.model.VerificationCode;
-
-import org.json.JSONException;
-
-import java.util.concurrent.ExecutionException;
+import com.isc.hermes.model.User.UserRepositoryCreatorUsingDBRunnable;
 
 /**
  * This class manages the transitions in the sign up process.
@@ -33,15 +25,9 @@ public class SignUpTransitionHandler {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadUserDataInDB() {
-        AccountInfoManager manager = new AccountInfoManager();
-        User user = UserRepository.getInstance().getUserContained();
-        try {
-            manager.addUser(user.getEmail(), user.getFullName(), user.getUserName(), user.getTypeUser(), user.getPathImageUser());
-            user.setId(manager.getIdByEmail(user.getEmail()));
-            UserRepository.getInstance().setUserContained(user);
-        } catch (ExecutionException | InterruptedException | JSONException e) {
-            throw new RuntimeException(e);
-        }
+        Thread threadAddUser = new Thread(new UserRepositoryCreatorUsingDBRunnable(
+                UserRepository.getInstance().getUserContained()));
+        threadAddUser.start();
     }
 
     /**
@@ -53,29 +39,10 @@ public class SignUpTransitionHandler {
     public void transitionBasedOnRole(Context packageContext) {
         Intent intent;
         if (UserRepository.getInstance().getUserContained().getTypeUser().equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                sendVerificationCode(UserRepository.getInstance().getUserContained().getTypeUser(),
-                        UserRepository.getInstance().getUserContained().getEmail());
             intent = new Intent(packageContext, EmailVerificationActivity.class);
         } else {
             loadUserDataInDB();
             intent = new Intent(packageContext, MainActivity.class); }
         packageContext.startActivity(intent);
-    }
-
-    /**
-     * Sends a verification code to the specified email address, based on the user roles,
-     * only "Administrator".
-     *
-     * @param roles The user roles object containing the role information.
-     * @param email The email address to which the verification code will be sent.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void sendVerificationCode(String roles, String email) {
-        if (roles.equals(TypeUser.ADMINISTRATOR.getTypeUser())) {
-            new Validator();
-            SendEmailManager sendEmailManager = new SendEmailManager();
-            sendEmailManager.addEmail(email, VerificationCode.getVerificationCodeInstance().getVerificationCode());
-        }
     }
 }
