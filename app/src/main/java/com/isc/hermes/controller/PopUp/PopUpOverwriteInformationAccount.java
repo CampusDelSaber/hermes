@@ -6,19 +6,15 @@ import android.os.Build;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.EmailVerificationActivity;
 import com.isc.hermes.R;
 import com.isc.hermes.database.AccountInfoManager;
-import com.isc.hermes.database.SendEmailManager;
 import com.isc.hermes.model.User.EmailVerificationRunnable;
+import com.isc.hermes.model.User.UserRelatedThreadManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.Utils.DataAccountOffline;
-import com.isc.hermes.model.Validator;
 
 /**
  * The class {@code PopUpEditAccount} extends {@code PopUp} and represents a specific type of pop-up
@@ -92,9 +88,8 @@ public class PopUpOverwriteInformationAccount extends PopUp{
         UserRepository.getInstance().getUserContained().setFullName(String.valueOf(fullName.getText()));
 
         AccountInfoManager manager = new AccountInfoManager();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             manager.editUser(UserRepository.getInstance().getUserContained());
-        }
         DataAccountOffline.getInstance(activity).saveDataLoggedAccount(UserRepository.getInstance().getUserContained());
     }
 
@@ -104,19 +99,9 @@ public class PopUpOverwriteInformationAccount extends PopUp{
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateTypeUser() {
-        sendEmail();
+        UserRelatedThreadManager.getInstance().doActionForThread(new EmailVerificationRunnable());
         Intent intent = new Intent(activity, EmailVerificationActivity.class);
         activity.startActivity(intent);
-    }
-
-    /**
-     * Sends an email containing a verification code to the user's email address.
-     * The email is sent using the SendEmailManager class.
-     * The verification code is obtained from the Validator class.
-     */
-    private void sendEmail(){
-        Thread thread = new Thread(new EmailVerificationRunnable());
-        thread.start();
     }
 
     /**

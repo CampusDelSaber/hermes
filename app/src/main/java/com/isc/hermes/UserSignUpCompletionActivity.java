@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.isc.hermes.model.User.EmailVerificationRunnable;
 import com.isc.hermes.model.User.TypeUser;
+import com.isc.hermes.model.User.UserRelatedThreadManager;
 import com.isc.hermes.model.signup.SignUpTransitionHandler;
 import com.isc.hermes.model.User.UserRepository;
 
@@ -91,19 +92,11 @@ public class UserSignUpCompletionActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createUserAccount(View view) {
         if (UserRepository.getInstance().getUserContained().getTypeUser() != null) {
-            sendVerificationCode();
+            UserRelatedThreadManager.getInstance().doActionForThread(
+                    new EmailVerificationRunnable());
             UserRepository.getInstance().getUserContained().setAdministrator(false);
             new  SignUpTransitionHandler().transitionBasedOnRole(this);
         } else comboBoxTextField.setHelperText("Required");
-    }
-
-    /**
-     * Sends a verification code to the specified email address, based on the user roles,
-     * only "Administrator".
-     */
-    public void sendVerificationCode() {
-        Thread sendEmailThread = new Thread(new EmailVerificationRunnable());
-        sendEmailThread.start();
     }
 
     /**

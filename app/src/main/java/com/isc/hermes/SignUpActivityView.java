@@ -14,6 +14,7 @@ import com.isc.hermes.controller.authentication.AuthenticationServices;
 import com.isc.hermes.controller.authentication.IAuthentication;
 import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.model.User.User;
+import com.isc.hermes.model.User.UserRelatedThreadManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.User.UserRepositoryUpdaterUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
@@ -126,20 +127,6 @@ public class SignUpActivityView extends AppCompatActivity {
     }
 
     /**
-     * Updates user information using a database.
-     *
-     * @param user the User object containing the updated information
-     * @throws JSONException if there is an error parsing JSON data
-     * @throws ExecutionException if there is an error while executing the update process
-     * @throws InterruptedException if the update process is interrupted
-     */
-    private void updateInformationUserUsingDB(User user) throws JSONException, ExecutionException,
-            InterruptedException {
-        Thread userRepositoryUpdaterThread = new Thread(new UserRepositoryUpdaterUsingDBRunnable(user));
-        userRepositoryUpdaterThread.start();
-    }
-
-    /**
      * This method allows the user to register the user
      *
      * @param view it contains the event info.
@@ -187,7 +174,8 @@ public class SignUpActivityView extends AppCompatActivity {
         if (NetworkManager.isOnline(this)) {
             try {
                 User user = authenticator.getUserBySignInResult(data);
-                updateInformationUserUsingDB(user);
+                UserRelatedThreadManager.getInstance().doActionForThread(
+                        new UserRepositoryUpdaterUsingDBRunnable(user));
                 changeActivityDependingIsUserIsRegistered(user);
             } catch (ExecutionException | InterruptedException | JSONException | ApiException e) {
                 e.printStackTrace(); }}

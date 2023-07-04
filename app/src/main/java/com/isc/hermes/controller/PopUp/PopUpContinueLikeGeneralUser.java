@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.isc.hermes.MainActivity;
 import com.isc.hermes.R;
+import com.isc.hermes.model.User.UserRelatedThreadManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.User.UserRepositoryCreatorUsingDBRunnable;
 import com.isc.hermes.model.Utils.DataAccountOffline;
@@ -45,9 +46,8 @@ public class PopUpContinueLikeGeneralUser extends PopUp{
     public void onClick(View v) {
         if (v == super.confirmButton){
             UserRepository.getInstance().getUserContained().setTypeUser("General");
-            Thread thread = new Thread(new UserRepositoryCreatorUsingDBRunnable(
+            UserRelatedThreadManager.getInstance().doActionForThread(new UserRepositoryCreatorUsingDBRunnable(
                     UserRepository.getInstance().getUserContained()));
-            thread.start();
             DataAccountOffline.getInstance(activity).setUserType("General");
             Intent intent = new Intent(this.activity, MainActivity.class);
             this.activity.startActivity(intent);

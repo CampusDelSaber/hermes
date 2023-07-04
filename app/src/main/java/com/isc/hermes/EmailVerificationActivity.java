@@ -13,16 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.isc.hermes.controller.PopUp.PopUp;
 import com.isc.hermes.controller.PopUp.PopUpContinueLikeGeneralUser;
 import com.isc.hermes.controller.PopUp.PopUpWarningIncorrectData;
-import com.isc.hermes.database.AccountInfoManager;
 import com.isc.hermes.database.VerificationCodesManager;
-import com.isc.hermes.model.User.User;
+import com.isc.hermes.model.User.UserRelatedThreadManager;
 import com.isc.hermes.model.User.UserRepository;
 import com.isc.hermes.model.User.UserRepositoryCreatorUsingDBRunnable;
 import com.isc.hermes.model.User.UserRepositoryEditorUsingDBRunnable;
 import com.isc.hermes.model.Validator;
 import com.isc.hermes.model.VerificationCode;
-import org.json.JSONException;
-import java.util.concurrent.ExecutionException;
+
 
 /**
  * This class manages the email verification when the user declares themself as a Administrator.
@@ -191,9 +189,9 @@ public class EmailVerificationActivity extends AppCompatActivity {
         Intent intent = new Intent(EmailVerificationActivity.this, MainActivity.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
-            Thread thread = new Thread(new UserRepositoryCreatorUsingDBRunnable(
+            UserRelatedThreadManager.getInstance().doActionForThread(
+                    new UserRepositoryCreatorUsingDBRunnable(
                     UserRepository.getInstance().getUserContained()));
-            thread.start();
             verificationCodeUpdate(intent);
         } else visualizedWarningPop();
     }
@@ -207,9 +205,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
         Intent intent = new Intent(EmailVerificationActivity.this, AccountInformation.class);
         String code = getCodeUser();
         if (validator.isCorrect(code)) {
-            Thread thread = new Thread(new UserRepositoryEditorUsingDBRunnable(
+            UserRelatedThreadManager.getInstance().doActionForThread(new UserRepositoryEditorUsingDBRunnable(
                     UserRepository.getInstance().getUserContained()));
-            thread.start();
             verificationCodeUpdate(intent);
         } else visualizedWarningPop();
     }
