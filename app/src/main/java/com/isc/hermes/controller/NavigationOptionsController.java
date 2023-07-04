@@ -20,13 +20,16 @@ import com.google.gson.JsonParser;
 import com.isc.hermes.R;
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.Utils.MapPolyline;
+import com.isc.hermes.model.navigation.RoutesRepository;
 import com.isc.hermes.model.navigation.TransportationType;
 import com.isc.hermes.model.navigation.UserRouteTracker;
 import com.isc.hermes.utils.Animations;
 import com.isc.hermes.utils.DijkstraAlgorithm;
 import com.isc.hermes.view.IncidentTypeButton;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -315,6 +318,7 @@ public class NavigationOptionsController {
             }, 3000);
         } catch (Exception e) {
             handleErrorLoadingRoutes();
+            Timber.e(e);
         }
     }
 
@@ -342,6 +346,7 @@ public class NavigationOptionsController {
         builder.setCancelable(false);
         progressDialog = builder.create();
         progressDialog.show();
+        infoRouteController.setTransportationType(transportationType);
     }
 
     /**
@@ -400,8 +405,9 @@ public class NavigationOptionsController {
                     graphController.getGraph(), graphController.getStartNode(),
                     graphController.getDestinationNode(), transportationType
             );
-        } catch (JSONException e) {
+        } catch (Exception e){
             handleErrorLoadingRoutes();
+            Timber.e(e);
         }
     }
 
@@ -409,26 +415,31 @@ public class NavigationOptionsController {
      * This method show a Toast when don't have routes.
      */
     private void handleErrorLoadingRoutes(){
-        Toast.makeText(context, "Not possible to get the routes", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Could not get the route", Toast.LENGTH_SHORT).show();
+        mapWayPointController.setMarked(false);
+        mapWayPointController.deleteMarks();
     }
 
     /**
      * Renders the routes on the map
      */
     private void showRoutes() {
-        String jsonA = routeOptions.getOrDefault("Route A", "");
-        String jsonB = routeOptions.getOrDefault("Route B", "");
-        String jsonC = routeOptions.getOrDefault("Route C", "");
+        if (validateRoutes()){
+            String jsonA = routeOptions.getOrDefault("Route A", "");
+            String jsonB = routeOptions.getOrDefault("Route B", "");
+            String jsonC = routeOptions.getOrDefault("Route C", "");
 
-        String[] routes = {jsonC, jsonB, jsonA};
-        ArrayList<String> geoJson = new ArrayList<>();
-        for (String route : routes)
-            if (!route.isEmpty()) geoJson.add(route);
+            String[] routes = {jsonC, jsonB, jsonA};
+            ArrayList<String> geoJson = new ArrayList<>();
+            for (String route : routes)
+                if (!route.isEmpty()) geoJson.add(route);
 
 
-        // TODO: Use the best available route
-        renderMapRoutes(geoJson);
-        startRouteEstimationManager(jsonA);
+            RoutesRepository.getInstance().populate(routeOptions);
+            renderMapRoutes(geoJson);
+        }else {
+            handleErrorLoadingRoutes();
+        }
     }
 
     /**
@@ -488,6 +499,7 @@ public class NavigationOptionsController {
             MapPolyline mapPolyline = new MapPolyline();
             try{
                 infoRouteController.showInfoRoute(geoJson, mapPolyline);
+                updateNavigatedRoute();
             } catch (Exception e){
                 e.printStackTrace();
                 handleErrorLoadingRoutes();
@@ -508,14 +520,6 @@ public class NavigationOptionsController {
     }
 
     /**
-     * Method to start the route estimation manager
-     * @param JSONRoute to start route
-     */
-    private void startRouteEstimationManager(String JSONRoute){
-        infoRouteController.startNavigationMode(new UserRouteTracker(JSONRoute), transportationType);
-    }
-
-    /**
      * Gets if the current location is selected as start point
      */
     public boolean isCurrentLocationSelected() {
@@ -527,5 +531,31 @@ public class NavigationOptionsController {
      */
     public void setIsCurrentLocationSelected(boolean isCurrentLocationSelected) {
         this.isCurrentLocationSelected = isCurrentLocationSelected;
+    }
+
+    /**
+     * Validates the routes by checking if each route has more than one coordinate point.
+     *
+     * @return true if at least one route is valid (having more than one coordinate point), false otherwise
+     */
+    private boolean validateRoutes(){
+        boolean isValid = false;
+        try {
+            for (String geoJSON:
+                    routeOptions.values()) {
+                JSONArray coordinates = new JSONObject(geoJSON).getJSONObject("geometry").getJSONArray("coordinates");
+                if (coordinates.length() > 1){
+                    isValid = true;
+                    Timber.d("Validated route\n %s", geoJSON);
+                    break;
+                }else {
+                    Timber.d("Invalidated route\n %s", geoJSON);
+                }
+            }
+
+        }catch (JSONException e) {
+            Timber.e(e);
+        }
+        return isValid;
     }
 }

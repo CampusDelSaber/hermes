@@ -1,7 +1,7 @@
 package com.isc.hermes.model.navigation;
 
-import static com.isc.hermes.model.navigation.NavigationTrackerTools.isPointInsideSegment;
 import static com.isc.hermes.model.navigation.NavigationTrackerTools.isNearPoint;
+import static com.isc.hermes.model.navigation.NavigationTrackerTools.isPointInsideSegment;
 
 import com.isc.hermes.model.CurrentLocationModel;
 import com.isc.hermes.model.navigation.exceptions.RouteOutOfTracksException;
@@ -58,16 +58,29 @@ public class UserRouteTracker {
         isUserTrackLost = false;
     }
 
+    /**
+     * Updates the user's location and determines the next action based on the current state.
+     * If the user's track is lost, it attempts to recover the track.
+     * If the user is on the current track segment, it logs the track index.
+     * If the user is off the current track segment, it proceeds to the next track segment.
+     *
+     * @throws RouteOutOfTracksException if the current route has no more unvisited tracks
+     */
     public void update() {
         LatLng userLocation = currentLocation.getLatLng();
         if (isUserTrackLost) {
             recoverTrack(true);
         }
 
+        if (routeSegmentIndex >= routeSegments.size()) {
+            throw new RouteOutOfTracksException("The current route does not have any more unvisited tracks");
+        }
+
         if (isUserOnTrack(userLocation)) {
-            Timber.i(String.format("User on track #%d\n", routeSegmentIndex));
-        }else {
-            nextTrack(userLocation);
+            Timber.i("User on track #%d\n", routeSegmentIndex);
+        } else {
+            recoverTrack(false);
+            Timber.d("Track has been switched");
         }
     }
 
@@ -85,8 +98,8 @@ public class UserRouteTracker {
         usersDestination = routeSegments.get(routeSegments.size() - 1).getEnd();
         trackRecoveryHandler = new TrackRecoveryHandler(routeSegments);
         routeDistanceHelper = new RouteDistanceHelper(routeSegments);
-        Timber.i(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
-        nextTrack(currentLocation.getLatLng());
+        Timber.d(String.format("Starting route with: %s Tracks\n", routeSegments.size()));
+        currentSegment = routeSegments.get(routeSegmentIndex);
     }
 
     /**
@@ -102,38 +115,12 @@ public class UserRouteTracker {
     }
 
     /**
-     * Updates the current route segment based on the user's current location.
-     * If there are available segments, the next segment is assigned as the current segment.
-     * If the user is outside the current segment, a UserOutsideRouteException is thrown.
-     *
-     * @param userLocation The user's current location.
-     */
-    private void nextTrack(LatLng userLocation) {
-        if (!routeSegments.isEmpty() && routeSegmentIndex < routeSegments.size()) {
-            currentSegment = routeSegments.get(routeSegmentIndex);
-            if (isPointInsideSegment(currentSegment, userLocation)) {
-                routeSegmentIndex++;
-                routeDistanceHelper.updateTrackIndex(routeSegmentIndex);
-            } else {
-                recoverTrack(false);
-            }
-
-        } else {
-            throw new RouteOutOfTracksException("The current route does not have any more unvisited tracks");
-        }
-    }
-
-    /**
      * Checks if the user has arrived at the destination point.
      *
      * @return true if the user has arrived, false otherwise.
      */
     public boolean hasUserArrived() {
-        boolean pointReached = isNearPoint(usersDestination, currentLocation.getLatLng());
-        if (pointReached) {
-            Timber.i("USER HAS ARRIVED LOCATION");
-        }
-        return pointReached;
+        return isNearPoint(usersDestination, currentLocation.getLatLng());
     }
 
     /**
@@ -193,6 +180,11 @@ public class UserRouteTracker {
         }
     }
 
+    /**
+     * Gets the UserRouteTrackerNotifier instance associated with this UserRouteTracker.
+     *
+     * @return the UserRouteTrackerNotifier instance
+     */
     public UserRouteTrackerNotifier getRouteTrackerNotifier() {
         return routeTrackerNotifier;
     }
