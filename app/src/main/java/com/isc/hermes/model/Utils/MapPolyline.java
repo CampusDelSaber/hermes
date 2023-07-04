@@ -96,7 +96,7 @@ public class MapPolyline {
             FeatureCollection featureCollection = FeatureCollection.fromFeatures(features);
             for (int i = 0; i < features.size(); i++){
                 GeoJsonSource polylineSource =
-                        new GeoJsonSource("polyline" + i + "-source", featureCollection);
+                        new GeoJsonSource(String.format("polyline%s-source", i), featureCollection);
                 idPolyLinesList.add(polylineSource);
                 style.addSource(polylineSource);
                 polylineSource.setGeoJson(features.get(i));
