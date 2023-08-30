@@ -84,7 +84,7 @@ jobs:
         with:
           name: hermes_${{ github.sha }}.apk
           path: 'app/build/outputs/apk/release/*.apk'
-          retention-days: 10
+          retention-days: 12
       
   code_linting:
     name: code_analysis
